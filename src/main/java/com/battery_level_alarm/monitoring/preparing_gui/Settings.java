@@ -24,8 +24,6 @@ public class Settings {
     private static boolean soundPlayed = false;
     
     private static JScrollPane CreatedGUI;
-    private static JPanel SettingsPanel;
-    private static JPanel filePathPanel;
     private static JPanel firstPartPanel;
     private static JPanel secondPartPanel;
     private static GridBagConstraints gbc;
@@ -35,9 +33,10 @@ public class Settings {
     }
     
     public static void createAndShowGUI() {
-    	SettingsPanel = new JPanel();
-    	SettingsPanel.setLayout(new BoxLayout(SettingsPanel, BoxLayout.Y_AXIS));
-        filePathPanel = new JPanel(new BorderLayout());
+        JPanel settingsPanel = new JPanel();
+    	settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
+        JPanel filePathPanel = new JPanel(new BorderLayout());
+
         firstPartPanel = new JPanel(new GridBagLayout());
         secondPartPanel = new JPanel(new GridBagLayout());
         gbc = createGridBagConstraints();
@@ -79,7 +78,7 @@ public class Settings {
                 FileManager.saveSettings();
             });
         
-        addLabeledSpinner(firstPartPanel, "Sound Duration (in seconds):", UserChoices.getSoundDuration(), 5, 1, 300, 1, ++index, 0, 
+        addLabeledSpinner(firstPartPanel, "Sound Duration (in seconds):", UserChoices.getSoundDuration(), 5, 1, 300, 1, ++index, 0,
             e -> {
                 int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
                 UserChoices.setSoundDuration(value);
@@ -169,9 +168,9 @@ public class Settings {
         filePathPanel.add(secondPartPanel, BorderLayout.CENTER);
         filePathPanel.add(sounthPanel, BorderLayout.SOUTH);
         
-        SettingsPanel.add(firstPartPanel);
-        SettingsPanel.add(filePathPanel);
-        CreatedGUI = new JScrollPane(SettingsPanel);
+        settingsPanel.add(firstPartPanel);
+        settingsPanel.add(filePathPanel);
+        CreatedGUI = new JScrollPane(settingsPanel);
     }
     
     private static GridBagConstraints createGridBagConstraints() {

@@ -1,12 +1,10 @@
 package com.battery_level_alarm.monitoring.core;
+import com.battery_level_alarm.monitoring.basics.UserChoices;
+
 import java.io.*;
-
 import javax.swing.JOptionPane;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.battery_level_alarm.monitoring.basics.UserChoices;
 
 public class FileManager {
     private static final String CONFIG_FILE_PATH = "_settings.json";
@@ -39,7 +37,7 @@ public class FileManager {
             while ((line = reader.readLine()) != null) {
                 jsonContent.append(line);
             }
-
+            
             JSONObject json = new JSONObject(jsonContent.toString());
             UserChoices.setSoundPath(json.optString("SoundPath: ", "/resources/BattIco/flash_flood_warning.wav"));
             UserChoices.setSoundDuration(json.optInt("SoundDuration: ", 5));
@@ -61,7 +59,7 @@ public class FileManager {
             saveSettings();
         }
     }
-
+    
     private static void loadDefaultSettings() {
         UserChoices.setSoundPath("/resources/BattIco/flash_flood_warning.wav");
         UserChoices.setSoundDuration(5);

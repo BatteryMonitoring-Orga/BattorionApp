@@ -1,0 +1,13 @@
+{
+    "MaximumLevel: ": 85,
+    "VolumeLevel: ": 35,
+    "RepeatIntervalForGeneralMonitor: ": 1,
+    "EnablePrimarySound: ": true,
+    "RepeatIntervalBeforeRiskPhase: ": 30,
+    "EnableText: ": true,
+    "SoundDuration: ": 5,
+    "AutomaticMonitoring: ": true,
+    "SoundPath: ": "/com/battery_level_alarm/monitoring/BattIco/flash_flood_warning.wav",
+    "EnableSecondarySound: ": true,
+    "MinimumLevel: ": 20
+}

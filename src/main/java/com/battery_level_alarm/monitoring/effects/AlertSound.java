@@ -1,4 +1,4 @@
-package com.battery_level_alarm.monitoring.sounds;
+package com.battery_level_alarm.monitoring.effects;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
@@ -13,7 +13,7 @@ import java.net.URI;
 import java.net.URL;
 
 public class AlertSound {
-    private static final String DEFAULT_SOUND = "/resources/BattIco/flash_flood_warning.wav";
+    private static final String DEFAULT_SOUND = "/com/battery_level_alarm/monitoring/BattIco/flash_flood_warning.wav";
     private static Player player;
     private static Thread playThread;
     
@@ -24,6 +24,7 @@ public class AlertSound {
                 showErrorMessage("Sound file not found, using default sound.\nFile Path: '" + filePath + "'");
                 soundStream = getSoundStream(DEFAULT_SOUND);
             }
+            
             if (soundStream == null) {
                 showErrorMessage("Default sound file not found.\nFile Path: '" + DEFAULT_SOUND + "'");
                 return;

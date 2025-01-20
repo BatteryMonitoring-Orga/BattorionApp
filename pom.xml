@@ -63,6 +63,11 @@
 	    <artifactId>flatlaf-jide-oss</artifactId>
 	    <version>3.5.4</version>
 	</dependency>
+	<dependency>
+	    <groupId>com.jidesoft</groupId>
+	    <artifactId>jide-oss</artifactId>
+	    <version>3.5.4</version>
+	</dependency>
 	
 	<dependency>
 	    <groupId>org.json</groupId>

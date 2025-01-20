@@ -15,11 +15,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.core.BatteryLevelAlarm;
 import com.battery_level_alarm.monitoring.core.FileManager;
-import com.battery_level_alarm.monitoring.sounds.AlertSound;
+import com.battery_level_alarm.monitoring.effects.AlertSound;
 
 public class Settings {
     private static final Font DEFAULT_FONT = new Font("Serif", Font.BOLD + Font.ITALIC, 14);
-    private static final String DEFAULT_SOUND_PATH = "/resources/BattIco/flash_flood_warning.wav";
+    private static final String DEFAULT_SOUND_PATH = "/com/battery_level_alarm/monitoring/BattIco/flash_flood_warning.wav";
     private static String soundPath = DEFAULT_SOUND_PATH;
     private static boolean soundPlayed = false;
     

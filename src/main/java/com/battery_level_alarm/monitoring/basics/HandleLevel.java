@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-import com.battery_level_alarm.monitoring.sounds.AlertSound;
+import com.battery_level_alarm.monitoring.effects.AlertSound;
 
 public class HandleLevel {
 	private static int counter = 0;

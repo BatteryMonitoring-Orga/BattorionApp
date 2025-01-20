@@ -5,14 +5,13 @@ import static com.battery_level_alarm.monitoring.command.CallCommandLine.*;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.command.DiskSpaceInfo;
+import com.battery_level_alarm.monitoring.effects.call_resources;
 import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
 import com.battery_level_alarm.monitoring.preparing_gui.Settings;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class BatteryLevelAlarm {
 	public static final Font textFont = new Font(Font.SERIF, Font.BOLD + Font.ITALIC, 14);
@@ -56,7 +55,7 @@ public class BatteryLevelAlarm {
     private static void createAndShowGUI() {
         mainFrame = new JFrame("Battery Level Alarm");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ImageIcon icon = new ImageIcon(BatteryLevelAlarm.class.getResource("/resources/BattIco/13228401.png"));
+        ImageIcon icon = call_resources.getImage("13228401");
         mainFrame.setIconImage(icon.getImage());
         mainFrame.setSize(420, 300);
         mainFrame.setResizable(false);
@@ -77,8 +76,13 @@ public class BatteryLevelAlarm {
 			batteryLevel = getBatteryLevel();
 		} catch (Exception e) {
 			batteryLevel = 0;
-			e.printStackTrace();
-		}
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
 		
 		batteryBar = new JProgressBar(0, 100);
 		batteryBar.setPreferredSize(new Dimension(200, 60));
@@ -131,57 +135,33 @@ public class BatteryLevelAlarm {
         aboutSettingsButton = new JButton("What is that?");
         setButtonFontAndSize(aboutSettingsButton, 120, 70);
         
-        actionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	if(actionButton.getText().equals("Start")) {
-            		startMonitoring();
-            	} else {
-            		stopMonitoring();
-            	}
+        actionButton.addActionListener(e -> {
+            if(actionButton.getText().equals("Start")) {
+                startMonitoring();
+            } else {
+                stopMonitoring();
             }
         });
-        settingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	if(settingsButton.getText().equals("Settings")) {
-            		setUpSettingScrollPanel();
-            	} else {
-            		setUpDashboardPanel();
-            	}
-            	refreshMotherFrame();
+        settingsButton.addActionListener(e -> {
+            if(settingsButton.getText().equals("Settings")) {
+                setUpSettingScrollPanel();
+            } else {
+                setUpDashboardPanel();
             }
+            refreshMotherFrame();
         });
-        diskButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	if(diskButton.getText().equals("Disk Info.")) {
-            		setUpDiskInfoPanel();
-            	} else {
-            		setUpDashboardPanel();
-            	}
-            	refreshMotherFrame();
+        diskButton.addActionListener(e -> {
+            if(diskButton.getText().equals("Disk Info.")) {
+                setUpDiskInfoPanel();
+            } else {
+                setUpDashboardPanel();
             }
+            refreshMotherFrame();
         });
-        reportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-        		batteryReport();
-            }
-        });
-        aboutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	StaticQuestionnaire.aboutDispatch();
-            }
-        });
-        aboutSettingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, StaticQuestionnaire.Dispatch(textFont, StaticQuestionnaire.getHowToUseSettings())
-                		, "Settings Explanation", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
+        reportButton.addActionListener(e -> batteryReport());
+        aboutButton.addActionListener(e -> StaticQuestionnaire.aboutDispatch());
+        aboutSettingsButton.addActionListener(e -> JOptionPane.showMessageDialog(null, StaticQuestionnaire.Dispatch(textFont, StaticQuestionnaire.getHowToUseSettings())
+                , "Settings Explanation", JOptionPane.INFORMATION_MESSAGE));
         
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(actionButton);
@@ -204,16 +184,13 @@ public class BatteryLevelAlarm {
         
         JButton resetButton = new JButton();
         resetButton.setToolTipText("Reset the alert and counter to zero");
-	    ImageIcon newIcon = new ImageIcon(BatteryLevelAlarm.class.getResource("/resources/BattIco/3808356.png"));
+	    ImageIcon newIcon = call_resources.getImage("3808356");
 	    resetButton.setIcon(new ImageIcon(newIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-        resetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	alertLabel.setText("");
-            	checkAndReset();
-            	String isA = whatIsVisible();
-            	refreshDiskInfoPanel(isA, DiskInfoPanel.isVisible());
-            }
+        resetButton.addActionListener(e -> {
+            alertLabel.setText("");
+            checkAndReset();
+            String isA = whatIsVisible();
+            refreshDiskInfoPanel(isA, DiskInfoPanel.isVisible());
         });
         
         JPanel labelsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -301,7 +278,8 @@ public class BatteryLevelAlarm {
     		settingsButton.setText("Settings");
     		settingsButton.doClick();
     	} else {
-    		DashboardPanel.setVisible(true);
+            assert DashboardPanel != null;
+            DashboardPanel.setVisible(true);
     	}
     }
     
@@ -371,7 +349,12 @@ public class BatteryLevelAlarm {
 			batteryBar.setValue(batteryLevel);
 			SwingUtilities.invokeLater(() -> ratioChargeLabel.setText("Battery Level: " + batteryLevel + "%"));
 		} catch (Exception e1) {
-			e1.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e1.getClass().getName() + "\nMessage: " + e1.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
 		}
     }
     
@@ -428,7 +411,12 @@ public class BatteryLevelAlarm {
     	try {
     		isCharging = getBatteryStatus();
 		} catch (Exception e) {
-			e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
 		}
     	
     	if(isCharging) {

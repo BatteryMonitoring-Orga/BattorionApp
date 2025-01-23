@@ -2,7 +2,6 @@ package com.battery_level_alarm.monitoring.command;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import javax.swing.JOptionPane;
 
 public class CallCommandLine {
@@ -112,7 +111,7 @@ public class CallCommandLine {
     public static boolean getBatteryStatus() throws Exception {
         String os = getOS();
         ProcessBuilder processBatteryStatus = getProcessBuilderForBatteryStatus(os);
-        boolean isCharging = false;
+        boolean isCharging;
         
         boolean isMac = os.contains("mac");
         Process statusProcess = processBatteryStatus.start();
@@ -125,11 +124,7 @@ public class CallCommandLine {
                 }
             }
         }
-
-        if(!isCharging) {
-        	return false;
-        }
-        throw new Exception("Unable to retrieve battery status");
+        return false;
     }
     
     public static void setPCVolume(int percentage) {
@@ -138,9 +133,14 @@ public class CallCommandLine {
             ProcessBuilder processBuilder = getProcessBuilderForVolume(os, percentage);
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
-            
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
+
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
+            }
+        } catch (IOException | RuntimeException e) {
             JOptionPane.showMessageDialog(
                     null,
                     "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
@@ -164,9 +164,14 @@ public class CallCommandLine {
                 	JOptionPane.showMessageDialog(null, line, "Battery Report", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
-            
-            process.waitFor();
-        } catch (Exception e) {
+
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
+            }
+        } catch (IOException | RuntimeException e) {
             JOptionPane.showMessageDialog(
                     null,
                     "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),

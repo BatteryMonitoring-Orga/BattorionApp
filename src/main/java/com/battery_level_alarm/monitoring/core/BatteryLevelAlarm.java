@@ -481,7 +481,8 @@ public class BatteryLevelAlarm {
                         handleNormalBattery(alertLabel);
                     }
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 SwingUtilities.invokeLater(() -> alertLabel.setText("The Monitoring was Stopped!"));
             }
         });

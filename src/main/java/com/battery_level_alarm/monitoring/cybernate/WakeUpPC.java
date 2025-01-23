@@ -19,7 +19,7 @@ public class WakeUpPC {
 
 	    try {
 	        java.awt.Robot robot = new java.awt.Robot();
-			wakeUpThread = new Thread(() -> {
+			wakeUpThread = Thread.ofVirtual().start(() -> {
                 while (PC_Details.getActivateTheAwakeningFeature()) {
                     getMousePosition();
 					doRobotAction(robot);

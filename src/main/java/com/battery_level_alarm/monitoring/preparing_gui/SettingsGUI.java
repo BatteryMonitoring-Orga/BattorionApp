@@ -227,7 +227,7 @@ public class SettingsGUI {
     }
     
     private static JScrollPane addTextInScroll(JTextField field, String label, Font font) {
-        field = new JTextField(label);
+        field.setText(label);
         field.setFont(font);
         field.setEditable(false);
         field.setEnabled(false);

@@ -6,6 +6,8 @@ import javax.swing.JOptionPane;
 
 import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
 
+import static com.battery_level_alarm.monitoring.cybernate.AutoLogin.printErrorMessage;
+
 public class DiskSpaceInfo {
 	private static boolean isDestroyed = false;
 	private static Thread timerThread;
@@ -65,26 +67,24 @@ public class DiskSpaceInfo {
         	long startTime = System.currentTimeMillis();
             Process process = getProcessForCleanTemp();
             setUnderTracking(process);
-            process.waitFor();
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
+            }
             timerThread.interrupt();
             
             makeADecision();
             long endTime = System.currentTimeMillis();
-            
             printTheResult(process, startTime, endTime);
-        } catch (IOException | InterruptedException e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            JOptionPane.showMessageDialog(null, "An error occurred during the cleaning process.", "Clean Temp", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException | RuntimeException e) {
+            printErrorMessage(e);
         }
     }
 	
 	private static void setUnderTracking(Process process) {
-        timerThread = new Thread(() -> {
+        timerThread = Thread.ofVirtual().start(() -> {
             try {
                 Thread.sleep(5000);
                 if (process.isAlive()) {
@@ -92,15 +92,10 @@ public class DiskSpaceInfo {
                     isDestroyed = true;
                 }
             } catch (InterruptedException e) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                        "Battery Level Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                Thread.currentThread().interrupt();
+                printErrorMessage(e);
             }
         });
-        timerThread.start();
 	}
 	
 	private static void makeADecision() {
@@ -141,12 +136,7 @@ public class DiskSpaceInfo {
             reader.close();
             parseOutput(totalFilesLine, totalDirsLine);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            printErrorMessage(e);
         }
     }
     

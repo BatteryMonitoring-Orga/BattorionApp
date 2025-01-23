@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.cybernate;
 import com.battery_level_alarm.monitoring.basics.PC_Details;
 
-import java.awt.Robot;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
@@ -23,7 +23,8 @@ public class AutoLogin {
 	        
 	        robot.keyPress(KeyEvent.VK_ENTER);
 	        robot.keyRelease(KeyEvent.VK_ENTER);
-		} catch(Exception e) {
+		} catch(InterruptedException | AWTException e) {
+			Thread.currentThread().interrupt();
 			printErrorMessage(e);
 		}
 	}

@@ -1,6 +1,8 @@
 package com.battery_level_alarm.monitoring.effects;
 import static com.battery_level_alarm.monitoring.command.AudioOutput.setSpeakerAsAnAudioOutput;
 import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.isFromCriticalAlert;
+import static com.battery_level_alarm.monitoring.cybernate.AutoLogin.printErrorMessage;
+
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.basics.PC_Details;
 import com.battery_level_alarm.monitoring.command.CallCommandLine;
@@ -43,13 +45,8 @@ public class AlertSound {
                 showErrorMessage("Unsupported file format. Using default sound.\n*Supported file formats: (wav, mp3)");
                 playWAV(getSoundStream(DEFAULT_SOUND));
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+        } catch (InterruptedException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            printErrorMessage(e);
         }
     }
     
@@ -57,7 +54,11 @@ public class AlertSound {
         InputStream inputStream = null;
         File file = new File(filePath);
         if (file.exists()) {
-            inputStream = new FileInputStream(file);
+            try{
+                inputStream = new FileInputStream(file);
+            } catch (Exception e) {
+                printErrorMessage(e);
+            }
         } else {
             inputStream = AlertSound.class.getResourceAsStream(filePath);
         }
@@ -66,7 +67,11 @@ public class AlertSound {
             try {
             	URI uri = new URI(filePath);
                 URL url = uri.toURL();
-                inputStream = url.openStream();
+                try{
+                    inputStream = url.openStream();
+                } catch (Exception e) {
+                    printErrorMessage(e);
+                }
             } catch (Exception ignored) {
                 // Not a valid URL
             }

@@ -25,8 +25,13 @@ public class AudioOutput {
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
 
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
+            }
+        } catch (IOException | RuntimeException e) {
             printErrorMessage(e);
         }
     }

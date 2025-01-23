@@ -24,7 +24,7 @@ public class HandleLevel {
             JOptionPane.showMessageDialog(null, "Battery is high for too long! Please unplug the charger immediately.", 
                     "Critical Battery Status", JOptionPane.WARNING_MESSAGE);
         }
-        Thread.sleep(5000);
+        Thread.sleep(1000);
     }
     
     public static void handleLowBattery(JProgressBar batteryBar, JLabel alertLabel) throws InterruptedException {
@@ -41,7 +41,7 @@ public class HandleLevel {
             JOptionPane.showMessageDialog(null, "Battery is dangerously low! Please charge immediately.", 
                     "Critical Battery Status", JOptionPane.WARNING_MESSAGE);
         }
-        Thread.sleep(5000);
+        Thread.sleep(1000);
     }
     
     public static void handleBatteryWarning(JProgressBar batteryBar, JLabel alertLabel, String alertText, Color color) throws InterruptedException {
@@ -53,12 +53,12 @@ public class HandleLevel {
         if(UserChoices.isEnableSecondarySound()) {
             triggerAlert();
         }
-        Thread.sleep(UserChoices.getRepeatIntervalBeforeRiskPhase() * 1000);
+        Thread.sleep(UserChoices.getRepeatIntervalBeforeRiskPhase() * 1000L);
     }
     
     public static void handleNormalBattery(JLabel alertLabel) throws InterruptedException {
         SwingUtilities.invokeLater(() -> alertLabel.setText(""));
-        Thread.sleep((UserChoices.getRepeatIntervalForGeneralMonitor()/4) * 10000);
+        Thread.sleep(500);
         counter = 0;
     }
     

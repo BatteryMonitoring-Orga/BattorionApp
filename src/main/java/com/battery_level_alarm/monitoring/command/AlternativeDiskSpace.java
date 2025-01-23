@@ -66,10 +66,8 @@ public class AlternativeDiskSpace {
                 "Temporary files cleaned successfully.\nFiles deleted: " + deletedFiles.get() + 
                 "\nFiles failed to delete: " + failedFiles.get(), 
                 "Clean Temp", JOptionPane.INFORMATION_MESSAGE);
-            
         } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "An error occurred during the cleaning process.", "Clean Temp", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "An error occurred during the cleaning process.\n" + e.getMessage(), "Clean Temp", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -99,7 +97,12 @@ public class AlternativeDiskSpace {
             dirsNumber = "N/A";
             dirsSize = "N/A";
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
     

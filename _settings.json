@@ -1,13 +1,12 @@
 {
-    "MaximumLevel: ": 85,
-    "VolumeLevel: ": 35,
-    "RepeatIntervalForGeneralMonitor: ": 1,
-    "EnablePrimarySound: ": true,
-    "RepeatIntervalBeforeRiskPhase: ": 30,
-    "EnableText: ": true,
-    "SoundDuration: ": 5,
-    "AutomaticMonitoring: ": true,
-    "SoundPath: ": "/com/battery_level_alarm/monitoring/BattIco/flash_flood_warning.wav",
-    "EnableSecondarySound: ": true,
-    "MinimumLevel: ": 20
+    "Sound Duration: ": 1,
+    "Enable Charging/Discharging Sound: ": true,
+    "Maximum Level: ": 85,
+    "Automatic Monitoring: ": true,
+    "Minimum Level: ": 25,
+    "Sound Path: ": "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav",
+    "Enable Primary Sound: ": true,
+    "Repeat Interval Before Risk Phase: ": 5,
+    "Enable Text: ": true,
+    "Enable Secondary Sound: ": true
 }

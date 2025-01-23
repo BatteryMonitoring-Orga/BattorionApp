@@ -125,7 +125,7 @@ public class CallCommandLine {
                 }
             }
         }
-        
+
         if(!isCharging) {
         	return false;
         }
@@ -141,7 +141,12 @@ public class CallCommandLine {
             
             process.waitFor();
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
     
@@ -162,7 +167,12 @@ public class CallCommandLine {
             
             process.waitFor();
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 }

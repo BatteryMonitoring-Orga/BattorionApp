@@ -73,7 +73,12 @@ public class DiskSpaceInfo {
             
             printTheResult(process, startTime, endTime);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
             JOptionPane.showMessageDialog(null, "An error occurred during the cleaning process.", "Clean Temp", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -87,7 +92,12 @@ public class DiskSpaceInfo {
                     isDestroyed = true;
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                        "Battery Level Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         });
         timerThread.start();
@@ -107,7 +117,7 @@ public class DiskSpaceInfo {
         } else if(!isDestroyed){
             JOptionPane.showMessageDialog(null, "An error occurred while cleaning temporary files.", "Clean Temp", JOptionPane.ERROR_MESSAGE);
         } else {
-        	JOptionPane.showMessageDialog(null, "Process Time: " + elapsedSeconds, "Success In", JOptionPane.INFORMATION_MESSAGE);
+        	JOptionPane.showMessageDialog(null, "Process Time: " + elapsedSeconds + " second(s).", "Success In", JOptionPane.INFORMATION_MESSAGE);
         }
 	}
 	
@@ -131,7 +141,12 @@ public class DiskSpaceInfo {
             reader.close();
             parseOutput(totalFilesLine, totalDirsLine);
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+                    "Battery Level Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
     

@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.cybernate;
+import com.battery_level_alarm.monitoring.basics.PC_Details;
 
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
@@ -9,7 +10,7 @@ public class AutoLogin {
 		try {
 	        Robot robot = new Robot();
 	        
-	        String password = "password";
+	        String password = PC_Details.getSecretNumber();
 	        for (char c : password.toCharArray()) {
 	            int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
 	            if (KeyEvent.CHAR_UNDEFINED != keyCode) {
@@ -23,12 +24,16 @@ public class AutoLogin {
 	        robot.keyPress(KeyEvent.VK_ENTER);
 	        robot.keyRelease(KeyEvent.VK_ENTER);
 		} catch(Exception e) {
-			JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+			printErrorMessage(e);
 		}
+	}
+
+	public static void printErrorMessage(Throwable e){
+		JOptionPane.showMessageDialog(
+				null,
+				"Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
+				"Battery Level Error",
+				JOptionPane.ERROR_MESSAGE
+		);
 	}
 }

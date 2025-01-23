@@ -292,14 +292,10 @@ public class BatteryLevelAlarm {
     	if(SettingScrollPanel == null) {
     		SettingScrollPanel = new JScrollPane();
             SettingScrollPanel.setVisible(false);
-    	}
-    	
-    	if(DiskInfoPanel == null) {
+    	} if(DiskInfoPanel == null) {
     		DiskInfoPanel = new JPanel();
             DiskInfoPanel.setVisible(false);
-    	}
-
-        if(BatteryStatisticsPanel == null) {
+    	} if(BatteryStatisticsPanel == null) {
             BatteryStatisticsPanel = new JPanel();
             BatteryStatisticsPanel.setVisible(false);
         }

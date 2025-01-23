@@ -503,7 +503,6 @@ public class BatteryLevelAlarm {
                     JOptionPane.ERROR_MESSAGE
             );
 		}
-
         exchangeBatteryMode();
         track();
     }

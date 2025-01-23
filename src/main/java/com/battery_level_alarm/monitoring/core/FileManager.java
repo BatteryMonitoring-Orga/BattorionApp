@@ -54,16 +54,16 @@ public class FileManager {
 
     private static void loadSettingsFromJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
-        UserChoices.setSoundPath(json.optString("Sound Path: ", "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav"));
-        UserChoices.setSoundDuration(json.optInt("Sound Duration: ", 5));
-        UserChoices.setMinimumLevel(json.optInt("Minimum Level: ", 20));
-        UserChoices.setMaximumLevel(json.optInt("Maximum Level: ", 85));
-        UserChoices.setRepeatIntervalBeforeRiskPhase(json.optInt("Repeat Interval Before Risk Phase: ", 30));
-        UserChoices.setAutoMonitoring(json.optBoolean("Automatic Monitoring: ", true));
-        UserChoices.setEnablePrimarySound(json.optBoolean("Enable Primary Sound: ", true));
-        UserChoices.setEnableSecondarySound(json.optBoolean("Enable Secondary Sound: ", true));
-        UserChoices.setEnableChargeAndDischargeSound(json.optBoolean("Enable Charging/Discharging Sound: ", true));
-        UserChoices.setEnableText(json.optBoolean("Enable Text: ", true));
+        UserChoices.setSoundPath(json.optString("Sound Path", "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav"));
+        UserChoices.setSoundDuration(json.optInt("Sound Duration", 5));
+        UserChoices.setMinimumLevel(json.optInt("Minimum Level", 20));
+        UserChoices.setMaximumLevel(json.optInt("Maximum Level", 85));
+        UserChoices.setRepeatIntervalBeforeRiskPhase(json.optInt("Repeat Interval Before Risk Phase", 30));
+        UserChoices.setAutoMonitoring(json.optBoolean("Automatic Monitoring", true));
+        UserChoices.setEnablePrimarySound(json.optBoolean("Enable Primary Sound", true));
+        UserChoices.setEnableSecondarySound(json.optBoolean("Enable Secondary Sound", true));
+        UserChoices.setEnableChargeAndDischargeSound(json.optBoolean("Enable Charging/Discharging Sound", true));
+        UserChoices.setEnableText(json.optBoolean("Enable Text", true));
     }
 
     private static void loadDefaultSettings() {
@@ -90,10 +90,10 @@ public class FileManager {
 
     private static JSONObject createPC$DetailsJson() {
         JSONObject json = new JSONObject();
-        json.put("Activate the awakening feature: ", PC_Details.getActivateTheAwakeningFeature());
-        json.put("Your PC Password: ", PC_Details.getSecretNumber());
-        json.put("Wake up the PC every (in Minutes): ", PC_Details.getWakeUpEvery());
-        json.put("Switch audio output to Speakers: ", PC_Details.isEnableExchangeToSpeakerAudioOutput());
+        json.put("Activate the awakening feature", PC_Details.getActivateTheAwakeningFeature());
+        json.put("Your PC Password", PC_Details.getSecretNumber());
+        json.put("Wake up the PC every (in Minutes)", PC_Details.getWakeUpEvery());
+        json.put("Switch audio output to Speakers", PC_Details.isEnableExchangeToSpeakerAudioOutput());
         json.put("Volume Level: ", PC_Details.getVolumeLevel());
         return json;
     }
@@ -115,10 +115,10 @@ public class FileManager {
 
     private static void loadPC$DetailsFromJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
-        PC_Details.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature: ", false));
-        PC_Details.setSecretNumber(json.optString("Your PC Password: ", "No number added"));
-        PC_Details.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes): ", 2));
-        PC_Details.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers: ", true));
+        PC_Details.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
+        PC_Details.setSecretNumber(json.optString("Your PC Password", "No number added"));
+        PC_Details.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
+        PC_Details.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
         PC_Details.setVolumeLevel(json.optInt("Volume Level: ", 35));
     }
 

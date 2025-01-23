@@ -24,16 +24,18 @@ public class WakeUpPC {
                     getMousePosition();
 					doRobotAction(robot);
                     try {
-                        Thread.sleep(PC_Details.getWakeUpEvery() * 1000L);
+						try{
+							Thread.sleep(PC_Details.getWakeUpEvery() * 1000L);
+						} catch (InterruptedException ex) {
+							Thread.currentThread().interrupt();
+							break;
+						}
                         BufferedReader reader = new BufferedReader(new InputStreamReader(callCommandToWakeUp()));
                         System.out.println("Wake-up Status:");
                         String line;
                         while ((line = reader.readLine()) != null) {
                             System.out.println(line);
                         }
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                        break;
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

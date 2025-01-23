@@ -2,6 +2,7 @@ package com.battery_level_alarm.monitoring.core;
 import static com.battery_level_alarm.monitoring.core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.basics.HandleLevel.*;
 import static com.battery_level_alarm.monitoring.command.CallCommandLine.*;
+import static com.battery_level_alarm.monitoring.cybernate.AutoLogin.printErrorMessage;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
 
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
@@ -453,26 +454,26 @@ public class BatteryLevelAlarm {
                     isFromCriticalAlert = false;
 
                     if ((batteryLevel >= maxValue) && isCharging) {
+                        isFromCriticalAlert = true;
                         handleHighBattery(batteryBar, alertLabel);
                         if(!operationIsEnd){
                             howLongBatteryNeedToFullOrDump(status, "End");
                         }
                         operationIsEnd = true;
-                        isFromCriticalAlert = true;
                     } else if ((batteryLevel == (maxValue - 1)) && isCharging) {
+                        isFromCriticalAlert = true;
                         handleHighBattery(batteryBar, alertLabel);
                         if(!operationIsEnd){
                             howLongBatteryNeedToFullOrDump(status, "End");
                         }
                         operationIsEnd = true;
-                        isFromCriticalAlert = true;
                     } else if ((batteryLevel <= minValue) && !isCharging) {
+                        isFromCriticalAlert = true;
                         handleLowBattery(batteryBar, alertLabel);
                         if(!operationIsEnd){
                             howLongBatteryNeedToFullOrDump(status, "End");
                         }
                         operationIsEnd = true;
-                        isFromCriticalAlert = true;
                     } else if ((batteryLevel >= (maxValue - 5)) && (batteryLevel < maxValue) && isCharging) {
                         handleBatteryWarning(batteryBar, alertLabel, "", Color.DARK_GRAY);
                     } else if ((batteryLevel > minValue) && (batteryLevel <= (minValue + 5)) && !isCharging) {
@@ -493,12 +494,7 @@ public class BatteryLevelAlarm {
     	try {
     		isCharging = getBatteryStatus();
 		} catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            printErrorMessage(e);
 		}
         exchangeBatteryMode();
         track();

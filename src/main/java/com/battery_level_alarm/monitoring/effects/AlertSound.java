@@ -45,7 +45,7 @@ public class AlertSound {
                 showErrorMessage("Unsupported file format. Using default sound.\n*Supported file formats: (wav, mp3)");
                 playWAV(getSoundStream(DEFAULT_SOUND));
             }
-        } catch (InterruptedException | UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        } catch (IOException | LineUnavailableException | InterruptedException | UnsupportedAudioFileException e) {
             printErrorMessage(e);
         }
     }
@@ -55,29 +55,42 @@ public class AlertSound {
         File file = new File(filePath);
         if (file.exists()) {
             try (InputStream in_st = new FileInputStream(file)) {
-                inputStream = in_st;
+                byte[] data = in_st.readAllBytes();
+                inputStream = new ByteArrayInputStream(data);
             } catch (Exception e) {
                 printErrorMessage(e);
             }
         } else {
             inputStream = AlertSound.class.getResourceAsStream(filePath);
         }
-        
+
         if (inputStream == null) {
-            try {
-            	URI uri = new URI(filePath);
-                URL url = uri.toURL();
-                try(InputStream ins = url.openStream()){
-                    inputStream = ins;
-                } catch (Exception e) {
-                    printErrorMessage(e);
-                }
-            } catch (Exception ex) {
-                printErrorMessage(ex);
-            }
+            inputStream = ifInputStreamNull(filePath);
         }
-        
         if (inputStream != null) {
+            return ifInputStreamNotNull(inputStream);
+        }
+        return null;
+    }
+
+    private static InputStream ifInputStreamNull(String filePath){
+        try {
+            URI uri = new URI(filePath);
+            URL url = uri.toURL();
+            try(InputStream in_st = url.openStream()){
+                return in_st;
+            } catch (Exception e) {
+                printErrorMessage(e);
+                return null;
+            }
+        } catch (Exception ex) {
+            printErrorMessage(ex);
+            return null;
+        }
+    }
+
+    private static ByteArrayInputStream ifInputStreamNotNull(InputStream inputStream){
+        try{
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             byte[] data = new byte[1024];
             int bytesRead;
@@ -86,8 +99,10 @@ public class AlertSound {
             }
             inputStream.close();
             return new ByteArrayInputStream(buffer.toByteArray());
+        } catch (IOException e) {
+            printErrorMessage(e);
+            return null;
         }
-        return null;
     }
     
     private static void playWAV(InputStream soundStream) throws UnsupportedAudioFileException, IOException, LineUnavailableException, InterruptedException {

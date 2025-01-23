@@ -39,7 +39,6 @@ public class WakeUpPC {
                     }
                 }
             });
-			wakeUpThread.start();
 	    } catch (Exception e) {
 			AutoLogin.printErrorMessage(e);
 	    }

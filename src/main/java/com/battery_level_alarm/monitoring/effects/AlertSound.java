@@ -54,8 +54,8 @@ public class AlertSound {
         InputStream inputStream = null;
         File file = new File(filePath);
         if (file.exists()) {
-            try{
-                inputStream = new FileInputStream(file);
+            try (InputStream in_st = new FileInputStream(file)) {
+                inputStream = in_st;
             } catch (Exception e) {
                 printErrorMessage(e);
             }
@@ -67,13 +67,13 @@ public class AlertSound {
             try {
             	URI uri = new URI(filePath);
                 URL url = uri.toURL();
-                try{
-                    inputStream = url.openStream();
+                try(InputStream ins = url.openStream()){
+                    inputStream = ins;
                 } catch (Exception e) {
                     printErrorMessage(e);
                 }
-            } catch (Exception ignored) {
-                // Not a valid URL
+            } catch (Exception ex) {
+                printErrorMessage(ex);
             }
         }
         
@@ -121,12 +121,7 @@ public class AlertSound {
                 player = new Player(soundStream);
                 player.play();
             } catch (JavaLayerException e) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                        "Battery Level Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                printErrorMessage(e);
             }
         });
         

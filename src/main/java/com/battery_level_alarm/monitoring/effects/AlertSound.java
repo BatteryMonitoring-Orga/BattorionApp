@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.effects;
-import static com.battery_level_alarm.monitoring.command.AudioOutput.setSpeakerAsAnAudioOutput;
+import static com.battery_level_alarm.monitoring.command.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
 import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.isFromCriticalAlert;
-import static com.battery_level_alarm.monitoring.cybernate.AutoLogin.printErrorMessage;
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.basics.PC_Details;
@@ -107,6 +107,7 @@ public class AlertSound {
     
     private static void playWAV(InputStream soundStream) throws UnsupportedAudioFileException, IOException, LineUnavailableException, InterruptedException {
     	CallCommandLine.setPCVolume(PC_Details.getVolumeLevel());
+        CallCommandLine.setSoundUnmute();
         if(PC_Details.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
             setSpeakerAsAnAudioOutput();
         }
@@ -127,6 +128,7 @@ public class AlertSound {
     
     private static void playMP3(InputStream soundStream) throws InterruptedException {
     	CallCommandLine.setPCVolume(PC_Details.getVolumeLevel());
+        CallCommandLine.setSoundUnmute();
         if(PC_Details.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
             setSpeakerAsAnAudioOutput();
         }

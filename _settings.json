@@ -6,7 +6,7 @@
     "Enable Primary Sound": true,
     "Enable Charging/Discharging Sound": true,
     "Maximum Level": 85,
-    "Repeat Interval Before Risk Phase": 5,
+    "Repeat Interval Before Risk Phase": 10,
     "Automatic Monitoring": true,
-    "Sound Duration": 1
+    "Sound Duration": 5
 }

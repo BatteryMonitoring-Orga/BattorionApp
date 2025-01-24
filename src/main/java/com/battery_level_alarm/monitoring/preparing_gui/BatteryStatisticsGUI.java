@@ -46,7 +46,7 @@ public class BatteryStatisticsGUI {
         pcDetailsButton.addActionListener(e ->{
             JPanel pcDetailsPanel = PC_DetailsGUI.createPC$GUI();
             JScrollPane historyScrollPane = new JScrollPane(pcDetailsPanel);
-            historyScrollPane.setPreferredSize(new java.awt.Dimension(600, 300));
+            historyScrollPane.setPreferredSize(new java.awt.Dimension(480, 250));
             JOptionPane.showMessageDialog(null, historyScrollPane, "PC Details Dialog", JOptionPane.INFORMATION_MESSAGE);
         });
 
@@ -166,7 +166,7 @@ public class BatteryStatisticsGUI {
         long seconds = totalSeconds % 60;
 
         if (hours >= 1) {
-            return String.format("%dh %dm %ds", hours, minutes, seconds);
+            return String.format("%d:%d:%d", hours, minutes, seconds);
         } else if (minutes >= 1) {
             return String.format("%dm %ds", minutes, seconds);
         } else {

@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
 
-import static com.battery_level_alarm.monitoring.cybernate.AutoLogin.printErrorMessage;
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 public class DiskSpaceInfo {
 	private static boolean isDestroyed = false;

@@ -20,14 +20,6 @@ public class BatteryMode {
         }
     }
 
-    public static void track(){
-        if(!status.equals(lastMode)){
-            exchangeMode(lastMode);
-            lastMode = status;
-            refreshBatteryStatisticsPanel();
-        }
-    }
-
     private static void exchangeMode(String mode){
         isExchanged = true;
         calcSharpDifference(mode);
@@ -56,5 +48,13 @@ public class BatteryMode {
         }
         clearObjectFromTheHistoryMap(status);
         AlertSound.useDefaultDuration = false;
+    }
+
+    public static void track(){
+        if(!status.equals(lastMode)){
+            exchangeMode(lastMode);
+            lastMode = status;
+            refreshBatteryStatisticsPanel();
+        }
     }
 }

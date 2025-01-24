@@ -91,7 +91,6 @@ public class FileManager {
     private static JSONObject createPC$DetailsJson() {
         JSONObject json = new JSONObject();
         json.put("Activate the awakening feature", PC_Details.getActivateTheAwakeningFeature());
-        json.put("Your PC Password", PC_Details.getSecretNumber());
         json.put("Wake up the PC every (in Minutes)", PC_Details.getWakeUpEvery());
         json.put("Switch audio output to Speakers", PC_Details.isEnableExchangeToSpeakerAudioOutput());
         json.put("Volume Level: ", PC_Details.getVolumeLevel());
@@ -116,7 +115,6 @@ public class FileManager {
     private static void loadPC$DetailsFromJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
         PC_Details.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
-        PC_Details.setSecretNumber(json.optString("Your PC Password", "No number added"));
         PC_Details.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
         PC_Details.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
         PC_Details.setVolumeLevel(json.optInt("Volume Level: ", 35));
@@ -124,7 +122,6 @@ public class FileManager {
 
     public static void loadDefaultPC$Details(){
         PC_Details.setActivateTheAwakeningFeature(false);
-        PC_Details.setSecretNumber("No number added");
         PC_Details.setWakeUpEvery(2);
         PC_Details.setEnableExchangeToSpeakerAudioOutput(true);
         PC_Details.setVolumeLevel(35);

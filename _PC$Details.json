@@ -1,6 +1,6 @@
 {
     "Activate the awakening feature": true,
-    "Volume Level": 35,
-    "Your PC Password": "0592690173",
-    "Wake up the PC every (in Minutes)": 1
+    "Volume Level: ": 35,
+    "Wake up the PC every (in Minutes)": 1,
+    "Switch audio output to Speakers": true,
 }

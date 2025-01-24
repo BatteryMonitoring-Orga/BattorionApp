@@ -1,13 +1,15 @@
 package com.battery_level_alarm.monitoring.core;
 import static com.battery_level_alarm.monitoring.core.BatteryMode.*;
-import static com.battery_level_alarm.monitoring.basics.HandleLevel.*;
+import static com.battery_level_alarm.monitoring.core.HandleLevel.*;
 import static com.battery_level_alarm.monitoring.command.CallCommandLine.*;
-import static com.battery_level_alarm.monitoring.cybernate.AutoLogin.printErrorMessage;
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
 
+import com.battery_level_alarm.monitoring.basics.PC_Details;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.command.DiskSpaceInfo;
+import com.battery_level_alarm.monitoring.cybernate.WakeUpPC;
 import com.battery_level_alarm.monitoring.effects.call_resources;
 import com.battery_level_alarm.monitoring.preparing_gui.BatteryStatisticsGUI;
 import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
@@ -402,7 +404,7 @@ public class BatteryLevelAlarm {
     	mainFrame.repaint();
     	mainFrame.validate();
     }
-    
+
     private static void checkAndReset(){
     	try {
     		getBatteryMode();
@@ -410,12 +412,7 @@ public class BatteryLevelAlarm {
 			batteryBar.setValue(batteryLevel);
 			SwingUtilities.invokeLater(() -> ratioChargeLabel.setText("Battery Level: " + batteryLevel + "%"));
 		} catch (Exception e1) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e1.getClass().getName() + "\nMessage: " + e1.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            printErrorMessage(e1);
 		}
     }
     
@@ -452,6 +449,7 @@ public class BatteryLevelAlarm {
                     int maxValue = UserChoices.getMaximumLevel();
                     int minValue = UserChoices.getMinimumLevel();
                     isFromCriticalAlert = false;
+                    operationIsEnd = false;
 
                     if ((batteryLevel >= maxValue) && isCharging) {
                         isFromCriticalAlert = true;
@@ -480,6 +478,10 @@ public class BatteryLevelAlarm {
                         handleBatteryWarning(batteryBar, alertLabel, "", Color.RED);
                     } else {
                         handleNormalBattery(alertLabel);
+                    }
+
+                    if(PC_Details.getActivateTheAwakeningFeature()){
+                        WakeUpPC.wakeUp();
                     }
                 }
             } catch (InterruptedException e) {

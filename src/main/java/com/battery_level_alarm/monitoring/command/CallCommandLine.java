@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.swing.JOptionPane;
 
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
+
 public class CallCommandLine {
     public static String getOS() {
         return System.getProperty("os.name").toLowerCase();
@@ -65,7 +67,22 @@ public class CallCommandLine {
             throw new UnsupportedOperationException("Unsupported OS: " + os);
         }
     }
-    
+
+    private static ProcessBuilder getProcessBuilderForUnmute(String os) throws UnsupportedOperationException {
+        if (os.contains("win")) {
+            String command = "nircmd.exe mutesysvolume 0";
+            return new ProcessBuilder("cmd.exe", "/c", command);
+        } else if (os.contains("nix") || os.contains("nux")) {
+            String command = "amixer set Master unmute";
+            return new ProcessBuilder("bash", "-c", command);
+        } else if (os.contains("mac")) {
+            String script = "osascript -e \"set volume output muted false\"";
+            return new ProcessBuilder("bash", "-c", script);
+        } else {
+            throw new UnsupportedOperationException("Unsupported OS: " + os);
+        }
+    }
+
     private static int parseBatteryLevel(String line) {
         try {
             return Integer.parseInt(line.replaceAll("[^0-9]", "").trim());
@@ -141,15 +158,28 @@ public class CallCommandLine {
                 throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
             }
         } catch (IOException | RuntimeException e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            printErrorMessage(e);
         }
     }
-    
+
+    public static void setSoundUnmute(){
+        try {
+            String os = getOS();
+            ProcessBuilder processBuilder = getProcessBuilderForUnmute(os);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            try {
+                process.waitFor();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
+            }
+        } catch (IOException | RuntimeException e) {
+            printErrorMessage(e);
+        }
+    }
+
     public static void batteryReport() {
         try {
             String os = getOS();
@@ -172,12 +202,7 @@ public class CallCommandLine {
                 throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
             }
         } catch (IOException | RuntimeException e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            printErrorMessage(e);
         }
     }
 }

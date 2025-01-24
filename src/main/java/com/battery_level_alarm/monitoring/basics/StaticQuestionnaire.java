@@ -92,8 +92,6 @@ public class StaticQuestionnaire {
                         "<li><b>Switch audio output to Speakers:</b> configures the system to route audio output to the speakers</li>" +
                         "<p>specifically when a critical battery level is detected, ensuring an alert is played through the </p>" +
                         "<p>appropriate output device.</p>" +
-                        "<li><b>Set Your PC Password:</b> Enter your PC's password to ensure security and proper functionality</li>" +
-                        "<p>of the wake-up feature.</p>" +
                         "<li><b>Schedule Wake-Up Intervals:</b> Specify the interval (in minutes) for automatically waking up </li>" +
                         "<p>your PC to perform scheduled tasks.</p>" +
                         "<li><b>Set Volume Level (%):</b> This allows you to set the default volume level for the system.</li>" +

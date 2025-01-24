@@ -1,11 +1,8 @@
 package com.battery_level_alarm.monitoring.cybernate;
 import com.battery_level_alarm.monitoring.basics.PC_Details;
+import com.battery_level_alarm.monitoring.effects.DisplayMessages;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class WakeUpPC {
 	private static Thread wakeUpThread;
@@ -23,35 +20,27 @@ public class WakeUpPC {
                 while (PC_Details.getActivateTheAwakeningFeature()) {
                     getMousePosition();
 					doRobotAction(robot);
-                    try {
-						try{
-							Thread.sleep(PC_Details.getWakeUpEvery() * 1000L);
-						} catch (InterruptedException ex) {
-							Thread.currentThread().interrupt();
-							break;
-						}
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(callCommandToWakeUp()));
-                        System.out.println("Wake-up Status:");
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            System.out.println(line);
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+					try{
+						Thread.sleep(PC_Details.getWakeUpEvery() * 60000L);
+					} catch (InterruptedException ex) {
+						Thread.currentThread().interrupt();
+						break;
+					}
                 }
             });
 	    } catch (Exception e) {
-			AutoLogin.printErrorMessage(e);
+			DisplayMessages.printErrorMessage(e);
 	    }
 	}
 
 	private static boolean checkThread(){
-		if(wakeUpThread != null){
-			if(!wakeUpThread.isAlive()){
-				wakeUpThread.start();
-				return true;
-			}
+		if(wakeUpThread == null){
+			return true;
+		}
+
+		if(wakeUpThread.isInterrupted() || !wakeUpThread.isAlive()){
+			wakeUpThread.start();
+			return true;
 		}
 		return false;
 	}
@@ -67,14 +56,5 @@ public class WakeUpPC {
 		robot.mouseMove(x, y);
 		robot.keyPress(java.awt.event.KeyEvent.VK_SHIFT);
 		robot.keyRelease(java.awt.event.KeyEvent.VK_SHIFT);
-	}
-
-	private static InputStream callCommandToWakeUp() throws IOException {
-		Process process = new ProcessBuilder("cmd.exe", "/c", "powercfg /lastwake").start();
-		return process.getInputStream();
-	}
-
-	private static void getPC$Status(){
-
 	}
 }

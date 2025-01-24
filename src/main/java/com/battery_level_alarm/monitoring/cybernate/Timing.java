@@ -1,7 +1,6 @@
 package com.battery_level_alarm.monitoring.cybernate;
 import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,45 +84,40 @@ public class Timing {
         }
     }
 
-    public static void howLongBatteryNeedToFullOrDump(String mode, String State) {
-        long time = getMillisecondsSinceStartOfDay();
-        if(State.equals("Start")){
+    public static void howLongBatteryNeedToFullOrDump(String mode, String state) {
+        long time = System.currentTimeMillis();
+        if (state.equals("Start")) {
             setStartedValue(mode, time);
-        } else if(State.equals("End")){
+        } else if (state.equals("End")) {
             long period = calculatePeriodTime(mode, time);
             setPeriodTime(mode, period);
         }
     }
 
-    private static long getMillisecondsSinceStartOfDay() {
-        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
-        return startOfDay.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
-    }
-
-    private static void setStartedValue(String mode, long time){
-        if(mode.equals(isIn_ChargingMode)){
+    private static void setStartedValue(String mode, long time) {
+        if (mode.equals(isIn_ChargingMode)) {
             ChargingStartFrom = time;
             ChargingStartAtLevel = batteryLevel;
-        } else if(mode.equals(isIn_DisChargingMode)){
+        } else if (mode.equals(isIn_DisChargingMode)) {
             DisChargingStartFrom = time;
             DisChargingStartAtLevel = batteryLevel;
         }
     }
 
-    private static long calculatePeriodTime(String mode, long time){
-        if(mode.equals(isIn_ChargingMode)){
+    private static long calculatePeriodTime(String mode, long time) {
+        if (mode.equals(isIn_ChargingMode)) {
             return (time - ChargingStartFrom);
-        } else if(mode.equals(isIn_DisChargingMode)){
+        } else if (mode.equals(isIn_DisChargingMode)) {
             return (time - DisChargingStartFrom);
         } else {
             return 0L;
         }
     }
 
-    private static void setPeriodTime(String mode, long period){
-        if(mode.equals(isIn_ChargingMode)){
+    private static void setPeriodTime(String mode, long period) {
+        if (mode.equals(isIn_ChargingMode)) {
             HowLongBatteryNeedToFull = period;
-        } else if(mode.equals(isIn_DisChargingMode)){
+        } else if (mode.equals(isIn_DisChargingMode)) {
             HowLongBatteryNeedToDump = period;
         }
     }

@@ -1,9 +1,13 @@
 package com.battery_level_alarm.monitoring.command;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import javax.swing.JOptionPane;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 public class AlternativeDiskSpace {
     private static String filesNumber = "";
@@ -41,7 +45,7 @@ public class AlternativeDiskSpace {
             
             Files.walkFileTree(tempPath, new SimpleFileVisitor<Path>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                public @NotNull FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     try {
                         Files.delete(file);
                         deletedFiles.incrementAndGet();
@@ -52,7 +56,7 @@ public class AlternativeDiskSpace {
                 }
                 
                 @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                public @NotNull FileVisitResult postVisitDirectory(Path dir, IOException exc) {
                     try {
                         Files.delete(dir);
                     } catch (IOException e) {
@@ -67,7 +71,7 @@ public class AlternativeDiskSpace {
                 "\nFiles failed to delete: " + failedFiles.get(), 
                 "Clean Temp", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "An error occurred during the cleaning process.\n" + e.getMessage(), "Clean Temp", JOptionPane.ERROR_MESSAGE);
+            printErrorMessage(e);
         }
     }
     
@@ -97,12 +101,7 @@ public class AlternativeDiskSpace {
             dirsNumber = "N/A";
             dirsSize = "N/A";
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            printErrorMessage(e);
         }
     }
     

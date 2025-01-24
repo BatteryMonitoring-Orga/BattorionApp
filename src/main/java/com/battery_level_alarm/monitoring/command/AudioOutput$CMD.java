@@ -6,6 +6,10 @@ import java.io.IOException;
 
 public class AudioOutput$CMD {
     private static ProcessBuilder callCommandToSetAudioOutput(String os, String sourceName){
+        if (sourceName == null || sourceName.isEmpty()) {
+            throw new IllegalArgumentException("Source name cannot be null or empty");
+        }
+
         if (os.contains("win")) {
             return new ProcessBuilder("cmd", "/c", "nircmd setdefaultsounddevice \"" + sourceName +"\"");
         } else if (os.contains("nix") || os.contains("nux")) {
@@ -21,10 +25,16 @@ public class AudioOutput$CMD {
         try {
             String os = getOS();
             String sourceName = "سماعات";
-            ProcessBuilder processBuilder = callCommandToSetAudioOutput(os, sourceName);
+            ProcessBuilder processBuilder = null;
+            try{
+                processBuilder = callCommandToSetAudioOutput(os, sourceName);
+            } catch (IllegalArgumentException e) {
+                printErrorMessage(e);
+                return;
+            }
+
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
-
             try {
                 process.waitFor();
             } catch (InterruptedException e) {

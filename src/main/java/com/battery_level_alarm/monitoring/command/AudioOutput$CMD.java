@@ -11,11 +11,24 @@ public class AudioOutput$CMD {
         }
 
         if (os.contains("win")) {
-            return new ProcessBuilder("cmd", "/c", "nircmd setdefaultsounddevice \"" + sourceName +"\"");
+            String nircmdPath = ".\\nircmd\\nircmd.exe";
+            if (!new java.io.File(nircmdPath).exists()) {
+                throw new UnsupportedOperationException("File not found: " + nircmdPath);
+            }
+            String command = nircmdPath + " setdefaultsounddevice \"" + sourceName + "\"";
+            return new ProcessBuilder("cmd", "/c", command);
         } else if (os.contains("nix") || os.contains("nux")) {
-            return new ProcessBuilder("pactl", "set-default-sink", sourceName);
+            String command = "pactl set-default-sink " + sourceName;
+            if (!new java.io.File("/usr/bin/pactl").exists()) {
+                throw new UnsupportedOperationException("pactl command not found");
+            }
+            return new ProcessBuilder("bash", "-c", command);
         } else if (os.contains("mac")) {
-            return new ProcessBuilder("SwitchAudioSource", "-s", sourceName);
+            String command = "SwitchAudioSource -s " + sourceName;
+            if (!new java.io.File("/usr/local/bin/SwitchAudioSource").exists()) {
+                throw new UnsupportedOperationException("SwitchAudioSource command not found");
+            }
+            return new ProcessBuilder("bash", "-c", command);
         } else {
             throw new UnsupportedOperationException("Unsupported OS: " + os);
         }

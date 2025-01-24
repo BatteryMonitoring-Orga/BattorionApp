@@ -35,34 +35,36 @@ public class DiskSpaceInfo {
     public static String getDirSize() {
 		return dirsSize;
 	}
-    
+
     private static Process getProcessForCleanTemp() throws IOException {
         String os = CallCommandLine.getOS();
-        
+
         if (os.contains("win")) {
-            return new ProcessBuilder("cmd", "/c", "del /q/f/s %TEMP%\\*").start();
-        }
-        else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-            return new ProcessBuilder("bash", "-c", "rm -rf $HOME/.cache/*").start();
-        }
-        else {
-            throw new UnsupportedOperationException("Unsupported OS: " + os);
-        }
-    }
-	
-	private static Process getProcessForDiskSpace() throws IOException {
-		String os = CallCommandLine.getOS();
-		
-        if (os.contains("win")) {
-            return new ProcessBuilder("cmd", "/c", "dir /s /a %TEMP%").start();
+            String cmdPath = "C:\\Windows\\System32\\cmd.exe";
+            return new ProcessBuilder(cmdPath, "/c", "del /q /f /s %TEMP%\\*").start();
         } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-            return new ProcessBuilder("bash", "-c", "du -sh $HOME/.cache").start();
+            String bashPath = "/bin/bash";
+            return new ProcessBuilder(bashPath, "-c", "rm -rf $HOME/.cache/*").start();
         } else {
             throw new UnsupportedOperationException("Unsupported OS: " + os);
         }
     }
-	
-	public static void cleanTempFiles() {
+
+    private static Process getProcessForDiskSpace() throws IOException {
+        String os = CallCommandLine.getOS();
+
+        if (os.contains("win")) {
+            String cmdPath = "C:\\Windows\\System32\\cmd.exe";
+            return new ProcessBuilder(cmdPath, "/c", "dir /s /a %TEMP%").start();
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+            String bashPath = "/bin/bash";
+            return new ProcessBuilder(bashPath, "-c", "du -sh $HOME/.cache").start();
+        } else {
+            throw new UnsupportedOperationException("Unsupported OS: " + os);
+        }
+    }
+
+    public static void cleanTempFiles() {
         try {
         	long startTime = System.currentTimeMillis();
             Process process = getProcessForCleanTemp();

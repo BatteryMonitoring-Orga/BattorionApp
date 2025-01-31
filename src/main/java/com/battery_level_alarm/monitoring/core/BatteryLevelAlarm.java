@@ -1,5 +1,7 @@
 package com.battery_level_alarm.monitoring.core;
+import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.aboutNotificationsIcon;
 import static com.battery_level_alarm.monitoring.core.BatteryMode.*;
+import static com.battery_level_alarm.monitoring.core.FileManager.*;
 import static com.battery_level_alarm.monitoring.core.HandleLevel.*;
 import static com.battery_level_alarm.monitoring.command.CallCommandLine.*;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
@@ -8,15 +10,20 @@ import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
 import com.battery_level_alarm.monitoring.basics.PC_Details;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
+import com.battery_level_alarm.monitoring.battery_simulation.BatteryIcon;
 import com.battery_level_alarm.monitoring.command.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.cybernate.WakeUpPC;
 import com.battery_level_alarm.monitoring.effects.call_resources;
 import com.battery_level_alarm.monitoring.preparing_gui.BatteryStatisticsGUI;
 import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
 import com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI;
+import com.notifications.system_tray_notifications.basics.AlarmSounds;
+import com.notifications.system_tray_notifications.basics.Notifications;
+import com.notifications.system_tray_notifications.system_tray.SystemTrayNotification;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class BatteryLevelAlarm {
@@ -31,6 +38,9 @@ public class BatteryLevelAlarm {
 
     public static final Font textFont = new Font(Font.SERIF, Font.BOLD + Font.ITALIC, 14);
     private static Thread monitoringThread;
+    private static SystemTrayNotification stn;
+    private static Notifications notify;
+    private static AlarmSounds alarmSounds;
     
     public static JFrame mainFrame;
     private static JPanel motherPanel;
@@ -39,6 +49,7 @@ public class BatteryLevelAlarm {
     private static JPanel BatteryStatisticsPanel;
     private static JScrollPane SettingScrollPanel;
 
+    private static final JPanel progressPanel = new JPanel();
     public static JProgressBar batteryBar;
     private static JButton actionButton;
     private static JButton settingsButton;
@@ -50,10 +61,13 @@ public class BatteryLevelAlarm {
     private static JLabel ratioChargeLabel;
     private static JLabel alertLabel;
     public static JLabel statusLabel;
-    
+
+    public static boolean progressBarInVerticalMode;
     public static String status = "";
     public static String lastMode = "";
     public static int batteryLevel = 0;
+    private static final int duration = 1000;
+    private static boolean callFlag = false;
     private static boolean running = false;
     public static boolean isFromCriticalAlert = false;
     public static boolean isCharging = false;
@@ -64,32 +78,53 @@ public class BatteryLevelAlarm {
 		FlatMacLightLaf.setup();
 		UIManager.put("ToolTip.font", textFont);
         configurationHistoryMap();
-		FileManager.loadSettings();
-        FileManager.loadPC$Details();
+        configurationSystemTrayNotifications();
+
+        loadBatteryConfigurationModes();
+		loadSettings();
+        loadPC$Details();
 		SettingsGUI.createAndShowGUI();
 		DiskSpaceInfo.DiskSpace();
 		PrepareDiskInfoGUI.createGUI();
-        BatteryStatisticsGUI.createGUI();
+        BatteryStatisticsGUI.createGUI(alarmSounds);
 		SwingUtilities.invokeLater(BatteryLevelAlarm::createAndShowGUI);
 	}
+
+    private static void configurationSystemTrayNotifications() {
+        notify = new Notifications(
+                "Battery Alarm Level",
+                "/resources/com/battery_level_alarm/monitoring/BattIco/13228401.png",
+                "Battery Reminder",
+                "Battery is in risk!",
+                duration,
+                false
+        );
+
+        stn = new SystemTrayNotification();
+        alarmSounds = new AlarmSounds(1);
+    }
+
+    private static void callNotifier(){
+        notify.setAlarmMessage("Battery level is: " + batteryLevel);
+        stn.setIsToShowPanel(false);
+        stn.CreateTrayIcon(notify, alarmSounds);
+    }
 	
     private static void createAndShowGUI() {
         mainFrame = new JFrame("Battery Level Alarm");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ImageIcon icon = call_resources.getImage("13228401");
         mainFrame.setIconImage(icon.getImage());
-        mainFrame.setSize(420, 300);
+        mainFrame.setSize(550, 320);
         mainFrame.setResizable(false);
         mainFrame.setLocationRelativeTo(null);
         
         ifPanelsNullCreate();
         motherPanel = new JPanel(new BorderLayout());
         DashboardPanel = new JPanel(new BorderLayout());
-		JPanel progressPanel = new JPanel();
-		progressPanel.setLayout(new BoxLayout(progressPanel, BoxLayout.Y_AXIS));
-		
+
 		monitoringStatus = new JLabel("");
-		monitoringStatus.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 13));
+		monitoringStatus.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 15));
 		monitoringStatus.setForeground(Color.BLACK);
 		DashboardPanel.add(monitoringStatus, BorderLayout.NORTH);
 		
@@ -97,35 +132,27 @@ public class BatteryLevelAlarm {
 			batteryLevel = getBatteryLevel();
 		} catch (Exception e) {
 			batteryLevel = 0;
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                    "Battery Level Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            printErrorMessage(e);
         }
-		
-		batteryBar = new JProgressBar(0, 100);
-		batteryBar.setPreferredSize(new Dimension(200, 60));
-		batteryBar.setMaximumSize(new Dimension(200, 60));
-		batteryBar.setForeground(Color.GREEN);
-		batteryBar.setValue(batteryLevel);
-		batteryBar.setStringPainted(false);
-		batteryBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
+        Color color = getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel());
+
+        batteryBar = new JProgressBar(0, 100);
+        setProgressBarMode();
+        batteryBar.setForeground(color);
+        batteryBar.setBorder(new LineBorder(Color.BLACK, 3));
+        batteryBar.setValue(batteryLevel);
+        batteryBar.setStringPainted(false);
+        batteryBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 		ratioChargeLabel = new JLabel("Battery Level: " + batteryLevel + "%");
-		ratioChargeLabel.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 13));
+		ratioChargeLabel.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 15));
 		ratioChargeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		progressPanel.add(Box.createVerticalGlue());
-		progressPanel.add(batteryBar);
-		progressPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-		progressPanel.add(ratioChargeLabel);
-		progressPanel.add(Box.createVerticalGlue());
+
+        setUpProgressPanel();
 		DashboardPanel.add(progressPanel, BorderLayout.CENTER);
 		
 		alertLabel = new JLabel("");
-		alertLabel.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 13));
+		alertLabel.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 15));
 		alertLabel.setOpaque(true);
 		alertLabel.setForeground(Color.RED);
 		JScrollPane scroll = new JScrollPane(alertLabel);
@@ -215,23 +242,62 @@ public class BatteryLevelAlarm {
         
         statusLabel = new JLabel("Battery Status: " + status + " ");
         statusLabel.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 13));
-        getBatteryMode();
+        getBatteryMode(color);
         lastMode = status;
         
         JButton resetButton = new JButton();
-        resetButton.setToolTipText("Reset the alert and counter to zero");
+        resetButton.setToolTipText("Reset the alert statement and update 'Disk Info.' panel");
 	    ImageIcon newIcon = call_resources.getImage("3808356");
 	    resetButton.setIcon(new ImageIcon(newIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
         resetButton.addActionListener(e -> {
             alertLabel.setText("");
-            checkAndReset();
+            checkAndReset(color);
             String isA = whatIsVisible();
             refreshDiskInfoPanel(isA, DiskInfoPanel.isVisible());
+        });
+
+        JButton progressBarModeButton = new JButton();
+        progressBarModeButton.setToolTipText("Convert to the other mode");
+        ImageIcon progressBarModeIcon = call_resources.getImage("9213472");
+        progressBarModeButton.setIcon(new ImageIcon(progressBarModeIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
+        progressBarModeButton.addActionListener(e -> {
+            progressBarInVerticalMode = !progressBarInVerticalMode;
+            setProgressBarMode();
+            setUpProgressPanel();
+
+            DashboardPanel.add(progressPanel, BorderLayout.CENTER);
+            DashboardPanel.repaint();
+            DashboardPanel.revalidate();
+
+            setVisibleFalse();
+            motherPanel.add(DashboardPanel, BorderLayout.CENTER);
+            setVisibleTrue(isA_DashboardPanel);
+            motherPanel.repaint();
+            motherPanel.revalidate();
+            saveBatteryConfigurationModes();
+        });
+
+        JButton simulatorButton = new JButton();
+        simulatorButton.setToolTipText("Open the Battery Simulator");
+        ImageIcon simulatorIcon = call_resources.getImage("5550932");
+        simulatorButton.setIcon(new ImageIcon(simulatorIcon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
+        simulatorButton.addActionListener(e -> {
+            BatteryIcon.BatterySimulationStart();
+        });
+
+        JButton notificationAboutButton = new JButton();
+        ImageIcon notificationIcon = call_resources.getGif("g7");
+        notificationAboutButton.setIcon(new ImageIcon(notificationIcon.getImage().getScaledInstance(15, 15, Image.SCALE_DEFAULT)));
+        notificationAboutButton.addActionListener(e -> {
+            aboutNotificationsIcon();
         });
         
         JPanel labelsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         labelsPanel.add(statusLabel);
         labelsPanel.add(resetButton);
+        labelsPanel.add(progressBarModeButton);
+        labelsPanel.add(simulatorButton);
+        labelsPanel.add(notificationAboutButton);
         motherPanel.add(labelsPanel, BorderLayout.SOUTH);
         
         mainFrame.add(motherPanel);
@@ -248,11 +314,66 @@ public class BatteryLevelAlarm {
         if(UserChoices.isAutoMonitoring()) {
         	actionButton.doClick();
         }
-
-
         mainFrame.setVisible(true);
     }
-    
+
+    private static void setProgressBarMode(){
+        batteryBar.setMinimum(0);
+        batteryBar.setMaximum(100);
+
+        if(progressBarInVerticalMode){
+            configureProgressBarVertical();
+        } else {
+            configureProgressBarHorizontal();
+        }
+    }
+
+    private static void configureProgressBarVertical() {
+        batteryBar.setOrientation(JProgressBar.VERTICAL);
+        batteryBar.setPreferredSize(new Dimension(83, 180));
+        batteryBar.setMaximumSize(new Dimension(83, 180));
+    }
+
+    private static void configureProgressBarHorizontal() {
+        batteryBar.setOrientation(JProgressBar.HORIZONTAL);
+        batteryBar.setPreferredSize(new Dimension(230, 80));
+        batteryBar.setMaximumSize(new Dimension(230, 80));
+    }
+
+    private static void setUpProgressPanel(){
+        if(progressBarInVerticalMode){
+            progressPanelForVerticalMode();
+        } else {
+            progressPanelForHorizontalMode();
+        }
+    }
+
+    private static void progressPanelForVerticalMode(){
+        progressPanel.removeAll();
+        progressPanel.setLayout(new BoxLayout(progressPanel, BoxLayout.X_AXIS));
+        progressPanel.add(Box.createHorizontalGlue());
+        progressPanel.add(ratioChargeLabel);
+        progressPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        progressPanel.add(batteryBar);
+        progressPanel.add(Box.createHorizontalGlue());
+
+        progressPanel.revalidate();
+        progressPanel.repaint();
+    }
+
+    private static void progressPanelForHorizontalMode(){
+        progressPanel.removeAll();
+        progressPanel.setLayout(new BoxLayout(progressPanel, BoxLayout.Y_AXIS));
+        progressPanel.add(Box.createVerticalGlue());
+        progressPanel.add(batteryBar);
+        progressPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        progressPanel.add(ratioChargeLabel);
+        progressPanel.add(Box.createVerticalGlue());
+
+        progressPanel.revalidate();
+        progressPanel.repaint();
+    }
+
     private static void setButtonFontAndSize(JButton button, int width, int height) {
     	button.setPreferredSize(new Dimension(width, height));
     	button.setMaximumSize(new Dimension(width, height));
@@ -343,6 +464,19 @@ public class BatteryLevelAlarm {
     	    return "No panel is visible";
     	}
     }
+
+    private static void setUpDashboardPanel() {
+        batteryStatisticsButton.setText("Statistics");
+        diskButton.setText("Disk Info.");
+        settingsButton.setText("Settings");
+        settingsButton.setToolTipText("Go To Settings Page");
+
+        setVisibleFalse();
+        DashboardPanel.setVisible(true);
+
+        motherPanel.add(DashboardPanel, BorderLayout.CENTER);
+        mainFrame.setSize(550, 320);
+    }
     
     private static void setUpSettingScrollPanel() {
     	reviewButtonsName();
@@ -358,19 +492,6 @@ public class BatteryLevelAlarm {
     	
     	motherPanel.add(SettingScrollPanel, BorderLayout.CENTER);
     	mainFrame.setSize(550, 350);
-    }
-    
-    private static void setUpDashboardPanel() {
-        batteryStatisticsButton.setText("Statistics");
-    	diskButton.setText("Disk Info.");
-    	settingsButton.setText("Settings");
-    	settingsButton.setToolTipText("Go To Settings Page");
-    	
-    	setVisibleFalse();
-    	DashboardPanel.setVisible(true);
-    	
-    	motherPanel.add(DashboardPanel, BorderLayout.CENTER);
-    	mainFrame.setSize(420, 300);
     }
     
     private static void setUpDiskInfoPanel() {
@@ -405,9 +526,9 @@ public class BatteryLevelAlarm {
     	mainFrame.validate();
     }
 
-    private static void checkAndReset(){
+    private static void checkAndReset(Color batteryColor){
     	try {
-    		getBatteryMode();
+    		getBatteryMode(batteryColor);
     		batteryLevel = getBatteryLevel();
 			batteryBar.setValue(batteryLevel);
 			SwingUtilities.invokeLater(() -> ratioChargeLabel.setText("Battery Level: " + batteryLevel + "%"));
@@ -436,48 +557,35 @@ public class BatteryLevelAlarm {
     }
 
     public static void refreshBatteryStatisticsPanel() {
-        BatteryStatisticsGUI.createGUI();
+        BatteryStatisticsGUI.createGUI(alarmSounds);
     }
     
     private static void monitor() {
         monitoringThread = new Thread(() -> {
             try {
                 while (running) {
-                	checkAndReset();
-                    putNewItemInTheHistoryMap(status, batteryLevel);
-
                     int maxValue = UserChoices.getMaximumLevel();
                     int minValue = UserChoices.getMinimumLevel();
+                    Color batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
+
+                	checkAndReset(batteryColor);
+                    batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
+                    putNewItemInTheHistoryMap(status, batteryLevel);
                     isFromCriticalAlert = false;
                     operationIsEnd = false;
 
                     if ((batteryLevel >= maxValue) && isCharging) {
-                        isFromCriticalAlert = true;
-                        handleHighBattery(batteryBar, alertLabel);
-                        if(!operationIsEnd){
-                            howLongBatteryNeedToFullOrDump(status, "End");
-                        }
-                        operationIsEnd = true;
+                        highLevelActions(batteryColor);
                     } else if ((batteryLevel == (maxValue - 1)) && isCharging) {
-                        isFromCriticalAlert = true;
-                        handleHighBattery(batteryBar, alertLabel);
-                        if(!operationIsEnd){
-                            howLongBatteryNeedToFullOrDump(status, "End");
-                        }
-                        operationIsEnd = true;
+                        highLevelActions(batteryColor);
                     } else if ((batteryLevel <= minValue) && !isCharging) {
-                        isFromCriticalAlert = true;
-                        handleLowBattery(batteryBar, alertLabel);
-                        if(!operationIsEnd){
-                            howLongBatteryNeedToFullOrDump(status, "End");
-                        }
-                        operationIsEnd = true;
+                        lowLevelActions(batteryColor);
                     } else if ((batteryLevel >= (maxValue - 5)) && (batteryLevel < maxValue) && isCharging) {
-                        handleBatteryWarning(batteryBar, alertLabel, "", Color.DARK_GRAY);
+                        handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
                     } else if ((batteryLevel > minValue) && (batteryLevel <= (minValue + 5)) && !isCharging) {
-                        handleBatteryWarning(batteryBar, alertLabel, "", Color.RED);
+                        handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
                     } else {
-                        handleNormalBattery(alertLabel);
+                        handleNormalBattery(batteryBar, alertLabel, batteryColor);
                     }
 
                     if(PC_Details.getActivateTheAwakeningFeature()){
@@ -491,14 +599,70 @@ public class BatteryLevelAlarm {
         });
         monitoringThread.start();
     }
+
+    private static void highLevelActions(Color batteryColor) {
+        try{
+            organizationOfRecallProcess();
+            isFromCriticalAlert = true;
+            handleHighBattery(batteryBar, alertLabel, batteryColor);
+            if(!operationIsEnd){
+                howLongBatteryNeedToFullOrDump(status, "End");
+            }
+            operationIsEnd = true;
+        } catch (InterruptedException e) {
+            printErrorMessage(e);
+        }
+    }
+
+    private static void lowLevelActions(Color batteryColor) {
+        try{
+            organizationOfRecallProcess();
+            isFromCriticalAlert = true;
+            handleLowBattery(batteryBar, alertLabel, batteryColor);
+            if(!operationIsEnd){
+                howLongBatteryNeedToFullOrDump(status, "End");
+            }
+            operationIsEnd = true;
+        } catch (InterruptedException e) {
+            printErrorMessage(e);
+        }
+    }
+
+    private static void organizationOfRecallProcess(){
+        if(callFlag){
+            return;
+        }
+        callFlag = true;
+        callNotifier();
+
+        Timer organizer = new Timer(
+                60000,
+                e -> {
+                    callFlag = false;
+                }
+        );
+        organizer.setRepeats(false);
+        organizer.start();
+    }
     
-    private static void getBatteryMode() {
+    private static void getBatteryMode(Color batteryColor) {
     	try {
     		isCharging = getBatteryStatus();
 		} catch (Exception e) {
             printErrorMessage(e);
 		}
-        exchangeBatteryMode();
+        exchangeBatteryMode(batteryColor);
         track();
+    }
+
+    private static Color getBatteryColor(int charge, int min, int max) {
+        if(isCharging) return Color.CYAN;
+        else if(charge >= (max-1)) return Color.darkGray;
+        else if(charge > min){
+            if (charge > 60) return Color.GREEN;
+            else if (charge > 30) return Color.ORANGE;
+            else return Color.RED;
+        }
+        else return Color.RED;
     }
 }

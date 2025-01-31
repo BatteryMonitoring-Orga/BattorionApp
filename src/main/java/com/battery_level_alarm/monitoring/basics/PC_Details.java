@@ -5,6 +5,7 @@ public class PC_Details {
     private static int wakeUpEvery;
     private static boolean enableExchangeToSpeakerAudioOutput;
     private static int volumeLevel;
+    private static String notificationSoundFileName;
 
     public static boolean getActivateTheAwakeningFeature(){
         return activateTheAwakeningFeature;
@@ -32,5 +33,12 @@ public class PC_Details {
     }
     public static void setVolumeLevel(int volumeLevel) {
         PC_Details.volumeLevel = volumeLevel;
+    }
+
+    public static String getNotificationSoundFileName(){
+        return notificationSoundFileName;
+    }
+    public static void setNotificationSoundFileName(String notificationSoundFileName){
+        PC_Details.notificationSoundFileName = notificationSoundFileName;
     }
 }

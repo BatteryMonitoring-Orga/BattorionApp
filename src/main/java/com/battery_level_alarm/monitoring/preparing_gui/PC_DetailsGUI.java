@@ -2,14 +2,21 @@ package com.battery_level_alarm.monitoring.preparing_gui;
 import static com.battery_level_alarm.monitoring.basics.PC_Details.*;
 import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.*;
+
 import com.battery_level_alarm.monitoring.basics.PC_Details;
+import com.battery_level_alarm.monitoring.buttons_in_combo_box.ButtonsInComboBox;
+import com.battery_level_alarm.monitoring.buttons_in_combo_box.SoundItem;
 import com.battery_level_alarm.monitoring.core.FileManager;
+import com.notifications.system_tray_notifications.basics.AlarmSounds;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class PC_DetailsGUI {
-    public static JPanel createPC$GUI(){
+    public static JPanel createPC$GUI(AlarmSounds alarmSounds){
         JPanel pc$gui = new JPanel(new BorderLayout());
         GridBagConstraints gbc = createGridBagConstraints();
         JPanel firstPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -45,6 +52,19 @@ public class PC_DetailsGUI {
                     int percentage = getSpinnerValue((JSpinner) e.getSource(), 20, 35);
                     PC_Details.setVolumeLevel(percentage);
                     FileManager.savePC$Details();
+                });
+
+        addButtonMixWithComboBox(gbc, secondPanel, "System Notification Sounds:", ++index, 0);
+        addComboBox(gbc, secondPanel, "Pick Your Notification Sound", getAlarmsArray(), getNotificationSoundFileName(), ++index, 0,
+                e -> {
+                    if (e.getSource() instanceof JComboBox<?>) {
+                        @SuppressWarnings("unchecked")
+                        JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
+                        String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
+                        setNotificationSoundFileName(selectedSound);
+                        alarmSounds.setSoundSequenceNumber(comboBox.getSelectedIndex() + 1);
+                        FileManager.savePC$Details();
+                    }
                 });
 
         pc$gui.add(firstPanel, BorderLayout.NORTH);
@@ -110,5 +130,44 @@ public class PC_DetailsGUI {
                 label.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
+    }
+
+    private static void addButtonMixWithComboBox(GridBagConstraints gbc, JPanel panel, String text, int row, int column){
+        JLabel label = new JLabel(text);
+        label.setFont(DEFAULT_FONT);
+        gbc.gridx = column;
+        gbc.gridy = row;
+        panel.add(label, gbc);
+
+        JComboBox<SoundItem> comboBox = ButtonsInComboBox.createModernComboBox();
+        gbc.gridx = ++column;
+        gbc.gridy = row;
+        panel.add(comboBox, gbc);
+    }
+
+    private static String[] getAlarmsArray(){
+        ArrayList<String> data = new ArrayList<String>();
+        AlarmSounds alarmSounds_Object = new AlarmSounds(1);
+
+        for(int i = 1; i < 11; i++){
+            alarmSounds_Object.setSoundSequenceNumber(i);
+            data.add(alarmSounds_Object.getSoundFileName());
+        }
+        return data.toArray(new String[0]);
+    }
+
+    private static void addComboBox(GridBagConstraints gbc, JPanel panel, String text, String[] dataArray, String selectedItem, int row, int column, ItemListener listener){
+        JLabel label = new JLabel(text);
+        label.setFont(DEFAULT_FONT);
+        gbc.gridx = column;
+        gbc.gridy = row;
+        panel.add(label, gbc);
+
+        JComboBox<String> comboBox = new JComboBox<>(dataArray);
+        comboBox.setFont(DEFAULT_FONT);
+        comboBox.setSelectedItem(selectedItem);
+        comboBox.addItemListener(listener);
+        gbc.gridx = ++column;
+        panel.add(comboBox, gbc);
     }
 }

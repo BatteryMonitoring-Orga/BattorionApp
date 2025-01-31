@@ -11,9 +11,9 @@ import com.battery_level_alarm.monitoring.effects.AlertSound;
 public class HandleLevel {
 	private static int counter = 0;
 	
-    public static void handleHighBattery(JProgressBar batteryBar, JLabel alertLabel) throws InterruptedException {
+    public static void handleHighBattery(JProgressBar batteryBar, JLabel alertLabel, Color batteryColor) throws InterruptedException {
         SwingUtilities.invokeLater(() -> {
-        	batteryBar.setForeground(Color.DARK_GRAY);
+        	batteryBar.setForeground(batteryColor);
         	alertLabel.setText("Battery is high! Please unplug the charger.");
         });
         if(UserChoices.isEnablePrimarySound()) {
@@ -28,9 +28,9 @@ public class HandleLevel {
         Thread.sleep(1000);
     }
     
-    public static void handleLowBattery(JProgressBar batteryBar, JLabel alertLabel) throws InterruptedException {
+    public static void handleLowBattery(JProgressBar batteryBar, JLabel alertLabel, Color batteryColor) throws InterruptedException {
         SwingUtilities.invokeLater(() -> {
-        	batteryBar.setForeground(Color.RED);
+        	batteryBar.setForeground(batteryColor);
         	alertLabel.setText("Battery is low! Please charge.");
         });
         if(UserChoices.isEnablePrimarySound()) {
@@ -57,13 +57,16 @@ public class HandleLevel {
         Thread.sleep(UserChoices.getRepeatIntervalBeforeRiskPhase() * 1000L);
     }
     
-    public static void handleNormalBattery(JLabel alertLabel) throws InterruptedException {
-        SwingUtilities.invokeLater(() -> alertLabel.setText(""));
+    public static void handleNormalBattery(JProgressBar batteryBar, JLabel alertLabel, Color batteryColor) throws InterruptedException {
+        SwingUtilities.invokeLater(() -> {
+            batteryBar.setForeground(batteryColor);
+            alertLabel.setText("");
+        });
         Thread.sleep(500);
         counter = 0;
     }
     
     private static void triggerAlert() {
-        java.awt.Toolkit.getDefaultToolkit().beep(); // Play alert sound
+        java.awt.Toolkit.getDefaultToolkit().beep();
     }
 }

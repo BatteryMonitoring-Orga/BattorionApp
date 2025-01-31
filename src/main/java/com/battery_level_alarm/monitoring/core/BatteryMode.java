@@ -8,13 +8,13 @@ import com.battery_level_alarm.monitoring.effects.AlertSound;
 import java.awt.*;
 
 public class BatteryMode {
-    public static void exchangeBatteryMode(){
+    public static void exchangeBatteryMode(Color batteryColor){
         if(isCharging) {
             batteryBar.setForeground(Color.CYAN);
             status = isIn_ChargingMode;
             statusLabel.setText("Battery Status: " + status + " ");
         } else {
-            batteryBar.setForeground(Color.GREEN);
+            batteryBar.setForeground(batteryColor);
             status = isIn_DisChargingMode;
             statusLabel.setText("Battery Status: " + status + " ");
         }

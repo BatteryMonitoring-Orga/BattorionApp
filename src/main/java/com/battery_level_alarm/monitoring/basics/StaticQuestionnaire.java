@@ -180,6 +180,55 @@ public class StaticQuestionnaire {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void aboutNotificationsIcon(){
+        JOptionPane.showMessageDialog(null,
+                "<html><body style='font-family:Segoe UI Emoji; font-size:10px;'>" +
+                        "<p>If a notification is enabled but the notification icon does not appear, notifications may be disabled in system settings.</p>" +
+                        "<ul>" +
+                        "<li><b>Windows:</b>" +
+                        "<ul>" +
+                        "<li>Open <b>Settings</b> using <b>Win + I</b>.</li>" +
+                        "<li>Go to <b>System</b> and select <b>Notifications</b>.</li>" +
+                        "<li>Enable <b>Get notifications from apps and other senders</b>.</li>" +
+                        "<li>Customize notifications for each app as needed.</li>" +
+                        "</ul>" +
+                        "<b>Path:</b> Settings ➡️ System ➡️ Notifications" +
+                        "</li>" +
+                        "</ul>" +
+                        "<li><b>macOS:</b>" +
+                        "<ul>" +
+                        "<li>Click on the <b>Apple logo</b>  and select <b>System Settings</b>.</li>" +
+                        "<li>Navigate to <b>Notifications</b> from the sidebar.</li>" +
+                        "<li>Select the desired app and enable notifications.</li>" +
+                        "<li>Adjust notification style (Banners, Alerts, or None).</li>" +
+                        "</ul>" +
+                        "<b>Path:</b> Apple logo ➡️ System Settings ➡️ Notifications" +
+                        "</li>" +
+                        "</ul>" +
+                        "<li><b>Linux (GNOME):</b>" +
+                        "<ul>" +
+                        "<li>Open <b>Settings</b> from the main menu.</li>" +
+                        "<li>Go to <b>Notifications</b>.</li>" +
+                        "<li>Enable notifications globally or per application.</li>" +
+                        "</ul>" +
+                        "<b>Path:</b> Settings ➡️ Notifications" +
+                        "</li>" +
+                        "</ul>" +
+                        "<li><b>Linux (KDE Plasma):</b>" +
+                        "<ul>" +
+                        "<li>Open <b>System Settings</b> from the application menu.</li>" +
+                        "<li>Navigate to <b>Notifications</b>.</li>" +
+                        "<li>Enable and configure notifications.</li>" +
+                        "</ul>" +
+                        "<b>Path:</b> System Settings ➡️ Notifications" +
+                        "</li>" +
+                        "</ul>" +
+                        "<p>By following these steps, notifications can be enabled on different operating systems, ensuring alerts appear when needed.</p>" +
+                        "</body></html>",
+                "How to Enable Notifications",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public static JScrollPane Dispatch(Font textFont, String message) {
     	JTextArea textArea = new JTextArea(message);
     	textArea.setFont(textFont);

@@ -1,4 +1,6 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
+import com.notifications.system_tray_notifications.basics.AlarmSounds;
+
 import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.aboutBatteryStatisticsPanel;
 import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI.*;
@@ -18,7 +20,7 @@ public class BatteryStatisticsGUI {
         return BatteryStatisticsPanel;
     }
 
-    public static void createGUI(){
+    public static void createGUI(AlarmSounds alarmSounds){
         JTable table = getJTable();
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -44,9 +46,9 @@ public class BatteryStatisticsGUI {
         JButton pcDetailsButton = new JButton("PC - Details");
         setButtonFontAndSize(pcDetailsButton, 120, 30);
         pcDetailsButton.addActionListener(e ->{
-            JPanel pcDetailsPanel = PC_DetailsGUI.createPC$GUI();
+            JPanel pcDetailsPanel = PC_DetailsGUI.createPC$GUI(alarmSounds);
             JScrollPane historyScrollPane = new JScrollPane(pcDetailsPanel);
-            historyScrollPane.setPreferredSize(new java.awt.Dimension(480, 250));
+            historyScrollPane.setPreferredSize(new java.awt.Dimension(530, 270));
             JOptionPane.showMessageDialog(null, historyScrollPane, "PC Details Dialog", JOptionPane.INFORMATION_MESSAGE);
         });
 

@@ -34,14 +34,14 @@ public class SettingsGUI {
         GridBagConstraints gbc = createGridBagConstraints();
         int index = 0;
         
-        addLabeledSpinner(gbc, firstPartPanel, "Minimum Battery Level:", UserChoices.getMinimumLevel(), 25, 10, 50, 1, index, 0,
+        addLabeledSpinner(gbc, firstPartPanel, "Minimum Battery Level:", UserChoices.getMinimumLevel(), 25, 15, 30, 1, index, 0,
             e -> {
                 int value = getSpinnerValue((JSpinner) e.getSource(), 10, 25);
                 UserChoices.setMinimumLevel(value);
                 FileManager.saveSettings();
             });
 
-        addLabeledSpinner(gbc, firstPartPanel, "Maximum Battery Level:", UserChoices.getMaximumLevel(), 85, 80, 100, 1, ++index, 0,
+        addLabeledSpinner(gbc, firstPartPanel, "Maximum Battery Level:", UserChoices.getMaximumLevel(), 85, 80, 90, 1, ++index, 0,
         	e -> {
                 int value = getSpinnerValue((JSpinner) e.getSource(), 80, 85);
                 UserChoices.setMaximumLevel(value);
@@ -56,7 +56,7 @@ public class SettingsGUI {
                 FileManager.saveSettings();
             });
         
-        addLabeledSpinner(gbc, firstPartPanel, "Sound Duration (in Seconds):", UserChoices.getSoundDuration(), 5, 1, 300, 1, ++index, 0,
+        addLabeledSpinner(gbc, firstPartPanel, "Sound Duration (in Seconds):", UserChoices.getSoundDuration(), 5, 1, 10, 1, ++index, 0,
             e -> {
                 int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
                 UserChoices.setSoundDuration(value);
@@ -214,7 +214,7 @@ public class SettingsGUI {
         SettingsGUI.buttonHeight = 30;
     }
 
-    public static JButton addButton(GridBagConstraints gbc, JPanel secondPartPanel, String label, int row, int column, ActionListener listener) {
+    public static void addButton(GridBagConstraints gbc, JPanel secondPartPanel, String label, int row, int column, ActionListener listener) {
         JButton button = new JButton(label);
         button.setFont(DEFAULT_FONT);
         button.setMaximumSize(new Dimension(buttonWidth, buttonHeight));
@@ -223,7 +223,6 @@ public class SettingsGUI {
         gbc.gridx = column;
         gbc.gridy = row;
         secondPartPanel.add(button, gbc);
-        return button;
     }
     
     private static JScrollPane addTextInScroll(JTextField field, String label, Font font) {

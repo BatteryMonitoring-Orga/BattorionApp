@@ -1,4 +1,6 @@
 package com.battery_level_alarm.monitoring.core;
+import static com.battery_level_alarm.monitoring.battery_simulation.BatteryIcon.simulatorMode;
+import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.progressBarInVerticalMode;
 import com.battery_level_alarm.monitoring.basics.PC_Details;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 
@@ -9,13 +11,56 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FileManager {
-    private static final String CONFIG_FILE_PATH = "_settings.json";
-    private static final String PC$DETAILS_FILE_PATH = "_PC$Details.json";
+    private static final String CONFIG_PANEL_MODE_FILE = "_panel-mode.cfg";
+    private static final String CONFIG_SETTINGS_FILE_PATH = "_settings.cfg";
+    private static final String PC$DETAILS_FILE_PATH = "_PC$Details.cfg";
     private static final Logger logger = Logger.getLogger(FileManager.class.getName());
+
+    public static void saveBatteryConfigurationModes(){
+        JSONObject json = createBatteryConfigurationModesJson();
+        try (FileWriter file = new FileWriter(CONFIG_PANEL_MODE_FILE)) {
+            file.write(json.toString(4));
+        } catch (IOException e) {
+            printErrorMessage(e, "Failed to save panel mode");
+        }
+    }
+
+    private static JSONObject createBatteryConfigurationModesJson() {
+        JSONObject json = new JSONObject();
+        json.put("panel mode", progressBarInVerticalMode);
+        json.put("battery simulator", simulatorMode);
+        return json;
+    }
+
+    public static void loadBatteryConfigurationModes(){
+        try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG_PANEL_MODE_FILE))) {
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            loadBatteryConfigurationModesJson(jsonContent);
+        } catch (IOException | JSONException e) {
+            printErrorMessage(e, "Failed to load panel mode");
+            loadDefaultBatteryConfigurationModes();
+            saveBatteryConfigurationModes();
+        }
+    }
+
+    private static void loadBatteryConfigurationModesJson(StringBuilder jsonContent){
+        JSONObject json = new JSONObject(jsonContent.toString());
+        progressBarInVerticalMode = json.optBoolean("panel mode", false);
+        simulatorMode = json.optBoolean("battery simulator", false);
+    }
+
+    private static void loadDefaultBatteryConfigurationModes() {
+        progressBarInVerticalMode = false;
+        simulatorMode = false;
+    }
 
     public static void saveSettings() {
         JSONObject json = createSettingsJson();
-        try (FileWriter file = new FileWriter(CONFIG_FILE_PATH)) {
+        try (FileWriter file = new FileWriter(CONFIG_SETTINGS_FILE_PATH)) {
             file.write(json.toString(4));
         } catch (IOException e) {
             printErrorMessage(e, "Failed to save settings");
@@ -38,7 +83,7 @@ public class FileManager {
     }
     
     public static void loadSettings() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG_FILE_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG_SETTINGS_FILE_PATH))) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -56,7 +101,7 @@ public class FileManager {
         JSONObject json = new JSONObject(jsonContent.toString());
         UserChoices.setSoundPath(json.optString("Sound Path", "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav"));
         UserChoices.setSoundDuration(json.optInt("Sound Duration", 5));
-        UserChoices.setMinimumLevel(json.optInt("Minimum Level", 20));
+        UserChoices.setMinimumLevel(json.optInt("Minimum Level", 25));
         UserChoices.setMaximumLevel(json.optInt("Maximum Level", 85));
         UserChoices.setRepeatIntervalBeforeRiskPhase(json.optInt("Repeat Interval Before Risk Phase", 30));
         UserChoices.setAutoMonitoring(json.optBoolean("Automatic Monitoring", true));
@@ -69,7 +114,7 @@ public class FileManager {
     private static void loadDefaultSettings() {
         UserChoices.setSoundPath("/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav");
         UserChoices.setSoundDuration(5);
-        UserChoices.setMinimumLevel(20);
+        UserChoices.setMinimumLevel(25);
         UserChoices.setMaximumLevel(85);
         UserChoices.setRepeatIntervalBeforeRiskPhase(30);
         UserChoices.setAutoMonitoring(true);
@@ -93,7 +138,8 @@ public class FileManager {
         json.put("Activate the awakening feature", PC_Details.getActivateTheAwakeningFeature());
         json.put("Wake up the PC every (in Minutes)", PC_Details.getWakeUpEvery());
         json.put("Switch audio output to Speakers", PC_Details.isEnableExchangeToSpeakerAudioOutput());
-        json.put("Volume Level: ", PC_Details.getVolumeLevel());
+        json.put("Volume Level", PC_Details.getVolumeLevel());
+        json.put("Notification Sound File Name", PC_Details.getNotificationSoundFileName());
         return json;
     }
 
@@ -117,7 +163,8 @@ public class FileManager {
         PC_Details.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
         PC_Details.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
         PC_Details.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
-        PC_Details.setVolumeLevel(json.optInt("Volume Level: ", 35));
+        PC_Details.setVolumeLevel(json.optInt("Volume Level", 35));
+        PC_Details.setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
     }
 
     public static void loadDefaultPC$Details(){
@@ -125,6 +172,7 @@ public class FileManager {
         PC_Details.setWakeUpEvery(2);
         PC_Details.setEnableExchangeToSpeakerAudioOutput(true);
         PC_Details.setVolumeLevel(35);
+        PC_Details.setNotificationSoundFileName("Alarm01.wav");
     }
 
     private static void printErrorMessage(Throwable e, String loggerText){

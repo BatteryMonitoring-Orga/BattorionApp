@@ -42,7 +42,6 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Optionally: parameterized tests support -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
@@ -62,16 +61,6 @@
 	<dependency>
 	    <groupId>com.formdev</groupId>
 	    <artifactId>flatlaf-intellij-themes</artifactId>
-	    <version>3.5.4</version>
-	</dependency>
-	<dependency>
-	    <groupId>com.formdev</groupId>
-	    <artifactId>flatlaf-jide-oss</artifactId>
-	    <version>3.5.4</version>
-	</dependency>
-	<dependency>
-	    <groupId>com.jidesoft</groupId>
-	    <artifactId>jide-oss</artifactId>
 	    <version>3.5.4</version>
 	</dependency>
 	

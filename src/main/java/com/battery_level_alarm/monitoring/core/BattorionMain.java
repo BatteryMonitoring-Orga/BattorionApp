@@ -7,14 +7,14 @@ import static com.battery_level_alarm.monitoring.command.CallCommandLine.*;
 import static com.battery_level_alarm.monitoring.effects.Appearance.getPopupMenu;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
-import com.battery_level_alarm.monitoring.basics.PC_Details;
+import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.battery_simulation.BatteryIcon;
 import com.battery_level_alarm.monitoring.command.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.cybernate.WakeUpPC;
 import com.battery_level_alarm.monitoring.effects.Appearance;
-import com.battery_level_alarm.monitoring.effects.call_resources;
+import com.battery_level_alarm.monitoring.effects.CallResources;
 import com.battery_level_alarm.monitoring.preparing_gui.BatteryStatisticsGUI;
 import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
 import com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI;
@@ -102,7 +102,7 @@ public class BattorionMain {
         configurationSystemTrayNotifications();
 
         loadSettings();
-        loadPC$Details();
+        loadComputerSettings();
         SettingsGUI.createAndShowGUI();
         DiskSpaceInfo.DiskSpace();
         PrepareDiskInfoGUI.createGUI();
@@ -133,7 +133,7 @@ public class BattorionMain {
     private static void createAndShowGUI() {
         mainFrame = new JFrame(APP_NAME);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ImageIcon icon = call_resources.getImage("BattIco/13228401");
+        ImageIcon icon = CallResources.getImage("BattIco/13228401");
         mainFrame.setIconImage(icon.getImage());
         mainFrame.setSize(550, 320);
         mainFrame.setResizable(false);
@@ -267,7 +267,7 @@ public class BattorionMain {
         
         JButton resetButton = new JButton();
         resetButton.setToolTipText("Reset the alert statement and update 'Disk Info.' panel");
-	    ImageIcon newIcon = call_resources.getImage("BattIco/3808356");
+	    ImageIcon newIcon = CallResources.getImage("BattIco/3808356");
 	    resetButton.setIcon(new ImageIcon(newIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         resetButton.addActionListener(e -> {
             alertLabel.setText("");
@@ -278,7 +278,7 @@ public class BattorionMain {
 
         JButton progressBarModeButton = new JButton();
         progressBarModeButton.setToolTipText("Convert to the other mode");
-        ImageIcon progressBarModeIcon = call_resources.getImage("BattIco/9213472");
+        ImageIcon progressBarModeIcon = CallResources.getImage("BattIco/9213472");
         progressBarModeButton.setIcon(new ImageIcon(progressBarModeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         progressBarModeButton.addActionListener(e -> {
             progressBarInVerticalMode = !progressBarInVerticalMode;
@@ -299,7 +299,7 @@ public class BattorionMain {
         
         JButton themeButton = new JButton();
         themeButton.setToolTipText("Switch the theme, right-click to open the context menu");
-        ImageIcon themeIcon = call_resources.getImage(Appearance.iconName);
+        ImageIcon themeIcon = CallResources.getImage(Appearance.iconName);
         themeButton.setIcon(new ImageIcon(themeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         themeButton.addActionListener(e -> {
             Appearance.switchToOtherMode();
@@ -318,14 +318,14 @@ public class BattorionMain {
 
         JButton simulatorButton = new JButton();
         simulatorButton.setToolTipText("Open the Battery Simulator");
-        ImageIcon simulatorIcon = call_resources.getImage("BattIco/5550932");
+        ImageIcon simulatorIcon = CallResources.getImage("BattIco/5550932");
         simulatorButton.setIcon(new ImageIcon(simulatorIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         simulatorButton.addActionListener(e -> {
             BatteryIcon.BatterySimulationStart();
         });
 
         JButton notificationAboutButton = new JButton();
-        ImageIcon notificationIcon = call_resources.getImage("BattIco/9783934");
+        ImageIcon notificationIcon = CallResources.getImage("BattIco/9783934");
         notificationAboutButton.setIcon(new ImageIcon(notificationIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         notificationAboutButton.addActionListener(e -> {
             aboutNotificationsIcon();
@@ -622,7 +622,7 @@ public class BattorionMain {
                         handleNormalBattery(batteryBar, alertLabel, batteryColor);
                     }
 
-                    if(PC_Details.isActivateTheAwakeningFeature()){
+                    if(ComputerSettings.isActivateTheAwakeningFeature()){
                         WakeUpPC.wakeUp();
                     }
                 }

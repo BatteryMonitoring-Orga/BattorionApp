@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.core;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.progressBarInVerticalMode;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
-import com.battery_level_alarm.monitoring.basics.PC_Details;
+import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 
 import java.io.*;
@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public class FileManager {
     private static final String CONFIG_PANEL_MODE_FILE = "_general.cfg";
     private static final String CONFIG_SETTINGS_FILE_PATH = "_settings.cfg";
-    private static final String PC$DETAILS_FILE_PATH = "_PC$Details.cfg";
+    private static final String PC_SETTINGS_FILE_PATH = "_pc-settings.cfg";
     private static final Logger logger = Logger.getLogger(FileManager.class.getName());
 
     public static void saveGeneralConfigurations(){
@@ -132,53 +132,53 @@ public class FileManager {
         UserChoices.setEnableText(true);
     }
 
-    public static void savePC$Details(){
-        JSONObject json = createPC$DetailsJson();
-        try (FileWriter file = new FileWriter(PC$DETAILS_FILE_PATH)) {
+    public static void saveComputerSettings(){
+        JSONObject json = createComputerSettingsJson();
+        try (FileWriter file = new FileWriter(PC_SETTINGS_FILE_PATH)) {
             file.write(json.toString(4));
         } catch (IOException e) {
             printErrorMessage(e, "Failed to save pc details");
         }
     }
 
-    private static JSONObject createPC$DetailsJson() {
+    private static JSONObject createComputerSettingsJson() {
         JSONObject json = new JSONObject();
-        json.put("Activate the awakening feature", PC_Details.isActivateTheAwakeningFeature());
-        json.put("Wake up the PC every (in Minutes)", PC_Details.getWakeUpEvery());
-        json.put("Switch audio output to Speakers", PC_Details.isEnableExchangeToSpeakerAudioOutput());
-        json.put("Switch audio output to the Used device", PC_Details.isEnableExchangeToAudioOutputUsed());
-        json.put("Current audio device", PC_Details.getCurrentAudioDevice());
-        json.put("Audio devices", PC_Details.getAudioDevices());
-        json.put("Volume Level", PC_Details.getVolumeLevel());
-        json.put("Notification Sound File Name", PC_Details.getNotificationSoundFileName());
+        json.put("Activate the awakening feature", ComputerSettings.isActivateTheAwakeningFeature());
+        json.put("Wake up the PC every (in Minutes)", ComputerSettings.getWakeUpEvery());
+        json.put("Switch audio output to Speakers", ComputerSettings.isEnableExchangeToSpeakerAudioOutput());
+        json.put("Switch audio output to the Used device", ComputerSettings.isEnableExchangeToAudioOutputUsed());
+        json.put("Current audio device", ComputerSettings.getCurrentAudioDevice());
+        json.put("Audio devices", ComputerSettings.getAudioDevices());
+        json.put("Volume Level", ComputerSettings.getVolumeLevel());
+        json.put("Notification Sound File Name", ComputerSettings.getNotificationSoundFileName());
         return json;
     }
 
-    public static void loadPC$Details(){
-        try (BufferedReader reader = new BufferedReader(new FileReader(PC$DETAILS_FILE_PATH))) {
+    public static void loadComputerSettings(){
+        try (BufferedReader reader = new BufferedReader(new FileReader(PC_SETTINGS_FILE_PATH))) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 jsonContent.append(line);
             }
-            loadPC$DetailsFromJson(jsonContent);
+            loadComputerSettingsFromJson(jsonContent);
         } catch (IOException | JSONException e) {
             printErrorMessage(e, "Failed to load pc details");
-            loadDefaultPC$Details();
-            savePC$Details();
+            loadDefaultComputerSettings();
+            saveComputerSettings();
         }
     }
 
-    private static void loadPC$DetailsFromJson(StringBuilder jsonContent){
+    private static void loadComputerSettingsFromJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
-        PC_Details.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
-        PC_Details.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
-        PC_Details.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
-        PC_Details.setEnableExchangeToAudioOutputUsed(json.optBoolean("Switch audio output to the Used device", true));
-        PC_Details.setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
+        ComputerSettings.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
+        ComputerSettings.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
+        ComputerSettings.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
+        ComputerSettings.setEnableExchangeToAudioOutputUsed(json.optBoolean("Switch audio output to the Used device", true));
+        ComputerSettings.setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
         loadAudioDevicesList(json);
-        PC_Details.setVolumeLevel(json.optInt("Volume Level", 35));
-        PC_Details.setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
+        ComputerSettings.setVolumeLevel(json.optInt("Volume Level", 35));
+        ComputerSettings.setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
     }
 
     private static void loadAudioDevicesList(JSONObject json){
@@ -189,18 +189,18 @@ public class FileManager {
                 audioDevicesList.add(audioDevicesArray.optString(i, ""));
             }
         }
-        PC_Details.setAudioDevices(audioDevicesList);
+        ComputerSettings.setAudioDevices(audioDevicesList);
     }
 
-    public static void loadDefaultPC$Details(){
-        PC_Details.setActivateTheAwakeningFeature(false);
-        PC_Details.setWakeUpEvery(2);
-        PC_Details.setEnableExchangeToSpeakerAudioOutput(true);
-        PC_Details.setEnableExchangeToAudioOutputUsed(true);
-        PC_Details.setCurrentAudioDevice("سماعات");
-        PC_Details.setAudioDevices(new ArrayList<>());
-        PC_Details.setVolumeLevel(35);
-        PC_Details.setNotificationSoundFileName("Alarm01.wav");
+    public static void loadDefaultComputerSettings(){
+        ComputerSettings.setActivateTheAwakeningFeature(false);
+        ComputerSettings.setWakeUpEvery(2);
+        ComputerSettings.setEnableExchangeToSpeakerAudioOutput(true);
+        ComputerSettings.setEnableExchangeToAudioOutputUsed(true);
+        ComputerSettings.setCurrentAudioDevice("سماعات");
+        ComputerSettings.setAudioDevices(new ArrayList<>());
+        ComputerSettings.setVolumeLevel(35);
+        ComputerSettings.setNotificationSoundFileName("Alarm01.wav");
     }
 
     private static void printErrorMessage(Throwable e, String loggerText){

@@ -1,6 +1,5 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
-
 import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.aboutBatteryStatisticsPanel;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI.*;
@@ -15,7 +14,6 @@ import java.util.Map;
 
 public class BatteryStatisticsGUI {
     private static JPanel BatteryStatisticsPanel;
-
     public static JPanel getBatteryStatisticsPanel(){
         return BatteryStatisticsPanel;
     }
@@ -43,13 +41,13 @@ public class BatteryStatisticsGUI {
             JOptionPane.showMessageDialog(null, historyScrollPane, "📄 History", JOptionPane.INFORMATION_MESSAGE);
         });
 
-        JButton pcDetailsButton = new JButton("PC - Details");
-        setButtonFontAndSize(pcDetailsButton, 120, 30);
-        pcDetailsButton.addActionListener(e ->{
-            JPanel pcDetailsPanel = PC_DetailsGUI.createPC$GUI(alarmSounds);
+        JButton pcSettingsButton = new JButton("PC - Settings");
+        setButtonFontAndSize(pcSettingsButton, 120, 30);
+        pcSettingsButton.addActionListener(e ->{
+            JPanel pcDetailsPanel = ComputerSettingsGUI.createComputerSettingsGUI(alarmSounds);
             JScrollPane historyScrollPane = new JScrollPane(pcDetailsPanel);
             historyScrollPane.setPreferredSize(new java.awt.Dimension(550, 280));
-            JOptionPane.showMessageDialog(null, historyScrollPane, "PC Details Dialog", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, historyScrollPane, "PC Settings", JOptionPane.INFORMATION_MESSAGE);
         });
 
         JButton aboutButton = new JButton("About This Panel");
@@ -67,7 +65,7 @@ public class BatteryStatisticsGUI {
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         buttonPanel.add(historyButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        buttonPanel.add(pcDetailsButton);
+        buttonPanel.add(pcSettingsButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         buttonPanel.add(aboutButton);
         packageButtons.add(buttonPanel);

@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.cybernate;
-import com.battery_level_alarm.monitoring.basics.PC_Details;
+import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.effects.DisplayMessages;
 
 import java.awt.*;
@@ -17,11 +17,11 @@ public class WakeUpPC {
 	    try {
 	        java.awt.Robot robot = new java.awt.Robot();
 			wakeUpThread = Thread.ofVirtual().start(() -> {
-                while (PC_Details.isActivateTheAwakeningFeature()) {
+                while (ComputerSettings.isActivateTheAwakeningFeature()) {
                     getMousePosition();
 					doRobotAction(robot);
 					try{
-						Thread.sleep(PC_Details.getWakeUpEvery() * 60000L);
+						Thread.sleep(ComputerSettings.getWakeUpEvery() * 60000L);
 					} catch (InterruptedException ex) {
 						Thread.currentThread().interrupt();
 						break;

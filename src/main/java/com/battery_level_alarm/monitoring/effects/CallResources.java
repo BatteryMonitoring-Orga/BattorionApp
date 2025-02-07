@@ -5,7 +5,7 @@ import javax.swing.ImageIcon;
 
 import com.battery_level_alarm.monitoring.core.BattorionMain;
 
-public class call_resources {
+public class CallResources {
 	public static ImageIcon getImage(String imageName) {
 		URL resource = BattorionMain.class.getResource("/com/battery_level_alarm/monitoring/" + imageName + ".png");
         if (resource == null) {

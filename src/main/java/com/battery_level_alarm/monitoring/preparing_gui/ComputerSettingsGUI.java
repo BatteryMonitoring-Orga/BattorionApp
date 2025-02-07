@@ -1,11 +1,11 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
-import static com.battery_level_alarm.monitoring.basics.PC_Details.*;
-import static com.battery_level_alarm.monitoring.basics.PC_Details.isEnableExchangeToAudioOutputUsed;
+import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.basics.ComputerSettings.isEnableExchangeToAudioOutputUsed;
 import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.*;
 import static com.battery_level_alarm.monitoring.command.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
 import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.*;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
-import com.battery_level_alarm.monitoring.basics.PC_Details;
+import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.buttons_in_combo_box.ButtonsInComboBox;
 import com.battery_level_alarm.monitoring.buttons_in_combo_box.SoundItem;
 import com.battery_level_alarm.monitoring.core.FileManager;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class PC_DetailsGUI {
+public class ComputerSettingsGUI {
     private static final Font toggleButtonsFont = new Font("Serif", Font.BOLD, 15);
     private static final Font textFieldFont = new Font("Serif", Font.PLAIN, 14);
     private static final Color GREEN_COLOR = new Color(0, 150, 0);
@@ -34,12 +34,12 @@ public class PC_DetailsGUI {
     };
     private static ButtonGroup buttonGroup;
 
-    public static JPanel createPC$GUI(AlarmSounds alarmSounds){
-        JPanel pc$gui = new JPanel(new BorderLayout());
+    public static JPanel createComputerSettingsGUI(AlarmSounds alarmSounds){
+        JPanel computerSettingsGui = new JPanel(new BorderLayout());
         GridBagConstraints gbc = createGridBagConstraints();
         JPanel firstPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         setButtonDefaultSize();
-        addButton(gbc, firstPanel, "About", 0, 0, e -> aboutPC$DetailsDispatch());
+        addButton(gbc, firstPanel, "About", 0, 0, e -> aboutComputerSettingsDispatch());
 
         int index = 0;
         JPanel secondPanel = new JPanel(new GridBagLayout());
@@ -49,11 +49,11 @@ public class PC_DetailsGUI {
 
         addLabel(gbc, secondPanel, "Do these procedures automatically:", index, 0);
         addLabel(gbc, secondPanel, "Activate the awakening feature:", ++index, 0);
-        addToggleButton(gbc, secondPanel, PC_Details::setActivateTheAwakeningFeature, FileManager::savePC$Details, switched, index, 1, 120, 30);
+        addToggleButton(gbc, secondPanel, ComputerSettings::setActivateTheAwakeningFeature, FileManager::saveComputerSettings, switched, index, 1, 120, 30);
         addLabel(gbc, secondPanel, "Exchange to speaker audio output:", ++index, 0);
-        addToggleButton(gbc, secondPanel, PC_Details::setEnableExchangeToSpeakerAudioOutput, FileManager::savePC$Details, toSpeaker, index, 1, 120, 30);
+        addToggleButton(gbc, secondPanel, ComputerSettings::setEnableExchangeToSpeakerAudioOutput, FileManager::saveComputerSettings, toSpeaker, index, 1, 120, 30);
         addLabel(gbc, secondPanel, "Exchange to audio output used:", ++index, 0);
-        addToggleButton(gbc, secondPanel, PC_Details::setEnableExchangeToAudioOutputUsed, FileManager::savePC$Details, toUsed, index, 1, 120, 30);
+        addToggleButton(gbc, secondPanel, ComputerSettings::setEnableExchangeToAudioOutputUsed, FileManager::saveComputerSettings, toUsed, index, 1, 120, 30);
 
         addSeparator(gbc, secondPanel, 100, ++index, 0);
         returnGBC$ToDefault(gbc);
@@ -65,7 +65,7 @@ public class PC_DetailsGUI {
                         JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
                         setCurrentAudioDevice(selectedSound);
-                        FileManager.savePC$Details();
+                        FileManager.saveComputerSettings();
                     }
                 });
 
@@ -86,13 +86,13 @@ public class PC_DetailsGUI {
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
                     setWakeUpEvery(value);
-                    FileManager.savePC$Details();
+                    FileManager.saveComputerSettings();
                 });
-        addLabeledSpinner(gbc, secondPanel, "Set Volume Level (%):", PC_Details.getVolumeLevel(), 35, 20, 100, 1, ++index, 0,
+        addLabeledSpinner(gbc, secondPanel, "Set Volume Level (%):", ComputerSettings.getVolumeLevel(), 35, 20, 100, 1, ++index, 0,
                 e -> {
                     int percentage = getSpinnerValue((JSpinner) e.getSource(), 20, 35);
-                    PC_Details.setVolumeLevel(percentage);
-                    FileManager.savePC$Details();
+                    ComputerSettings.setVolumeLevel(percentage);
+                    FileManager.saveComputerSettings();
                 });
 
         addButtonMixWithComboBox(gbc, secondPanel, "System Notification Sounds:", ++index, 0);
@@ -104,13 +104,13 @@ public class PC_DetailsGUI {
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
                         setNotificationSoundFileName(selectedSound);
                         alarmSounds.setSoundSequenceNumber(comboBox.getSelectedIndex() + 1);
-                        FileManager.savePC$Details();
+                        FileManager.saveComputerSettings();
                     }
                 });
 
-        pc$gui.add(firstPanel, BorderLayout.NORTH);
-        pc$gui.add(secondPanel, BorderLayout.CENTER);
-        return pc$gui;
+        computerSettingsGui.add(firstPanel, BorderLayout.NORTH);
+        computerSettingsGui.add(secondPanel, BorderLayout.CENTER);
+        return computerSettingsGui;
     }
 
     public static void addToggleButton(
@@ -345,9 +345,9 @@ public class PC_DetailsGUI {
     private static ActionListener[] getButtonActions(JTextField audioDeviceName, JComboBox<String> audioDevicesComboBox){
         return new ActionListener[]{
                 e -> {
-                    boolean isAdded = PC_Details.setItemToAudioList(audioDeviceName.getText());
+                    boolean isAdded = ComputerSettings.setItemToAudioList(audioDeviceName.getText());
                     if(isAdded){
-                        FileManager.savePC$Details();
+                        FileManager.saveComputerSettings();
                         audioDevicesComboBox.addItem(audioDeviceName.getText());
                         audioDeviceName.setText(DEVICE_STATUS_MESSAGES[0]);
                         audioDeviceName.setForeground(GREEN_COLOR);
@@ -357,9 +357,9 @@ public class PC_DetailsGUI {
                     }
                 },
                 e -> {
-                    boolean isDeleted = PC_Details.removeItemFromAudioList(audioDeviceName.getText());
+                    boolean isDeleted = ComputerSettings.removeItemFromAudioList(audioDeviceName.getText());
                     if (isDeleted) {
-                        FileManager.savePC$Details();
+                        FileManager.saveComputerSettings();
                         audioDevicesComboBox.removeItem(audioDeviceName.getText());
                         audioDeviceName.setText(DEVICE_STATUS_MESSAGES[2]);
                         audioDeviceName.setForeground(GREEN_COLOR);

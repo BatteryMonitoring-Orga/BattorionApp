@@ -84,28 +84,31 @@ public class StaticQuestionnaire {
                 However, be cautious while deleting Temp files, as some files might still be in use or needed by certain programs.""";
     }
 
-    public static void aboutPC$DetailsDispatch() {
+    public static void aboutComputerSettingsDispatch() {
         JOptionPane.showMessageDialog(null,
                 "<html><body style='font-family:Serif; font-size:11px;'>" +
-                        "<p>This panel is designed to provide an interactive interface for managing your PC's automatic</p>" +
-                        "<p>wake-up feature, password settings, and scheduling.</p>" +
+                        "<p>This panel provides an intuitive interface to manage automated system behaviors, including:</p>" +
+
                         "<ul>" +
-                        "<li><b>Activate the Wake-Up Feature:</b> Toggle the automatic wake-up feature for your PC on or off</li>" +
-                        "<p>using a switch button.</p>" +
-                        "<li><b>Switch audio output to Speakers:</b> configures the system to route audio output to the speakers</li>" +
-                        "<p>specifically when a critical battery level is detected, ensuring an alert is played through the </p>" +
-                        "<p>appropriate output device.</p>" +
-                        "<li><b>Schedule Wake-Up Intervals:</b> Specify the interval (in minutes) for automatically waking up </li>" +
-                        "<p>your PC to perform scheduled tasks.</p>" +
-                        "<li><b>Set Volume Level (%):</b> This allows you to set the default volume level for the system.</li>" +
-                        "<p>You can choose a percentage value to control how loud the alerts will sound.</p>" +
-                        "<li><b>Save Settings Automatically:</b> All changes are saved to a dedicated file, ensuring your </li>" +
-                        "<p>preferences persist across sessions.</p>" +
+                        "<li><b>Activate the Awakening Feature:</b><br>" +
+                        "Enable or disable the automatic wake-up function for your PC.</li><br>" +
+                        "<li><b>Exchange Audio Output to Speaker:</b><br>" +
+                        "Switch audio output to speakers when a critical battery level is detected.</li><br>" +
+                        "<li><b>Exchange Audio Output to Last Used Device:</b><br>" +
+                        "Restore audio output to the previously used device after an event.</li><br>" +
+                        "<li><b>Select Audio Output Device:</b><br>" +
+                        "Choose the preferred audio output device from the available options.</li><br>" +
+                        "<li><b>Schedule Wake-Up Intervals:</b><br>" +
+                        "Set the frequency (in minutes) for automatically waking up your PC.</li><br>" +
+                        "<li><b>Set Volume Level (%):</b><br>" +
+                        "Adjust the default system volume to control alert sound intensity.</li><br>" +
+                        "<li><b>Customize Notification Sounds:</b><br>" +
+                        "Select and configure system notification sounds to match your preference.</li>" +
                         "</ul>" +
-                        "<p>This panel is designed to be user-friendly and flexible, leveraging Swing's robust</p>" +
-                        "<p>components to deliver a seamless experience.</p>" +
+
+                        "<p>All changes are saved automatically to ensure your settings persist across sessions.</p>" +
                         "</body></html>",
-                "About PC Details Panel",
+                "About Computer Settings Panel",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 

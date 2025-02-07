@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
-import static com.battery_level_alarm.monitoring.preparing_gui.PC_DetailsGUI.addToggleButton;
+import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.addToggleButton;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.core.BattorionMain;
 import com.battery_level_alarm.monitoring.core.FileManager;

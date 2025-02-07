@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.core.BattorionMain.isFromCritic
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.basics.UserChoices;
-import com.battery_level_alarm.monitoring.basics.PC_Details;
+import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.command.CallCommandLine;
 
 import javazoom.jl.decoder.JavaLayerException;
@@ -153,16 +153,16 @@ public class AlertSound {
     }
 
     private static void prepareBeforeStarting(){
-        CallCommandLine.setPCVolume(PC_Details.getVolumeLevel());
+        CallCommandLine.setPCVolume(ComputerSettings.getVolumeLevel());
         CallCommandLine.setSoundUnmute();
-        if(PC_Details.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
+        if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
             setSpeakerAsAnAudioOutput("سماعات");
         }
     }
 
     private static void prepareAfterEnding(){
-        if(PC_Details.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
-            setSpeakerAsAnAudioOutput(PC_Details.getCurrentAudioDevice());
+        if(ComputerSettings.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
+            setSpeakerAsAnAudioOutput(ComputerSettings.getCurrentAudioDevice());
         }
     }
 

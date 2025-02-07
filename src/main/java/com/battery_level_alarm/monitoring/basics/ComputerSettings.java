@@ -3,7 +3,7 @@ package com.battery_level_alarm.monitoring.basics;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PC_Details {
+public class ComputerSettings {
     private static boolean activateTheAwakeningFeature;
     private static int wakeUpEvery;
     private static boolean enableExchangeToSpeakerAudioOutput;
@@ -17,35 +17,35 @@ public class PC_Details {
         return activateTheAwakeningFeature;
     }
     public static void setActivateTheAwakeningFeature(boolean activateTheAwakeningFeature){
-        PC_Details.activateTheAwakeningFeature = activateTheAwakeningFeature;
+        ComputerSettings.activateTheAwakeningFeature = activateTheAwakeningFeature;
     }
 
     public static int getWakeUpEvery(){
         return wakeUpEvery;
     }
     public static void setWakeUpEvery(int wakeUpEvery) {
-        PC_Details.wakeUpEvery = wakeUpEvery;
+        ComputerSettings.wakeUpEvery = wakeUpEvery;
     }
 
     public static boolean isEnableExchangeToSpeakerAudioOutput(){
         return enableExchangeToSpeakerAudioOutput;
     }
     public static void setEnableExchangeToSpeakerAudioOutput(boolean enableExchangeToSpeakerAudioOutput) {
-        PC_Details.enableExchangeToSpeakerAudioOutput = enableExchangeToSpeakerAudioOutput;
+        ComputerSettings.enableExchangeToSpeakerAudioOutput = enableExchangeToSpeakerAudioOutput;
     }
 
     public static boolean isEnableExchangeToAudioOutputUsed(){
         return enableExchangeToAudioOutputUsed;
     }
     public static void setEnableExchangeToAudioOutputUsed(boolean enableExchangeToAudioOutputUsed) {
-        PC_Details.enableExchangeToAudioOutputUsed = enableExchangeToAudioOutputUsed;
+        ComputerSettings.enableExchangeToAudioOutputUsed = enableExchangeToAudioOutputUsed;
     }
 
     public static List<String> getAudioDevices(){
         return audioDevices;
     }
     public static void setAudioDevices(List<String> audioDevices){
-        PC_Details.audioDevices = audioDevices;
+        ComputerSettings.audioDevices = audioDevices;
     }
     public static boolean setItemToAudioList(String device){
         if(!audioDevices.contains(device)){
@@ -83,20 +83,20 @@ public class PC_Details {
         return currentAudioDevice;
     }
     public static void setCurrentAudioDevice(String currentAudioDevice){
-        PC_Details.currentAudioDevice = currentAudioDevice;
+        ComputerSettings.currentAudioDevice = currentAudioDevice;
     }
 
     public static int getVolumeLevel() {
         return volumeLevel;
     }
     public static void setVolumeLevel(int volumeLevel) {
-        PC_Details.volumeLevel = volumeLevel;
+        ComputerSettings.volumeLevel = volumeLevel;
     }
 
     public static String getNotificationSoundFileName(){
         return notificationSoundFileName;
     }
     public static void setNotificationSoundFileName(String notificationSoundFileName){
-        PC_Details.notificationSoundFileName = notificationSoundFileName;
+        ComputerSettings.notificationSoundFileName = notificationSoundFileName;
     }
 }

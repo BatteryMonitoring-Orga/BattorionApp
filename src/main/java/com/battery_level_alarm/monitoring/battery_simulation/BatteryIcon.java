@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMod
 import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.DEFAULT_FONT;
 import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.getSpinnerValue;
 
-import com.battery_level_alarm.monitoring.effects.call_resources;
+import com.battery_level_alarm.monitoring.effects.CallResources;
 import com.battery_level_alarm.monitoring.core.FileManager;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class BatteryIcon extends JPanel {
     private static JFrame createSimulatorFrame(){
         JFrame frame = new JFrame("Battery Simulator");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        ImageIcon icon = call_resources.getImage("BattIco/5550932");
+        ImageIcon icon = CallResources.getImage("BattIco/5550932");
         frame.setIconImage(icon.getImage());
         frame.setLayout(new BorderLayout());
         frame.setSize(520, 470);

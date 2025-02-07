@@ -2,7 +2,7 @@ package com.battery_level_alarm.monitoring.preparing_gui;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 
 import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.aboutBatteryStatisticsPanel;
-import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.*;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI.*;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
 
@@ -48,7 +48,7 @@ public class BatteryStatisticsGUI {
         pcDetailsButton.addActionListener(e ->{
             JPanel pcDetailsPanel = PC_DetailsGUI.createPC$GUI(alarmSounds);
             JScrollPane historyScrollPane = new JScrollPane(pcDetailsPanel);
-            historyScrollPane.setPreferredSize(new java.awt.Dimension(530, 270));
+            historyScrollPane.setPreferredSize(new java.awt.Dimension(550, 280));
             JOptionPane.showMessageDialog(null, historyScrollPane, "PC Details Dialog", JOptionPane.INFORMATION_MESSAGE);
         });
 

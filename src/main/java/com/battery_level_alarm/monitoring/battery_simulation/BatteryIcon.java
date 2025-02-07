@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.battery_simulation;
-import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.batteryLevel;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.batteryLevel;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
 import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.DEFAULT_FONT;
 import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.getSpinnerValue;
 
@@ -16,7 +17,6 @@ public class BatteryIcon extends JPanel {
     private static JFrame frame;
     private static Timer simulator;
 
-    public static boolean simulatorMode;
     private static int chargeLevel;
     private static int spinnerValue = 65;
 
@@ -50,7 +50,8 @@ public class BatteryIcon extends JPanel {
 
     private static JFrame createSimulatorFrame(){
         JFrame frame = new JFrame("Battery Simulator");
-        ImageIcon icon = call_resources.getImage("5550932");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ImageIcon icon = call_resources.getImage("BattIco/5550932");
         frame.setIconImage(icon.getImage());
         frame.setLayout(new BorderLayout());
         frame.setSize(520, 470);
@@ -105,7 +106,7 @@ public class BatteryIcon extends JPanel {
         checkBox.setSelected(simulatorMode);
         checkBox.addActionListener(e -> {
             simulatorMode = ((JCheckBox) e.getSource()).isSelected();
-            FileManager.saveBatteryConfigurationModes();
+            FileManager.saveGeneralConfigurations();
         });
         panel.add(checkBox);
         return panel;

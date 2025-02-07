@@ -34,11 +34,10 @@ public class AudioOutput$CMD {
         }
     }
 
-    public static void setSpeakerAsAnAudioOutput(){
+    public static void setSpeakerAsAnAudioOutput(String sourceName){
         try {
             String os = getOS();
-            String sourceName = "سماعات";
-            ProcessBuilder processBuilder = null;
+            ProcessBuilder processBuilder;
             try{
                 processBuilder = callCommandToSetAudioOutput(os, sourceName);
             } catch (IllegalArgumentException e) {

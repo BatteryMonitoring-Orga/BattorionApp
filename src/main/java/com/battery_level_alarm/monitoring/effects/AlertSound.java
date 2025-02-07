@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.effects;
 import static com.battery_level_alarm.monitoring.command.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
-import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.isFromCriticalAlert;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.isFromCriticalAlert;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.basics.UserChoices;
@@ -106,12 +106,7 @@ public class AlertSound {
     }
     
     private static void playWAV(InputStream soundStream) throws UnsupportedAudioFileException, IOException, LineUnavailableException, InterruptedException {
-    	CallCommandLine.setPCVolume(PC_Details.getVolumeLevel());
-        CallCommandLine.setSoundUnmute();
-        if(PC_Details.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
-            setSpeakerAsAnAudioOutput();
-        }
-
+        prepareBeforeStarting();
     	AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundStream);
         Clip clip = AudioSystem.getClip();
         clip.open(audioStream);
@@ -124,15 +119,11 @@ public class AlertSound {
         }
         clip.stop();
         clip.close();
+        prepareAfterEnding();
     }
     
     private static void playMP3(InputStream soundStream) throws InterruptedException {
-    	CallCommandLine.setPCVolume(PC_Details.getVolumeLevel());
-        CallCommandLine.setSoundUnmute();
-        if(PC_Details.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
-            setSpeakerAsAnAudioOutput();
-        }
-
+        prepareBeforeStarting();
     	playThread = new Thread(() -> {
             try {
                 player = new Player(soundStream);
@@ -149,6 +140,7 @@ public class AlertSound {
             Thread.sleep(UserChoices.getSoundDuration() * 1000L);
         }
         stopMP3();
+        prepareAfterEnding();
     }
     
     public static void stopMP3() {
@@ -159,7 +151,21 @@ public class AlertSound {
             playThread.interrupt();
         }
     }
-    
+
+    private static void prepareBeforeStarting(){
+        CallCommandLine.setPCVolume(PC_Details.getVolumeLevel());
+        CallCommandLine.setSoundUnmute();
+        if(PC_Details.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
+            setSpeakerAsAnAudioOutput("سماعات");
+        }
+    }
+
+    private static void prepareAfterEnding(){
+        if(PC_Details.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
+            setSpeakerAsAnAudioOutput(PC_Details.getCurrentAudioDevice());
+        }
+    }
+
     private static void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }

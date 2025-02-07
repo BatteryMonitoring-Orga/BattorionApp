@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.core;
-import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.*;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
 
 import com.battery_level_alarm.monitoring.basics.UserChoices;

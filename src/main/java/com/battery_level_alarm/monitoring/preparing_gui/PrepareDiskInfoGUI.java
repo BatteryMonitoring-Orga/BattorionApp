@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.command.DiskSpaceInfo;
-import com.battery_level_alarm.monitoring.core.BatteryLevelAlarm;
+import com.battery_level_alarm.monitoring.core.BattorionMain;
 
 import java.awt.*;
 import javax.swing.*;
@@ -38,7 +38,7 @@ public class PrepareDiskInfoGUI {
 
                 tracking = new Thread(() -> {
                     DiskSpaceInfo.cleanTempFiles();
-                    BatteryLevelAlarm.refreshDiskInfoPanel(BatteryLevelAlarm.isA_DiskInfoPanel, true);
+                    BattorionMain.refreshDiskInfoPanel(BattorionMain.isA_DiskInfoPanel, true);
                     checkFlag();
                 });
                 tracking.start();

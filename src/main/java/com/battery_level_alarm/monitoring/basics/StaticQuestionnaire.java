@@ -7,20 +7,23 @@ import javax.swing.JTextArea;
 
 public class StaticQuestionnaire {
 	public static void aboutDispatch() {
-		JOptionPane.showMessageDialog(null, 
+        JOptionPane.showMessageDialog(null,
                 "<html><body style='font-family:Serif; font-size:11px;'>"
-                + "<b>About Battery Level Alarm</b><br><br>"
-                + "This application monitors your battery level and provides alerts in the following cases:<br>"
-                + "- <b>High Battery</b>: If the level reaches <b>85% or more</b>, you will be asked to unplug the charger.<br>"
-                + "- <b>Low Battery</b>: If the level drops to <b>25% or less</b>, you will be reminded to charge the battery.<br><br>"
-                + "The program operates in the background, periodically checking the battery level.<br>"
-                + "It is compatible with Windows, Linux, and macOS.<br><br>"
-                + "To use the application:<br>"
-                + "- Click '<b>Start</b>' to begin monitoring.<br>"
-                + "- Click '<b>Stop</b>' to halt monitoring.<br><br>"
-                + "Thank you for using Battery Level Alarm!</body></html>", 
-                "About Battery Level Alarm", JOptionPane.INFORMATION_MESSAGE);
-	}
+                        + "<b>About Battorion</b><br><br>"
+                        + "<b>Version:</b> 1.0.0<br>"
+                        + "<b>Author:</b> Muath Hassoun<br><br>"
+                        + "This application monitors your battery level and provides alerts in the following cases:<br>"
+                        + "- <b>High Battery</b>: If the level reaches <b>85% or more</b>, you will be asked to unplug the charger.<br>"
+                        + "- <b>Low Battery</b>: If the level drops to <b>25% or less</b>, you will be reminded to charge the battery.<br><br>"
+                        + "The program operates in the background, periodically checking the battery level.<br>"
+                        + "It is compatible with Windows, Linux, and macOS.<br><br>"
+                        + "To use the application:<br>"
+                        + "- Click '<b>Start</b>' to begin monitoring.<br>"
+                        + "- Click '<b>Stop</b>' to halt monitoring.<br><br>"
+                        + "Thank you for using Battorion!"
+                        + "</body></html>",
+                "About Battorion", JOptionPane.INFORMATION_MESSAGE);
+    }
 	
 	public static String getHowToUseSettings(){
         return """

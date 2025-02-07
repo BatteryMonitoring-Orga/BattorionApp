@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="system_tray_notifications">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/main/resources/com/battery_level_alarm/monitoring/JARs/system_tray_notifications.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

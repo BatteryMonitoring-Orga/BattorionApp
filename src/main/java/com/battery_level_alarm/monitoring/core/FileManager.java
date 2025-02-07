@@ -1,23 +1,28 @@
 package com.battery_level_alarm.monitoring.core;
-import static com.battery_level_alarm.monitoring.battery_simulation.BatteryIcon.simulatorMode;
-import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.progressBarInVerticalMode;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.progressBarInVerticalMode;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
 import com.battery_level_alarm.monitoring.basics.PC_Details;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+
+import com.battery_level_alarm.monitoring.effects.Appearance;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FileManager {
-    private static final String CONFIG_PANEL_MODE_FILE = "_panel-mode.cfg";
+    private static final String CONFIG_PANEL_MODE_FILE = "_general.cfg";
     private static final String CONFIG_SETTINGS_FILE_PATH = "_settings.cfg";
     private static final String PC$DETAILS_FILE_PATH = "_PC$Details.cfg";
     private static final Logger logger = Logger.getLogger(FileManager.class.getName());
 
-    public static void saveBatteryConfigurationModes(){
-        JSONObject json = createBatteryConfigurationModesJson();
+    public static void saveGeneralConfigurations(){
+        JSONObject json = createGeneralConfigurationsJson();
         try (FileWriter file = new FileWriter(CONFIG_PANEL_MODE_FILE)) {
             file.write(json.toString(4));
         } catch (IOException e) {
@@ -25,37 +30,40 @@ public class FileManager {
         }
     }
 
-    private static JSONObject createBatteryConfigurationModesJson() {
+    private static JSONObject createGeneralConfigurationsJson() {
         JSONObject json = new JSONObject();
         json.put("panel mode", progressBarInVerticalMode);
         json.put("battery simulator", simulatorMode);
+        json.put("theme mode", Appearance.getThemeName());
         return json;
     }
 
-    public static void loadBatteryConfigurationModes(){
+    public static void loadGeneralConfigurations(){
         try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG_PANEL_MODE_FILE))) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 jsonContent.append(line);
             }
-            loadBatteryConfigurationModesJson(jsonContent);
+            loadGeneralConfigurationsJson(jsonContent);
         } catch (IOException | JSONException e) {
             printErrorMessage(e, "Failed to load panel mode");
-            loadDefaultBatteryConfigurationModes();
-            saveBatteryConfigurationModes();
+            loadDefaultGeneralConfigurations();
+            saveGeneralConfigurations();
         }
     }
 
-    private static void loadBatteryConfigurationModesJson(StringBuilder jsonContent){
+    private static void loadGeneralConfigurationsJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
         progressBarInVerticalMode = json.optBoolean("panel mode", false);
         simulatorMode = json.optBoolean("battery simulator", false);
+        Appearance.setThemeName(json.optString("theme mode", "Light"));
     }
 
-    private static void loadDefaultBatteryConfigurationModes() {
+    private static void loadDefaultGeneralConfigurations() {
         progressBarInVerticalMode = false;
         simulatorMode = false;
+        Appearance.setThemeName("Light");
     }
 
     public static void saveSettings() {
@@ -135,9 +143,12 @@ public class FileManager {
 
     private static JSONObject createPC$DetailsJson() {
         JSONObject json = new JSONObject();
-        json.put("Activate the awakening feature", PC_Details.getActivateTheAwakeningFeature());
+        json.put("Activate the awakening feature", PC_Details.isActivateTheAwakeningFeature());
         json.put("Wake up the PC every (in Minutes)", PC_Details.getWakeUpEvery());
         json.put("Switch audio output to Speakers", PC_Details.isEnableExchangeToSpeakerAudioOutput());
+        json.put("Switch audio output to the Used device", PC_Details.isEnableExchangeToAudioOutputUsed());
+        json.put("Current audio device", PC_Details.getCurrentAudioDevice());
+        json.put("Audio devices", PC_Details.getAudioDevices());
         json.put("Volume Level", PC_Details.getVolumeLevel());
         json.put("Notification Sound File Name", PC_Details.getNotificationSoundFileName());
         return json;
@@ -163,14 +174,31 @@ public class FileManager {
         PC_Details.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
         PC_Details.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
         PC_Details.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
+        PC_Details.setEnableExchangeToAudioOutputUsed(json.optBoolean("Switch audio output to the Used device", true));
+        PC_Details.setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
+        loadAudioDevicesList(json);
         PC_Details.setVolumeLevel(json.optInt("Volume Level", 35));
         PC_Details.setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
+    }
+
+    private static void loadAudioDevicesList(JSONObject json){
+        JSONArray audioDevicesArray = json.optJSONArray("Audio devices");
+        List<String> audioDevicesList = new ArrayList<>();
+        if (audioDevicesArray != null) {
+            for (int i = 0; i < audioDevicesArray.length(); i++) {
+                audioDevicesList.add(audioDevicesArray.optString(i, ""));
+            }
+        }
+        PC_Details.setAudioDevices(audioDevicesList);
     }
 
     public static void loadDefaultPC$Details(){
         PC_Details.setActivateTheAwakeningFeature(false);
         PC_Details.setWakeUpEvery(2);
         PC_Details.setEnableExchangeToSpeakerAudioOutput(true);
+        PC_Details.setEnableExchangeToAudioOutputUsed(true);
+        PC_Details.setCurrentAudioDevice("سماعات");
+        PC_Details.setAudioDevices(new ArrayList<>());
         PC_Details.setVolumeLevel(35);
         PC_Details.setNotificationSoundFileName("Alarm01.wav");
     }

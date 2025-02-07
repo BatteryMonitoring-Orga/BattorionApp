@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.cybernate;
-import static com.battery_level_alarm.monitoring.core.BatteryLevelAlarm.*;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

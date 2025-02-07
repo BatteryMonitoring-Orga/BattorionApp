@@ -3,21 +3,21 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import com.battery_level_alarm.monitoring.core.BatteryLevelAlarm;
+import com.battery_level_alarm.monitoring.core.BattorionMain;
 
 public class call_resources {
 	public static ImageIcon getImage(String imageName) {
-		URL resource = BatteryLevelAlarm.class.getResource("/com/battery_level_alarm/monitoring/BattIco/" + imageName + ".png");
+		URL resource = BattorionMain.class.getResource("/com/battery_level_alarm/monitoring/" + imageName + ".png");
         if (resource == null) {
-            throw new IllegalArgumentException("File not found: /com/battery_level_alarm/monitoring/BattIco/" + imageName + ".png");
+            throw new IllegalArgumentException("File not found: /com/battery_level_alarm/monitoring/" + imageName + ".png");
         }
         
         return new ImageIcon(resource);
 	}
 
     public static ImageIcon getGif(String gifName) {
-        String path = "/com/battery_level_alarm/monitoring/BattIco/" + gifName + ".gif";
-        URL resource = BatteryLevelAlarm.class.getResource(path);
+        String path = "/com/battery_level_alarm/monitoring/" + gifName + ".gif";
+        URL resource = BattorionMain.class.getResource(path);
 
         if (resource == null) {
             System.err.println("Error: File not found - " + path);

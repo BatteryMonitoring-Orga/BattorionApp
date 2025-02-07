@@ -1,9 +1,7 @@
 package com.battery_level_alarm.monitoring.basics;
-import java.awt.Font;
-
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
 
 public class StaticQuestionnaire {
 	public static void aboutDispatch() {
@@ -24,49 +22,58 @@ public class StaticQuestionnaire {
                         + "</body></html>",
                 "About Battorion", JOptionPane.INFORMATION_MESSAGE);
     }
-	
-	public static String getHowToUseSettings(){
+
+    public static String getHowToUseSettings(){
         return """
-                1. Minimum Battery Level:
-                   Use this option to define the minimum battery level at which you want to receive alerts. For example, if set to 20%, you’ll be notified when the battery drops to this level.
-                
-                2. Maximum Battery Level:
-                   This setting lets you define the maximum battery level at which you want to receive alerts. For instance, if set to 85%, you’ll get notified when the battery is fully charged to avoid overcharging.
-                
-                3. Repeat Interval Before Risk Phase (in seconds):
-                   This option allows you to set the interval in seconds between each monitoring check before reaching the risk phase. For instance, you can configure it to check every 30 seconds before the primary alert sound is triggered at risk values.
-                
-                4. Sound Duration (in seconds):
-                   Use this setting to define how long the alert sound should play when triggered. For example, setting it to 10 seconds will ensure the sound lasts for 10 seconds.
-                
-                5. Enable Automatic Monitoring:
-                   Check this option to enable or disable automatic monitoring of battery levels. When enabled, the system will continuously monitor your battery and alert you based on the defined thresholds.
-                
-                6. Enable Primary Sound Alerts:
-                   Turn this option on to enable the primary sound notifications. These alerts will sound only when the battery reaches a critical condition, such as Minimum Level or Maximum Level levels.
-                
-                7. Enable Secondary Sound Alerts:
-                   Turn this option on to enable secondary sound notifications. These alerts will sound periodically before the battery reaches a critical condition, reminding you to take action proactively.
-                
-                8. Enable Charging/Discharging Sound:
-                   Plays a sound notification when the device is connected to or disconnected from the charger.
-                
-                9. Enable Text Alerts:
-                   Enable this option to receive text-based alerts on the screen. These notifications will provide details about the battery condition.
-                
-                10. Set the Default Sound:
-                    Enable this option to reset the sound path to the default sound provided by the application.
-                    When selected, the default sound file will be used for notifications, overriding any custom sound settings.
-                
-                11. Sound File Path:
-                    This field shows the current path of the audio file used for alerts. It allows you to verify or update the sound being used.
-                
-                12. Choose Sound File:
-                    Use this button to select a custom sound file from your device. The selected file will be used as the alert sound.
-                
-                13. Test Alarm Sound:
-                    Press this button to simulate the alarm sound and verify if it works as expected.""";
-	}
+            <html><body style='font-family:Serif; font-size:11px;'>
+            
+            <p>This panel allows you to configure various settings related to battery monitoring and alerts:</p>
+
+            <ol>
+                <li><b>Minimum Battery Level:</b><br>
+                    Define the minimum battery level at which you want to receive alerts. Example: If set to 20%, you'll be notified when the battery reaches this level.</li><br>
+
+                <li><b>Maximum Battery Level:</b><br>
+                    Set the maximum battery level for alerts. Example: If set to 85%, you'll get notified to avoid overcharging.</li><br>
+
+                <li><b>Repeat Interval Before Risk Phase (in seconds):</b><br>
+                    Set how often the system should check battery status before reaching a critical level. Example: Every 30 seconds.</li><br>
+
+                <li><b>Sound Duration (in seconds):</b><br>
+                    Define how long the alert sound should play. Example: Setting it to 10 seconds ensures the sound lasts for 10 seconds.</li><br>
+
+                <li><b>Enable Automatic Monitoring:</b><br>
+                    Turn on/off automatic monitoring of battery levels. The system will notify you based on the thresholds set.</li><br>
+
+                <li><b>Enable Primary Sound Alerts:</b><br>
+                    Enable sound alerts when battery reaches a critical level (Minimum/Maximum levels).</li><br>
+
+                <li><b>Enable Secondary Sound Alerts:</b><br>
+                    Enable periodic sound alerts before reaching a critical condition, reminding you in advance.</li><br>
+
+                <li><b>Enable Charging/Discharging Sound:</b><br>
+                    Play a sound when the device is connected/disconnected from the charger.</li><br>
+
+                <li><b>Enable Text Alerts:</b><br>
+                    Show text-based alerts on the screen with battery status details.</li><br>
+
+                <li><b>Set the Default Sound:</b><br>
+                    Reset the sound path to the default application sound, overriding custom settings.</li><br>
+
+                <li><b>Sound File Path:</b><br>
+                    Displays the current alert sound file path, allowing verification or updates.</li><br>
+
+                <li><b>Choose Sound File:</b><br>
+                    Select a custom sound file from your device for alerts.</li><br>
+
+                <li><b>Test Alarm Sound:</b><br>
+                    Click this button to simulate the alarm sound and check if it works properly.</li>
+            </ol>
+
+            <p>Adjust these settings as needed to ensure a seamless battery monitoring experience.</p>
+
+            </body></html>""";
+    }
 	
 	public static String getTempFilesExplanation() {
         return """
@@ -85,30 +92,115 @@ public class StaticQuestionnaire {
     }
 
     public static void aboutComputerSettingsDispatch() {
-        JOptionPane.showMessageDialog(null,
+        JEditorPane editorPane = getComputerSettingsEditorText();
+        editorPane.setEditable(false);
+        editorPane.setOpaque(false);
+        editorPane.addHyperlinkListener(e -> {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                if ("action:openSystemTrayNotification".equals(e.getDescription())) {
+                    aboutSystemTrayNotification();
+                } else if("action:openNotificationSound".equals(e.getDescription())){
+                    aboutPlaySounds();
+                }
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(editorPane);
+        scrollPane.setPreferredSize(new Dimension(500, 300));
+        SwingUtilities.invokeLater(() -> {
+            scrollPane.getVerticalScrollBar().setValue(0);
+            editorPane.setCaretPosition(0);
+        });
+        JOptionPane.showMessageDialog(null, scrollPane, "About Computer Settings Panel", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static JEditorPane getComputerSettingsEditorText(){
+        return new JEditorPane("text/html",
                 "<html><body style='font-family:Serif; font-size:11px;'>" +
                         "<p>This panel provides an intuitive interface to manage automated system behaviors, including:</p>" +
 
-                        "<ul>" +
-                        "<li><b>Activate the Awakening Feature:</b><br>" +
-                        "Enable or disable the automatic wake-up function for your PC.</li><br>" +
-                        "<li><b>Exchange Audio Output to Speaker:</b><br>" +
-                        "Switch audio output to speakers when a critical battery level is detected.</li><br>" +
-                        "<li><b>Exchange Audio Output to Last Used Device:</b><br>" +
-                        "Restore audio output to the previously used device after an event.</li><br>" +
-                        "<li><b>Select Audio Output Device:</b><br>" +
-                        "Choose the preferred audio output device from the available options.</li><br>" +
-                        "<li><b>Schedule Wake-Up Intervals:</b><br>" +
-                        "Set the frequency (in minutes) for automatically waking up your PC.</li><br>" +
-                        "<li><b>Set Volume Level (%):</b><br>" +
-                        "Adjust the default system volume to control alert sound intensity.</li><br>" +
-                        "<li><b>Customize Notification Sounds:</b><br>" +
-                        "Select and configure system notification sounds to match your preference.</li>" +
-                        "</ul>" +
+                        "<ol>" +
+                        "    <li><b>Wake-Up Features</b>" +
+                        "        <ul>" +
+                        "            <li><b>Activate Auto Wake-Up:</b><br>" +
+                        "                   Enable or disable the automatic wake-up function for your PC.</li>" +
+                        "            <li><b>Schedule Wake-Up Intervals:</b><br>" +
+                        "                   Set the frequency (in minutes) for automatically waking up your PC.</li>" +
+                        "        </ul>" +
+                        "    </li>" +
+                        "    <li><b>Audio Settings</b>" +
+                        "        <ul>" +
+                        "            <li><b>Exchange Output to Speaker:</b><br>" +
+                        "                   Switch audio output to speakers when a critical battery level is detected.</li>" +
+                        "            <li><b>Exchange Output to Last Used Device:</b><br>" +
+                        "                   Restore audio output to the previously used device after an event.</li>" +
+                        "        </ul>" +
+                        "    </li>" +
+                        "    <li><b>Additional Settings</b>" +
+                        "        <ul>" +
+                        "            <li><b>Select Audio Output Device:</b><br>" +
+                        "                   Choose the preferred audio output device from the available options.</li>" +
+                        "            <li><b>Set Volume Level (%):</b><br>" +
+                        "                   Adjust the default system volume to control alert sound intensity.</li>" +
+                        "            <li><b>Customize Notification Sounds:</b><br>" +
+                        "                   Select and configure system notification sounds to match your preference.</li>" +
+                        "        </ul>" +
+                        "    </li>" +
+                        "</ol>" +
 
                         "<p>All changes are saved automatically to ensure your settings persist across sessions.</p>" +
+                        "<p><a href='action:openSystemTrayNotification'>Click here to open 'About Notification'</a></p>" +
+                        "<p><a href='action:openNotificationSound'>Click here to open 'About Notification Sounds'</a></p>" +
+                        "</body></html>"
+        );
+    }
+
+    public static void aboutSystemTrayNotification() {
+        JOptionPane.showMessageDialog(null,
+                "<html><body style='font-family:Serif; font-size:11px;'>" +
+                        "<h2>About System Tray Notification</h2>" +
+                        "<p>This feature allows your application to display notifications in the system tray.</p>" +
+                        "<p>It includes options for showing alerts, playing sounds, and customizing notification messages.</p>" +
+
+                        "<h3>Key Features:</h3>" +
+                        "<ul>" +
+                        "    <li><b>Tray Icon:</b><br>" +
+                        "           Displays a notification icon in the system tray.</li>" +
+                        "    <li><b>Popup Menu:</b><br>" +
+                        "           Provides a right-click menu with options (e.g., stop program).</li>" +
+                        "    <li><b>Notifications:</b><br>" +
+                        "           Shows alerts with custom messages and sound.</li>" +
+                        "    <li><b>Timer Control:</b><br>" +
+                        "           Allows notifications to be repeated at set intervals.</li>" +
+                        "    <li><b>Custom Dialog:</b><br>" +
+                        "           Displays either a text message or a JPanel when the icon is clicked.</li>" +
+                        "</ul>" +
+
+                        "<p>This feature ensures that important notifications are delivered efficiently without interrupting workflow.</p>" +
                         "</body></html>",
-                "About Computer Settings Panel",
+                "System Tray Notification",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void aboutPlaySounds() {
+        JOptionPane.showMessageDialog(null,
+                "<html><body style='font-family:Serif; font-size:11px;'>" +
+                        "<h2>About Play Sounds</h2>" +
+                        "<p>This feature allows your application to play notification sounds when an alert is triggered.</p>" +
+
+                        "<h3>Key Features:</h3>" +
+                        "<ul>" +
+                        "    <li><b>Sound Playback:</b><br>" +
+                        "           Plays alarm sounds from the resources folder.</li>" +
+                        "    <li><b>Error Handling:</b><br>" +
+                        "           Displays an error message if the sound file is missing or unsupported.</li>" +
+                        "    <li><b>Audio Format Support:</b><br>" +
+                        "           Works with various sound file types.</li>" +
+                        "</ul>" +
+
+                        "<p>This feature ensures that users are alerted with an audio notification whenever needed.</p>" +
+                        "</body></html>",
+                "Play Sounds Feature",
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -236,15 +328,14 @@ public class StaticQuestionnaire {
     }
 
     public static JScrollPane Dispatch(Font textFont, String message) {
-    	JTextArea textArea = new JTextArea(message);
-    	textArea.setFont(textFont);
-        textArea.setEditable(false);
-        textArea.setWrapStyleWord(true);
-        textArea.setLineWrap(true);
-        textArea.setCaretPosition(0);
-        
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        JEditorPane editorPane = new JEditorPane("text/html", message);
+        editorPane.setFont(textFont);
+        editorPane.setEditable(false);
+        editorPane.setCaretPosition(0);
+
+        JScrollPane scrollPane = new JScrollPane(editorPane);
         scrollPane.setPreferredSize(new java.awt.Dimension(500, 300));
         return scrollPane;
-	}
+    }
+
 }

@@ -145,7 +145,7 @@ public class BattorionMain {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ImageIcon icon = CallResources.getImage("BattIco/13228401");
         mainFrame.setIconImage(icon.getImage());
-        mainFrame.setSize(700, 400);
+        mainFrame.setSize(width, height);
         mainFrame.setResizable(false);
         mainFrame.setLocationRelativeTo(null);
         

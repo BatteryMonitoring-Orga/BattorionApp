@@ -11,149 +11,135 @@ import com.battery_level_alarm.monitoring.core.FileManager;
 import org.jdesktop.swingx.border.DropShadowBorder;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.function.Supplier;
 
 public class DropDownList {
     private static final Font titleListsFont = new Font("Serif", Font.BOLD + Font.ITALIC, 14);
-    private static final Color borderForegroundColor = UIManager.getColor("Label.foreground");
-    private static DropShadowBorder shadow;
+    private static final Color DARK_GREEN = new Color(0, 140, 0);
+    public static Color borderForegroundColor;
+    public static Color panelBackgroundColor;
+    private static DropShadowBorder listShadow;
+    private static DropShadowBorder closedPanelShadow;
+    private static DropShadowBorder openedPanelShadow;
 
     private static void createShadowObject(){
-        shadow = new DropShadowBorder(
+        listShadow = new DropShadowBorder(
                 DropDownList.borderForegroundColor, 5, 0.5f, 5,
             true, true, true, true
         );
+        closedPanelShadow = new DropShadowBorder(
+                DropDownList.borderForegroundColor, 5, 0.5f, 5,
+                true, true, true, true
+        );
+        openedPanelShadow = new DropShadowBorder(
+                DARK_GREEN, 5, 0.5f, 5,
+                true, true, true, true
+        );
     }
 
-    public static JPanel prepareCheckLists(GridBagConstraints gbc){
+    public static JPanel prepareCheckLists(GridBagConstraints gbc) {
         createShadowObject();
-        JPanel Panel = new JPanel();
-        Panel.setLayout(new BoxLayout(Panel, BoxLayout.Y_AXIS));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(createTitlePanel("\u2003Do these procedures automatically:"));
 
-        JLabel mainTitle = new JLabel("\u2003Do these procedures automatically:");
-        mainTitle.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 16));
-        JPanel mainTitlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        mainTitlePanel.add(mainTitle);
+        panel.add(createChecklistSection("General Options ",
+                new Dimension(480, 170),
+                openedPanelShadow, closedPanelShadow, true,
+                () -> firstPartialPanel(gbc),
+                DropDownList::createFirstPartialPanelFooter)
+        );
+        panel.add(createChecklistSection("Audio Output " + ONE_SPACE,
+                new Dimension(480, 110),
+                openedPanelShadow, closedPanelShadow, false,
+                () -> secondPartialPanel(gbc),
+                DropDownList::createSecondPartialPanelFooter)
+        );
+        panel.add(createChecklistSection("Sound Level" + TWO_SPACE,
+                new Dimension(480, 110),
+                openedPanelShadow, closedPanelShadow, false,
+                () -> thirdPartialPanel(gbc),
+                DropDownList::createThirdPartialPanelFooter)
+        );
+        return panel;
+    }
 
-        JLabel generalList = new JLabel(ONE_SPACE + "▼ General Settings:");
-        generalList.setFont(titleListsFont);
-        JPanel generalListPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        generalListPanel.add(generalList);
+    private static JPanel createTitlePanel(String titleText) {
+        JLabel title = new JLabel(titleText);
+        title.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 16));
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        titlePanel.add(title);
+        return titlePanel;
+    }
 
-        JPanel firstPartialPanel = firstPartialPanel(gbc);
-        JPanel firstPartialFooter = createFirstPartialPanelFooter();
-        firstPartialPanel.setMaximumSize(new Dimension(480, 170));
-        firstPartialPanel.setPreferredSize(new Dimension(480, 170));
-        generalList.addMouseListener(new java.awt.event.MouseAdapter() {
+    private static JPanel createChecklistSection(
+            String title, Dimension listSize,
+            DropShadowBorder openedBorder, DropShadowBorder closedBorder,
+            boolean initiallyVisible,
+            Supplier<JPanel> panelSupplier,
+            Supplier<JPanel> footerSupplier
+    ){
+        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel separator = createSeparatorPanel(initiallyVisible? DARK_GREEN : panelBackgroundColor, 5);
+        JLabel titleLabel = new JLabel(ONE_SPACE + title + TEN_SPACE + TWO_SPACE + TWO_SPACE);
+        titleLabel.setFont(titleListsFont);
+        JLabel arrowLabel = new JLabel(initiallyVisible ? "▲" : "▼");
+
+        labelPanel.add(titleLabel);
+        labelPanel.add(separator);
+        labelPanel.add(arrowLabel);
+        labelPanel.setBorder(initiallyVisible ? openedBorder : closedBorder);
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(new JLabel(TWO_SPACE), BorderLayout.WEST);
+        mainPanel.add(labelPanel, BorderLayout.CENTER);
+        mainPanel.add(new JLabel(TWO_SPACE + " "), BorderLayout.EAST);
+
+        JPanel contentPanel = panelSupplier.get();
+        JPanel footerPanel = footerSupplier.get();
+        contentPanel.setMaximumSize(listSize);
+        contentPanel.setPreferredSize(listSize);
+        contentPanel.setVisible(initiallyVisible);
+        footerPanel.setVisible(initiallyVisible);
+
+        labelPanel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                firstPartialPanel.setVisible(!firstPartialPanel.isVisible());
-                firstPartialFooter.setVisible(firstPartialPanel.isVisible());
-                if(firstPartialPanel.isVisible()){
-                    generalList.setText(ONE_SPACE + "▼ General Settings:");
-                } else {
-                    generalList.setText(ONE_SPACE + "▶ General Settings ...");
-                }
+            public void mouseClicked(MouseEvent e) {
+                boolean isVisible = !contentPanel.isVisible();
+                contentPanel.setVisible(isVisible);
+                footerPanel.setVisible(isVisible);
+                arrowLabel.setText(isVisible ? "▲" : "▼");
+                separator.setBackground(isVisible ? DARK_GREEN : panelBackgroundColor);
+                labelPanel.setBorder(isVisible ? openedBorder : closedBorder);
             }
             @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                generalList.setForeground(Color.LIGHT_GRAY);
-                generalList.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            public void mouseEntered(MouseEvent e) {
+                titleLabel.setForeground(Color.LIGHT_GRAY);
+                arrowLabel.setForeground(Color.LIGHT_GRAY);
+                labelPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
             }
             @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                generalList.setForeground(UIManager.getColor("Label.Foreground"));
-                generalList.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            public void mouseExited(MouseEvent e) {
+                titleLabel.setForeground(UIManager.getColor("Label.Foreground"));
+                arrowLabel.setForeground(UIManager.getColor("Label.Foreground"));
+                labelPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
-        firstPartialPanel.setVisible(true);
-        firstPartialFooter.setVisible(true);
 
-        JLabel audioOutputList = new JLabel(ONE_SPACE + "▶ Audio Output ...");
-        audioOutputList.setFont(titleListsFont);
-        JPanel audioOutputListPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        audioOutputListPanel.add(audioOutputList);
-
-        JPanel secondPartialPanel = secondPartialPanel(gbc);
-        JPanel secondPartialFooter = createSecondPartialPanelFooter();
-        secondPartialPanel.setMaximumSize(new Dimension(480, 120));
-        secondPartialPanel.setPreferredSize(new Dimension(480, 120));
-        audioOutputList.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                secondPartialPanel.setVisible(!secondPartialPanel.isVisible());
-                secondPartialFooter.setVisible(secondPartialPanel.isVisible());
-                if(secondPartialPanel.isVisible()){
-                    audioOutputList.setText(ONE_SPACE + "▼ Audio Output:");
-                } else {
-                    audioOutputList.setText(ONE_SPACE + "▶ Audio Output ...");
-                }
-            }
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                audioOutputList.setForeground(Color.LIGHT_GRAY);
-                audioOutputList.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                audioOutputList.setForeground(UIManager.getColor("Label.Foreground"));
-                audioOutputList.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-        secondPartialPanel.setVisible(false);
-        secondPartialFooter.setVisible(false);
-
-        JLabel soundLevelList = new JLabel(ONE_SPACE + "▶ Sound Level ...");
-        soundLevelList.setFont(titleListsFont);
-        JPanel soundLevelListPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        soundLevelListPanel.add(soundLevelList);
-
-        JPanel thirdPartialPanel = thirdPartialPanel(gbc);
-        JPanel thirdPartialFooter = createThirdPartialPanelFooter();
-        thirdPartialPanel.setMaximumSize(new Dimension(480, 120));
-        thirdPartialPanel.setPreferredSize(new Dimension(480, 120));
-        soundLevelList.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                thirdPartialPanel.setVisible(!thirdPartialPanel.isVisible());
-                thirdPartialFooter.setVisible(thirdPartialPanel.isVisible());
-                if(thirdPartialPanel.isVisible()){
-                    soundLevelList.setText(ONE_SPACE + "▼ Sound Level:");
-                } else {
-                    soundLevelList.setText(ONE_SPACE + "▶ Sound Level ...");
-                }
-            }
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                soundLevelList.setForeground(Color.LIGHT_GRAY);
-                soundLevelList.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                soundLevelList.setForeground(UIManager.getColor("Label.Foreground"));
-                soundLevelList.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-        thirdPartialPanel.setVisible(false);
-        thirdPartialFooter.setVisible(false);
-
-        Panel.add(mainTitlePanel);
-        Panel.add(generalListPanel);
-        Panel.add(firstPartialPanel);
-        Panel.add(firstPartialFooter);
-        Panel.add(audioOutputListPanel);
-        Panel.add(secondPartialPanel);
-        Panel.add(secondPartialFooter);
-        Panel.add(soundLevelListPanel);
-        Panel.add(thirdPartialPanel);
-        Panel.add(thirdPartialFooter);
-        return Panel;
+        JPanel container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        container.add(mainPanel);
+        container.add(contentPanel);
+        container.add(footerPanel);
+        return container;
     }
 
     private static JPanel firstPartialPanel(GridBagConstraints gbc){
         JPanel firstPartialPanel = new JPanel(new GridBagLayout());
         firstPartialPanel.setOpaque(false);
-        firstPartialPanel.setBorder(shadow);
+        firstPartialPanel.setBorder(listShadow);
 
         int partialIndex = 0;
         String switched = isActivateTheAwakeningFeature()? "On":"Off";
@@ -178,7 +164,7 @@ public class DropDownList {
     }
 
     private static JPanel createFirstPartialPanelFooter(){
-        JLabel about = new JLabel("What do these options mean?" + TWO_SPACE);
+        JLabel about = new JLabel("▶ What do these options mean?" + TWO_SPACE);
         about.setFont(titleListsFont);
         addMouseListenerToLabel(
                 about,
@@ -189,15 +175,18 @@ public class DropDownList {
                 )
         );
 
-        JPanel aboutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        aboutPanel.add(about);
+        JPanel aboutPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        aboutPackage.add(about);
+        JPanel aboutPanel = new JPanel(new BorderLayout());
+        aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.SOUTH);
+        aboutPanel.add(aboutPackage, BorderLayout.CENTER);
         return aboutPanel;
     }
 
     private static JPanel secondPartialPanel(GridBagConstraints gbc){
         JPanel secondPartialPanel = new JPanel(new GridBagLayout());
         secondPartialPanel.setOpaque(false);
-        secondPartialPanel.setBorder(shadow);
+        secondPartialPanel.setBorder(listShadow);
 
         int partialIndex = 0;
         String toSpeaker = isEnableExchangeToSpeakerAudioOutput()? "On":"Off";
@@ -216,7 +205,7 @@ public class DropDownList {
     }
 
     private static JPanel createSecondPartialPanelFooter(){
-        JLabel about = new JLabel("What do these options mean?" + TWO_SPACE);
+        JLabel about = new JLabel("▶ What do these options mean?" + TWO_SPACE);
         about.setFont(titleListsFont);
         addMouseListenerToLabel(
                 about,
@@ -227,15 +216,18 @@ public class DropDownList {
                 )
         );
 
-        JPanel aboutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        aboutPanel.add(about);
+        JPanel aboutPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        aboutPackage.add(about);
+        JPanel aboutPanel = new JPanel(new BorderLayout());
+        aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.SOUTH);
+        aboutPanel.add(aboutPackage, BorderLayout.CENTER);
         return aboutPanel;
     }
 
     private static JPanel thirdPartialPanel(GridBagConstraints gbc){
         JPanel thirdPartialPanel = new JPanel(new GridBagLayout());
         thirdPartialPanel.setOpaque(false);
-        thirdPartialPanel.setBorder(shadow);
+        thirdPartialPanel.setBorder(listShadow);
 
         int partialIndex = 0;
         String toChangeSoundLevel = isEnablingSoundLevelChange()? "On":"Off";
@@ -254,7 +246,7 @@ public class DropDownList {
     }
 
     private static JPanel createThirdPartialPanelFooter(){
-        JLabel about = new JLabel("What do these options mean?" + TWO_SPACE);
+        JLabel about = new JLabel("▶ What do these options mean?" + TWO_SPACE);
         about.setFont(titleListsFont);
         addMouseListenerToLabel(
                 about,
@@ -265,8 +257,11 @@ public class DropDownList {
                 )
         );
 
-        JPanel aboutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        aboutPanel.add(about);
+        JPanel aboutPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        aboutPackage.add(about);
+        JPanel aboutPanel = new JPanel(new BorderLayout());
+        aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.SOUTH);
+        aboutPanel.add(aboutPackage, BorderLayout.CENTER);
         return aboutPanel;
     }
 
@@ -297,5 +292,12 @@ public class DropDownList {
 
     private static void displayPopUpMenu(JLabel about, JPopupMenu popupMenu){
         popupMenu.show(about, 0, about.getHeight());
+    }
+
+    public static JPanel createSeparatorPanel(Color separatorColor, int thickness) {
+        JPanel separator = new JPanel();
+        separator.setBackground(separatorColor);
+        separator.setPreferredSize(new Dimension(100, thickness));
+        return separator;
     }
 }

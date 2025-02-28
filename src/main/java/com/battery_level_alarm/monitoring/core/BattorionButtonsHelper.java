@@ -13,6 +13,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class BattorionButtonsHelper {
+    static final int width = 670;
+    static final int height = 370;
+
     public static JButton createButton(
             String title, String toolTip, ActionListener actionListener
     ){
@@ -45,7 +48,7 @@ public class BattorionButtonsHelper {
         setVisibleFalse();
         DashboardPanel.setVisible(true);
         motherPanel.add(DashboardPanel, BorderLayout.CENTER);
-        mainFrame.setSize(700, 400);
+        mainFrame.setSize(width, height);
     }
 
     public static void setUpSettingScrollPanel() {
@@ -60,7 +63,7 @@ public class BattorionButtonsHelper {
         SettingScrollPanel.setVisible(true);
         aboutSettingsButton.setVisible(true);
         motherPanel.add(SettingScrollPanel, BorderLayout.CENTER);
-        mainFrame.setSize(700, 400);
+        mainFrame.setSize(width, height);
     }
 
     public static void setUpPCSettingsScrollPanel() {
@@ -77,7 +80,7 @@ public class BattorionButtonsHelper {
         setVisibleFalse();
         pcSettingScrollPanel.setVisible(true);
         motherPanel.add(pcSettingScrollPanel, BorderLayout.CENTER);
-        mainFrame.setSize(700, 400);
+        mainFrame.setSize(width, height);
     }
 
     public static void setUpDiskInfoPanel() {
@@ -89,7 +92,7 @@ public class BattorionButtonsHelper {
         setVisibleFalse();
         DiskInfoPanel.setVisible(true);
         motherPanel.add(DiskInfoPanel, BorderLayout.CENTER);
-        mainFrame.setSize(700, 400);
+        mainFrame.setSize(width, height);
     }
 
     public static void setUpBatteryStatisticsPanel() {
@@ -101,6 +104,6 @@ public class BattorionButtonsHelper {
         setVisibleFalse();
         BatteryStatisticsPanel.setVisible(true);
         motherPanel.add(BatteryStatisticsPanel, BorderLayout.CENTER);
-        mainFrame.setSize(700, 400);
+        mainFrame.setSize(width, height);
     }
 }

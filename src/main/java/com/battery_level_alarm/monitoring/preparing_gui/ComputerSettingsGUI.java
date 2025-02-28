@@ -42,7 +42,7 @@ public class ComputerSettingsGUI {
             false,
             false,
             null,
-            new Dimension(160, 40)
+            new Dimension(120, 40)
     );
     public static final JTextField outputDeviceName = new JTextField();
 
@@ -57,11 +57,13 @@ public class ComputerSettingsGUI {
                 gbc, firstPanel, "About", Color.PINK,
                 StaticQuestionnaire::aboutComputerSettingsDispatch
         );
+
+        DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
+        DropDownList.panelBackgroundColor = UIManager.getColor("Panel.background");
         JPanel secondPanel = prepareCheckLists(gbc);
 
         int index = 0;
         JPanel thirdPanel = new JPanel(new GridBagLayout());
-
         setDimension(++index, 0);
         addSeparator(gbc, thirdPanel, 100);
         returnGBC$ToDefault(gbc);

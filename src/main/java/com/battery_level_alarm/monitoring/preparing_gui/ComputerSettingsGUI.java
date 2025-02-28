@@ -1,28 +1,32 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
-import static com.battery_level_alarm.monitoring.basics.ComputerSettings.isEnableExchangeToAudioOutputUsed;
-import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.*;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
+import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.command.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
-import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.*;
-import com.notifications.system_tray_notifications.basics.AlarmSounds;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToButtons.*;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.*;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.*;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToTextFields.*;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
+import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.prepareCheckLists;
+
+import com.battery_level_alarm.monitoring.configuration_records.*;
+import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
-import com.battery_level_alarm.monitoring.buttons_in_combo_box.ButtonsInComboBox;
-import com.battery_level_alarm.monitoring.buttons_in_combo_box.SoundItem;
+import com.battery_level_alarm.monitoring.command.CallCommandLine;
+import com.battery_level_alarm.monitoring.command.SoundVolumeReader;
+import com.notifications.system_tray_notifications.basics.AlarmSounds;
+import com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner;
+
 import com.battery_level_alarm.monitoring.core.FileManager;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public class ComputerSettingsGUI {
-    private static final Font toggleButtonsFont = new Font("Serif", Font.BOLD, 15);
-    private static final Font textFieldFont = new Font("Serif", Font.PLAIN, 14);
     private static final Color GREEN_COLOR = new Color(0, 150, 0);
     private static final String promptText = "Enter device name";
     private static final String[] DEVICE_STATUS_MESSAGES = {
@@ -32,34 +36,50 @@ public class ComputerSettingsGUI {
             "Removal failed",
             "Audio output set"
     };
-    private static ButtonGroup buttonGroup;
+    private static final ScrollConfiguration SCROLL_TEXT_FIELD_CONFIGURATION = new ScrollConfiguration(
+            false,
+            true,
+            false,
+            false,
+            null,
+            new Dimension(160, 40)
+    );
+    public static final JTextField outputDeviceName = new JTextField();
 
     public static JPanel createComputerSettingsGUI(AlarmSounds alarmSounds){
-        JPanel computerSettingsGui = new JPanel(new BorderLayout());
-        GridBagConstraints gbc = createGridBagConstraints();
-        JPanel firstPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel computerSettingsGui = new JPanel();
+        computerSettingsGui.setLayout(new BoxLayout(computerSettingsGui, BoxLayout.Y_AXIS));
+        GridBagConstraints gbc = createGridBagConstraints(GRID_BAG_CONSTRAINTS_CONFIGURATION);
+        JPanel firstPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         setButtonDefaultSize();
-        addButton(gbc, firstPanel, "About", 0, 0, e -> aboutComputerSettingsDispatch());
+        setDimension(0, 0);
+        addLabelWithMouseListener(
+                gbc, firstPanel, "About", Color.PINK,
+                StaticQuestionnaire::aboutComputerSettingsDispatch
+        );
+        JPanel secondPanel = prepareCheckLists(gbc);
 
         int index = 0;
-        JPanel secondPanel = new JPanel(new GridBagLayout());
-        String switched = isActivateTheAwakeningFeature()? "On":"Off";
-        String toSpeaker = isEnableExchangeToSpeakerAudioOutput()? "On":"Off";
-        String toUsed = isEnableExchangeToAudioOutputUsed()? "On":"Off";
+        JPanel thirdPanel = new JPanel(new GridBagLayout());
 
-        addLabel(gbc, secondPanel, "Do these procedures automatically:", index, 0);
-        addLabel(gbc, secondPanel, "Activate the awakening feature:", ++index, 0);
-        addToggleButton(gbc, secondPanel, ComputerSettings::setActivateTheAwakeningFeature, FileManager::saveComputerSettings, switched, index, 1, 120, 30);
-        addLabel(gbc, secondPanel, "Exchange to speaker audio output:", ++index, 0);
-        addToggleButton(gbc, secondPanel, ComputerSettings::setEnableExchangeToSpeakerAudioOutput, FileManager::saveComputerSettings, toSpeaker, index, 1, 120, 30);
-        addLabel(gbc, secondPanel, "Exchange to audio output used:", ++index, 0);
-        addToggleButton(gbc, secondPanel, ComputerSettings::setEnableExchangeToAudioOutputUsed, FileManager::saveComputerSettings, toUsed, index, 1, 120, 30);
-
-        addSeparator(gbc, secondPanel, 100, ++index, 0);
+        setDimension(++index, 0);
+        addSeparator(gbc, thirdPanel, 100);
         returnGBC$ToDefault(gbc);
+        setDimension(++index, 0);
+        addLabel(gbc, thirdPanel, "Active audio output device:");
+        outputDeviceName.setBackground(UIManager.getColor("TextField.background"));
+        outputDeviceName.setForeground(UIManager.getColor("TextField.foreground"));
+        JScrollPane textInScroll = addTextInScroll(
+                outputDeviceName, getCurrentAudioDevice(), textFieldFont,
+                false, false, SCROLL_TEXT_FIELD_CONFIGURATION
+        );
+        gbc.gridx = getColumn() + 1;
+        thirdPanel.add(textInScroll, gbc);
+
+        setDimension(++index, 0);
         JComboBox<String> audioDevicesComboBox = addComboBox(
-                gbc, secondPanel, "Select the audio device used", getAudioDevices().toArray(new String[0]),
-                getCurrentAudioDevice(), 4, ++index, 0, e -> {
+                gbc, thirdPanel, "Select the audio device used", getAudioDevices().toArray(new String[0]),
+                getCurrentAudioDevice(), 4, e -> {
                     if (e.getSource() instanceof JComboBox<?>) {
                         @SuppressWarnings("unchecked")
                         JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
@@ -67,36 +87,76 @@ public class ComputerSettingsGUI {
                         setCurrentAudioDevice(selectedSound);
                         FileManager.saveComputerSettings();
                     }
-                });
+                }, 160, 30);
 
-        addLabel(gbc, secondPanel, "Audio output device name:", ++index, 0);
-        JTextField audioDeviceName = addTextField(gbc, secondPanel, promptText, index, 1);
+        setDimension(++index, 0);
+        addLabel(gbc, thirdPanel, "Audio output device name:");
+        setColumn(1);
+        JTextField audioDeviceName = addTextField(gbc, thirdPanel, promptText);
         setPromptFeature(audioDeviceName, promptText, DEVICE_STATUS_MESSAGES);
         setDocumentListener(audioDeviceName, audioDevicesComboBox, promptText, DEVICE_STATUS_MESSAGES);
+        setDimension(++index, 1);
         buttonGroup = getGroupOfButtons(
-                gbc, secondPanel, getButtonNames(),
+                gbc, thirdPanel, getButtonNames(),
                 getButtonActions(audioDeviceName, audioDevicesComboBox),
-                getButtonNames().length, ++index, 1
+                getButtonNames().length
         );
-        addLabelWithMouseListener(gbc, secondPanel, "How do I select the audio output?", ++index, 0);
+        setDimension(++index, 0);
+        addLabelWithMouseListener(
+                gbc, thirdPanel, "How do I select the audio output?",
+                Color.CYAN, StaticQuestionnaire::aboutSoundSettingsGuide
+        );
 
-        addSeparator(gbc, secondPanel, 100, ++index, 0);
+        setDimension(++index, 0);
+        addSeparator(gbc, thirdPanel, 100);
         returnGBC$ToDefault(gbc);
-        addLabeledSpinner(gbc, secondPanel, "Wake up the PC every (in Minutes):", getWakeUpEvery(), 5, 1, 10, 1, ++index, 0,
+        SpinnerConfig wakeUpConfig = new SpinnerConfig(
+                "Wake up the PC every (in Minutes):",
+                getWakeUpEvery(), 5, 1, 10, 1,
+                ++index, 0, 180, 30,
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
                     setWakeUpEvery(value);
                     FileManager.saveComputerSettings();
-                });
-        addLabeledSpinner(gbc, secondPanel, "Set Volume Level (%):", ComputerSettings.getVolumeLevel(), 35, 20, 100, 1, ++index, 0,
+                }
+        );
+        JSpinner wakeUpConfigSpinner = RelatedToSpinner.createSpinner(wakeUpConfig, false);
+        addLabeledSpinner(gbc, thirdPanel, wakeUpConfig, wakeUpConfigSpinner);
+
+        int initialValue = (int) SoundVolumeReader.getVolumeLevel();
+        int stepSize = (initialValue % 2 == 0) ? 2 : 1;
+        setGridBagConstraintsInsets(gbc, new InsetsRecord(10, 10, 0, 10), true);
+        SpinnerConfig pcVolumeConfig = new SpinnerConfig(
+                "Set PC Volume Level (%):", initialValue,
+                35, 0, 100, stepSize, ++index, 0, 180, 30,
+                e -> {
+                    int percentage = getSpinnerValue((JSpinner) e.getSource(), 20, 35);
+                    CallCommandLine.setPCVolume(percentage);
+                }
+        );
+        JSpinner pcVolumeSpinner = RelatedToSpinner.createSpinner(pcVolumeConfig, true);
+        addLabeledSpinner(gbc, thirdPanel, pcVolumeConfig, pcVolumeSpinner);
+
+        setGridBagConstraintsInsets(gbc, new InsetsRecord(0, 10, 10, 10), true);
+        setDimension(++index, 1);
+        addLabel(gbc, thirdPanel, "  Use the spinner buttons only");
+        setGridBagConstraintsInsets(gbc, null, false);
+
+        SpinnerConfig volumeConfig = new SpinnerConfig(
+                "Set Alert Volume Level (%):", ComputerSettings.getVolumeLevel(),
+                35, 20, 100, 1, ++index, 0, 180, 30,
                 e -> {
                     int percentage = getSpinnerValue((JSpinner) e.getSource(), 20, 35);
                     ComputerSettings.setVolumeLevel(percentage);
                     FileManager.saveComputerSettings();
-                });
-
-        addButtonMixWithComboBox(gbc, secondPanel, "System Notification Sounds:", ++index, 0);
-        addComboBox(gbc, secondPanel, "Pick Your Notification Sound", getAlarmsArray(), getNotificationSoundFileName(), 5, ++index, 0,
+                }
+        );
+        JSpinner volumeSpinner = RelatedToSpinner.createSpinner(volumeConfig, false);
+        addLabeledSpinner(gbc, thirdPanel, volumeConfig, volumeSpinner);
+        setDimension(++index, 0);
+        addButtonMixWithComboBox(gbc, thirdPanel, "System Notification Sounds:");
+        setRow(++index);
+        addComboBox(gbc, thirdPanel, "Pick Your Notification Sound", getAlarmsArray(), getNotificationSoundFileName(), 5,
                 e -> {
                     if (e.getSource() instanceof JComboBox<?>) {
                         @SuppressWarnings("unchecked")
@@ -106,80 +166,12 @@ public class ComputerSettingsGUI {
                         alarmSounds.setSoundSequenceNumber(comboBox.getSelectedIndex() + 1);
                         FileManager.saveComputerSettings();
                     }
-                });
+                }, 180, 40);
 
-        computerSettingsGui.add(firstPanel, BorderLayout.NORTH);
-        computerSettingsGui.add(secondPanel, BorderLayout.CENTER);
+        computerSettingsGui.add(firstPanel);
+        computerSettingsGui.add(secondPanel);
+        computerSettingsGui.add(thirdPanel);
         return computerSettingsGui;
-    }
-
-    public static void addToggleButton(
-            GridBagConstraints gbc, JPanel panel, Consumer<Boolean> stateChangeHandler,
-            Runnable saveAction, String value, int row, int column, int width, int height
-    ){
-        JToggleButton toggleButton = new JToggleButton(value);
-        toggleButton.setPreferredSize(new Dimension(width, height));
-        toggleButton.setFont(toggleButtonsFont);
-        toggleButton.setSelected(value.equals("On"));
-        setColor(toggleButton, stateChangeHandler);
-        toggleButton.addActionListener(e -> {
-            setColor(toggleButton, stateChangeHandler);
-            saveAction.run();
-        });
-
-        gbc.gridx = column;
-        gbc.gridy = row;
-        panel.add(toggleButton, gbc);
-    }
-
-    private static void setColor(JToggleButton toggleButton, Consumer<Boolean> stateChangeHandler){
-        boolean isOn = toggleButton.isSelected();
-        toggleButton.setText(isOn ? "On" : "Off");
-        toggleButton.setBackground(isOn ? new Color(72, 201, 176) : Color.DARK_GRAY);
-        toggleButton.setForeground(isOn ? Color.BLACK : Color.WHITE);
-        stateChangeHandler.accept(isOn);
-    }
-
-    private static void addLabelWithMouseListener(GridBagConstraints gbc, JPanel panel, String text, int row, int column){
-        JLabel label = new JLabel(text);
-        label.setText("<html><u><b>" + label.getText() + "</b></u></html>");
-        label.setFont(DEFAULT_FONT);
-        addMouseListenerToLabel(label);
-        gbc.gridy = row;
-        gbc.gridx = column;
-        panel.add(label, gbc);
-    }
-
-    private static void addMouseListenerToLabel(JLabel label) {
-        label.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                aboutSoundSettingsGuide();
-            }
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                label.setForeground(Color.CYAN);
-                label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                label.setForeground(UIManager.getColor("Label.Foreground"));
-                label.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-    }
-
-    private static void addButtonMixWithComboBox(GridBagConstraints gbc, JPanel panel, String text, int row, int column){
-        JLabel label = new JLabel(text);
-        label.setFont(DEFAULT_FONT);
-        gbc.gridx = column;
-        gbc.gridy = row;
-        panel.add(label, gbc);
-
-        JComboBox<SoundItem> comboBox = ButtonsInComboBox.createModernComboBox();
-        gbc.gridx = ++column;
-        gbc.gridy = row;
-        panel.add(comboBox, gbc);
     }
 
     private static String[] getAlarmsArray(){
@@ -193,158 +185,12 @@ public class ComputerSettingsGUI {
         return data.toArray(new String[0]);
     }
 
-    private static JComboBox<String> addComboBox(
-            GridBagConstraints gbc, JPanel panel, String text,
-            String[] dataArray, String selectedItem,
-            int maximumRowCount, int row, int column,
-            ItemListener listener
-    ){
-        JLabel label = new JLabel(text);
-        label.setFont(DEFAULT_FONT);
-        gbc.gridx = column;
-        gbc.gridy = row;
-        panel.add(label, gbc);
-
-        JComboBox<String> comboBox = new JComboBox<>(dataArray);
-        comboBox.setFont(DEFAULT_FONT);
-        comboBox.setMaximumRowCount(maximumRowCount);
-        comboBox.setSelectedItem(selectedItem);
-        comboBox.addItemListener(listener);
-        gbc.gridx = ++column;
-        panel.add(comboBox, gbc);
-        return comboBox;
-    }
-
-    private static JTextField addTextField(GridBagConstraints gbc, JPanel panel, String text, int row, int column){
-        JTextField textField = new JTextField(text, 13);
-        textField.setFont(textFieldFont);
-        textField.setForeground(Color.GRAY);
-        gbc.gridy = row;
-        gbc.gridx = column;
-        panel.add(textField, gbc);
-        return textField;
-    }
-
-    private static void setPromptFeature(JTextField textField, String promptText, String[] DEVICE_STATUS_MESSAGES){
-        textField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (
-                        textField.getText().equals(promptText) ||
-                        Arrays.stream(DEVICE_STATUS_MESSAGES).anyMatch(
-                                msg -> msg.equals(textField.getText())
-                        )
-                ){
-                    textField.setText("");
-                    textField.setForeground(UIManager.getColor("TextField.Foreground"));
-                    buttonGroup.clearSelection();
-                }
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (textField.getText().isEmpty()) {
-                    textField.setText(promptText);
-                    textField.setForeground(Color.GRAY);
-                }
-            }
-        });
-    }
-
-    private static void setDocumentListener(
-            JTextField textField, JComboBox<String> comboBox,
-            String promptText, String[] DEVICE_STATUS_MESSAGES
-    ){
-        JPopupMenu popupMenu = new JPopupMenu();
-        textField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                expectedText(
-                        popupMenu, textField, comboBox,
-                        promptText, DEVICE_STATUS_MESSAGES
-                );
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                expectedText(
-                        popupMenu, textField, comboBox,
-                        promptText, DEVICE_STATUS_MESSAGES
-                );
-            }
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                expectedText(
-                        popupMenu, textField, comboBox,
-                        promptText, DEVICE_STATUS_MESSAGES
-                );
-            }
-
-
-        });
-    }
-
-    private static void expectedText(
-            JPopupMenu popupMenu, JTextField textField, JComboBox<String> comboBox,
-            String promptText, String[] DEVICE_STATUS_MESSAGES
-    ){
-        popupMenu.setVisible(false);
-        boolean hasMatches = false;
-
-        if(
-                textField.getText().equals(promptText)
-                        || Arrays.stream(DEVICE_STATUS_MESSAGES).anyMatch(
-                        msg -> msg.equals(textField.getText())
-                ) || textField.getText().isEmpty()
-        ){
-            return;
-        }
-
-        popupMenu.removeAll();
-        for (int i = 0; i < comboBox.getItemCount(); i++) {
-            String item = comboBox.getItemAt(i);
-            if (item.contains(textField.getText())) {
-                JMenuItem expectedTextItem = new JMenuItem(item);
-                int finalI = i;
-                expectedTextItem.addActionListener(
-                        e -> textField.setText(comboBox.getItemAt(finalI))
-                );
-                popupMenu.add(expectedTextItem);
-                hasMatches = true;
-            }
-        }
-
-        if (hasMatches) {
-            popupMenu.show(textField, 0, textField.getHeight());
-            textField.requestFocusInWindow();
-        }
-    }
-
-    private static ButtonGroup getGroupOfButtons(
-            GridBagConstraints gbc, JPanel panel,
-            String[] buttonNames, ActionListener[] actions,
-            int numberOfButtons, int row, int column
-    ){
-        JPanel groupPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        ButtonGroup group = new ButtonGroup();
-        for(int i=0; i < numberOfButtons; i++){
-            JRadioButton radioButton = new JRadioButton(buttonNames[i]);
-            radioButton.addActionListener(actions[i]);
-            group.add(radioButton);
-            groupPanel.add(radioButton);
-        }
-
-        gbc.gridx = column;
-        gbc.gridy = row;
-        panel.add(groupPanel, gbc);
-        return group;
-    }
-
     private static String[] getButtonNames(){
         return new String[]{"Add", "Delete", "Set as audio output"};
     }
-
     private static ActionListener[] getButtonActions(JTextField audioDeviceName, JComboBox<String> audioDevicesComboBox){
         return new ActionListener[]{
-                e -> {
+                _ -> {
                     boolean isAdded = ComputerSettings.setItemToAudioList(audioDeviceName.getText());
                     if(isAdded){
                         FileManager.saveComputerSettings();
@@ -356,7 +202,7 @@ public class ComputerSettingsGUI {
                         audioDeviceName.setForeground(Color.RED);
                     }
                 },
-                e -> {
+                _ -> {
                     boolean isDeleted = ComputerSettings.removeItemFromAudioList(audioDeviceName.getText());
                     if (isDeleted) {
                         FileManager.saveComputerSettings();
@@ -368,8 +214,9 @@ public class ComputerSettingsGUI {
                         audioDeviceName.setForeground(Color.RED);
                     }
                 },
-                e -> {
+                _ -> {
                     setSpeakerAsAnAudioOutput(audioDeviceName.getText());
+                    outputDeviceName.setText(audioDeviceName.getText());
                     audioDeviceName.setText(DEVICE_STATUS_MESSAGES[4]);
                     audioDeviceName.setForeground(GREEN_COLOR);
                 }

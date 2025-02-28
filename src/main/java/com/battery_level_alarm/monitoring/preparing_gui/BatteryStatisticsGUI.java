@@ -1,9 +1,9 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
-import com.notifications.system_tray_notifications.basics.AlarmSounds;
-import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.aboutBatteryStatisticsPanel;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
-import static com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI.*;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
+import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.aboutBatteryStatisticsPanel;
+import static com.battery_level_alarm.monitoring.gui_constraints.GUI_ComponentConstraints.setTableConstraints;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToButtons.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -13,12 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BatteryStatisticsGUI {
-    private static JPanel BatteryStatisticsPanel;
+    private static JPanel BatteryStatisticsPanel = new JPanel();
     public static JPanel getBatteryStatisticsPanel(){
         return BatteryStatisticsPanel;
     }
 
-    public static void createGUI(AlarmSounds alarmSounds){
+    public static void createGUI(){
+        BatteryStatisticsPanel.setLayout(new BoxLayout(BatteryStatisticsPanel, BoxLayout.Y_AXIS));
         JTable table = getJTable();
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -34,45 +35,25 @@ public class BatteryStatisticsGUI {
 
         JButton historyButton = new JButton("History");
         setButtonFontAndSize(historyButton, 80, 30);
-        historyButton.addActionListener(e -> {
+        historyButton.addActionListener(_ -> {
             JTabbedPane historyPanel = prepareHistoryPanel();
             JScrollPane historyScrollPane = new JScrollPane(historyPanel);
             historyScrollPane.setPreferredSize(new java.awt.Dimension(400, 200));
             JOptionPane.showMessageDialog(null, historyScrollPane, "📄 History", JOptionPane.INFORMATION_MESSAGE);
         });
 
-        JButton pcSettingsButton = new JButton("PC - Settings");
-        setButtonFontAndSize(pcSettingsButton, 120, 30);
-        pcSettingsButton.addActionListener(e ->{
-            JPanel pcDetailsPanel = ComputerSettingsGUI.createComputerSettingsGUI(alarmSounds);
-            JScrollPane historyScrollPane = new JScrollPane(pcDetailsPanel);
-            historyScrollPane.setPreferredSize(new java.awt.Dimension(550, 280));
-            JOptionPane.showMessageDialog(null, historyScrollPane, "PC Settings", JOptionPane.INFORMATION_MESSAGE);
-        });
-
         JButton aboutButton = new JButton("About This Panel");
         setButtonFontAndSize(aboutButton, 160, 30);
-        aboutButton.addActionListener(e ->{
-            aboutBatteryStatisticsPanel();
-        });
+        aboutButton.addActionListener(_ -> aboutBatteryStatisticsPanel());
 
-        JPanel packageButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setPreferredSize(new Dimension(360, 40));
-        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         buttonPanel.add(historyButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        buttonPanel.add(pcSettingsButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         buttonPanel.add(aboutButton);
-        packageButtons.add(buttonPanel);
 
         BatteryStatisticsPanel = new JPanel(new BorderLayout());
         BatteryStatisticsPanel.add(scrollPane, BorderLayout.CENTER);
-        BatteryStatisticsPanel.add(packageButtons, BorderLayout.SOUTH);
+        BatteryStatisticsPanel.add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private static JTable getJTable() {
@@ -86,7 +67,7 @@ public class BatteryStatisticsGUI {
         };
 
         String[] columns = {"\u2003Value\u2003", "\u2003" + isIn_ChargingMode + "\u2003", "\u2003" + isIn_DisChargingMode + "\u2003"};
-        return getJTable(data, columns);
+        return setTableConstraints(data, columns);
     }
 
     private static JTabbedPane prepareHistoryPanel(){
@@ -135,23 +116,6 @@ public class BatteryStatisticsGUI {
         JTextArea disTextArea = new JTextArea(history.toString());
         disTextArea.setEditable(false);
         return new JScrollPane(disTextArea);
-    }
-
-    private static JTable getJTable(String[][] data, String[] columns) {
-        JTable table = new JTable(data, columns) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-
-            @Override
-            public Class<?> getColumnClass(int column) {
-                return String.class;
-            }
-        };
-
-        table.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 13));
-        return table;
     }
 
     public static String convertMillisecondsToShortTime(long milliseconds) {

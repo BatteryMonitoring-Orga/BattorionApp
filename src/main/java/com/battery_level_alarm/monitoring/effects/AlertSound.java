@@ -2,11 +2,13 @@ package com.battery_level_alarm.monitoring.effects;
 import static com.battery_level_alarm.monitoring.command.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.isFromCriticalAlert;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.outputDeviceName;
 
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.command.CallCommandLine;
 
+import com.battery_level_alarm.monitoring.command.SoundVolumeReader;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import javax.sound.sampled.*;
@@ -21,6 +23,7 @@ public class AlertSound {
     private static Player player;
     private static Thread playThread;
 
+    private static double volumeLevel = 0.0;
     private static final int defaultSoundDuration = 1;
     public static boolean useDefaultDuration = false;
 
@@ -152,17 +155,40 @@ public class AlertSound {
         }
     }
 
-    private static void prepareBeforeStarting(){
-        CallCommandLine.setPCVolume(ComputerSettings.getVolumeLevel());
-        CallCommandLine.setSoundUnmute();
-        if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
-            setSpeakerAsAnAudioOutput("سماعات");
+    private static void prepareBeforeStarting() {
+        try{
+            if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
+                volumeLevel = SoundVolumeReader.getVolumeLevel();
+                Thread.sleep(100);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        String deviceName = "سماعات";
+        if(ComputerSettings.isEnablingSoundLevelChange()){
+            CallCommandLine.setPCVolume(ComputerSettings.getVolumeLevel());
+        } if(ComputerSettings.isEnableUnmuteVolumeAutomatically()){
+            CallCommandLine.setSoundUnmute();
+        } if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
+            setSpeakerAsAnAudioOutput(deviceName);
+            outputDeviceName.setText(deviceName);
         }
     }
 
     private static void prepareAfterEnding(){
         if(ComputerSettings.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
             setSpeakerAsAnAudioOutput(ComputerSettings.getCurrentAudioDevice());
+            outputDeviceName.setText(ComputerSettings.getCurrentAudioDevice());
+        }
+
+        try{
+            if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
+                CallCommandLine.setPCVolume((int) volumeLevel);
+                Thread.sleep(100);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

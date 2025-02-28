@@ -1,7 +1,6 @@
 package com.battery_level_alarm.monitoring.command;
 import static com.battery_level_alarm.monitoring.command.CallCommandLine.getOS;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
-
 import java.io.IOException;
 
 public class AudioOutput$CMD {

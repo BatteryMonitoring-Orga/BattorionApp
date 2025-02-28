@@ -1,10 +1,8 @@
 package com.battery_level_alarm.monitoring.core;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
-
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.effects.AlertSound;
-
 import java.awt.*;
 
 public class BatteryMode {
@@ -21,7 +19,6 @@ public class BatteryMode {
     }
 
     private static void exchangeMode(String mode){
-        isExchanged = true;
         calcSharpDifference(mode);
 
         if(lastMode.contains("Charging")){
@@ -54,7 +51,7 @@ public class BatteryMode {
         if(!status.equals(lastMode)){
             exchangeMode(lastMode);
             lastMode = status;
-            refreshBatteryStatisticsPanel();
+            BattorionPanelHelper.refreshBatteryStatisticsPanel();
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.battery_level_alarm.monitoring.cybernate;
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.effects.DisplayMessages;
-
 import java.awt.*;
 
 public class WakeUpPC {
@@ -13,7 +12,6 @@ public class WakeUpPC {
 		if(!checkThread()){
 			return;
 		}
-
 	    try {
 	        java.awt.Robot robot = new java.awt.Robot();
 			wakeUpThread = Thread.ofVirtual().start(() -> {

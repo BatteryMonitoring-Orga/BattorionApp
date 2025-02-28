@@ -1,10 +1,9 @@
 package com.battery_level_alarm.monitoring.command;
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.swing.JOptionPane;
-
-import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 public class CallCommandLine {
     public static String getOS() {

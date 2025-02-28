@@ -1,12 +1,10 @@
 package com.battery_level_alarm.monitoring.command;
+import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.swing.JOptionPane;
-
-import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
-
-import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 public class DiskSpaceInfo {
 	private static boolean isDestroyed = false;

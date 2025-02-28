@@ -1,15 +1,18 @@
 package com.battery_level_alarm.monitoring.basics;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ComputerSettings {
     private static boolean activateTheAwakeningFeature;
-    private static int wakeUpEvery;
+    private static boolean enableSystemNotificationSound;
+    private static boolean enableUnmuteVolumeAutomatically;
     private static boolean enableExchangeToSpeakerAudioOutput;
     private static boolean enableExchangeToAudioOutputUsed;
+    private static boolean enablingSoundLevelChange;
+    private static boolean restoringSoundLevelAfterAlert;
     private static List<String> audioDevices = new ArrayList<>();
     private static String currentAudioDevice;
+    private static int wakeUpEvery;
     private static int volumeLevel;
     private static String notificationSoundFileName;
 
@@ -18,6 +21,13 @@ public class ComputerSettings {
     }
     public static void setActivateTheAwakeningFeature(boolean activateTheAwakeningFeature){
         ComputerSettings.activateTheAwakeningFeature = activateTheAwakeningFeature;
+    }
+
+    public static boolean isEnableSystemNotificationSound(){
+        return enableSystemNotificationSound;
+    }
+    public static void setEnableSystemNotificationSound(boolean enableSystemNotificationSound){
+        ComputerSettings.enableSystemNotificationSound = enableSystemNotificationSound;
     }
 
     public static int getWakeUpEvery(){
@@ -39,6 +49,27 @@ public class ComputerSettings {
     }
     public static void setEnableExchangeToAudioOutputUsed(boolean enableExchangeToAudioOutputUsed) {
         ComputerSettings.enableExchangeToAudioOutputUsed = enableExchangeToAudioOutputUsed;
+    }
+
+    public static boolean isEnablingSoundLevelChange(){
+        return enablingSoundLevelChange;
+    }
+    public static void setEnablingSoundLevelChange(boolean enablingSoundLevelChange) {
+        ComputerSettings.enablingSoundLevelChange = enablingSoundLevelChange;
+    }
+
+    public static boolean isRestoringSoundLevelAfterAlert(){
+        return restoringSoundLevelAfterAlert;
+    }
+    public static void setRestoringSoundLevelAfterAlert(boolean restoringSoundLevelAfterAlert) {
+        ComputerSettings.restoringSoundLevelAfterAlert = restoringSoundLevelAfterAlert;
+    }
+
+    public static boolean isEnableUnmuteVolumeAutomatically(){
+        return enableUnmuteVolumeAutomatically;
+    }
+    public static void setEnableUnmuteVolumeAutomatically(boolean enableUnmuteVolumeAutomatically) {
+        ComputerSettings.enableUnmuteVolumeAutomatically = enableUnmuteVolumeAutomatically;
     }
 
     public static List<String> getAudioDevices(){

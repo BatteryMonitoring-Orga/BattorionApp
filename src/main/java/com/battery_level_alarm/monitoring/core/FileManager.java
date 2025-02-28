@@ -1,8 +1,9 @@
 package com.battery_level_alarm.monitoring.core;
+import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.progressBarInVerticalMode;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
-import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
+import com.battery_level_alarm.monitoring.effects.Appearance;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-import com.battery_level_alarm.monitoring.effects.Appearance;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -143,14 +143,18 @@ public class FileManager {
 
     private static JSONObject createComputerSettingsJson() {
         JSONObject json = new JSONObject();
-        json.put("Activate the awakening feature", ComputerSettings.isActivateTheAwakeningFeature());
-        json.put("Wake up the PC every (in Minutes)", ComputerSettings.getWakeUpEvery());
-        json.put("Switch audio output to Speakers", ComputerSettings.isEnableExchangeToSpeakerAudioOutput());
-        json.put("Switch audio output to the Used device", ComputerSettings.isEnableExchangeToAudioOutputUsed());
-        json.put("Current audio device", ComputerSettings.getCurrentAudioDevice());
-        json.put("Audio devices", ComputerSettings.getAudioDevices());
-        json.put("Volume Level", ComputerSettings.getVolumeLevel());
-        json.put("Notification Sound File Name", ComputerSettings.getNotificationSoundFileName());
+        json.put("Activate the awakening feature", isActivateTheAwakeningFeature());
+        json.put("Enable System Notification Sound", isEnableSystemNotificationSound());
+        json.put("Wake up the PC every (in Minutes)", getWakeUpEvery());
+        json.put("Switch audio output to Speakers", isEnableExchangeToSpeakerAudioOutput());
+        json.put("Switch audio output to the Used device", isEnableExchangeToAudioOutputUsed());
+        json.put("Enabling sound level change", isEnablingSoundLevelChange());
+        json.put("Restoring sound level after alert", isRestoringSoundLevelAfterAlert());
+        json.put("Enable unmute volume automatically", isEnableUnmuteVolumeAutomatically());
+        json.put("Current audio device", getCurrentAudioDevice());
+        json.put("Audio devices", getAudioDevices());
+        json.put("Volume Level", getVolumeLevel());
+        json.put("Notification Sound File Name", getNotificationSoundFileName());
         return json;
     }
 
@@ -171,14 +175,18 @@ public class FileManager {
 
     private static void loadComputerSettingsFromJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
-        ComputerSettings.setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
-        ComputerSettings.setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
-        ComputerSettings.setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
-        ComputerSettings.setEnableExchangeToAudioOutputUsed(json.optBoolean("Switch audio output to the Used device", true));
-        ComputerSettings.setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
+        setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
+        setEnableSystemNotificationSound(json.optBoolean("Enable System Notification Sound", true));
+        setEnableUnmuteVolumeAutomatically(json.optBoolean("Enable unmute volume automatically", true));
+        setEnableExchangeToSpeakerAudioOutput(json.optBoolean("Switch audio output to Speakers", true));
+        setEnableExchangeToAudioOutputUsed(json.optBoolean("Switch audio output to the Used device", true));
+        setEnablingSoundLevelChange(json.optBoolean("Enabling sound level change", true));
+        setRestoringSoundLevelAfterAlert(json.optBoolean("Restoring sound level after alert", true));
+        setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
+        setVolumeLevel(json.optInt("Volume Level", 35));
+        setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
         loadAudioDevicesList(json);
-        ComputerSettings.setVolumeLevel(json.optInt("Volume Level", 35));
-        ComputerSettings.setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
+        setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
     }
 
     private static void loadAudioDevicesList(JSONObject json){
@@ -189,18 +197,22 @@ public class FileManager {
                 audioDevicesList.add(audioDevicesArray.optString(i, ""));
             }
         }
-        ComputerSettings.setAudioDevices(audioDevicesList);
+        setAudioDevices(audioDevicesList);
     }
 
     public static void loadDefaultComputerSettings(){
-        ComputerSettings.setActivateTheAwakeningFeature(false);
-        ComputerSettings.setWakeUpEvery(2);
-        ComputerSettings.setEnableExchangeToSpeakerAudioOutput(true);
-        ComputerSettings.setEnableExchangeToAudioOutputUsed(true);
-        ComputerSettings.setCurrentAudioDevice("سماعات");
-        ComputerSettings.setAudioDevices(new ArrayList<>());
-        ComputerSettings.setVolumeLevel(35);
-        ComputerSettings.setNotificationSoundFileName("Alarm01.wav");
+        setActivateTheAwakeningFeature(false);
+        setEnableSystemNotificationSound(true);
+        setEnableUnmuteVolumeAutomatically(true);
+        setEnableExchangeToSpeakerAudioOutput(true);
+        setEnableExchangeToAudioOutputUsed(true);
+        setEnablingSoundLevelChange(true);
+        setRestoringSoundLevelAfterAlert(true);
+        setWakeUpEvery(2);
+        setVolumeLevel(35);
+        setCurrentAudioDevice("سماعات");
+        setAudioDevices(new ArrayList<>());
+        setNotificationSoundFileName("Alarm01.wav");
     }
 
     private static void printErrorMessage(Throwable e, String loggerText){

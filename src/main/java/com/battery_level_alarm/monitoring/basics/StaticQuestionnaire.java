@@ -74,27 +74,40 @@ public class StaticQuestionnaire {
 
             </body></html>""";
     }
-	
-	public static String getTempFilesExplanation() {
+
+    public static String getTempFilesExplanation() {
         return """
-                Temporary files (Temp files) are created by programs and the operating system to store data that is only needed for a limited period of time.
-                
-                These files are usually safe to delete, but in some cases, they might contain important data needed for running applications or updating the system.
-                
-                Here is why deleting Temp files is important:
-                1. Free up disk space: Over time, Temp files can accumulate and consume disk space.
-                
-                2. Improve system performance: Clearing Temp files can help speed up your system by removing unnecessary files.
-                
-                3. Prevent errors: Sometimes, Temp files can cause application errors or conflicts. Removing them can prevent issues.
-                
-                However, be cautious while deleting Temp files, as some files might still be in use or needed by certain programs.""";
+            <html>
+                <body style="font-family: Serif, sans-serif; padding: 10px;">
+                    <h2>What Are Temporary Files?</h2>
+                    <p>
+                        Temporary files (<b>Temp files</b>) are created by programs and the operating system 
+                        to store data that is only needed for a limited period of time.
+                    </p>
+                    <p>
+                        These files are usually safe to delete, but in some cases, they might contain 
+                        important data needed for running applications or updating the system.
+                    </p><br>
+                    <h3>Why Should You Delete Temp Files?</h3>
+                    <ul>
+                        <li><b>Free up disk space:</b> Over time, Temp files can accumulate and consume disk space.</li>
+                        <li><b>Improve system performance:</b> Clearing Temp files can help speed up your system by removing unnecessary files.</li>
+                        <li><b>Prevent errors:</b> Sometimes, Temp files can cause application errors or conflicts. Removing them can prevent issues.</li>
+                    </ul><br>
+                    <p style="color: red; font-weight: bold;">
+                        However, be cautious while deleting Temp files, as some files might still be in use or needed by certain programs.
+                    </p>
+                </body>
+            </html>
+            """;
     }
 
     public static void aboutComputerSettingsDispatch() {
         JEditorPane editorPane = getComputerSettingsEditorText();
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
+        editorPane.setFocusable(false);
+        editorPane.setHighlighter(null);
         editorPane.addHyperlinkListener(e -> {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 if ("action:openSystemTrayNotification".equals(e.getDescription())) {
@@ -107,6 +120,8 @@ public class StaticQuestionnaire {
 
         JScrollPane scrollPane = new JScrollPane(editorPane);
         scrollPane.setPreferredSize(new Dimension(500, 300));
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
         SwingUtilities.invokeLater(() -> {
             scrollPane.getVerticalScrollBar().setValue(0);
             editorPane.setCaretPosition(0);
@@ -331,11 +346,15 @@ public class StaticQuestionnaire {
         JEditorPane editorPane = new JEditorPane("text/html", message);
         editorPane.setFont(textFont);
         editorPane.setEditable(false);
+        editorPane.setOpaque(false);
+        editorPane.setFocusable(false);
+        editorPane.setHighlighter(null);
         editorPane.setCaretPosition(0);
 
         JScrollPane scrollPane = new JScrollPane(editorPane);
         scrollPane.setPreferredSize(new java.awt.Dimension(500, 300));
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
         return scrollPane;
     }
-
 }

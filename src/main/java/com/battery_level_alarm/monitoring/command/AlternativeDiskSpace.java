@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.command;
+import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -6,8 +7,6 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import javax.swing.JOptionPane;
 import java.util.concurrent.atomic.AtomicLong;
-
-import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 
 public class AlternativeDiskSpace {
     private static String filesNumber = "";
@@ -43,9 +42,9 @@ public class AlternativeDiskSpace {
             AtomicLong deletedFiles = new AtomicLong();
             AtomicLong failedFiles = new AtomicLong();
             
-            Files.walkFileTree(tempPath, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(tempPath, new SimpleFileVisitor<>() {
                 @Override
-                public @NotNull FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                public @NotNull FileVisitResult visitFile(Path file, @NotNull BasicFileAttributes attrs) {
                     try {
                         Files.delete(file);
                         deletedFiles.incrementAndGet();
@@ -54,13 +53,13 @@ public class AlternativeDiskSpace {
                     }
                     return FileVisitResult.CONTINUE;
                 }
-                
+
                 @Override
                 public @NotNull FileVisitResult postVisitDirectory(Path dir, IOException exc) {
                     try {
                         Files.delete(dir);
                     } catch (IOException e) {
-                    	failedFiles.incrementAndGet();
+                        failedFiles.incrementAndGet();
                     }
                     return FileVisitResult.CONTINUE;
                 }
@@ -87,9 +86,9 @@ public class AlternativeDiskSpace {
             AtomicLong totalSize = new AtomicLong();
             AtomicLong totalFiles = new AtomicLong();
             
-            Files.walkFileTree(tempPath, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(tempPath, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                public @NotNull FileVisitResult visitFile(Path file, @NotNull BasicFileAttributes attrs) {
                     totalSize.addAndGet(attrs.size());
                     totalFiles.incrementAndGet();
                     return FileVisitResult.CONTINUE;

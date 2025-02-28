@@ -1,20 +1,21 @@
 package com.battery_level_alarm.monitoring.core;
+import com.battery_level_alarm.monitoring.basics.UserChoices;
+import com.battery_level_alarm.monitoring.effects.AlertSound;
+
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
-import com.battery_level_alarm.monitoring.basics.UserChoices;
-import com.battery_level_alarm.monitoring.effects.AlertSound;
-
 public class HandleLevel {
 	private static int counter = 0;
+    public static final String SPACE = "\u2003\u2003";
 	
     public static void handleHighBattery(JProgressBar batteryBar, JLabel alertLabel, Color batteryColor) throws InterruptedException {
         SwingUtilities.invokeLater(() -> {
         	batteryBar.setForeground(batteryColor);
-        	alertLabel.setText("Battery is high! Please unplug the charger.");
+        	alertLabel.setText(SPACE + "Battery is high! Please unplug the charger.");
         });
         if(UserChoices.isEnablePrimarySound()) {
         	AlertSound.playSound(UserChoices.getSoundPath());
@@ -31,7 +32,7 @@ public class HandleLevel {
     public static void handleLowBattery(JProgressBar batteryBar, JLabel alertLabel, Color batteryColor) throws InterruptedException {
         SwingUtilities.invokeLater(() -> {
         	batteryBar.setForeground(batteryColor);
-        	alertLabel.setText("Battery is low! Please charge.");
+        	alertLabel.setText(SPACE + "Battery is low! Please charge.");
         });
         if(UserChoices.isEnablePrimarySound()) {
         	AlertSound.playSound(UserChoices.getSoundPath());

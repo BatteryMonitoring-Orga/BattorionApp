@@ -1,9 +1,8 @@
 package com.battery_level_alarm.monitoring.battery_simulation;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.batteryLevel;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
-import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.DEFAULT_FONT;
-import static com.battery_level_alarm.monitoring.preparing_gui.SettingsGUI.getSpinnerValue;
-
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.getSpinnerValue;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
 import com.battery_level_alarm.monitoring.effects.CallResources;
 import com.battery_level_alarm.monitoring.core.FileManager;
 
@@ -74,7 +73,7 @@ public class BatteryIcon extends JPanel {
     private static void StartSimulator(){
         simulator = new Timer(
                 1000,
-                e -> updateChargeLevel(batteryLevel)
+                _ -> updateChargeLevel(batteryLevel)
         );
         simulator.start();
     }
@@ -121,9 +120,9 @@ public class BatteryIcon extends JPanel {
         JSpinner spinner = new JSpinner(new SpinnerNumberModel(spinnerValue, 0, 100, 1));
         spinner.setFont(DEFAULT_FONT);
         spinner.setPreferredSize(new Dimension(80, 30));
-        spinner.addChangeListener(e -> {
-            spinnerValue = getSpinnerValue((JSpinner) e.getSource(), 0, chargeLevel);
-        });
+        spinner.addChangeListener(
+                e -> spinnerValue = getSpinnerValue((JSpinner) e.getSource(), 0, chargeLevel)
+        );
         panel.add(spinner);
         return panel;
     }

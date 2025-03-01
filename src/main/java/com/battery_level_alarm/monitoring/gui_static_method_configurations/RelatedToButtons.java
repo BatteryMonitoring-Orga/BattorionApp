@@ -2,6 +2,9 @@ package com.battery_level_alarm.monitoring.gui_static_method_configurations;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.getColumn;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.getRow;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
+import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.updateProgressBars;
+
+import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
 import com.battery_level_alarm.monitoring.configuration_records.SoundItem;
 
 import javax.swing.*;
@@ -77,7 +80,8 @@ public class RelatedToButtons {
 
     public static void addToggleButton(
             GridBagConstraints gbc, JPanel panel, Consumer<Boolean> stateChangeHandler,
-            Runnable saveAction, String value, int width, int height
+            Runnable saveAction, String value, int width, int height,
+            ProgressBarValueUpdater progressBarValueUpdater, boolean isFromDropDownList
     ){
         JToggleButton toggleButton = new JToggleButton(value);
         toggleButton.setPreferredSize(new Dimension(width, height));
@@ -87,6 +91,9 @@ public class RelatedToButtons {
         toggleButton.addActionListener(_ -> {
             setColor(toggleButton, stateChangeHandler);
             saveAction.run();
+            if(isFromDropDownList){
+                updateProgressBars(progressBarValueUpdater);
+            }
         });
 
         gbc.gridx = getColumn();

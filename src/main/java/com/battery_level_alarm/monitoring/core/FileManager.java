@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.core;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.basics.DropDownListStatus.*;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.progressBarInVerticalMode;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
@@ -16,9 +17,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FileManager {
-    private static final String CONFIG_PANEL_MODE_FILE = "_general.cfg";
-    private static final String CONFIG_SETTINGS_FILE_PATH = "_settings.cfg";
-    private static final String PC_SETTINGS_FILE_PATH = "_pc-settings.cfg";
+    private static final String CONFIG_PANEL_MODE_FILE = "./_general.cfg";
+    private static final String CONFIG_DROP_DOWN_LIST_FILE = "./_dropdown-list.cfg";
+    private static final String CONFIG_SETTINGS_FILE_PATH = "./_settings.cfg";
+    private static final String PC_SETTINGS_FILE_PATH = "./_pc-settings.cfg";
     private static final Logger logger = Logger.getLogger(FileManager.class.getName());
 
     public static void saveGeneralConfigurations(){
@@ -64,6 +66,51 @@ public class FileManager {
         progressBarInVerticalMode = false;
         simulatorMode = false;
         Appearance.setThemeName("Light");
+    }
+
+    public static void saveDropDownListConfigurations(){
+        JSONObject json = createDropDownListConfigurationsJson();
+        try (FileWriter file = new FileWriter(CONFIG_DROP_DOWN_LIST_FILE)) {
+            file.write(json.toString(4));
+        } catch (IOException e) {
+            printErrorMessage(e, "Failed to save drop down list states");
+        }
+    }
+
+    private static JSONObject createDropDownListConfigurationsJson() {
+        JSONObject json = new JSONObject();
+        json.put("first drop down list", isFirstEnabled());
+        json.put("second drop down list", isSecondEnabled());
+        json.put("third drop down list", isThirdEnabled());
+        return json;
+    }
+
+    public static void loadDropDownListConfigurations(){
+        try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG_DROP_DOWN_LIST_FILE))) {
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            loadDropDownListConfigurationsJson(jsonContent);
+        } catch (IOException | JSONException e) {
+            printErrorMessage(e, "Failed to load drop down list mode");
+            loadDefaultDropDownListConfigurations();
+            saveDropDownListConfigurations();
+        }
+    }
+
+    private static void loadDropDownListConfigurationsJson(StringBuilder jsonContent){
+        JSONObject json = new JSONObject(jsonContent.toString());
+        setFirstEnabled(json.optBoolean("first drop down list", true));
+        setSecondEnabled(json.optBoolean("second drop down list", false));
+        setThirdEnabled(json.optBoolean("third drop down list", false));
+    }
+
+    private static void loadDefaultDropDownListConfigurations() {
+        setFirstEnabled(true);
+        setSecondEnabled(false);
+        setThirdEnabled(false);
     }
 
     public static void saveSettings() {

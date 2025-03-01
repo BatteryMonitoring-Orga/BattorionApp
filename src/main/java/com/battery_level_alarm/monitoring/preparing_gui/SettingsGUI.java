@@ -31,7 +31,7 @@ public class SettingsGUI {
             false,
             false,
             null,
-            new Dimension(520, 50)
+            new Dimension(500, 50)
     );
     private static final ScrollConfiguration SCROLL_PANEL_CONFIGURATION = new ScrollConfiguration(
             false,
@@ -130,23 +130,43 @@ public class SettingsGUI {
         setDimension(++index, 0);
         addLabel(gbc, firstPartPanel, "Enable Automatic Monitoring:");
         setColumn(1);
-        addToggleButton(gbc, firstPartPanel, UserChoices::setAutoMonitoring, FileManager::saveSettings, automatic, 80, 30);
+        addToggleButton(
+                gbc, firstPartPanel, UserChoices::setAutoMonitoring,
+                FileManager::saveSettings, automatic, 80, 30,
+                null, false
+        );
         setDimension(++index, 0);
         addLabel(gbc, firstPartPanel, "Enable Primary Sound Alerts:");
         setColumn(1);
-        addToggleButton(gbc, firstPartPanel, UserChoices::setEnablePrimarySound, FileManager::saveSettings, primarySound, 80, 30);
+        addToggleButton(
+                gbc, firstPartPanel, UserChoices::setEnablePrimarySound,
+                FileManager::saveSettings, primarySound, 80, 30,
+                null, false
+        );
         setDimension(++index, 0);
         addLabel(gbc, firstPartPanel, "Enable Secondary Sound Alerts:");
         setColumn(1);
-        addToggleButton(gbc, firstPartPanel, UserChoices::setEnableSecondarySound, FileManager::saveSettings, secondarySound, 80, 30);
+        addToggleButton(
+                gbc, firstPartPanel, UserChoices::setEnableSecondarySound,
+                FileManager::saveSettings, secondarySound, 80, 30,
+                null, false
+        );
         setDimension(++index, 0);
         addLabel(gbc, firstPartPanel, "Enable Charging/Discharging Sound:");
         setColumn(1);
-        addToggleButton(gbc, firstPartPanel, UserChoices::setEnableChargeAndDischargeSound, FileManager::saveSettings, chargingSound, 80, 30);
+        addToggleButton(
+                gbc, firstPartPanel, UserChoices::setEnableChargeAndDischargeSound,
+                FileManager::saveSettings, chargingSound, 80, 30,
+                null, false
+        );
         setDimension(++index, 0);
         addLabel(gbc, firstPartPanel, "Enable Text Alerts:");
         setColumn(1);
-        addToggleButton(gbc, firstPartPanel, UserChoices::setEnableText, FileManager::saveSettings, textAlert, 80, 30);
+        addToggleButton(
+                gbc, firstPartPanel, UserChoices::setEnableText,
+                FileManager::saveSettings, textAlert, 80, 30,
+                null, false
+        );
         return firstPartPanel;
     }
 

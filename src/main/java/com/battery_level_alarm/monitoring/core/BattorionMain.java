@@ -115,6 +115,7 @@ public class BattorionMain {
 
         loadSettings();
         loadComputerSettings();
+        loadDropDownListConfigurations();
         DiskSpaceInfo.DiskSpace();
         PrepareDiskInfoGUI.createGUI();
         BatteryStatisticsGUI.createGUI();

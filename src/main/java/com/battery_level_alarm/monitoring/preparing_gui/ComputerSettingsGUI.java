@@ -59,7 +59,6 @@ public class ComputerSettingsGUI {
         );
 
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
-        DropDownList.panelBackgroundColor = UIManager.getColor("Panel.background");
         JPanel secondPanel = prepareCheckLists(gbc);
 
         int index = 0;

@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.abou
 import static com.battery_level_alarm.monitoring.core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.core.BattorionButtonsHelper.*;
 import static com.battery_level_alarm.monitoring.core.BattorionPanelHelper.*;
-import static com.battery_level_alarm.monitoring.core.FileManager.*;
+import static com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager.*;
 import static com.battery_level_alarm.monitoring.core.HandleLevel.*;
 import static com.battery_level_alarm.monitoring.command.CallCommandLine.*;
 import static com.battery_level_alarm.monitoring.core.BattorionProgressBarHelper.*;
@@ -14,6 +14,8 @@ import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.applyScrollConfigurationDetails;
 
 import com.battery_level_alarm.monitoring.configuration_records.ScrollConfiguration;
+import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.main_folder_manager.EssentialToolsDownloader;
 import com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject;
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
@@ -91,6 +93,7 @@ public class BattorionMain {
 	public static void main(String[] args) {
         loadGeneralConfigurations();
         Appearance.theme_setup();
+        EssentialToolsDownloader.Downloader();
         SingletonObject.singletonMethod();
 	}
 
@@ -343,7 +346,7 @@ public class BattorionMain {
         themeButton.setIcon(new ImageIcon(themeIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         themeButton.addActionListener(_ -> {
             Appearance.switchToOtherMode();
-            FileManager.saveGeneralConfigurations();
+            ConfigurationFilesManager.saveGeneralConfigurations();
             rebuild();
         });
         themeButton.addMouseListener(new MouseAdapter() {

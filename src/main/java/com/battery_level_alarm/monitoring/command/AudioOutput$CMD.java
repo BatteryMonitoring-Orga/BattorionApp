@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.command;
+import static com.battery_level_alarm.monitoring.command.CallCommandLine.NIR_CMD_PATH;
 import static com.battery_level_alarm.monitoring.command.CallCommandLine.getOS;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import java.io.IOException;
@@ -10,7 +11,7 @@ public class AudioOutput$CMD {
         }
 
         if (os.contains("win")) {
-            String nircmdPath = ".\\nircmd\\nircmd.exe";
+            String nircmdPath = NIR_CMD_PATH + "/nircmd.exe";
             if (!new java.io.File(nircmdPath).exists()) {
                 throw new UnsupportedOperationException("File not found: " + nircmdPath);
             }

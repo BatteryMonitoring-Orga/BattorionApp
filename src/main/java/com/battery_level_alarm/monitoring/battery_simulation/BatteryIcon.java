@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMod
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.getSpinnerValue;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
 import com.battery_level_alarm.monitoring.effects.CallResources;
-import com.battery_level_alarm.monitoring.core.FileManager;
+import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -105,7 +105,7 @@ public class BatteryIcon extends JPanel {
         checkBox.setSelected(simulatorMode);
         checkBox.addActionListener(e -> {
             simulatorMode = ((JCheckBox) e.getSource()).isSelected();
-            FileManager.saveGeneralConfigurations();
+            ConfigurationFilesManager.saveGeneralConfigurations();
         });
         panel.add(checkBox);
         return panel;

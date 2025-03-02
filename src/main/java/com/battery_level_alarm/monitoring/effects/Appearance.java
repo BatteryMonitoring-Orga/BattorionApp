@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.effects;
 import com.battery_level_alarm.monitoring.core.BattorionMain;
-import com.battery_level_alarm.monitoring.core.FileManager;
+import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 import com.formdev.flatlaf.intellijthemes.*;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme;
@@ -69,14 +69,14 @@ public class Appearance {
             borderColor = Color.BLACK;
             iconName = toDarkThemeIcon;
             themeName = "Light";
-            FileManager.saveGeneralConfigurations();
+            ConfigurationFilesManager.saveGeneralConfigurations();
             BattorionMain.rebuild();
         });
         darkMenuItem.addActionListener(e -> {
             borderColor = Color.WHITE;
             iconName = toLightThemeIcon;
             themeName = "Dark";
-            FileManager.saveGeneralConfigurations();
+            ConfigurationFilesManager.saveGeneralConfigurations();
             BattorionMain.rebuild();
         });
         timeBasedFirstOptionMenuItem.addActionListener(e -> {
@@ -193,7 +193,7 @@ public class Appearance {
     }
 
     private static void restart(){
-        FileManager.saveGeneralConfigurations();
+        ConfigurationFilesManager.saveGeneralConfigurations();
         BattorionMain.rebuild();
     }
 }

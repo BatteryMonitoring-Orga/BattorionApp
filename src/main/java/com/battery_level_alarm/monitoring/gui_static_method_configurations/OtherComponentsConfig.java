@@ -11,8 +11,9 @@ public class OtherComponentsConfig {
     public static final Font DEFAULT_FONT = new Font("Serif", Font.BOLD, 14);
     public static final Font textFieldFont = new Font("Serif", Font.PLAIN, 14);
 
-    public static final String ONE_SPACE = "\u2003 ";
+    public static final String ONE_SPACE = "\u2003";
     public static final String TWO_SPACE = "\u2003\u2003";
+    public static final String FOUR_SPACE = "\u2003\u2003\u2003\u2003";
     public static final String TEN_SPACE = "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003";
 
     public static JComboBox<String> addComboBox(

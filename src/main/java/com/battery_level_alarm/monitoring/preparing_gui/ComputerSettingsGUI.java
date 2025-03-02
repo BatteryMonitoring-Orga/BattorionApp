@@ -18,7 +18,7 @@ import com.battery_level_alarm.monitoring.command.SoundVolumeReader;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 import com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner;
 
-import com.battery_level_alarm.monitoring.core.FileManager;
+import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,7 +86,7 @@ public class ComputerSettingsGUI {
                         JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
                         setCurrentAudioDevice(selectedSound);
-                        FileManager.saveComputerSettings();
+                        ConfigurationFilesManager.saveComputerSettings();
                     }
                 }, 160, 30);
 
@@ -118,7 +118,7 @@ public class ComputerSettingsGUI {
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
                     setWakeUpEvery(value);
-                    FileManager.saveComputerSettings();
+                    ConfigurationFilesManager.saveComputerSettings();
                 }
         );
         JSpinner wakeUpConfigSpinner = RelatedToSpinner.createSpinner(wakeUpConfig, false);
@@ -149,7 +149,7 @@ public class ComputerSettingsGUI {
                 e -> {
                     int percentage = getSpinnerValue((JSpinner) e.getSource(), 20, 35);
                     ComputerSettings.setVolumeLevel(percentage);
-                    FileManager.saveComputerSettings();
+                    ConfigurationFilesManager.saveComputerSettings();
                 }
         );
         JSpinner volumeSpinner = RelatedToSpinner.createSpinner(volumeConfig, false);
@@ -165,7 +165,7 @@ public class ComputerSettingsGUI {
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
                         setNotificationSoundFileName(selectedSound);
                         alarmSounds.setSoundSequenceNumber(comboBox.getSelectedIndex() + 1);
-                        FileManager.saveComputerSettings();
+                        ConfigurationFilesManager.saveComputerSettings();
                     }
                 }, 180, 40);
 
@@ -194,7 +194,7 @@ public class ComputerSettingsGUI {
                 _ -> {
                     boolean isAdded = ComputerSettings.setItemToAudioList(audioDeviceName.getText());
                     if(isAdded){
-                        FileManager.saveComputerSettings();
+                        ConfigurationFilesManager.saveComputerSettings();
                         audioDevicesComboBox.addItem(audioDeviceName.getText());
                         audioDeviceName.setText(DEVICE_STATUS_MESSAGES[0]);
                         audioDeviceName.setForeground(GREEN_COLOR);
@@ -206,7 +206,7 @@ public class ComputerSettingsGUI {
                 _ -> {
                     boolean isDeleted = ComputerSettings.removeItemFromAudioList(audioDeviceName.getText());
                     if (isDeleted) {
-                        FileManager.saveComputerSettings();
+                        ConfigurationFilesManager.saveComputerSettings();
                         audioDevicesComboBox.removeItem(audioDeviceName.getText());
                         audioDeviceName.setText(DEVICE_STATUS_MESSAGES[2]);
                         audioDeviceName.setForeground(GREEN_COLOR);

@@ -11,7 +11,7 @@ import com.battery_level_alarm.monitoring.core.BattorionPanelHelper;
 import com.battery_level_alarm.monitoring.configuration_records.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.configuration_records.SpinnerConfig;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
-import com.battery_level_alarm.monitoring.core.FileManager;
+import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.effects.AlertSound;
 import com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner;
 
@@ -71,7 +71,7 @@ public class SettingsGUI {
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 10, 25);
                     UserChoices.setMinimumLevel(value);
-                    FileManager.saveSettings();
+                    ConfigurationFilesManager.saveSettings();
                 }
         );
         JSpinner minBatteryConfigSpinner = RelatedToSpinner.createSpinner(minBatteryConfig, false);
@@ -84,7 +84,7 @@ public class SettingsGUI {
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 80, 85);
                     UserChoices.setMaximumLevel(value);
-                    FileManager.saveSettings();
+                    ConfigurationFilesManager.saveSettings();
                 }
         );
         JSpinner maxBatteryConfigSpinner = RelatedToSpinner.createSpinner(maxBatteryConfig, false);
@@ -99,7 +99,7 @@ public class SettingsGUI {
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 1, 1);
                     UserChoices.setRepeatIntervalBeforeRiskPhase(value);
-                    FileManager.saveSettings();
+                    ConfigurationFilesManager.saveSettings();
                 }
         );
         JSpinner repeatIntervalConfigSpinner = RelatedToSpinner.createSpinner(repeatIntervalConfig, false);
@@ -112,7 +112,7 @@ public class SettingsGUI {
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
                     UserChoices.setSoundDuration(value);
-                    FileManager.saveSettings();
+                    ConfigurationFilesManager.saveSettings();
                 }
         );
         JSpinner soundDurationConfigSpinner = RelatedToSpinner.createSpinner(soundDurationConfig, false);
@@ -132,7 +132,7 @@ public class SettingsGUI {
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setAutoMonitoring,
-                FileManager::saveSettings, automatic, 80, 30,
+                ConfigurationFilesManager::saveSettings, automatic, 80, 30,
                 null, false
         );
         setDimension(++index, 0);
@@ -140,7 +140,7 @@ public class SettingsGUI {
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnablePrimarySound,
-                FileManager::saveSettings, primarySound, 80, 30,
+                ConfigurationFilesManager::saveSettings, primarySound, 80, 30,
                 null, false
         );
         setDimension(++index, 0);
@@ -148,7 +148,7 @@ public class SettingsGUI {
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnableSecondarySound,
-                FileManager::saveSettings, secondarySound, 80, 30,
+                ConfigurationFilesManager::saveSettings, secondarySound, 80, 30,
                 null, false
         );
         setDimension(++index, 0);
@@ -156,7 +156,7 @@ public class SettingsGUI {
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnableChargeAndDischargeSound,
-                FileManager::saveSettings, chargingSound, 80, 30,
+                ConfigurationFilesManager::saveSettings, chargingSound, 80, 30,
                 null, false
         );
         setDimension(++index, 0);
@@ -164,7 +164,7 @@ public class SettingsGUI {
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnableText,
-                FileManager::saveSettings, textAlert, 80, 30,
+                ConfigurationFilesManager::saveSettings, textAlert, 80, 30,
                 null, false
         );
         return firstPartPanel;
@@ -193,7 +193,7 @@ public class SettingsGUI {
                 _ -> {
                     UserChoices.setSoundPath(DEFAULT_SOUND_PATH);
                     pathField.setText(DEFAULT_SOUND_PATH);
-                    FileManager.saveSettings();
+                    ConfigurationFilesManager.saveSettings();
                     BattorionPanelHelper.refreshSettingsPanel();
                 });
 
@@ -218,7 +218,7 @@ public class SettingsGUI {
                         }
 
                         UserChoices.setSoundPath(soundPath);
-                        FileManager.saveSettings();
+                        ConfigurationFilesManager.saveSettings();
                         BattorionPanelHelper.refreshSettingsPanel();
                     }
                 });

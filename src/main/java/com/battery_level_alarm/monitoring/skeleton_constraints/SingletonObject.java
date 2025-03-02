@@ -10,7 +10,7 @@ import java.nio.channels.FileLock;
 
 public class SingletonObject {
     private static final String LOCK_FILE_NAME = "bat_locker.lock";
-    private static final String LOCK_FILE_PATH =
+    public static final String MAIN_FOLDER_PATH =
             System.getProperty("user.home") + File.separator + "Battorion";
 
     private static FileLock lock = null;
@@ -18,7 +18,7 @@ public class SingletonObject {
     private static File lockFile;
 
     public static void singletonMethod() {
-        File lockDir = new File(LOCK_FILE_PATH);
+        File lockDir = new File(MAIN_FOLDER_PATH);
         if (!lockDir.exists()) {
             lockDir.mkdir();
         }

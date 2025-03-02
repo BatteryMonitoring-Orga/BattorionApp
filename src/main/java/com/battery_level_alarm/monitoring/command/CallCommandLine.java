@@ -1,11 +1,14 @@
 package com.battery_level_alarm.monitoring.command;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.swing.JOptionPane;
 
 public class CallCommandLine {
+    public static final String NIR_CMD_PATH = MAIN_FOLDER_PATH + "/NirCMD-main/NirCMD";
     public static String getOS() {
         return System.getProperty("os.name").toLowerCase();
     }
@@ -49,7 +52,7 @@ public class CallCommandLine {
 
     private static ProcessBuilder getProcessBuilderForVolume(String os, int percentage) throws UnsupportedOperationException {
         if (os.toLowerCase().contains("win")) {
-            String nircmdPath = ".\\nircmd\\nircmd.exe";
+            String nircmdPath = NIR_CMD_PATH + "/nircmd.exe";
             if (!new java.io.File(nircmdPath).exists()) {
                 throw new UnsupportedOperationException("File not found: " + nircmdPath);
             }
@@ -80,7 +83,7 @@ public class CallCommandLine {
 
     private static ProcessBuilder getProcessBuilderForUnmute(String os) throws UnsupportedOperationException {
         if (os.toLowerCase().contains("win")) {
-            String nircmdPath = ".\\nircmd\\nircmd.exe";
+            String nircmdPath = NIR_CMD_PATH + "/nircmd.exe";
             if (!new java.io.File(nircmdPath).exists()) {
                 throw new UnsupportedOperationException("File not found: " + nircmdPath);
             }

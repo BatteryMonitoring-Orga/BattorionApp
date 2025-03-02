@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.command;
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.effects.DisplayMessages;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,10 +11,12 @@ import java.nio.file.Paths;
 
 public class SoundVolumeReader {
     private static double mainValue = 0.0;
+    private static final String SVCL_PATH = MAIN_FOLDER_PATH + "/svcl-x64-main/svcl-x64";
+
     private static void returnVolumeLevel() {
         Thread thread = new Thread(() -> {
             try {
-                String exePath = Paths.get(".\\svcl-x64", "svcl.exe").normalize().toAbsolutePath().toString();
+                String exePath = Paths.get(SVCL_PATH, "svcl.exe").normalize().toAbsolutePath().toString();
                 System.out.println(exePath);
                 if (!new File(exePath).exists()) {
                     System.out.println("Error: Executable file not found!");

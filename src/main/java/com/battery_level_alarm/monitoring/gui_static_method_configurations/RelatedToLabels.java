@@ -7,9 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RelatedToLabels {
-    public static void addLabel(GridBagConstraints gbc, JPanel panel, String label) {
+    public static void addLabel(GridBagConstraints gbc, JPanel panel, String label, Font font) {
         JLabel jLabel = new JLabel(label);
-        jLabel.setFont(DEFAULT_FONT);
+        jLabel.setFont(font);
         gbc.gridy = getRow();
         gbc.gridx = getColumn();
         panel.add(jLabel, gbc);

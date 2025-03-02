@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 
 public class BattorionButtonsHelper {
     static final int width = 670;
-    static final int height = 370;
+    static final int height = 400;
 
     public static JButton createButton(
             String title, String toolTip, ActionListener actionListener

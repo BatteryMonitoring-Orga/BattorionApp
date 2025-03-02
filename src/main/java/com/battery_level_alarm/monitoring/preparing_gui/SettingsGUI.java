@@ -91,7 +91,7 @@ public class SettingsGUI {
         addLabeledSpinner(gbc, firstPartPanel, maxBatteryConfig, maxBatteryConfigSpinner);
 
         setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Repeat Interval: ");
+        addLabel(gbc, firstPartPanel, "Repeat Interval: ", DEFAULT_FONT);
         SpinnerConfig repeatIntervalConfig = new SpinnerConfig(
                 "5 minutes before the risk phase (in Seconds):",
                 UserChoices.getRepeatIntervalBeforeRiskPhase(), 1, 1, 60, 1,
@@ -128,7 +128,7 @@ public class SettingsGUI {
         String textAlert = UserChoices.isEnableText()? "On":"Off";
 
         setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Automatic Monitoring:");
+        addLabel(gbc, firstPartPanel, "Enable Automatic Monitoring:", DEFAULT_FONT);
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setAutoMonitoring,
@@ -136,7 +136,7 @@ public class SettingsGUI {
                 null, false
         );
         setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Primary Sound Alerts:");
+        addLabel(gbc, firstPartPanel, "Enable Primary Sound Alerts:", DEFAULT_FONT);
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnablePrimarySound,
@@ -144,7 +144,7 @@ public class SettingsGUI {
                 null, false
         );
         setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Secondary Sound Alerts:");
+        addLabel(gbc, firstPartPanel, "Enable Secondary Sound Alerts:", DEFAULT_FONT);
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnableSecondarySound,
@@ -152,7 +152,7 @@ public class SettingsGUI {
                 null, false
         );
         setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Charging/Discharging Sound:");
+        addLabel(gbc, firstPartPanel, "Enable Charging/Discharging Sound:", DEFAULT_FONT);
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnableChargeAndDischargeSound,
@@ -160,7 +160,7 @@ public class SettingsGUI {
                 null, false
         );
         setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Text Alerts:");
+        addLabel(gbc, firstPartPanel, "Enable Text Alerts:", DEFAULT_FONT);
         setColumn(1);
         addToggleButton(
                 gbc, firstPartPanel, UserChoices::setEnableText,
@@ -198,9 +198,9 @@ public class SettingsGUI {
                 });
 
         setRow(++index);
-        addLabel(gbc, centerPanel, "Sound File Path: ");
+        addLabel(gbc, centerPanel, "Sound File Path: ", DEFAULT_FONT);
         setColumn(1);
-        addLabel(gbc, centerPanel, "\u2003");
+        addLabel(gbc, centerPanel, "\u2003", DEFAULT_FONT);
         setDimension(index, 2);
         setButtonSize(200, 30);
         addButton(gbc, centerPanel, "Choose Sound",
@@ -224,9 +224,9 @@ public class SettingsGUI {
                 });
 
         setDimension(++index, 0);
-        addLabel(gbc, centerPanel, "Simulation of alarm sound: ");
+        addLabel(gbc, centerPanel, "Simulation of alarm sound: ", DEFAULT_FONT);
         setColumn(1);
-        addLabel(gbc, centerPanel, "\u2003");
+        addLabel(gbc, centerPanel, "\u2003", DEFAULT_FONT);
         setButtonDefaultSize();
         setDimension(index, 2);
         addButton(gbc, centerPanel, "  ⏯  ",

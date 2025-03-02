@@ -67,7 +67,7 @@ public class ComputerSettingsGUI {
         addSeparator(gbc, thirdPanel, 100);
         returnGBC$ToDefault(gbc);
         setDimension(++index, 0);
-        addLabel(gbc, thirdPanel, "Active audio output device:");
+        addLabel(gbc, thirdPanel, "Active audio output device:", DEFAULT_FONT);
         outputDeviceName.setBackground(UIManager.getColor("TextField.background"));
         outputDeviceName.setForeground(UIManager.getColor("TextField.foreground"));
         JScrollPane textInScroll = addTextInScroll(
@@ -91,7 +91,7 @@ public class ComputerSettingsGUI {
                 }, 160, 30);
 
         setDimension(++index, 0);
-        addLabel(gbc, thirdPanel, "Audio output device name:");
+        addLabel(gbc, thirdPanel, "Audio output device name:", DEFAULT_FONT);
         setColumn(1);
         JTextField audioDeviceName = addTextField(gbc, thirdPanel, promptText);
         setPromptFeature(audioDeviceName, promptText, DEVICE_STATUS_MESSAGES);
@@ -140,7 +140,7 @@ public class ComputerSettingsGUI {
 
         setGridBagConstraintsInsets(gbc, new InsetsRecord(0, 10, 10, 10), true);
         setDimension(++index, 1);
-        addLabel(gbc, thirdPanel, "  Use the spinner buttons only");
+        addLabel(gbc, thirdPanel, "  Use the spinner buttons only", DEFAULT_FONT);
         setGridBagConstraintsInsets(gbc, null, false);
 
         SpinnerConfig volumeConfig = new SpinnerConfig(

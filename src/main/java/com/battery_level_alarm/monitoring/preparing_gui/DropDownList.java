@@ -23,10 +23,12 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class DropDownList {
-    private static final Font titleListsFont = new Font("Serif", Font.BOLD + Font.ITALIC, 14);
+    private static final Font TITLE_LISTS_FONT = new Font("Serif", Font.BOLD + Font.ITALIC, 15);
+    public static final Font LABELS_FONT = new Font("Serif", Font.BOLD, 15);
     private static final Color DARK_GREEN = new Color(0, 140, 0);
+    private static final Color DARK_CYAN = new Color(0, 128, 128);
     public static Color borderForegroundColor;
-    private static DropShadowBorder contentListShadow;
+    private static DropShadowBorder containerListShadow;
     private static DropShadowBorder closedPanelShadow;
     private static DropShadowBorder openedPanelShadow;
 
@@ -59,17 +61,17 @@ public class DropDownList {
     }
 
     private static void createShadowObject(){
-        contentListShadow = new DropShadowBorder(
+        containerListShadow = new DropShadowBorder(
                 DARK_GREEN, 8, 0.8f, 8,
-            false, true, true, true
+            true, true, true, true
         );
         closedPanelShadow = new DropShadowBorder(
-                DropDownList.borderForegroundColor, 5, 0.5f, 5,
+                DropDownList.borderForegroundColor, 8, 0.8f, 8,
                 true, true, true, true
         );
         openedPanelShadow = new DropShadowBorder(
-                DARK_GREEN, 8, 0.8f, 8,
-                true, true, false, true
+                DARK_CYAN, 5, 0.5f, 5,
+                false, false, true, false
         );
     }
 
@@ -77,38 +79,43 @@ public class DropDownList {
         createShadowObject();
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
         panel.add(createTitlePanel("   Do these procedures automatically:"));
 
         int firstTrueCount = countTrueValues(FirstPartialTrueArray);
         int firstPercentage = calculatePercentage(firstTrueCount, FirstPartialTrueArray.length);
         firstProgressBar = createProgressBar(borderForegroundColor, 6, firstPercentage);
-        panel.add(createChecklistSection("General Options ",
+        JPanel checklist1 = createChecklistSection("General Options ",
                 new Dimension(480, 210),
                 openedPanelShadow, closedPanelShadow, isFirstEnabled(),
                 firstProgressBar, () -> firstPartialPanel(gbc),
-                DropDownListStatus::setFirstEnabled
-        ));
+                DropDownListStatus::setFirstEnabled);
+        checklist1.setAlignmentY(Component.TOP_ALIGNMENT);
 
         int secondTrueCount = countTrueValues(SecondPartialTrueArray);
         int secondPercentage = calculatePercentage(secondTrueCount, SecondPartialTrueArray.length);
         secondProgressBar = createProgressBar(borderForegroundColor, 6, secondPercentage);
-        panel.add(createChecklistSection(
-                "Audio Output " + ONE_SPACE,
+        JPanel checklist2 = createChecklistSection("Audio Output " + ONE_SPACE,
                 new Dimension(480, 160),
                 openedPanelShadow, closedPanelShadow, isSecondEnabled(),
                 secondProgressBar, () -> secondPartialPanel(gbc),
-                DropDownListStatus::setSecondEnabled
-        ));
+                DropDownListStatus::setSecondEnabled);
+        checklist2.setAlignmentY(Component.TOP_ALIGNMENT);
 
         int thirdTrueCount = countTrueValues(ThirdPartialTrueArray);
         int thirdPercentage = calculatePercentage(thirdTrueCount, ThirdPartialTrueArray.length);
         thirdProgressBar = createProgressBar(borderForegroundColor, 6, thirdPercentage);
-        panel.add(createChecklistSection("Sound Level" + TWO_SPACE,
+        JPanel checklist3 = createChecklistSection("Sound Level" + TWO_SPACE,
                 new Dimension(480, 160),
                 openedPanelShadow, closedPanelShadow, isThirdEnabled(),
                 thirdProgressBar, () -> thirdPartialPanel(gbc),
-                DropDownListStatus::setThirdEnabled
-        ));
+                DropDownListStatus::setThirdEnabled);
+        checklist3.setAlignmentY(Component.TOP_ALIGNMENT);
+
+        panel.add(checklist1);
+        panel.add(checklist2);
+        panel.add(checklist3);
         return panel;
     }
 
@@ -131,30 +138,35 @@ public class DropDownList {
         JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel firstSpace = new JLabel(ONE_SPACE);
         JCheckBox checkBox = new JCheckBox(title);
-        checkBox.setFont(titleListsFont);
+        checkBox.setFont(TITLE_LISTS_FONT);
         checkBox.setSelected(initiallyVisible);
         JLabel secondSpace = new JLabel(TEN_SPACE + FOUR_SPACE);
         JLabel arrowLabel = new JLabel(initiallyVisible ? "\u2003▲" : "\u2003▼");
 
+        JPanel mainPanel = new JPanel(new BorderLayout());
         labelPanel.add(firstSpace);
         labelPanel.add(checkBox);
         labelPanel.add(secondSpace);
         labelPanel.add(progressBar);
         labelPanel.add(arrowLabel);
         labelPanel.setBorder(initiallyVisible ? openedBorder : closedBorder);
-
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(new JLabel(TWO_SPACE + " "), BorderLayout.WEST);
         mainPanel.add(labelPanel, BorderLayout.CENTER);
-        mainPanel.add(new JLabel(TWO_SPACE + " "), BorderLayout.EAST);
 
         JPanel contentPanel = panelSupplier.get();
-        JPanel footerPanel = new JPanel(new BorderLayout());
-        footerPanel.add(new JLabel(TWO_SPACE), BorderLayout.CENTER);
         contentPanel.setMaximumSize(listSize);
         contentPanel.setPreferredSize(listSize);
         contentPanel.setVisible(initiallyVisible);
+
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        footerPanel.add(new JLabel(TWO_SPACE), BorderLayout.CENTER);
         footerPanel.setVisible(initiallyVisible);
+
+        JPanel container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        setContainerSpecifications(container, (int) listSize.getHeight(), initiallyVisible);
+        container.setAlignmentX(Component.CENTER_ALIGNMENT);
+        container.add(mainPanel);
+        container.add(contentPanel);
 
         Runnable toggleVisibilityRunnable = () -> {
             boolean isVisible = !contentPanel.isVisible();
@@ -163,19 +175,21 @@ public class DropDownList {
             footerPanel.setVisible(isVisible);
             arrowLabel.setText(isVisible ? "\u2003▲" : "\u2003▼");
             labelPanel.setBorder(isVisible ? openedBorder : closedBorder);
+
+            setContainerSpecifications(container, (int) listSize.getHeight(), isVisible);
             setStateConsumer.accept(isVisible);
             saveDropDownListConfigurations();
         };
-        checkBox.addActionListener(e -> SwingUtilities.invokeLater(toggleVisibilityRunnable));
+        checkBox.addActionListener(_ -> SwingUtilities.invokeLater(toggleVisibilityRunnable));
         addMouseListenerToComponent(labelPanel, toggleVisibilityRunnable, false, labelPanel, checkBox, arrowLabel);
         addMouseListenerToComponent(checkBox, toggleVisibilityRunnable, true, labelPanel, checkBox, arrowLabel);
 
-        JPanel container = new JPanel();
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-        container.add(mainPanel);
-        container.add(contentPanel);
-        container.add(footerPanel);
-        return container;
+        JPanel mainContainer = new JPanel(new BorderLayout());
+        mainContainer.add(new JLabel(TWO_SPACE + " "), BorderLayout.WEST);
+        mainContainer.add(container, BorderLayout.CENTER);
+        mainContainer.add(new JLabel(TWO_SPACE + " "), BorderLayout.EAST);
+        mainContainer.add(footerPanel, BorderLayout.SOUTH);
+        return mainContainer;
     }
 
     private static void addMouseListenerToComponent(
@@ -207,17 +221,16 @@ public class DropDownList {
     private static JPanel firstPartialPanel(GridBagConstraints gbc){
         JPanel firstPartialPanel = new JPanel(new BorderLayout());
         firstPartialPanel.setOpaque(false);
-        firstPartialPanel.setBorder(contentListShadow);
-
         JPanel firstPartialPanelContent = new JPanel(new GridBagLayout());
         firstPartialPanelContent.setOpaque(false);
+
         int partialIndex = 0;
         String switched = isActivateTheAwakeningFeature()? "On":"Off";
         String toSNS = isEnableSystemNotificationSound()? "On":"Off";
         String toUnmuteVolume = isEnableUnmuteVolumeAutomatically()? "On":"Off";
 
         setDimension(partialIndex, 0);
-        addLabel(gbc, firstPartialPanelContent, " Activate the awakening feature:");
+        addLabel(gbc, firstPartialPanelContent, " Activate the awakening feature:", LABELS_FONT);
         ProgressBarValueUpdater firstProgressBarUpdater = new ProgressBarValueUpdater(
                 firstProgressBar,
                 FirstPartialTrueArray,
@@ -225,7 +238,7 @@ public class DropDownList {
                 ComputerSettings::isActivateTheAwakeningFeature
         );
         setColumn(1);
-        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE);
+        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(
                 gbc, firstPartialPanelContent, ComputerSettings::setActivateTheAwakeningFeature,
@@ -234,7 +247,7 @@ public class DropDownList {
         );
 
         setDimension(++partialIndex, 0);
-        addLabel(gbc, firstPartialPanelContent, " Enable System Notification Sound:");
+        addLabel(gbc, firstPartialPanelContent, " Enable System Notification Sound:", LABELS_FONT);
         ProgressBarValueUpdater secondProgressBarUpdater = new ProgressBarValueUpdater(
                 firstProgressBar,
                 FirstPartialTrueArray,
@@ -242,7 +255,7 @@ public class DropDownList {
                 ComputerSettings::isEnableSystemNotificationSound
         );
         setColumn(1);
-        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE);
+        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(
                 gbc, firstPartialPanelContent, ComputerSettings::setEnableSystemNotificationSound,
@@ -251,7 +264,7 @@ public class DropDownList {
         );
 
         setDimension(++partialIndex, 0);
-        addLabel(gbc, firstPartialPanelContent, " Enable unmute volume automatically:");
+        addLabel(gbc, firstPartialPanelContent, " Enable unmute volume automatically:", LABELS_FONT);
         ProgressBarValueUpdater thirdProgressBarUpdater = new ProgressBarValueUpdater(
                 firstProgressBar,
                 FirstPartialTrueArray,
@@ -259,7 +272,7 @@ public class DropDownList {
                 ComputerSettings::isEnableUnmuteVolumeAutomatically
         );
         setColumn(1);
-        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE);
+        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(
                 gbc, firstPartialPanelContent, ComputerSettings::setEnableUnmuteVolumeAutomatically,
@@ -276,7 +289,7 @@ public class DropDownList {
 
     private static JPanel createFirstPartialPanelFooter(){
         JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
-        about.setFont(titleListsFont);
+        about.setFont(TITLE_LISTS_FONT);
         addMouseListenerToLabel(
                 about,
                 Color.LIGHT_GRAY,
@@ -297,7 +310,6 @@ public class DropDownList {
     private static JPanel secondPartialPanel(GridBagConstraints gbc){
         JPanel secondPartialPanel = new JPanel(new BorderLayout());
         secondPartialPanel.setOpaque(false);
-        secondPartialPanel.setBorder(contentListShadow);
 
         JPanel secondPartialPanelContent = new JPanel(new GridBagLayout());
         secondPartialPanelContent.setOpaque(false);
@@ -306,7 +318,7 @@ public class DropDownList {
         String toUsed = isEnableExchangeToAudioOutputUsed()? "On":"Off";
 
         setDimension(partialIndex, 0);
-        addLabel(gbc, secondPartialPanelContent, "Exchange to speaker audio output:");
+        addLabel(gbc, secondPartialPanelContent, "Exchange to speaker audio output:", LABELS_FONT);
         ProgressBarValueUpdater firstProgressBarUpdater = new ProgressBarValueUpdater(
                 secondProgressBar,
                 SecondPartialTrueArray,
@@ -314,7 +326,7 @@ public class DropDownList {
                 ComputerSettings::isEnableExchangeToSpeakerAudioOutput
         );
         setColumn(1);
-        addLabel(gbc, secondPartialPanelContent, FOUR_SPACE);
+        addLabel(gbc, secondPartialPanelContent, FOUR_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(
                 gbc, secondPartialPanelContent, ComputerSettings::setEnableExchangeToSpeakerAudioOutput,
@@ -323,7 +335,7 @@ public class DropDownList {
         );
 
         setDimension(++partialIndex, 0);
-        addLabel(gbc, secondPartialPanelContent, "Restore audio output used after alert:");
+        addLabel(gbc, secondPartialPanelContent, "Restore audio output used after alert:", LABELS_FONT);
         ProgressBarValueUpdater secondProgressBarUpdater = new ProgressBarValueUpdater(
                 secondProgressBar,
                 SecondPartialTrueArray,
@@ -331,7 +343,7 @@ public class DropDownList {
                 ComputerSettings::isEnableExchangeToAudioOutputUsed
         );
         setColumn(1);
-        addLabel(gbc, secondPartialPanelContent, FOUR_SPACE);
+        addLabel(gbc, secondPartialPanelContent, FOUR_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(
                 gbc, secondPartialPanelContent, ComputerSettings::setEnableExchangeToAudioOutputUsed,
@@ -348,7 +360,7 @@ public class DropDownList {
 
     private static JPanel createSecondPartialPanelFooter(){
         JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
-        about.setFont(titleListsFont);
+        about.setFont(TITLE_LISTS_FONT);
         addMouseListenerToLabel(
                 about,
                 Color.LIGHT_GRAY,
@@ -369,7 +381,6 @@ public class DropDownList {
     private static JPanel thirdPartialPanel(GridBagConstraints gbc){
         JPanel thirdPartialPanel = new JPanel(new BorderLayout());
         thirdPartialPanel.setOpaque(false);
-        thirdPartialPanel.setBorder(contentListShadow);
 
         JPanel thirdPartialPanelContent = new JPanel(new GridBagLayout());
         thirdPartialPanelContent.setOpaque(false);
@@ -378,7 +389,7 @@ public class DropDownList {
         String toRestoreLevel = isRestoringSoundLevelAfterAlert()? "On":"Off";
 
         setDimension(partialIndex, 0);
-        addLabel(gbc, thirdPartialPanelContent, "Enable sound level change:");
+        addLabel(gbc, thirdPartialPanelContent, "Enable sound level change:", LABELS_FONT);
         ProgressBarValueUpdater firstProgressBarUpdater = new ProgressBarValueUpdater(
                 thirdProgressBar,
                 ThirdPartialTrueArray,
@@ -386,7 +397,7 @@ public class DropDownList {
                 ComputerSettings::isEnablingSoundLevelChange
         );
         setColumn(1);
-        addLabel(gbc, thirdPartialPanelContent, FOUR_SPACE + TWO_SPACE + ONE_SPACE);
+        addLabel(gbc, thirdPartialPanelContent, FOUR_SPACE + TWO_SPACE + ONE_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(
                 gbc, thirdPartialPanelContent, ComputerSettings::setEnablingSoundLevelChange,
@@ -395,7 +406,7 @@ public class DropDownList {
         );
 
         setDimension(++partialIndex, 0);
-        addLabel(gbc, thirdPartialPanelContent, "Restore sound level after alert:");
+        addLabel(gbc, thirdPartialPanelContent, "Restore sound level after alert:", LABELS_FONT);
         ProgressBarValueUpdater secondProgressBarUpdater = new ProgressBarValueUpdater(
                 thirdProgressBar,
                 ThirdPartialTrueArray,
@@ -403,7 +414,7 @@ public class DropDownList {
                 ComputerSettings::isRestoringSoundLevelAfterAlert
         );
         setColumn(1);
-        addLabel(gbc, thirdPartialPanelContent, FOUR_SPACE + TWO_SPACE + ONE_SPACE);
+        addLabel(gbc, thirdPartialPanelContent, FOUR_SPACE + TWO_SPACE + ONE_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(
                 gbc, thirdPartialPanelContent, ComputerSettings::setRestoringSoundLevelAfterAlert,
@@ -420,7 +431,7 @@ public class DropDownList {
 
     private static JPanel createThirdPartialPanelFooter(){
         JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
-        about.setFont(titleListsFont);
+        about.setFont(TITLE_LISTS_FONT);
         addMouseListenerToLabel(
                 about,
                 Color.LIGHT_GRAY,
@@ -461,6 +472,12 @@ public class DropDownList {
             editorPane.setCaretPosition(0);
         });
         return popupMenu;
+    }
+
+    private static void setContainerSpecifications(JPanel container, int height, boolean isOpened){
+        container.setMaximumSize(new Dimension(480, isOpened ? height + 50 : 50));
+        container.setPreferredSize(new Dimension(480, isOpened ? height + 50 : 50));
+        container.setBorder(isOpened ? containerListShadow : null);
     }
 
     public static JProgressBar createProgressBar(Color separatorColor, int thickness, int Value) {

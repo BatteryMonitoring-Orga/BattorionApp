@@ -148,6 +148,7 @@ public class ConfigurationFilesManager {
         json.put("Sound Duration", UserChoices.getSoundDuration());
         json.put("Minimum Level", UserChoices.getMinimumLevel());
         json.put("Maximum Level", UserChoices.getMaximumLevel());
+        json.put("Run secondary alarm before", UserChoices.getAlertBeforeRiskPhaseBy());
         json.put("Repeat Interval Before Risk Phase", UserChoices.getRepeatIntervalBeforeRiskPhase());
         json.put("Automatic Monitoring", UserChoices.isAutoMonitoring());
         json.put("Enable Primary Sound", UserChoices.isEnablePrimarySound());
@@ -180,6 +181,7 @@ public class ConfigurationFilesManager {
         UserChoices.setSoundDuration(json.optInt("Sound Duration", 5));
         UserChoices.setMinimumLevel(json.optInt("Minimum Level", 25));
         UserChoices.setMaximumLevel(json.optInt("Maximum Level", 85));
+        UserChoices.setAlertBeforeRiskPhaseBy(json.optInt("Run secondary alarm before", 5));
         UserChoices.setRepeatIntervalBeforeRiskPhase(json.optInt("Repeat Interval Before Risk Phase", 30));
         UserChoices.setAutoMonitoring(json.optBoolean("Automatic Monitoring", true));
         UserChoices.setEnablePrimarySound(json.optBoolean("Enable Primary Sound", true));
@@ -193,6 +195,7 @@ public class ConfigurationFilesManager {
         UserChoices.setSoundDuration(5);
         UserChoices.setMinimumLevel(25);
         UserChoices.setMaximumLevel(85);
+        UserChoices.setAlertBeforeRiskPhaseBy(5);
         UserChoices.setRepeatIntervalBeforeRiskPhase(30);
         UserChoices.setAutoMonitoring(true);
         UserChoices.setEnablePrimarySound(true);

@@ -437,9 +437,15 @@ public class BattorionMain {
                         highLevelActions(batteryColor);
                     } else if ((batteryLevel <= minValue) && !isCharging) {
                         lowLevelActions(batteryColor);
-                    } else if ((batteryLevel >= (maxValue - 5)) && (batteryLevel < maxValue) && isCharging) {
+                    } else if (
+                            (batteryLevel >= (maxValue - UserChoices.getAlertBeforeRiskPhaseBy()))
+                                    && (batteryLevel < maxValue) && isCharging
+                    ){
                         handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
-                    } else if ((batteryLevel > minValue) && (batteryLevel <= (minValue + 5)) && !isCharging) {
+                    } else if (
+                            (batteryLevel <= (minValue + UserChoices.getAlertBeforeRiskPhaseBy())) &&
+                                    (batteryLevel > minValue) && !isCharging
+                    ){
                         handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
                     } else {
                         handleNormalBattery(batteryBar, alertLabel, batteryColor);

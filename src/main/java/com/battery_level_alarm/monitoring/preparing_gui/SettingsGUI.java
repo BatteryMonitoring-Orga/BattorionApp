@@ -90,6 +90,19 @@ public class SettingsGUI {
         JSpinner maxBatteryConfigSpinner = RelatedToSpinner.createSpinner(maxBatteryConfig, false);
         addLabeledSpinner(gbc, firstPartPanel, maxBatteryConfig, maxBatteryConfigSpinner);
 
+        SpinnerConfig beforeRiskAlertConfig = new SpinnerConfig(
+                "Alert me before risk phase by (secondary alarm):",
+                UserChoices.getAlertBeforeRiskPhaseBy(), 5, 1, 10, 1,
+                ++index, 0, 80, 30,
+                e -> {
+                    int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
+                    UserChoices.setAlertBeforeRiskPhaseBy(value);
+                    ConfigurationFilesManager.saveSettings();
+                }
+        );
+        JSpinner beforeRiskAlertConfigSpinner = RelatedToSpinner.createSpinner(beforeRiskAlertConfig, false);
+        addLabeledSpinner(gbc, firstPartPanel, beforeRiskAlertConfig, beforeRiskAlertConfigSpinner);
+
         setDimension(++index, 0);
         addLabel(gbc, firstPartPanel, "Repeat Interval: ", DEFAULT_FONT);
         SpinnerConfig repeatIntervalConfig = new SpinnerConfig(

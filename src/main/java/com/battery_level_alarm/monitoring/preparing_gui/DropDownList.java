@@ -26,11 +26,11 @@ public class DropDownList {
     private static final Font TITLE_LISTS_FONT = new Font("Serif", Font.BOLD + Font.ITALIC, 15);
     public static final Font LABELS_FONT = new Font("Serif", Font.BOLD, 15);
     private static final Color DARK_GREEN = new Color(0, 140, 0);
-    private static final Color DARK_CYAN = new Color(0, 128, 128);
+    private static final Color DARK_BROWN = new Color(139, 69, 19);
     public static Color borderForegroundColor;
     private static DropShadowBorder containerListShadow;
     private static DropShadowBorder closedPanelShadow;
-    private static DropShadowBorder openedPanelShadow;
+    private static DropShadowBorder openPanelShadow;
 
     private static final boolean[] FirstPartialTrueArray = {
             isActivateTheAwakeningFeature(),
@@ -44,6 +44,10 @@ public class DropDownList {
     private static final boolean[] ThirdPartialTrueArray = {
             isEnablingSoundLevelChange(),
             isRestoringSoundLevelAfterAlert()
+    };
+
+    private static final JPanel[] PartialPanelsArray = {
+            new JPanel(), new JPanel(), new JPanel()
     };
 
     private static JProgressBar firstProgressBar;
@@ -69,8 +73,8 @@ public class DropDownList {
                 DropDownList.borderForegroundColor, 8, 0.8f, 8,
                 true, true, true, true
         );
-        openedPanelShadow = new DropShadowBorder(
-                DARK_CYAN, 5, 0.5f, 5,
+        openPanelShadow = new DropShadowBorder(
+                DARK_BROWN, 4, 0.4f, 4,
                 false, false, true, false
         );
     }
@@ -87,8 +91,8 @@ public class DropDownList {
         int firstPercentage = calculatePercentage(firstTrueCount, FirstPartialTrueArray.length);
         firstProgressBar = createProgressBar(borderForegroundColor, 6, firstPercentage);
         JPanel checklist1 = createChecklistSection("General Options ",
-                new Dimension(480, 210),
-                openedPanelShadow, closedPanelShadow, isFirstEnabled(),
+                new Dimension(480, 190),
+                openPanelShadow, closedPanelShadow, isFirstEnabled(), 0,
                 firstProgressBar, () -> firstPartialPanel(gbc),
                 DropDownListStatus::setFirstEnabled);
         checklist1.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -97,8 +101,8 @@ public class DropDownList {
         int secondPercentage = calculatePercentage(secondTrueCount, SecondPartialTrueArray.length);
         secondProgressBar = createProgressBar(borderForegroundColor, 6, secondPercentage);
         JPanel checklist2 = createChecklistSection("Audio Output " + ONE_SPACE,
-                new Dimension(480, 160),
-                openedPanelShadow, closedPanelShadow, isSecondEnabled(),
+                new Dimension(480, 140),
+                openPanelShadow, closedPanelShadow, isSecondEnabled(), 1,
                 secondProgressBar, () -> secondPartialPanel(gbc),
                 DropDownListStatus::setSecondEnabled);
         checklist2.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -107,8 +111,8 @@ public class DropDownList {
         int thirdPercentage = calculatePercentage(thirdTrueCount, ThirdPartialTrueArray.length);
         thirdProgressBar = createProgressBar(borderForegroundColor, 6, thirdPercentage);
         JPanel checklist3 = createChecklistSection("Sound Level" + TWO_SPACE,
-                new Dimension(480, 160),
-                openedPanelShadow, closedPanelShadow, isThirdEnabled(),
+                new Dimension(480, 140),
+                openPanelShadow, closedPanelShadow, isThirdEnabled(), 2,
                 thirdProgressBar, () -> thirdPartialPanel(gbc),
                 DropDownListStatus::setThirdEnabled);
         checklist3.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -129,33 +133,35 @@ public class DropDownList {
 
     private static JPanel createChecklistSection(
             String title, Dimension listSize,
-            DropShadowBorder openedBorder, DropShadowBorder closedBorder,
-            boolean initiallyVisible,
+            DropShadowBorder openPanelShadow,
+            DropShadowBorder closedBorder,
+            boolean initiallyVisible, int index,
             JProgressBar progressBar,
             Supplier<JPanel> panelSupplier,
             Consumer<Boolean> setStateConsumer
     ){
         JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel firstSpace = new JLabel(ONE_SPACE);
         JCheckBox checkBox = new JCheckBox(title);
         checkBox.setFont(TITLE_LISTS_FONT);
         checkBox.setSelected(initiallyVisible);
-        JLabel secondSpace = new JLabel(TEN_SPACE + FOUR_SPACE);
+        JLabel firstSpace = new JLabel(TEN_SPACE + FOUR_SPACE);
         JLabel arrowLabel = new JLabel(initiallyVisible ? "\u2003▲" : "\u2003▼");
+        JLabel secondSpace = new JLabel(ONE_SPACE);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        labelPanel.add(firstSpace);
         labelPanel.add(checkBox);
-        labelPanel.add(secondSpace);
+        labelPanel.add(firstSpace);
         labelPanel.add(progressBar);
         labelPanel.add(arrowLabel);
-        labelPanel.setBorder(initiallyVisible ? openedBorder : closedBorder);
+        labelPanel.add(secondSpace);
+        labelPanel.setBorder(initiallyVisible ? openPanelShadow : closedBorder);
         mainPanel.add(labelPanel, BorderLayout.CENTER);
 
         JPanel contentPanel = panelSupplier.get();
         contentPanel.setMaximumSize(listSize);
         contentPanel.setPreferredSize(listSize);
         contentPanel.setVisible(initiallyVisible);
+        PartialPanelsArray[index].setBorder(initiallyVisible ? openPanelShadow : null);
 
         JPanel footerPanel = new JPanel(new BorderLayout());
         footerPanel.add(new JLabel(TWO_SPACE), BorderLayout.CENTER);
@@ -174,7 +180,8 @@ public class DropDownList {
             contentPanel.setVisible(isVisible);
             footerPanel.setVisible(isVisible);
             arrowLabel.setText(isVisible ? "\u2003▲" : "\u2003▼");
-            labelPanel.setBorder(isVisible ? openedBorder : closedBorder);
+            labelPanel.setBorder(isVisible ? openPanelShadow : closedBorder);
+            PartialPanelsArray[index].setBorder(isVisible ? openPanelShadow : null);
 
             setContainerSpecifications(container, (int) listSize.getHeight(), isVisible);
             setStateConsumer.accept(isVisible);
@@ -280,6 +287,7 @@ public class DropDownList {
                 thirdProgressBarUpdater, true
         );
 
+        PartialPanelsArray[0] = firstPartialPanelContent;
         JPanel firstPartialPanelFooter = createFirstPartialPanelFooter();
         firstPartialPanelFooter.setOpaque(false);
         firstPartialPanel.add(firstPartialPanelContent, BorderLayout.CENTER);
@@ -302,7 +310,7 @@ public class DropDownList {
         JPanel aboutLabelPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         aboutLabelPackage.add(about);
         JPanel aboutPanel = new JPanel(new BorderLayout());
-        aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
+        //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
         aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
         return aboutPanel;
     }
@@ -351,6 +359,7 @@ public class DropDownList {
                 secondProgressBarUpdater, true
         );
 
+        PartialPanelsArray[1] = secondPartialPanelContent;
         JPanel secondPartialPanelFooter = createSecondPartialPanelFooter();
         secondPartialPanelFooter.setOpaque(false);
         secondPartialPanel.add(secondPartialPanelContent, BorderLayout.CENTER);
@@ -373,7 +382,7 @@ public class DropDownList {
         JPanel aboutLabelPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         aboutLabelPackage.add(about);
         JPanel aboutPanel = new JPanel(new BorderLayout());
-        aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
+        //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
         aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
         return aboutPanel;
     }
@@ -422,6 +431,7 @@ public class DropDownList {
                 secondProgressBarUpdater, true
         );
 
+        PartialPanelsArray[2] = thirdPartialPanelContent;
         JPanel thirdPartialPanelFooter = createThirdPartialPanelFooter();
         thirdPartialPanelFooter.setOpaque(false);
         thirdPartialPanel.add(thirdPartialPanelContent, BorderLayout.CENTER);
@@ -444,7 +454,7 @@ public class DropDownList {
         JPanel aboutLabelPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         aboutLabelPackage.add(about);
         JPanel aboutPanel = new JPanel(new BorderLayout());
-        aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
+        //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
         aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
         return aboutPanel;
     }

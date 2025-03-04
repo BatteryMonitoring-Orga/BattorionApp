@@ -4,6 +4,7 @@ public class UserChoices {
     private static String soundPath;
     private static int minimumLevel;
     private static int maximumLevel;
+    private static int alertBeforeRiskPhaseBy;
     private static int repeatIntervalBeforeRiskPhase;
     private static int soundDuration;
     private static boolean isAutoMonitoring;
@@ -32,7 +33,14 @@ public class UserChoices {
     public static void setMaximumLevel(int maximumLevel) {
         UserChoices.maximumLevel = maximumLevel;
     }
-    
+
+    public static int getAlertBeforeRiskPhaseBy() {
+        return alertBeforeRiskPhaseBy;
+    }
+    public static void setAlertBeforeRiskPhaseBy(int alertBeforeRiskPhaseBy) {
+        UserChoices.alertBeforeRiskPhaseBy = alertBeforeRiskPhaseBy;
+    }
+
     public static int getRepeatIntervalBeforeRiskPhase() {
         return repeatIntervalBeforeRiskPhase;
     }

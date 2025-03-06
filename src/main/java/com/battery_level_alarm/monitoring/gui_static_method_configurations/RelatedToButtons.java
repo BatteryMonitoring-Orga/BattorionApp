@@ -3,7 +3,6 @@ import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstrai
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.getRow;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.updateProgressBars;
-
 import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
 import com.battery_level_alarm.monitoring.configuration_records.SoundItem;
 
@@ -16,7 +15,9 @@ public class RelatedToButtons {
     public static final Font toggleButtonsFont = new Font("Serif", Font.BOLD, 15);
     private static int buttonWidth = 150;
     private static int buttonHeight = 30;
+
     public static ButtonGroup buttonGroup;
+    public static JSpinner editSpinner;
 
     public static ButtonGroup getGroupOfButtons(
             GridBagConstraints gbc, JPanel panel,
@@ -93,6 +94,9 @@ public class RelatedToButtons {
             saveAction.run();
             if(isFromDropDownList){
                 updateProgressBars(progressBarValueUpdater);
+                for(JSpinner spinner : progressBarValueUpdater.spinner()){
+                    spinner.setEnabled(toggleButton.isSelected());
+                }
             }
         });
 

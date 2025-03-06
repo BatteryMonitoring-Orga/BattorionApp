@@ -1,19 +1,20 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.*;
+import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.TITLE_LISTS_FONT;
+import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.prepareListsContainer;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToButtons.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.*;
-import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToTextFields.addTextInScroll;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
 
+import com.battery_level_alarm.monitoring.configuration_records.DropDownListsContainerRecord;
+import com.battery_level_alarm.monitoring.configuration_records.SingleDropDownListRecord;
 import com.battery_level_alarm.monitoring.core.BattorionPanelHelper;
 import com.battery_level_alarm.monitoring.configuration_records.ScrollConfiguration;
-import com.battery_level_alarm.monitoring.configuration_records.SpinnerConfig;
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.effects.AlertSound;
-import com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner;
 
 import java.awt.*;
 import javax.swing.*;
@@ -31,7 +32,7 @@ public class SettingsGUI {
             false,
             false,
             null,
-            new Dimension(500, 50)
+            new Dimension(520, 50)
     );
     private static final ScrollConfiguration SCROLL_PANEL_CONFIGURATION = new ScrollConfiguration(
             false,
@@ -42,145 +43,43 @@ public class SettingsGUI {
             new Dimension(550, 300)
     );
 
+    public static final JPanel[] APP_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY = {
+            new JPanel(), new JPanel(), new JPanel(), new JPanel()
+    };
+
     public static JScrollPane getCreatedGUI() {
     	return CreatedGUI;
     }
 
     public static void createAndShowGUI() {
-        JPanel settingsPanel = new JPanel(new GridBagLayout());
+        JPanel settingsPanel = new JPanel();
+        settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
         GridBagConstraints gbc = createGridBagConstraints(GRID_BAG_CONSTRAINTS_CONFIGURATION);
 
+        DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
+        createAppSettingsDropDownListConfigurations(gbc);
+        DropDownListsContainerRecord containerRecord = new DropDownListsContainerRecord(
+                "  Do these procedures automatically:",
+                TITLE_LISTS_FONT,
+                computerSettingsContainerListShadow,
+                APP_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY,
+                new SingleDropDownListRecord[]{
+                        APP_SETTINGS_FIRST_DDL,
+                        APP_SETTINGS_SECOND_DDL,
+                        APP_SETTINGS_THIRD_DDL,
+                        APP_SETTINGS_FOURTH_DDL
+                }
+        );
+
         int index = 0;
-        JPanel firstPartPanel = getFirstPartPanel(gbc, index);
+        JPanel firstPartPanel = prepareListsContainer(containerRecord);
         JPanel secondPartPanel = getSecondPartPanel(gbc, index);
         returnGBC$ToDefault(gbc);
-        settingsPanel.add(firstPartPanel, gbc);
-        gbc.gridy++;
-        settingsPanel.add(secondPartPanel, gbc);
+        settingsPanel.add(firstPartPanel);
+        settingsPanel.add(secondPartPanel);
 
         CreatedGUI = new JScrollPane(settingsPanel);
         applyScrollConfigurationDetails(CreatedGUI, SCROLL_PANEL_CONFIGURATION);
-    }
-
-    private static JPanel getFirstPartPanel(GridBagConstraints gbc, int index){
-        JPanel firstPartPanel = new JPanel(new GridBagLayout());
-        SpinnerConfig minBatteryConfig = new SpinnerConfig(
-                "Minimum Battery Level:",
-                UserChoices.getMinimumLevel(), 25, 15, 30, 1,
-                index, 0, 80, 30,
-                e -> {
-                    int value = getSpinnerValue((JSpinner) e.getSource(), 10, 25);
-                    UserChoices.setMinimumLevel(value);
-                    ConfigurationFilesManager.saveSettings();
-                }
-        );
-        JSpinner minBatteryConfigSpinner = RelatedToSpinner.createSpinner(minBatteryConfig, false);
-        addLabeledSpinner(gbc, firstPartPanel, minBatteryConfig, minBatteryConfigSpinner);
-
-        SpinnerConfig maxBatteryConfig = new SpinnerConfig(
-                "Maximum Battery Level:",
-                UserChoices.getMaximumLevel(), 85, 80, 90, 1,
-                ++index, 0, 80, 30,
-                e -> {
-                    int value = getSpinnerValue((JSpinner) e.getSource(), 80, 85);
-                    UserChoices.setMaximumLevel(value);
-                    ConfigurationFilesManager.saveSettings();
-                }
-        );
-        JSpinner maxBatteryConfigSpinner = RelatedToSpinner.createSpinner(maxBatteryConfig, false);
-        addLabeledSpinner(gbc, firstPartPanel, maxBatteryConfig, maxBatteryConfigSpinner);
-
-        SpinnerConfig beforeRiskAlertConfig = new SpinnerConfig(
-                "Alert me before risk phase by (secondary alarm):",
-                UserChoices.getAlertBeforeRiskPhaseBy(), 5, 1, 10, 1,
-                ++index, 0, 80, 30,
-                e -> {
-                    int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
-                    UserChoices.setAlertBeforeRiskPhaseBy(value);
-                    ConfigurationFilesManager.saveSettings();
-                }
-        );
-        JSpinner beforeRiskAlertConfigSpinner = RelatedToSpinner.createSpinner(beforeRiskAlertConfig, false);
-        addLabeledSpinner(gbc, firstPartPanel, beforeRiskAlertConfig, beforeRiskAlertConfigSpinner);
-
-        setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Repeat Interval: ", DEFAULT_FONT);
-        SpinnerConfig repeatIntervalConfig = new SpinnerConfig(
-                "5 minutes before the risk phase (in Seconds):",
-                UserChoices.getRepeatIntervalBeforeRiskPhase(), 1, 1, 60, 1,
-                ++index, 0, 80, 30,
-                e -> {
-                    int value = getSpinnerValue((JSpinner) e.getSource(), 1, 1);
-                    UserChoices.setRepeatIntervalBeforeRiskPhase(value);
-                    ConfigurationFilesManager.saveSettings();
-                }
-        );
-        JSpinner repeatIntervalConfigSpinner = RelatedToSpinner.createSpinner(repeatIntervalConfig, false);
-        addLabeledSpinner(gbc, firstPartPanel, repeatIntervalConfig, repeatIntervalConfigSpinner);
-
-        SpinnerConfig soundDurationConfig = new SpinnerConfig(
-                "Sound Duration (in Seconds):",
-                UserChoices.getSoundDuration(), 5, 1, 10, 1,
-                ++index, 0, 80, 30,
-                e -> {
-                    int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);
-                    UserChoices.setSoundDuration(value);
-                    ConfigurationFilesManager.saveSettings();
-                }
-        );
-        JSpinner soundDurationConfigSpinner = RelatedToSpinner.createSpinner(soundDurationConfig, false);
-        addLabeledSpinner(gbc, firstPartPanel, soundDurationConfig, soundDurationConfigSpinner);
-
-        setDimension(++index, 0);
-        addSeparator(gbc, firstPartPanel, 150);
-        returnGBC$ToDefault(gbc);
-        String automatic = UserChoices.isAutoMonitoring()? "On":"Off";
-        String primarySound = UserChoices.isEnablePrimarySound()? "On":"Off";
-        String secondarySound = UserChoices.isEnableSecondarySound()? "On":"Off";
-        String chargingSound = UserChoices.isEnableChargeAndDischargeSound()? "On":"Off";
-        String textAlert = UserChoices.isEnableText()? "On":"Off";
-
-        setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Automatic Monitoring:", DEFAULT_FONT);
-        setColumn(1);
-        addToggleButton(
-                gbc, firstPartPanel, UserChoices::setAutoMonitoring,
-                ConfigurationFilesManager::saveSettings, automatic, 80, 30,
-                null, false
-        );
-        setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Primary Sound Alerts:", DEFAULT_FONT);
-        setColumn(1);
-        addToggleButton(
-                gbc, firstPartPanel, UserChoices::setEnablePrimarySound,
-                ConfigurationFilesManager::saveSettings, primarySound, 80, 30,
-                null, false
-        );
-        setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Secondary Sound Alerts:", DEFAULT_FONT);
-        setColumn(1);
-        addToggleButton(
-                gbc, firstPartPanel, UserChoices::setEnableSecondarySound,
-                ConfigurationFilesManager::saveSettings, secondarySound, 80, 30,
-                null, false
-        );
-        setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Charging/Discharging Sound:", DEFAULT_FONT);
-        setColumn(1);
-        addToggleButton(
-                gbc, firstPartPanel, UserChoices::setEnableChargeAndDischargeSound,
-                ConfigurationFilesManager::saveSettings, chargingSound, 80, 30,
-                null, false
-        );
-        setDimension(++index, 0);
-        addLabel(gbc, firstPartPanel, "Enable Text Alerts:", DEFAULT_FONT);
-        setColumn(1);
-        addToggleButton(
-                gbc, firstPartPanel, UserChoices::setEnableText,
-                ConfigurationFilesManager::saveSettings, textAlert, 80, 30,
-                null, false
-        );
-        return firstPartPanel;
     }
 
     private static JPanel getSecondPartPanel(GridBagConstraints gbc, int index){

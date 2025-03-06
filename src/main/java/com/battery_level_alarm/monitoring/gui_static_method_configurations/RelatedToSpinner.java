@@ -1,12 +1,18 @@
 package com.battery_level_alarm.monitoring.gui_static_method_configurations;
-import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.DEFAULT_FONT;
+import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setColumn;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.addLabel;
+import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.LABELS_FONT;
 import com.battery_level_alarm.monitoring.configuration_records.SpinnerConfig;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class RelatedToSpinner {
-    public static void addLabeledSpinner(GridBagConstraints gbc, JPanel panel, SpinnerConfig config, JSpinner spinner) {
+    public static void addLabeledSpinner(
+            GridBagConstraints gbc, JPanel panel, SpinnerConfig config,
+            JSpinner spinner, boolean isAllowToAddSpace
+    ){
         JLabel jLabel = new JLabel(config.label());
         jLabel.setFont(DEFAULT_FONT);
         gbc.gridy = config.row();
@@ -18,7 +24,7 @@ public class RelatedToSpinner {
         if (config.listener() != null) {
             spinner.addChangeListener(config.listener());
         }
-        gbc.gridx = config.column() + 1;
+        gbc.gridx = isAllowToAddSpace ? config.column() + 2 : config.column() + 1;
         panel.add(spinner, gbc);
     }
 

@@ -95,9 +95,9 @@ public class ConfigurationFilesManager {
 
     private static JSONObject createDropDownListConfigurationsJson() {
         JSONObject json = new JSONObject();
-        json.put("first drop down list", isFirstEnabled());
-        json.put("second drop down list", isSecondEnabled());
-        json.put("third drop down list", isThirdEnabled());
+        json.put("first drop down list 'CS'", isCS_FirstDropDownListEnabled());
+        json.put("second drop down list 'CS'", isCS_SecondDropDownListEnabled());
+        json.put("third drop down list 'CS'", isCS_ThirdDropDownListEnabled());
         return json;
     }
 
@@ -120,15 +120,15 @@ public class ConfigurationFilesManager {
 
     private static void loadDropDownListConfigurationsJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
-        setFirstEnabled(json.optBoolean("first drop down list", true));
-        setSecondEnabled(json.optBoolean("second drop down list", false));
-        setThirdEnabled(json.optBoolean("third drop down list", false));
+        setCS_FirstDropDownListEnabled(json.optBoolean("first drop down list 'CS'", true));
+        setCS_SecondDropDownListEnabled(json.optBoolean("second drop down list 'CS'", false));
+        setCS_ThirdDropDownListEnabled(json.optBoolean("third drop down list 'CS'", false));
     }
 
     private static void loadDefaultDropDownListConfigurations() {
-        setFirstEnabled(true);
-        setSecondEnabled(false);
-        setThirdEnabled(false);
+        setCS_FirstDropDownListEnabled(true);
+        setCS_SecondDropDownListEnabled(false);
+        setCS_ThirdDropDownListEnabled(false);
     }
 
     public static void saveSettings() {

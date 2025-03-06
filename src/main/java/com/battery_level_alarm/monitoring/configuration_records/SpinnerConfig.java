@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.configuration_records;
+import javax.swing.*;
 import javax.swing.event.ChangeListener;
 
 public record SpinnerConfig(

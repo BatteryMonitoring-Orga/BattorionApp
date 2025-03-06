@@ -8,7 +8,7 @@ import static com.battery_level_alarm.monitoring.gui_static_method_configuration
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToTextFields.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
-import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.prepareCheckLists;
+import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.prepareListsContainer;
 
 import com.battery_level_alarm.monitoring.configuration_records.*;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
@@ -17,7 +17,6 @@ import com.battery_level_alarm.monitoring.command.CallCommandLine;
 import com.battery_level_alarm.monitoring.command.SoundVolumeReader;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 import com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner;
-
 import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 
 import javax.swing.*;
@@ -27,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ComputerSettingsGUI {
+    public static final Font TITLE_LISTS_FONT = new Font("Serif", Font.BOLD + Font.ITALIC, 15);
+    public static final Font LABELS_FONT = new Font("Serif", Font.BOLD, 15);
     private static final Color GREEN_COLOR = new Color(0, 150, 0);
     private static final String promptText = "Enter device name";
     private static final String[] DEVICE_STATUS_MESSAGES = {
@@ -44,6 +45,9 @@ public class ComputerSettingsGUI {
             null,
             new Dimension(120, 40)
     );
+    public static final JPanel[] DropDownListPanelsArray = {
+            new JPanel(), new JPanel(), new JPanel()
+    };
     public static final JTextField outputDeviceName = new JTextField();
 
     public static JPanel createComputerSettingsGUI(AlarmSounds alarmSounds){
@@ -59,7 +63,19 @@ public class ComputerSettingsGUI {
         );
 
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
-        JPanel secondPanel = prepareCheckLists(gbc);
+        createComputerSettingsDropDownListConfigurations(gbc);
+        DropDownListsContainerRecord containerRecord = new DropDownListsContainerRecord(
+                "   Do these procedures automatically:",
+                TITLE_LISTS_FONT,
+                computerSettingsContainerListShadow,
+                DropDownListPanelsArray,
+                new SingleDropDownListRecord[]{
+                        COMPUTER_SETTINGS_FIRST_DDL,
+                        COMPUTER_SETTINGS_SECOND_DDL,
+                        COMPUTER_SETTINGS_THIRD_DDL
+                }
+        );
+        JPanel secondPanel = prepareListsContainer(containerRecord);
 
         int index = 0;
         JPanel thirdPanel = new JPanel(new GridBagLayout());
@@ -122,7 +138,7 @@ public class ComputerSettingsGUI {
                 }
         );
         JSpinner wakeUpConfigSpinner = RelatedToSpinner.createSpinner(wakeUpConfig, false);
-        addLabeledSpinner(gbc, thirdPanel, wakeUpConfig, wakeUpConfigSpinner);
+        addLabeledSpinner(gbc, thirdPanel, wakeUpConfig, wakeUpConfigSpinner, false);
 
         int initialValue = (int) SoundVolumeReader.getVolumeLevel();
         int stepSize = (initialValue % 2 == 0) ? 2 : 1;
@@ -136,7 +152,7 @@ public class ComputerSettingsGUI {
                 }
         );
         JSpinner pcVolumeSpinner = RelatedToSpinner.createSpinner(pcVolumeConfig, true);
-        addLabeledSpinner(gbc, thirdPanel, pcVolumeConfig, pcVolumeSpinner);
+        addLabeledSpinner(gbc, thirdPanel, pcVolumeConfig, pcVolumeSpinner, false);
 
         setGridBagConstraintsInsets(gbc, new InsetsRecord(0, 10, 10, 10), true);
         setDimension(++index, 1);
@@ -153,7 +169,7 @@ public class ComputerSettingsGUI {
                 }
         );
         JSpinner volumeSpinner = RelatedToSpinner.createSpinner(volumeConfig, false);
-        addLabeledSpinner(gbc, thirdPanel, volumeConfig, volumeSpinner);
+        addLabeledSpinner(gbc, thirdPanel, volumeConfig, volumeSpinner, false);
         setDimension(++index, 0);
         addButtonMixWithComboBox(gbc, thirdPanel, "System Notification Sounds:");
         setRow(++index);

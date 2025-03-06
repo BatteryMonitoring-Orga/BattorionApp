@@ -6,5 +6,6 @@ public record ProgressBarValueUpdater(
         JProgressBar progressBar,
         boolean[] partialTrueArray,
         int index,
-        Callable<Boolean> callable
+        Callable<Boolean> callable,
+        JSpinner[] spinner
 ){}

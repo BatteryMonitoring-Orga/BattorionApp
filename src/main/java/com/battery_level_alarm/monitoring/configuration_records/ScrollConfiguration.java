@@ -12,7 +12,7 @@ public record ScrollConfiguration(
 ) {
     public ScrollConfiguration {
         if (scrollSize == null) {
-            throw new IllegalArgumentException("scrollSize لا يمكن أن يكون null");
+            throw new IllegalArgumentException("Scroll size can't be zero or empty 'null'!");
         }
     }
 

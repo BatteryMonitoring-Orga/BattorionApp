@@ -1,15 +1,15 @@
 package com.battery_level_alarm.monitoring.command;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.MAIN_FOLDER_NAME;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import javax.swing.JOptionPane;
 
 public class CallCommandLine {
     public static final String NIR_CMD_PATH = MAIN_FOLDER_PATH + "/NirCMD-main/NirCMD";
-    public static final String RESOURCES_PATH = System.getProperty("user.home") + "\\Battorion\\battery-report.html";
+    public static final String RESOURCES_PATH = System.getProperty("user.home") + MAIN_FOLDER_NAME + "\\battery-report.html";
     public static String getOS() {
         return System.getProperty("os.name").toLowerCase();
     }

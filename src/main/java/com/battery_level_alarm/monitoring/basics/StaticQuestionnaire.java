@@ -1,5 +1,7 @@
 package com.battery_level_alarm.monitoring.basics;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.MAIN_FOLDER_NAME;
 import com.battery_level_alarm.monitoring.battery_report.HTMLOpener;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -28,18 +30,23 @@ public class StaticQuestionnaire {
                         + "</body></html>"
         );
 
-        Map<String, Runnable> actionsMap = new HashMap<>();
-        actionsMap.put("action:openComprehensiveBatteryGuideInArabic",
-                () -> HTMLOpener.open("src/main/java/com/battery_level_alarm/monitoring/html_pages/ComprehensiveBatteryGuideInArabic.html")
-        );
-        actionsMap.put("action:openComprehensiveBatteryGuideInEnglish",
-                () -> HTMLOpener.open("src/main/java/com/battery_level_alarm/monitoring/html_pages/ComprehensiveBatteryGuideInEnglish.html")
-        );
+        Map<String, Runnable> actionsMap = getStringRunnableMap();
         aboutEditorPanelDispatch(
                 "About Battorion",
                 aboutEditor,
                 actionsMap, 600, 400
         );
+    }
+
+    private static @NotNull Map<String, Runnable> getStringRunnableMap() {
+        Map<String, Runnable> actionsMap = new HashMap<>();
+        actionsMap.put("action:openComprehensiveBatteryGuideInArabic",
+                () -> HTMLOpener.open(System.getProperty("user.home") + MAIN_FOLDER_NAME + "/comprehensive_guide-main/Comprehensive Guide - Arabic.html")
+        );
+        actionsMap.put("action:openComprehensiveBatteryGuideInEnglish",
+                () -> HTMLOpener.open(System.getProperty("user.home") + MAIN_FOLDER_NAME + "/comprehensive_guide-main/Comprehensive Guide - English.html")
+        );
+        return actionsMap;
     }
 
     public static String getHowToUseSettings(){

@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.skeleton_constraints;
 import com.battery_level_alarm.monitoring.effects.DisplayMessages;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.MAIN_FOLDER_NAME;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.build;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ import java.nio.channels.FileLock;
 public class SingletonObject {
     private static final String LOCK_FILE_NAME = "bat_locker.lock";
     public static final String MAIN_FOLDER_PATH =
-            System.getProperty("user.home") + File.separator + "Battorion";
+            System.getProperty("user.home") + MAIN_FOLDER_NAME;
 
     private static FileLock lock = null;
     private static FileChannel channel = null;

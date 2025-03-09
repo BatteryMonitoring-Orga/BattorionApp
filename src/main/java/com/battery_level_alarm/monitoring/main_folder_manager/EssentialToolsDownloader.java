@@ -15,7 +15,8 @@ import java.util.zip.ZipInputStream;
 public class EssentialToolsDownloader {
     private static final String[][] REPOSITORIES = {
             {"NirCMD-main", "https://github.com/CMD-Helper-Battorion/NirCMD/archive/refs/heads/main.zip"},
-            {"svcl-x64-main", "https://github.com/CMD-Helper-Battorion/svcl-x64/archive/refs/heads/main.zip"}
+            {"svcl-x64-main", "https://github.com/CMD-Helper-Battorion/svcl-x64/archive/refs/heads/main.zip"},
+            {"comprehensive_guide-main", "https://github.com/CMD-Helper-Battorion/comprehensive_guide/archive/refs/heads/main.zip"}
     };
     
     public static void Downloader(){

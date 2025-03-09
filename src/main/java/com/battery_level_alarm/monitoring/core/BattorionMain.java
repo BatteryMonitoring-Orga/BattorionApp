@@ -50,6 +50,7 @@ public class BattorionMain {
     public static final String isIn_ChargingMode = "Charging";
     public static final String isIn_DisChargingMode = "Not Charging";
     private static final String APP_NAME = "Battorion";
+    public static final String MAIN_FOLDER_NAME = "/Battorion";
 
     private static Thread monitoringThread;
     static SystemTrayNotification stn;

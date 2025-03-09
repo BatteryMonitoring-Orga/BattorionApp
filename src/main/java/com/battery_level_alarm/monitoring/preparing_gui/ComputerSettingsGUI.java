@@ -23,6 +23,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ComputerSettingsGUI {
@@ -57,9 +59,17 @@ public class ComputerSettingsGUI {
         JPanel firstPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         setButtonDefaultSize();
         setDimension(0, 0);
+
+        Map<String, Runnable> actionsMap = new HashMap<>();
+        actionsMap.put("action:openSystemTrayNotification", StaticQuestionnaire::aboutSystemTrayNotification);
+        actionsMap.put("action:openNotificationSound", StaticQuestionnaire::aboutPlaySounds);
         addLabelWithMouseListener(
                 gbc, firstPanel, "About", Color.PINK,
-                StaticQuestionnaire::aboutComputerSettingsDispatch
+                () -> StaticQuestionnaire.aboutEditorPanelDispatch(
+                        "About Computer Settings Panel",
+                        StaticQuestionnaire.getComputerSettingsEditorText(),
+                        actionsMap, 500, 300
+                )
         );
 
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");

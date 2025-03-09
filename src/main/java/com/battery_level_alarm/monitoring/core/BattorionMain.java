@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.core;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.isEnableSystemNotificationSound;
 import static com.battery_level_alarm.monitoring.basics.StaticQuestionnaire.aboutNotificationsIcon;
+import static com.battery_level_alarm.monitoring.battery_report.ChooseAction.choose;
 import static com.battery_level_alarm.monitoring.core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.core.BattorionButtonsHelper.*;
 import static com.battery_level_alarm.monitoring.core.BattorionPanelHelper.*;
@@ -70,7 +71,6 @@ public class BattorionMain {
     static JButton pcSettingsButton;
     static JButton diskButton;
     static JButton batteryStatisticsButton;
-    static JButton aboutSettingsButton;
 
     private static JLabel monitoringStatus;
     private static JLabel alertLabel;
@@ -138,8 +138,8 @@ public class BattorionMain {
         alarmSounds = new AlarmSounds(1);
     }
 
-    private static void callNotifier(){
-        notify.setAlarmMessage("Battery level is: " + batteryLevel);
+    private static void callNotifier(String msg){
+        notify.setAlarmMessage(msg + "\nBattery level is: " + batteryLevel);
         stn.setIsToShowPanel(false);
         stn.CreateTrayIcon(notify, alarmSounds);
     }
@@ -205,7 +205,7 @@ public class BattorionMain {
         buttonPanel.setPreferredSize(new Dimension(110, 100));
 
         createMainButtons();
-        JButton reportButton = createButton("Life Report", "Generate battery life report", _ -> batteryReport());
+        JButton reportButton = createButton("Life Report", "Generate battery life report", _ -> choose());
         JButton aboutButton = createButton("About", "About the application", _ -> StaticQuestionnaire.aboutDispatch());
 
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -223,8 +223,6 @@ public class BattorionMain {
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonPanel.add(aboutButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        buttonPanel.add(aboutSettingsButton);
-        aboutSettingsButton.setVisible(false);
         motherPanel.add(buttonPanel, BorderLayout.WEST);
 
         JPanel statusLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -297,13 +295,6 @@ public class BattorionMain {
             }
             refreshMotherFrame();
         });
-        aboutSettingsButton = createButton("What is that?", "Explanation of settings", _ ->
-            JOptionPane.showMessageDialog(null,
-                    StaticQuestionnaire.Dispatch(textFont, StaticQuestionnaire.getHowToUseSettings()),
-                    "Settings Explanation",
-                    JOptionPane.INFORMATION_MESSAGE
-            )
-        );
     }
 
     private static JPanel createTopAssistPanel(Color color){
@@ -432,11 +423,11 @@ public class BattorionMain {
                     operationIsEnd = false;
 
                     if ((batteryLevel >= maxValue) && isCharging) {
-                        highLevelActions(batteryColor);
+                        highLevelActions(batteryColor, "Battery is too high! Please unplug the charger...");
                     } else if ((batteryLevel == (maxValue - 1)) && isCharging) {
-                        highLevelActions(batteryColor);
+                        highLevelActions(batteryColor, "Battery is high! Please unplug the charger...");
                     } else if ((batteryLevel <= minValue) && !isCharging) {
-                        lowLevelActions(batteryColor);
+                        lowLevelActions(batteryColor, "Battery is too low! Please plug the charger...");
                     } else if (
                             (batteryLevel >= (maxValue - UserChoices.getAlertBeforeRiskPhaseBy()))
                                     && (batteryLevel < maxValue) && isCharging
@@ -468,13 +459,13 @@ public class BattorionMain {
         monitoringThread.start();
     }
 
-    private static void highLevelActions(Color batteryColor) {
+    private static void highLevelActions(Color batteryColor, String msg) {
         try{
             if(isEnableSystemNotificationSound()){
-                organizationOfRecallProcess();
+                organizationOfRecallProcess(msg);
             }
             isFromCriticalAlert = true;
-            handleHighBattery(batteryBar, alertLabel, batteryColor);
+            handleHighBattery(batteryBar, alertLabel, batteryColor, msg);
             if(!operationIsEnd){
                 howLongBatteryNeedToFullOrDump(status, "End");
             }
@@ -484,13 +475,13 @@ public class BattorionMain {
         }
     }
 
-    private static void lowLevelActions(Color batteryColor) {
+    private static void lowLevelActions(Color batteryColor, String msg) {
         try{
             if(isEnableSystemNotificationSound()){
-                organizationOfRecallProcess();
+                organizationOfRecallProcess(msg);
             }
             isFromCriticalAlert = true;
-            handleLowBattery(batteryBar, alertLabel, batteryColor);
+            handleLowBattery(batteryBar, alertLabel, batteryColor, msg);
             if(!operationIsEnd){
                 howLongBatteryNeedToFullOrDump(status, "End");
             }
@@ -500,12 +491,12 @@ public class BattorionMain {
         }
     }
 
-    private static void organizationOfRecallProcess(){
+    private static void organizationOfRecallProcess(String msg){
         if(callFlag){
             return;
         }
         callFlag = true;
-        callNotifier();
+        callNotifier(msg);
 
         Timer organizer = new Timer(
                 60000,

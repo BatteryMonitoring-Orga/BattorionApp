@@ -47,7 +47,6 @@ public class BattorionPanelHelper {
     }
 
     public static void setVisibleFalse() {
-        aboutSettingsButton.setVisible(false);
         DashboardPanel.setVisible(false);
         SettingScrollPanel.setVisible(false);
         pcSettingScrollPanel.setVisible(false);

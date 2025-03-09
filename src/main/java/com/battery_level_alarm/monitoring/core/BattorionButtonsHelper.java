@@ -61,7 +61,6 @@ public class BattorionButtonsHelper {
         ifPanelsNullCreate();
         setVisibleFalse();
         SettingScrollPanel.setVisible(true);
-        aboutSettingsButton.setVisible(true);
         motherPanel.add(SettingScrollPanel, BorderLayout.CENTER);
         mainFrame.setSize(width, height);
     }

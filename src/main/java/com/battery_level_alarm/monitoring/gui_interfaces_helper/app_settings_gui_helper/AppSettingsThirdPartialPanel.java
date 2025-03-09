@@ -43,7 +43,8 @@ public class AppSettingsThirdPartialPanel {
         partialPanelContent.setOpaque(false);
 
         int partialIndex = 0;
-        String secondarySound = UserChoices.isEnableSecondarySound()? "On":"Off";
+        boolean isEnableSecondarySound = UserChoices.isEnableSecondarySound();
+        String secondarySound = isEnableSecondarySound? "On":"Off";
         setDimension(partialIndex, 0);
         addLabel(gbc, partialPanelContent, "Enable Secondary Sound Alerts:", DEFAULT_FONT);
         ProgressBarValueUpdater progressBarUpdater = new ProgressBarValueUpdater(
@@ -73,6 +74,7 @@ public class AppSettingsThirdPartialPanel {
                 }
         );
         APP_SETTINGS_THIRD_PARTIAL_SPINNER_ARRAY[0] = RelatedToSpinner.createSpinner(beforeRiskAlertConfig, false);
+        APP_SETTINGS_THIRD_PARTIAL_SPINNER_ARRAY[0].setEnabled(isEnableSecondarySound);
         addLabeledSpinner(
                 gbc, partialPanelContent, beforeRiskAlertConfig,
                 APP_SETTINGS_THIRD_PARTIAL_SPINNER_ARRAY[0],
@@ -90,6 +92,7 @@ public class AppSettingsThirdPartialPanel {
                 }
         );
         APP_SETTINGS_THIRD_PARTIAL_SPINNER_ARRAY[1] = RelatedToSpinner.createSpinner(repeatIntervalConfig, false);
+        APP_SETTINGS_THIRD_PARTIAL_SPINNER_ARRAY[1].setEnabled(isEnableSecondarySound);
         addLabeledSpinner(
                 gbc, partialPanelContent, repeatIntervalConfig,
                 APP_SETTINGS_THIRD_PARTIAL_SPINNER_ARRAY[1],

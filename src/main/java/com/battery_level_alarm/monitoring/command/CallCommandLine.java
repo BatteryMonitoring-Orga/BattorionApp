@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 public class CallCommandLine {
     public static final String NIR_CMD_PATH = MAIN_FOLDER_PATH + "/NirCMD-main/NirCMD";
+    public static final String RESOURCES_PATH = System.getProperty("user.home") + "\\Battorion\\battery-report.html";
     public static String getOS() {
         return System.getProperty("os.name").toLowerCase();
     }
@@ -39,8 +40,7 @@ public class CallCommandLine {
 
     private static ProcessBuilder getProcessBuilderForBatteryReport(String os) throws UnsupportedOperationException {
         if (os.contains("win")) {
-            String desktopPath = System.getProperty("user.home") + "\\Desktop\\battery-report.html";
-            return new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "powercfg", "/batteryreport", "/output", desktopPath);
+            return new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "powercfg", "/batteryreport", "/output", RESOURCES_PATH);
         } else if (os.contains("nix") || os.contains("nux")) {
             return new ProcessBuilder("/bin/cat", "/sys/class/power_supply/BAT0/status");
         } else if (os.contains("mac")) {
@@ -213,12 +213,14 @@ public class CallCommandLine {
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
             
+            /*
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                 	JOptionPane.showMessageDialog(null, line, "Battery Report", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
+             */
 
             try {
                 process.waitFor();

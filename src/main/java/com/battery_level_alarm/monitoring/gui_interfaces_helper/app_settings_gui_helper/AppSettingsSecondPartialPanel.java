@@ -43,7 +43,8 @@ public class AppSettingsSecondPartialPanel {
         partialPanelContent.setOpaque(false);
 
         int partialIndex = 0;
-        String primarySound = UserChoices.isEnablePrimarySound()? "On":"Off";
+        boolean isEnablePrimarySound = UserChoices.isEnablePrimarySound();
+        String primarySound = isEnablePrimarySound? "On":"Off";
         setDimension(partialIndex, 0);
         addLabel(gbc, partialPanelContent, "Enable Primary Sound Alerts:", DEFAULT_FONT);
         ProgressBarValueUpdater progressBarUpdater = new ProgressBarValueUpdater(
@@ -73,6 +74,7 @@ public class AppSettingsSecondPartialPanel {
                 }
         );
         APP_SETTINGS_SECOND_PARTIAL_SPINNER_ARRAY[0] = RelatedToSpinner.createSpinner(soundDurationConfig, false);
+        APP_SETTINGS_SECOND_PARTIAL_SPINNER_ARRAY[0].setEnabled(isEnablePrimarySound);
         addLabeledSpinner(
                 gbc, partialPanelContent, soundDurationConfig,
                 APP_SETTINGS_SECOND_PARTIAL_SPINNER_ARRAY[0],

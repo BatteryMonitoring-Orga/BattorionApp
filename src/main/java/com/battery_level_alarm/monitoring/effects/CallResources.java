@@ -1,6 +1,5 @@
 package com.battery_level_alarm.monitoring.effects;
 import java.net.URL;
-
 import javax.swing.ImageIcon;
 
 import com.battery_level_alarm.monitoring.core.BattorionMain;

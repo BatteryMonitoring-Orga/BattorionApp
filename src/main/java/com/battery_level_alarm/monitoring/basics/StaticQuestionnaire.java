@@ -1,11 +1,15 @@
 package com.battery_level_alarm.monitoring.basics;
+import com.battery_level_alarm.monitoring.battery_report.HTMLOpener;
+
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 
 public class StaticQuestionnaire {
 	public static void aboutDispatch() {
-        JOptionPane.showMessageDialog(null,
+        JEditorPane aboutEditor = new JEditorPane("text/html",
                 "<html><body style='font-family:Serif; font-size:11px;'>"
                         + "<b>About Battorion</b><br><br>"
                         + "<b>Version:</b> 1.0.0<br>"
@@ -19,8 +23,23 @@ public class StaticQuestionnaire {
                         + "- Click '<b>Start</b>' to begin monitoring.<br>"
                         + "- Click '<b>Stop</b>' to halt monitoring.<br><br>"
                         + "Thank you for using Battorion!"
-                        + "</body></html>",
-                "About Battorion", JOptionPane.INFORMATION_MESSAGE);
+                        + "<p><a href='action:openComprehensiveBatteryGuideInArabic'><b>Comprehensive guide in Arabic</b></a></p>"
+                        + "<p><a href='action:openComprehensiveBatteryGuideInEnglish'><b>Comprehensive guide in English</b></a></p>"
+                        + "</body></html>"
+        );
+
+        Map<String, Runnable> actionsMap = new HashMap<>();
+        actionsMap.put("action:openComprehensiveBatteryGuideInArabic",
+                () -> HTMLOpener.open("src/main/java/com/battery_level_alarm/monitoring/html_pages/ComprehensiveBatteryGuideInArabic.html")
+        );
+        actionsMap.put("action:openComprehensiveBatteryGuideInEnglish",
+                () -> HTMLOpener.open("src/main/java/com/battery_level_alarm/monitoring/html_pages/ComprehensiveBatteryGuideInEnglish.html")
+        );
+        aboutEditorPanelDispatch(
+                "About Battorion",
+                aboutEditor,
+                actionsMap, 600, 400
+        );
     }
 
     public static String getHowToUseSettings(){
@@ -81,11 +100,11 @@ public class StaticQuestionnaire {
                 <body style="font-family: Serif, sans-serif; padding: 10px;">
                     <h2>What Are Temporary Files?</h2>
                     <p>
-                        Temporary files (<b>Temp files</b>) are created by programs and the operating system 
+                        Temporary files (<b>Temp files</b>) are created by programs and the operating system\s
                         to store data that is only needed for a limited period of time.
                     </p>
                     <p>
-                        These files are usually safe to delete, but in some cases, they might contain 
+                        These files are usually safe to delete, but in some cases, they might contain\s
                         important data needed for running applications or updating the system.
                     </p><br>
                     <h3>Why Should You Delete Temp Files?</h3>
@@ -99,37 +118,10 @@ public class StaticQuestionnaire {
                     </p>
                 </body>
             </html>
-            """;
+           \s""";
     }
 
-    public static void aboutComputerSettingsDispatch() {
-        JEditorPane editorPane = getComputerSettingsEditorText();
-        editorPane.setEditable(false);
-        editorPane.setOpaque(false);
-        editorPane.setFocusable(false);
-        editorPane.setHighlighter(null);
-        editorPane.addHyperlinkListener(e -> {
-            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                if ("action:openSystemTrayNotification".equals(e.getDescription())) {
-                    aboutSystemTrayNotification();
-                } else if("action:openNotificationSound".equals(e.getDescription())){
-                    aboutPlaySounds();
-                }
-            }
-        });
-
-        JScrollPane scrollPane = new JScrollPane(editorPane);
-        scrollPane.setPreferredSize(new Dimension(500, 300));
-        scrollPane.setBorder(null);
-        scrollPane.setOpaque(false);
-        SwingUtilities.invokeLater(() -> {
-            scrollPane.getVerticalScrollBar().setValue(0);
-            editorPane.setCaretPosition(0);
-        });
-        JOptionPane.showMessageDialog(null, scrollPane, "About Computer Settings Panel", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private static JEditorPane getComputerSettingsEditorText(){
+    public static JEditorPane getComputerSettingsEditorText(){
         return new JEditorPane("text/html",
                 "<html><body style='font-family:Serif; font-size:11px;'>" +
                         "<p>This panel provides an intuitive interface to manage automated system behaviors, including:</p>" +
@@ -356,5 +348,33 @@ public class StaticQuestionnaire {
         scrollPane.setBorder(null);
         scrollPane.setOpaque(false);
         return scrollPane;
+    }
+
+    public static void aboutEditorPanelDispatch(
+            String title, JEditorPane messageSupplier,
+            Map<String, Runnable> actionsMap, int... dimensions
+    ){
+        messageSupplier.setEditable(false);
+        messageSupplier.setOpaque(false);
+        messageSupplier.setFocusable(false);
+        messageSupplier.setHighlighter(null);
+        messageSupplier.addHyperlinkListener(e -> {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                Runnable action = actionsMap.get(e.getDescription());
+                if (action != null) {
+                    action.run();
+                }
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(messageSupplier);
+        scrollPane.setPreferredSize(new Dimension(dimensions[0], dimensions[1]));
+        scrollPane.setBorder(null);
+        scrollPane.setOpaque(false);
+        SwingUtilities.invokeLater(() -> {
+            scrollPane.getVerticalScrollBar().setValue(0);
+            messageSupplier.setCaretPosition(0);
+        });
+        JOptionPane.showMessageDialog(null, scrollPane, title, JOptionPane.INFORMATION_MESSAGE);
     }
 }

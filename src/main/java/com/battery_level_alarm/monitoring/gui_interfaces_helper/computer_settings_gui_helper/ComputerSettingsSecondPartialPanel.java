@@ -77,7 +77,7 @@ public class ComputerSettingsSecondPartialPanel {
                 secondProgressBarUpdater, true
         );
 
-        DropDownListPanelsArray[1] = secondPartialPanelContent;
+        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[1] = secondPartialPanelContent;
         JPanel secondPartialPanelFooter = createSecondPartialPanelFooter();
         secondPartialPanelFooter.setOpaque(false);
         secondPartialPanel.add(secondPartialPanelContent, BorderLayout.CENTER);

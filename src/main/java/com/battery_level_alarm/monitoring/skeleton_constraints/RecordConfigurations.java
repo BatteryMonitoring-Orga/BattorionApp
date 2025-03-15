@@ -7,6 +7,7 @@ import static com.battery_level_alarm.monitoring.gui_interfaces_helper.app_setti
 import static com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsFirstPartialPanel.prepareFirstPartialContainer;
 import static com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsSecondPartialPanel.prepareSecondPartialContainer;
 import static com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsThirdPartialPanel.prepareThirdPartialContainer;
+import static com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsFourthPartialPanel.prepareFourthPartialContainer;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.ONE_SPACE;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.TWO_SPACE;
 
@@ -18,6 +19,7 @@ import com.battery_level_alarm.monitoring.gui_interfaces_helper.app_settings_gui
 import com.battery_level_alarm.monitoring.gui_interfaces_helper.app_settings_gui_helper.AppSettingsSecondPartialPanel;
 import com.battery_level_alarm.monitoring.gui_interfaces_helper.app_settings_gui_helper.AppSettingsThirdPartialPanel;
 import com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsFirstPartialPanel;
+import com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsFourthPartialPanel;
 import com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsSecondPartialPanel;
 import com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper.ComputerSettingsThirdPartialPanel;
 import com.battery_level_alarm.monitoring.preparing_gui.DropDownList;
@@ -55,6 +57,7 @@ public class RecordConfigurations {
     public static SingleDropDownListRecord COMPUTER_SETTINGS_FIRST_DDL;
     public static SingleDropDownListRecord COMPUTER_SETTINGS_SECOND_DDL;
     public static SingleDropDownListRecord COMPUTER_SETTINGS_THIRD_DDL;
+    public static SingleDropDownListRecord COMPUTER_SETTINGS_FOURTH_DDL;
 
     private static void createShadowObject(){
         computerSettingsContainerListShadow = new DropShadowBorder(
@@ -125,6 +128,7 @@ public class RecordConfigurations {
         JPanel firstPartialPanel = prepareFirstPartialContainer(gbc);
         JPanel secondPartialPanel = prepareSecondPartialContainer(gbc);
         JPanel thirdPartialPanel = prepareThirdPartialContainer(gbc);
+        JPanel fourthPartialPanel = prepareFourthPartialContainer(gbc);
 
         COMPUTER_SETTINGS_FIRST_DDL = new SingleDropDownListRecord(
                 "General Options ",
@@ -155,6 +159,16 @@ public class RecordConfigurations {
                 ComputerSettingsThirdPartialPanel.thirdProgressBar,
                 thirdPartialPanel,
                 DropDownListStatus::setCS_ThirdDropDownListEnabled
+        );
+        COMPUTER_SETTINGS_FOURTH_DDL = new SingleDropDownListRecord(
+                "Brightness   " + TWO_SPACE,
+                new Dimension(480, 260),
+                computerSettingsOpenPanelShadow,
+                computerSettingsClosedPanelShadow,
+                isCS_FourthDropDownListEnabled(), 3,
+                ComputerSettingsFourthPartialPanel.ProgressBar,
+                fourthPartialPanel,
+                DropDownListStatus::setCS_FourthDropDownListEnabled
         );
     }
 }

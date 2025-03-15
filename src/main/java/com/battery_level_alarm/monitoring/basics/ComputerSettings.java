@@ -10,8 +10,10 @@ public class ComputerSettings {
     private static boolean enableExchangeToAudioOutputUsed;
     private static boolean enablingSoundLevelChange;
     private static boolean restoringSoundLevelAfterAlert;
+    private static boolean enableSetBrightnessLevel;
     private static List<String> audioDevices = new ArrayList<>();
     private static String currentAudioDevice;
+    private static int brightnessLevel;
     private static int wakeUpEvery;
     private static int volumeLevel;
     private static String notificationSoundFileName;
@@ -28,13 +30,6 @@ public class ComputerSettings {
     }
     public static void setEnableSystemNotificationSound(boolean enableSystemNotificationSound){
         ComputerSettings.enableSystemNotificationSound = enableSystemNotificationSound;
-    }
-
-    public static int getWakeUpEvery(){
-        return wakeUpEvery;
-    }
-    public static void setWakeUpEvery(int wakeUpEvery) {
-        ComputerSettings.wakeUpEvery = wakeUpEvery;
     }
 
     public static boolean isEnableExchangeToSpeakerAudioOutput(){
@@ -70,6 +65,13 @@ public class ComputerSettings {
     }
     public static void setEnableUnmuteVolumeAutomatically(boolean enableUnmuteVolumeAutomatically) {
         ComputerSettings.enableUnmuteVolumeAutomatically = enableUnmuteVolumeAutomatically;
+    }
+
+    public static boolean isEnableSetBrightnessLevel(){
+        return enableSetBrightnessLevel;
+    }
+    public static void setEnableSetBrightnessLevel(boolean enableSetBrightnessLevel) {
+        ComputerSettings.enableSetBrightnessLevel = enableSetBrightnessLevel;
     }
 
     public static List<String> getAudioDevices(){
@@ -117,6 +119,20 @@ public class ComputerSettings {
         ComputerSettings.currentAudioDevice = currentAudioDevice;
     }
 
+    public static String getNotificationSoundFileName(){
+        return notificationSoundFileName;
+    }
+    public static void setNotificationSoundFileName(String notificationSoundFileName){
+        ComputerSettings.notificationSoundFileName = notificationSoundFileName;
+    }
+
+    public static int getBrightnessLevel() {
+        return brightnessLevel;
+    }
+    public static void setBrightnessLevel(int brightnessLevel) {
+        ComputerSettings.brightnessLevel = brightnessLevel;
+    }
+
     public static int getVolumeLevel() {
         return volumeLevel;
     }
@@ -124,10 +140,10 @@ public class ComputerSettings {
         ComputerSettings.volumeLevel = volumeLevel;
     }
 
-    public static String getNotificationSoundFileName(){
-        return notificationSoundFileName;
+    public static int getWakeUpEvery(){
+        return wakeUpEvery;
     }
-    public static void setNotificationSoundFileName(String notificationSoundFileName){
-        ComputerSettings.notificationSoundFileName = notificationSoundFileName;
+    public static void setWakeUpEvery(int wakeUpEvery) {
+        ComputerSettings.wakeUpEvery = wakeUpEvery;
     }
 }

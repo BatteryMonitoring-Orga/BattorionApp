@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.*;
-import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.DropDownListPanelsArray;
+import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
 import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.LABELS_FONT;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setDimension;
@@ -98,7 +98,7 @@ public class ComputerSettingsFirstPartialPanel {
                 thirdProgressBarUpdater, true
         );
 
-        DropDownListPanelsArray[0] = firstPartialPanelContent;
+        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[0] = firstPartialPanelContent;
         JPanel firstPartialPanelFooter = createFirstPartialPanelFooter();
         firstPartialPanelFooter.setOpaque(false);
         firstPartialPanel.add(firstPartialPanelContent, BorderLayout.CENTER);

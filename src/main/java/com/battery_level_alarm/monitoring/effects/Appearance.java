@@ -14,10 +14,11 @@ import java.time.LocalTime;
 import javax.swing.*;
 
 public class Appearance {
-    private static final String toLightThemeIcon = "ThemeIco/18762164";
-    private static final String toDarkThemeIcon = "ThemeIco/2";
-    private static final String timeBasedFirstOptionIcon = "ThemeIco/17682150";
-    private static final String timeBasedSecondOptionIcon = "ThemeIco/17682132";
+    public static final String THEME_ICON_FOLDER_PATH = "/com/battery_level_alarm/monitoring/ThemeIco/";
+    private static final String toLightThemeIcon = "18762164";
+    private static final String toDarkThemeIcon = "2";
+    private static final String timeBasedFirstOptionIcon = "17682150";
+    private static final String timeBasedSecondOptionIcon = "17682132";
     public static String iconName;
 
     private static String themeName;

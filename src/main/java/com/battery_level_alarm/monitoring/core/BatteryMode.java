@@ -1,6 +1,8 @@
 package com.battery_level_alarm.monitoring.core;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 import static com.battery_level_alarm.monitoring.cybernate.Timing.*;
+import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.ONE_SPACE;
+
 import com.battery_level_alarm.monitoring.basics.UserChoices;
 import com.battery_level_alarm.monitoring.effects.AlertSound;
 import java.awt.*;
@@ -10,11 +12,11 @@ public class BatteryMode {
         if(isCharging) {
             batteryBar.setForeground(Color.CYAN);
             status = isIn_ChargingMode;
-            statusLabel.setText("Battery Status: " + status + " ");
+            statusLabel.setText(ONE_SPACE + "Battery Status: " + status + " ");
         } else {
             batteryBar.setForeground(batteryColor);
             status = isIn_DisChargingMode;
-            statusLabel.setText("Battery Status: " + status + " ");
+            statusLabel.setText(ONE_SPACE + "Battery Status: " + status + " ");
         }
     }
 

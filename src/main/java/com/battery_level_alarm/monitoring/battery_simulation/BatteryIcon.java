@@ -1,6 +1,5 @@
 package com.battery_level_alarm.monitoring.battery_simulation;
-import static com.battery_level_alarm.monitoring.core.BattorionMain.batteryLevel;
-import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.getSpinnerValue;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
 import com.battery_level_alarm.monitoring.effects.CallResources;
@@ -50,7 +49,7 @@ public class BatteryIcon extends JPanel {
     private static JFrame createSimulatorFrame(){
         JFrame frame = new JFrame("Battery Simulator");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        ImageIcon icon = CallResources.getImage("BattIco/5550932");
+        ImageIcon icon = CallResources.getImage(IMAGES_FOLDER_PATH, "5550932");
         frame.setIconImage(icon.getImage());
         frame.setLayout(new BorderLayout());
         frame.setSize(520, 470);

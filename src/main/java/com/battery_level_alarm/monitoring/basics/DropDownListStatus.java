@@ -4,6 +4,7 @@ public class DropDownListStatus {
     private static boolean isCS_First_DDL_Enabled;
     private static boolean isCS_Second_DDL_Enabled;
     private static boolean isCS_Third_DDL_Enabled;
+    private static boolean isCS_Fourth_DDL_Enabled;
 
     private static boolean isAS_First_DDL_Enabled;
     private static boolean isAS_Second_DDL_Enabled;
@@ -29,6 +30,13 @@ public class DropDownListStatus {
     }
     public static void setCS_ThirdDropDownListEnabled(boolean isThirdEnabled) {
         DropDownListStatus.isCS_Third_DDL_Enabled = isThirdEnabled;
+    }
+
+    public static boolean isCS_FourthDropDownListEnabled() {
+        return isCS_Fourth_DDL_Enabled;
+    }
+    public static void setCS_FourthDropDownListEnabled(boolean isFourthEnabled) {
+        DropDownListStatus.isCS_Fourth_DDL_Enabled = isFourthEnabled;
     }
 
     public static boolean isAppSettingsFirstDropDownListEnabled() {

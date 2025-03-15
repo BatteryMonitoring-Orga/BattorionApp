@@ -98,6 +98,7 @@ public class ConfigurationFilesManager {
         json.put("first drop down list 'CS'", isCS_FirstDropDownListEnabled());
         json.put("second drop down list 'CS'", isCS_SecondDropDownListEnabled());
         json.put("third drop down list 'CS'", isCS_ThirdDropDownListEnabled());
+        json.put("fourth drop down list 'CS'", isCS_FourthDropDownListEnabled());
         return json;
     }
 
@@ -123,12 +124,14 @@ public class ConfigurationFilesManager {
         setCS_FirstDropDownListEnabled(json.optBoolean("first drop down list 'CS'", true));
         setCS_SecondDropDownListEnabled(json.optBoolean("second drop down list 'CS'", false));
         setCS_ThirdDropDownListEnabled(json.optBoolean("third drop down list 'CS'", false));
+        setCS_FourthDropDownListEnabled(json.optBoolean("fourth drop down list 'CS'", false));
     }
 
     private static void loadDefaultDropDownListConfigurations() {
         setCS_FirstDropDownListEnabled(true);
         setCS_SecondDropDownListEnabled(false);
         setCS_ThirdDropDownListEnabled(false);
+        setCS_FourthDropDownListEnabled(false);
     }
 
     public static void saveSettings() {
@@ -225,9 +228,11 @@ public class ConfigurationFilesManager {
         json.put("Enabling sound level change", isEnablingSoundLevelChange());
         json.put("Restoring sound level after alert", isRestoringSoundLevelAfterAlert());
         json.put("Enable unmute volume automatically", isEnableUnmuteVolumeAutomatically());
+        json.put("Automatic set brightness level", isEnableSetBrightnessLevel());
         json.put("Current audio device", getCurrentAudioDevice());
         json.put("Audio devices", getAudioDevices());
         json.put("Volume Level", getVolumeLevel());
+        json.put("Brightness level", getBrightnessLevel());
         json.put("Notification Sound File Name", getNotificationSoundFileName());
         return json;
     }
@@ -258,8 +263,10 @@ public class ConfigurationFilesManager {
         setEnableExchangeToAudioOutputUsed(json.optBoolean("Switch audio output to the Used device", true));
         setEnablingSoundLevelChange(json.optBoolean("Enabling sound level change", true));
         setRestoringSoundLevelAfterAlert(json.optBoolean("Restoring sound level after alert", true));
+        setEnableSetBrightnessLevel(json.optBoolean("Automatic set brightness level", true));
         setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
         setVolumeLevel(json.optInt("Volume Level", 35));
+        setBrightnessLevel(json.optInt("Brightness level", 60));
         setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
         loadAudioDevicesList(json);
         setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
@@ -284,8 +291,10 @@ public class ConfigurationFilesManager {
         setEnableExchangeToAudioOutputUsed(true);
         setEnablingSoundLevelChange(true);
         setRestoringSoundLevelAfterAlert(true);
+        setEnableSetBrightnessLevel(true);
         setWakeUpEvery(2);
         setVolumeLevel(35);
+        setBrightnessLevel(60);
         setCurrentAudioDevice("سماعات");
         setAudioDevices(new ArrayList<>());
         setNotificationSoundFileName("Alarm01.wav");

@@ -47,8 +47,8 @@ public class ComputerSettingsGUI {
             null,
             new Dimension(120, 40)
     );
-    public static final JPanel[] DropDownListPanelsArray = {
-            new JPanel(), new JPanel(), new JPanel()
+    public static final JPanel[] COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY = {
+            new JPanel(), new JPanel(), new JPanel(), new JPanel()
     };
     public static final JTextField outputDeviceName = new JTextField();
 
@@ -78,11 +78,12 @@ public class ComputerSettingsGUI {
                 "   Do these procedures automatically:",
                 TITLE_LISTS_FONT,
                 computerSettingsContainerListShadow,
-                DropDownListPanelsArray,
+                COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY,
                 new SingleDropDownListRecord[]{
                         COMPUTER_SETTINGS_FIRST_DDL,
                         COMPUTER_SETTINGS_SECOND_DDL,
-                        COMPUTER_SETTINGS_THIRD_DDL
+                        COMPUTER_SETTINGS_THIRD_DDL,
+                        COMPUTER_SETTINGS_FOURTH_DDL,
                 }
         );
         JPanel secondPanel = prepareListsContainer(containerRecord);

@@ -4,6 +4,7 @@ import com.battery_level_alarm.monitoring.configuration_records.ScrollConfigurat
 import com.battery_level_alarm.monitoring.effects.Appearance;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,6 +16,30 @@ public class OtherComponentsConfig {
     public static final String TWO_SPACE = "\u2003\u2003";
     public static final String FOUR_SPACE = "\u2003\u2003\u2003\u2003";
     public static final String TEN_SPACE = "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003";
+
+    public static JSlider addLabeledSlider(
+            GridBagConstraints gbc, JPanel panel, String label,
+            int minValue, int maxValue, int initialValue,
+            int majorTickSpacing, int minorTickSpacing,
+            int orientation, ChangeListener listener
+    ){
+        JLabel jLabel = new JLabel(label);
+        jLabel.setFont(DEFAULT_FONT);
+        gbc.gridy = getRow();
+        gbc.gridx = getColumn();
+        panel.add(jLabel, gbc);
+
+        JSlider slider = new JSlider(minValue, maxValue, initialValue);
+        slider.setMajorTickSpacing(majorTickSpacing);
+        slider.setMinorTickSpacing(minorTickSpacing);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.setOrientation(orientation);
+        slider.addChangeListener(listener);
+        gbc.gridx = getColumn() + 1;
+        panel.add(slider, gbc);
+        return slider;
+    }
 
     public static JComboBox<String> addComboBox(
             GridBagConstraints gbc, JPanel panel, String text,

@@ -5,6 +5,7 @@ import com.battery_level_alarm.monitoring.preparing_gui.PrepareDiskInfoGUI;
 
 import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class BattorionPanelHelper {
     public static void refreshSettingsPanel() {
@@ -28,6 +29,16 @@ public class BattorionPanelHelper {
 
     public static void refreshBatteryStatisticsPanel() {
         BatteryStatisticsGUI.createGUI();
+    }
+
+    public static void refreshTopAssistantPartialPanelsShadow(Color color){
+        dropShadowBorder.setShadowColor(color);
+        firstTopAssistantPartialPanel.setBorder(dropShadowBorder);
+        secondTopAssistantPartialPanel.setBorder(dropShadowBorder);
+        thirdTopAssistantPartialPanel.setBorder(dropShadowBorder);
+
+        topAssistantPartialPanelsContainer.repaint();
+        topAssistantPartialPanelsContainer.revalidate();
     }
 
     public static void ifPanelsNullCreate() {

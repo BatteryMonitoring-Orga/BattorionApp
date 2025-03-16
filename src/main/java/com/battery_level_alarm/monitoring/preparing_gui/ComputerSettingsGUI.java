@@ -124,7 +124,7 @@ public class ComputerSettingsGUI {
         addLabel(gbc, thirdPanel, "Audio output device name:", DEFAULT_FONT);
         setColumn(1);
         JTextField audioDeviceName = addTextField(
-                gbc, thirdPanel, promptText, 150, 35,
+                gbc, thirdPanel, promptText, 150, 38,
                 UIManager.getBorder("TextField.border")
                 , false
         );

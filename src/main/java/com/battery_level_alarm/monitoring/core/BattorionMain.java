@@ -38,7 +38,6 @@ import com.notifications.system_tray_notifications.system_tray.SystemTrayNotific
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;

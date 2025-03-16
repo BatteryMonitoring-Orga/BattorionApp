@@ -1,8 +1,5 @@
 package com.battery_level_alarm.monitoring.gui_static_method_configurations;
-import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
-import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.addLabel;
-import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.LABELS_FONT;
 import com.battery_level_alarm.monitoring.configuration_records.SpinnerConfig;
 
 import javax.swing.*;
@@ -41,16 +38,28 @@ public class RelatedToSpinner {
         JSpinner spinner = new JSpinner(model);
         spinner.setPreferredSize(new Dimension(config.width(), config.height()));
         if(unableToWrite){
-            JComponent editor = spinner.getEditor();
-            if (editor instanceof JSpinner.DefaultEditor) {
-                ((JSpinner.DefaultEditor) editor).getTextField().setEditable(false);
-                ((JSpinner.DefaultEditor) editor).getTextField().setFocusable(false);
-            }
+            setSpinnerTextFieldEditable(spinner, false);
         }
 
         if (config.listener() != null) {
             spinner.addChangeListener(config.listener());
         }
         return spinner;
+    }
+
+    public static void setSpinnerTextFieldEditable(JSpinner spinner, boolean editable){
+        JComponent editor = spinner.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor) {
+            ((JSpinner.DefaultEditor) editor).getTextField().setEditable(editable);
+            ((JSpinner.DefaultEditor) editor).getTextField().setFocusable(editable);
+        }
+    }
+
+    public static void invisibleSpinnerTextField(JSpinner spinner, boolean showTextField){
+        JComponent editor = spinner.getEditor();
+        if (editor instanceof JSpinner.DefaultEditor) {
+            JTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
+            textField.setVisible(showTextField);
+        }
     }
 }

@@ -38,6 +38,7 @@ import com.notifications.system_tray_notifications.system_tray.SystemTrayNotific
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -57,6 +58,7 @@ public class BattorionMain {
     public static final String isIn_DisChargingMode = "Not Charging";
     private static final String APP_NAME = "Battorion";
     public static final String MAIN_FOLDER_NAME = "/Battorion";
+    public static Color borderColor;
 
     private static Thread monitoringThread;
     static SystemTrayNotification stn;
@@ -110,6 +112,7 @@ public class BattorionMain {
                 4, true, true,
                 true, true
         );
+        borderColor = UIManager.getColor("Label.foreground");
 
         loadGeneralConfigurations();
         Appearance.theme_setup();
@@ -133,6 +136,10 @@ public class BattorionMain {
 
     public static void build(){
         UIManager.put("ToolTip.font", textFont);
+        ToolTipManager.sharedInstance().setEnabled(true);
+        ToolTipManager.sharedInstance().setInitialDelay(100);
+        ToolTipManager.sharedInstance().setDismissDelay(5000);
+
         configurationHistoryMap();
         configurationSystemTrayNotifications();
 

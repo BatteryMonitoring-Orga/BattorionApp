@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.borderColor;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.command.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
@@ -20,6 +21,7 @@ import com.battery_level_alarm.monitoring.gui_static_method_configurations.Relat
 import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class ComputerSettingsGUI {
             new JPanel(), new JPanel(), new JPanel(), new JPanel()
     };
     public static final JTextField outputDeviceName = new JTextField();
+    public static JSpinner pcVolumeSpinner;
 
     public static JPanel createComputerSettingsGUI(AlarmSounds alarmSounds){
         JPanel computerSettingsGui = new JPanel();
@@ -120,7 +123,11 @@ public class ComputerSettingsGUI {
         setDimension(++index, 0);
         addLabel(gbc, thirdPanel, "Audio output device name:", DEFAULT_FONT);
         setColumn(1);
-        JTextField audioDeviceName = addTextField(gbc, thirdPanel, promptText);
+        JTextField audioDeviceName = addTextField(
+                gbc, thirdPanel, promptText, 150, 35,
+                UIManager.getBorder("TextField.border")
+                , false
+        );
         setPromptFeature(audioDeviceName, promptText, DEVICE_STATUS_MESSAGES);
         setDocumentListener(audioDeviceName, audioDevicesComboBox, promptText, DEVICE_STATUS_MESSAGES);
         setDimension(++index, 1);
@@ -162,7 +169,7 @@ public class ComputerSettingsGUI {
                     CallCommandLine.setPCVolume(percentage);
                 }
         );
-        JSpinner pcVolumeSpinner = RelatedToSpinner.createSpinner(pcVolumeConfig, true);
+        pcVolumeSpinner = RelatedToSpinner.createSpinner(pcVolumeConfig, true);
         addLabeledSpinner(gbc, thirdPanel, pcVolumeConfig, pcVolumeSpinner, false);
 
         setGridBagConstraintsInsets(gbc, new InsetsRecord(0, 10, 10, 10), true);

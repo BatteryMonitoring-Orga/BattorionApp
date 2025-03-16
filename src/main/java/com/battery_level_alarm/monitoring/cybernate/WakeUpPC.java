@@ -5,8 +5,21 @@ import java.awt.*;
 
 public class WakeUpPC {
 	private static Thread wakeUpThread;
-    private static int x;
-	private static int y;
+	private static int shiftInY_axis = 0;
+	private static int shiftInX_axis = 0;
+
+	public static int getShiftInY_axis() {
+		return shiftInY_axis;
+	}
+	public static void setShiftInY_axis(int shiftInY_axis) {
+		WakeUpPC.shiftInY_axis = shiftInY_axis;
+	}
+	public static int getShiftInX_axis() {
+		return shiftInX_axis;
+	}
+	public static void setShiftInX_axis(int shiftInX_axis) {
+		WakeUpPC.shiftInX_axis = shiftInX_axis;
+	}
 
 	public static void wakeUp() {
 		if(!checkThread()){
@@ -16,8 +29,8 @@ public class WakeUpPC {
 	        java.awt.Robot robot = new java.awt.Robot();
 			wakeUpThread = Thread.ofVirtual().start(() -> {
                 while (ComputerSettings.isActivateTheAwakeningFeature()) {
-                    getMousePosition();
-					doRobotAction(robot);
+					Point position = getMousePosition();
+					doRobotAction(robot, position, false, 0, 0);
 					try{
 						Thread.sleep(ComputerSettings.getWakeUpEvery() * 60000L);
 					} catch (InterruptedException ex) {
@@ -43,15 +56,20 @@ public class WakeUpPC {
 		return false;
 	}
 
-	private static void getMousePosition(){
+	public static Point getMousePosition(){
 		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
 		Point currentMousePosition = pointerInfo.getLocation();
-		x = currentMousePosition.x;
-		y = currentMousePosition.y;
+		int xLocal = currentMousePosition.x;
+		int yLocal = currentMousePosition.y;
+		return new Point(xLocal, yLocal);
 	}
 
-	private static void doRobotAction(Robot robot){
-		robot.mouseMove(x, y);
+	public static void doRobotAction(Robot robot, Point position, boolean shift, int shiftInY_axis, int shiftInX_axis){
+		if(shift){
+			robot.mouseMove(position.x + shiftInX_axis, position.y + shiftInY_axis);
+		} else {
+			robot.mouseMove(position.x, position.y);
+		}
 		robot.keyPress(java.awt.event.KeyEvent.VK_SHIFT);
 		robot.keyRelease(java.awt.event.KeyEvent.VK_SHIFT);
 	}

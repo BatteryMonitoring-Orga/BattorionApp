@@ -17,9 +17,7 @@ public class SoundVolumeReader {
         Thread thread = new Thread(() -> {
             try {
                 String exePath = Paths.get(SVCL_PATH, "svcl.exe").normalize().toAbsolutePath().toString();
-                System.out.println(exePath);
                 if (!new File(exePath).exists()) {
-                    System.out.println("Error: Executable file not found!");
                     return;
                 }
 
@@ -33,7 +31,6 @@ public class SoundVolumeReader {
                     int counter = 0;
 
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
                         line = line.trim();
                         if (line.matches("\\d+(\\.\\d+)?")) {
                             volume = Double.parseDouble(line);

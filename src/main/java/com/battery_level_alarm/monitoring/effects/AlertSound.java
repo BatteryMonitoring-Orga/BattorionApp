@@ -23,7 +23,7 @@ public class AlertSound {
     private static Player player;
     private static Thread playThread;
 
-    private static double volumeLevel = 0.0;
+    private static int volumeLevel = 0;
     private static final int defaultSoundDuration = 1;
     public static boolean useDefaultDuration = false;
 
@@ -158,7 +158,7 @@ public class AlertSound {
     private static void prepareBeforeStarting() {
         try{
             if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
-                volumeLevel = SoundVolumeReader.getVolumeLevel();
+                volumeLevel = (int) SoundVolumeReader.getVolumeLevel();
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
@@ -184,7 +184,7 @@ public class AlertSound {
 
         try{
             if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
-                CallCommandLine.setPCVolume((int) volumeLevel);
+                CallCommandLine.setPCVolume(volumeLevel);
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {

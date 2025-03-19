@@ -1,6 +1,8 @@
 package com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.isEnableExchangeToAudioOutputUsed;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.isEnableExchangeToSpeakerAudioOutput;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.mainFrame;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.motherPanel;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setDimension;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.FOUR_SPACE;
@@ -10,82 +12,140 @@ import static com.battery_level_alarm.monitoring.gui_static_method_configuration
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.addMouseListenerToLabel;
 import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.*;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.basics.DropDownListStaticQuestionnaires;
+import com.battery_level_alarm.monitoring.basics.EffectDirection;
+import com.battery_level_alarm.monitoring.configuration_records.ComponentHierarchy;
+import com.battery_level_alarm.monitoring.configuration_records.CompoundUpdaterRecord;
 import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
+import com.battery_level_alarm.monitoring.configuration_records.ToggleButtonRecord;
 import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 public class ComputerSettingsSecondPartialPanel {
     private static final boolean[] COMPUTER_SETTINGS_SECOND_PARTIAL_TRUE_ARRAY = {
             isEnableExchangeToSpeakerAudioOutput(),
             isEnableExchangeToAudioOutputUsed()
     };
+    private static ComponentHierarchy hierarchy;
+    public static Dimension partialPanelDimension;
+    public static JProgressBar ProgressBar;
 
-    public static JProgressBar secondProgressBar;
     public static JPanel prepareSecondPartialContainer(GridBagConstraints gbc){
-        secondProgressBar = prepareProgressBar(COMPUTER_SETTINGS_SECOND_PARTIAL_TRUE_ARRAY, 6);
-        return secondPartialPanel(gbc);
+        ProgressBar = prepareProgressBar(COMPUTER_SETTINGS_SECOND_PARTIAL_TRUE_ARRAY, 6);
+        return createPartialPanel(gbc);
     }
 
-    private static JPanel secondPartialPanel(GridBagConstraints gbc){
-        JPanel secondPartialPanel = new JPanel(new BorderLayout());
-        secondPartialPanel.setOpaque(false);
+    private static JPanel createPartialPanel(GridBagConstraints gbc) {
+        JPanel mainPartialPanel = new JPanel(new BorderLayout());
+        mainPartialPanel.setOpaque(false);
+        JPanel partialPanelContent = new JPanel(new GridBagLayout());
+        partialPanelContent.setOpaque(false);
+        hierarchy = new ComponentHierarchy(
+                null, 0, mainFrame, motherPanel, mainPartialPanel
+        );
 
-        JPanel secondPartialPanelContent = new JPanel(new GridBagLayout());
-        secondPartialPanelContent.setOpaque(false);
         int partialIndex = 0;
-        String toSpeaker = isEnableExchangeToSpeakerAudioOutput()? "On":"Off";
-        String toUsed = isEnableExchangeToAudioOutputUsed()? "On":"Off";
+        partialIndex = addToggleFeature(
+                gbc, partialPanelContent, partialIndex,
+                "Exchange to speaker audio output:",
+                ComputerSettings::setEnableExchangeToSpeakerAudioOutput,
+                ComputerSettings.isEnableExchangeToSpeakerAudioOutput()
+        );
 
-        setDimension(partialIndex, 0);
-        addLabel(gbc, secondPartialPanelContent, "Exchange to speaker audio output:", LABELS_FONT);
-        ProgressBarValueUpdater firstProgressBarUpdater = new ProgressBarValueUpdater(
-                secondProgressBar,
-                COMPUTER_SETTINGS_SECOND_PARTIAL_TRUE_ARRAY,
+        addToggleFeature(
+                gbc, partialPanelContent, partialIndex,
+                "Restore audio output used after alert:",
+                ComputerSettings::setEnableExchangeToAudioOutputUsed,
+                ComputerSettings.isEnableExchangeToAudioOutputUsed()
+        );
+
+        decideTheSizeDimension();
+        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[1] = partialPanelContent;
+        JPanel partialPanelFooter = createPartialPanelFooter();
+        partialPanelFooter.setOpaque(false);
+        mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
+        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
+        return mainPartialPanel;
+    }
+
+    private static int addToggleFeature(GridBagConstraints gbc, JPanel panel, int index,
+                                        String label, Consumer<Boolean> setter, boolean currentState) {
+        setDimension(index, 0);
+        addLabel(gbc, panel, label, LABELS_FONT);
+        CompoundUpdaterRecord compoundUpdaterRecord = getCompoundUpdaterRecord(hierarchy, index);
+        ToggleButtonRecord toggleButtonRecord = new ToggleButtonRecord(
+                setter,
+                ConfigurationFilesManager::saveComputerSettings,
+                currentState ? "On" : "Off",
+                new Dimension(60, 30)
+        );
+
+        setColumn(1);
+        addLabel(gbc, panel, FOUR_SPACE, LABELS_FONT);
+        setColumn(2);
+        addToggleButton(gbc, panel, toggleButtonRecord, compoundUpdaterRecord);
+        return index + 1;
+    }
+
+    private static CompoundUpdaterRecord getCompoundUpdaterRecord(ComponentHierarchy hierarchy, int index) {
+        return switch (index) {
+            case 0 -> getFirstCompoundUpdaterRecord(hierarchy);
+            case 1 -> getSecondCompoundUpdaterRecord(hierarchy);
+            default -> throw new IllegalArgumentException("Invalid index for CompoundUpdaterRecord");
+        };
+    }
+
+    private static @NotNull CompoundUpdaterRecord getFirstCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
                 0,
                 ComputerSettings::isEnableExchangeToSpeakerAudioOutput,
-                new JSpinner[]{}
+                new JComponent[]{}
         );
-        setColumn(1);
-        addLabel(gbc, secondPartialPanelContent, FOUR_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, secondPartialPanelContent, ComputerSettings::setEnableExchangeToSpeakerAudioOutput,
-                ConfigurationFilesManager::saveComputerSettings, toSpeaker, 60, 30,
-                firstProgressBarUpdater, true
-        );
-
-        setDimension(++partialIndex, 0);
-        addLabel(gbc, secondPartialPanelContent, "Restore audio output used after alert:", LABELS_FONT);
-        ProgressBarValueUpdater secondProgressBarUpdater = new ProgressBarValueUpdater(
-                secondProgressBar,
-                COMPUTER_SETTINGS_SECOND_PARTIAL_TRUE_ARRAY,
-                1,
-                ComputerSettings::isEnableExchangeToAudioOutputUsed,
-                new JSpinner[]{}
-        );
-        setColumn(1);
-        addLabel(gbc, secondPartialPanelContent, FOUR_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, secondPartialPanelContent, ComputerSettings::setEnableExchangeToAudioOutputUsed,
-                ConfigurationFilesManager::saveComputerSettings, toUsed, 60, 30,
-                secondProgressBarUpdater, true
-        );
-
-        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[1] = secondPartialPanelContent;
-        JPanel secondPartialPanelFooter = createSecondPartialPanelFooter();
-        secondPartialPanelFooter.setOpaque(false);
-        secondPartialPanel.add(secondPartialPanelContent, BorderLayout.CENTER);
-        secondPartialPanel.add(secondPartialPanelFooter, BorderLayout.SOUTH);
-        return secondPartialPanel;
     }
 
-    private static JPanel createSecondPartialPanelFooter(){
+    private static @NotNull CompoundUpdaterRecord getSecondCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                1,
+                ComputerSettings::isEnableExchangeToAudioOutputUsed,
+                new JComponent[]{}
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord createCompoundUpdaterRecord(
+            ComponentHierarchy hierarchy,
+            int index,
+            Callable<Boolean> conditionSupplier,
+            JComponent[] components
+    ){
+        ProgressBarValueUpdater progressBarUpdater = new ProgressBarValueUpdater(
+                ProgressBar,
+                COMPUTER_SETTINGS_SECOND_PARTIAL_TRUE_ARRAY,
+                index,
+                conditionSupplier,
+                components
+        );
+        return new CompoundUpdaterRecord(
+                null, null, null,
+                progressBarUpdater,
+                EffectDirection.NONE,
+                hierarchy,
+                null,
+                true,
+                false
+        );
+    }
+
+    private static JPanel createPartialPanelFooter(){
         JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
         about.setFont(TITLE_LISTS_FONT);
         addMouseListenerToLabel(
@@ -103,5 +163,9 @@ public class ComputerSettingsSecondPartialPanel {
         //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
         aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
         return aboutPanel;
+    }
+
+    private static void decideTheSizeDimension(){
+        partialPanelDimension = new Dimension(WIDTH, 140);
     }
 }

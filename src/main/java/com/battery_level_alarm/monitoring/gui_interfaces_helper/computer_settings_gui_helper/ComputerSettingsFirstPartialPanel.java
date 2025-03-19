@@ -1,5 +1,7 @@
 package com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.mainFrame;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.motherPanel;
 import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
 import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.LABELS_FONT;
@@ -10,103 +12,159 @@ import static com.battery_level_alarm.monitoring.gui_static_method_configuration
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToButtons.addToggleButton;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.addLabel;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.addMouseListenerToLabel;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.basics.DropDownListStaticQuestionnaires;
+import com.battery_level_alarm.monitoring.basics.EffectDirection;
+import com.battery_level_alarm.monitoring.configuration_records.ComponentHierarchy;
+import com.battery_level_alarm.monitoring.configuration_records.CompoundUpdaterRecord;
 import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
+import com.battery_level_alarm.monitoring.configuration_records.ToggleButtonRecord;
 import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 public class ComputerSettingsFirstPartialPanel {
-    public static final boolean[] COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY = {
+    private static final boolean[] COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY = {
             isActivateTheAwakeningFeature(),
             isEnableSystemNotificationSound(),
             isEnableUnmuteVolumeAutomatically()
     };
+    private static ComponentHierarchy hierarchy;
+    public static Dimension partialPanelDimension;
+    public static JProgressBar ProgressBar;
 
-    public static JProgressBar firstProgressBar;
     public static JPanel prepareFirstPartialContainer(GridBagConstraints gbc){
-        firstProgressBar = prepareProgressBar(COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY, 6);
-        return firstPartialPanel(gbc);
+        ProgressBar = prepareProgressBar(COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY, 6);
+        return createPartialPanel(gbc);
     }
 
-    private static JPanel firstPartialPanel(GridBagConstraints gbc){
-        JPanel firstPartialPanel = new JPanel(new BorderLayout());
-        firstPartialPanel.setOpaque(false);
-        JPanel firstPartialPanelContent = new JPanel(new GridBagLayout());
-        firstPartialPanelContent.setOpaque(false);
+    private static JPanel createPartialPanel(GridBagConstraints gbc) {
+        JPanel mainPartialPanel = new JPanel(new BorderLayout());
+        mainPartialPanel.setOpaque(false);
+        JPanel partialPanelContent = new JPanel(new GridBagLayout());
+        partialPanelContent.setOpaque(false);
+        hierarchy = new ComponentHierarchy(
+                null, 0, mainFrame, motherPanel, mainPartialPanel
+        );
 
         int partialIndex = 0;
-        String switched = isActivateTheAwakeningFeature()? "On":"Off";
-        String toSNS = isEnableSystemNotificationSound()? "On":"Off";
-        String toUnmuteVolume = isEnableUnmuteVolumeAutomatically()? "On":"Off";
-
-        setDimension(partialIndex, 0);
-        addLabel(gbc, firstPartialPanelContent, " Activate the awakening feature:", LABELS_FONT);
-        ProgressBarValueUpdater firstProgressBarUpdater = new ProgressBarValueUpdater(
-                firstProgressBar,
-                COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY,
-                0,
-                ComputerSettings::isActivateTheAwakeningFeature,
-                new JSpinner[]{}
-        );
-        setColumn(1);
-        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, firstPartialPanelContent, ComputerSettings::setActivateTheAwakeningFeature,
-                ConfigurationFilesManager::saveComputerSettings, switched, 60, 30,
-                firstProgressBarUpdater, true
+        partialIndex = addToggleFeature(
+                gbc, partialPanelContent, partialIndex,
+                " Activate the awakening feature:",
+                ComputerSettings::setActivateTheAwakeningFeature,
+                ComputerSettings.isActivateTheAwakeningFeature()
         );
 
-        setDimension(++partialIndex, 0);
-        addLabel(gbc, firstPartialPanelContent, " Enable System Notification Sound:", LABELS_FONT);
-        ProgressBarValueUpdater secondProgressBarUpdater = new ProgressBarValueUpdater(
-                firstProgressBar,
-                COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY,
-                1,
-                ComputerSettings::isEnableSystemNotificationSound,
-                new JSpinner[]{}
-        );
-        setColumn(1);
-        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, firstPartialPanelContent, ComputerSettings::setEnableSystemNotificationSound,
-                ConfigurationFilesManager::saveComputerSettings, toSNS, 60, 30,
-                secondProgressBarUpdater, true
+        partialIndex = addToggleFeature(
+                gbc, partialPanelContent, partialIndex,
+                " Enable System Notification Sound:",
+                ComputerSettings::setEnableSystemNotificationSound,
+                ComputerSettings.isEnableSystemNotificationSound()
         );
 
-        setDimension(++partialIndex, 0);
-        addLabel(gbc, firstPartialPanelContent, " Enable unmute volume automatically:", LABELS_FONT);
-        ProgressBarValueUpdater thirdProgressBarUpdater = new ProgressBarValueUpdater(
-                firstProgressBar,
-                COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY,
-                2,
-                ComputerSettings::isEnableUnmuteVolumeAutomatically,
-                new JSpinner[]{}
-        );
-        setColumn(1);
-        addLabel(gbc, firstPartialPanelContent, FOUR_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, firstPartialPanelContent, ComputerSettings::setEnableUnmuteVolumeAutomatically,
-                ConfigurationFilesManager::saveComputerSettings, toUnmuteVolume, 60, 30,
-                thirdProgressBarUpdater, true
+        addToggleFeature(
+                gbc, partialPanelContent, partialIndex,
+                " Enable unmute volume automatically:",
+                ComputerSettings::setEnableUnmuteVolumeAutomatically,
+                ComputerSettings.isEnableUnmuteVolumeAutomatically()
         );
 
-        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[0] = firstPartialPanelContent;
-        JPanel firstPartialPanelFooter = createFirstPartialPanelFooter();
-        firstPartialPanelFooter.setOpaque(false);
-        firstPartialPanel.add(firstPartialPanelContent, BorderLayout.CENTER);
-        firstPartialPanel.add(firstPartialPanelFooter, BorderLayout.SOUTH);
-        return firstPartialPanel;
+        decideTheSizeDimension();
+        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[0] = partialPanelContent;
+        JPanel partialPanelFooter = createPartialPanelFooter();
+        partialPanelFooter.setOpaque(false);
+        mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
+        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
+        return mainPartialPanel;
     }
 
-    private static JPanel createFirstPartialPanelFooter(){
+    private static int addToggleFeature(GridBagConstraints gbc, JPanel panel, int index,
+                                        String label, Consumer<Boolean> setter, boolean currentState) {
+        setDimension(index, 0);
+        addLabel(gbc, panel, label, LABELS_FONT);
+        CompoundUpdaterRecord compoundUpdaterRecord = getCompoundUpdaterRecord(hierarchy, index);
+        ToggleButtonRecord toggleButtonRecord = new ToggleButtonRecord(
+                setter,
+                ConfigurationFilesManager::saveComputerSettings,
+                currentState ? "On" : "Off",
+                new Dimension(60, 30)
+        );
+
+        setColumn(1);
+        addLabel(gbc, panel, FOUR_SPACE, LABELS_FONT);
+        setColumn(2);
+        addToggleButton(gbc, panel, toggleButtonRecord, compoundUpdaterRecord);
+        return index + 1;
+    }
+
+    private static CompoundUpdaterRecord getCompoundUpdaterRecord(ComponentHierarchy hierarchy, int index) {
+        return switch (index) {
+            case 0 -> getFirstCompoundUpdaterRecord(hierarchy);
+            case 1 -> getSecondCompoundUpdaterRecord(hierarchy);
+            case 2 -> getThirdCompoundUpdaterRecord(hierarchy);
+            default -> throw new IllegalArgumentException("Invalid index for CompoundUpdaterRecord");
+        };
+    }
+
+    private static @NotNull CompoundUpdaterRecord getFirstCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                0,
+                ComputerSettings::isActivateTheAwakeningFeature,
+                new JComponent[]{}
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord getSecondCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                1,
+                ComputerSettings::isEnableSystemNotificationSound,
+                new JComponent[]{}
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord getThirdCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                2,
+                ComputerSettings::isEnableUnmuteVolumeAutomatically,
+                new JComponent[]{}
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord createCompoundUpdaterRecord(
+            ComponentHierarchy hierarchy,
+            int index,
+            Callable<Boolean> conditionSupplier,
+            JComponent[] components
+    ){
+        ProgressBarValueUpdater progressBarUpdater = new ProgressBarValueUpdater(
+                ProgressBar,
+                COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY,
+                index,
+                conditionSupplier,
+                components
+        );
+        return new CompoundUpdaterRecord(
+                null, null, null,
+                progressBarUpdater,
+                EffectDirection.NONE,
+                hierarchy,
+                null,
+                true,
+                false
+        );
+    }
+
+    private static JPanel createPartialPanelFooter(){
         JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
         about.setFont(ComputerSettingsGUI.TITLE_LISTS_FONT);
         addMouseListenerToLabel(
@@ -124,5 +182,9 @@ public class ComputerSettingsFirstPartialPanel {
         //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
         aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
         return aboutPanel;
+    }
+
+    private static void decideTheSizeDimension(){
+        partialPanelDimension = new Dimension(WIDTH, 190);
     }
 }

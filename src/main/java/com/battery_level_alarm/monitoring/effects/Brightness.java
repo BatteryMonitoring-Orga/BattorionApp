@@ -10,14 +10,11 @@ import java.io.InputStreamReader;
 public class Brightness {
     public static final int MAX_BRIGHTNESS = 100;
     public static final int MIN_BRIGHTNESS = 0;
-    private static int DEFAULT_BRIGHTNESS = 50;
+    private static final int DEFAULT_BRIGHTNESS = 50;
     private static int CURRENT_BRIGHTNESS = 0;
 
     public static int getDefaultBrightness() {
         return DEFAULT_BRIGHTNESS;
-    }
-    public static void setDefaultBrightness(int brightness) {
-        Brightness.DEFAULT_BRIGHTNESS = brightness;
     }
 
     public static int getCurrentBrightness() {

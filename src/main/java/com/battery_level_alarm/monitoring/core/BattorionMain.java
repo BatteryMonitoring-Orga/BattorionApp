@@ -62,17 +62,17 @@ public class BattorionMain {
     private static Thread monitoringThread;
     static SystemTrayNotification stn;
     static Notifications notify;
-    static AlarmSounds alarmSounds;
+    public static AlarmSounds alarmSounds;
     static DropShadowBorder dropShadowBorder;
 
-    static JFrame mainFrame;
-    static JPanel motherPanel;
+    public static JFrame mainFrame;
+    public static JPanel motherPanel;
     static JPanel DashboardPanel;
     static JPanel DiskInfoPanel;
     static JPanel BatteryStatisticsPanel;
     static JPanel downloaderPanel;
-    static JScrollPane SettingScrollPanel;
-    static JScrollPane pcSettingScrollPanel;
+    public static JScrollPane SettingScrollPanel;
+    public static JScrollPane pcSettingScrollPanel;
 
     static JPanel topAssistantPartialPanelsContainer;
     static JPanel firstTopAssistantPartialPanel;
@@ -103,6 +103,7 @@ public class BattorionMain {
     public static boolean progressBarInVerticalMode;
     public static int batteryLevel = 0;
     public static boolean isFromCriticalAlert = false;
+    public static boolean isWasInCriticalPhase = false;
     public static boolean simulatorMode;
     
 	public static void main(String[] args) {
@@ -554,6 +555,8 @@ public class BattorionMain {
             }
             isFromCriticalAlert = true;
             handleHighBattery(batteryBar, alertLabel, batteryColor, msg);
+
+            checkBrightnessControlMode(1);
             if(!operationIsEnd){
                 howLongBatteryNeedToFullOrDump(status, "End");
             }
@@ -570,10 +573,8 @@ public class BattorionMain {
             }
             isFromCriticalAlert = true;
             handleLowBattery(batteryBar, alertLabel, batteryColor, msg);
-            if(isEnableSetBrightnessLevel()){
-                Brightness.BrightnessProcess(getBrightnessLevel(), false);
-            }
 
+            checkBrightnessControlMode(2);
             if(!operationIsEnd){
                 howLongBatteryNeedToFullOrDump(status, "End");
             }
@@ -581,6 +582,30 @@ public class BattorionMain {
         } catch (InterruptedException e) {
             printErrorMessage(e);
         }
+    }
+
+    private static void checkBrightnessControlMode(int from){
+        int mode = getBrightnessControlOption();
+
+        if(mode == 0){
+            setBrightnessLevel();
+        } else if(mode == from){
+            setBrightnessLevel();
+        }
+    }
+
+    private static void setBrightnessLevel(){
+        if (isAutomaticallyReduceAndRestoreBL()){
+            brightnessLevelSetter();
+        } else if(isAutomaticallyReduceBrightnessLevel()){
+            brightnessLevelSetter();
+        }
+    }
+
+    private static void brightnessLevelSetter(){
+        isWasInCriticalPhase = true;
+        Brightness.BrightnessProcess(0, true);
+        Brightness.BrightnessProcess(getBrightnessLevel(), false);
     }
 
     private static void organizationOfRecallProcess(String msg){

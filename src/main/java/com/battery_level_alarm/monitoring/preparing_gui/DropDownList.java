@@ -2,6 +2,8 @@ package com.battery_level_alarm.monitoring.preparing_gui;
 import static com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager.saveDropDownListConfigurations;
 import static com.battery_level_alarm.monitoring.effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
+
 import com.battery_level_alarm.monitoring.configuration_records.DropDownListsContainerRecord;
 import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
 import com.battery_level_alarm.monitoring.configuration_records.SingleDropDownListRecord;
@@ -41,7 +43,7 @@ public class DropDownList {
 
     private static JPanel createTitlePanel(String titleText) {
         JLabel title = new JLabel(titleText);
-        title.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 16));
+        title.setFont(new Font("Serif", Font.BOLD, 16));
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         titlePanel.add(title);
         return titlePanel;
@@ -140,8 +142,8 @@ public class DropDownList {
     }
 
     private static void setContainerSpecifications(JPanel container, int height, boolean isOpened){
-        container.setMaximumSize(new Dimension(480, isOpened ? height + 50 : 50));
-        container.setPreferredSize(new Dimension(480, isOpened ? height + 50 : 50));
+        container.setMaximumSize(new Dimension(WIDTH, isOpened ? height + 50 : 50));
+        container.setPreferredSize(new Dimension(WIDTH, isOpened ? height + 50 : 50));
         container.setBorder(isOpened ? containerListShadow : null);
     }
 

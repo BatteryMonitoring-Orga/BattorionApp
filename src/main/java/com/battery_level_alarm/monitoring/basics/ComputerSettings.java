@@ -10,13 +10,17 @@ public class ComputerSettings {
     private static boolean enableExchangeToAudioOutputUsed;
     private static boolean enablingSoundLevelChange;
     private static boolean restoringSoundLevelAfterAlert;
-    private static boolean enableSetBrightnessLevel;
+
+    private static boolean automaticallyReduceAndRestoreBL;
+    private static boolean automaticallyReduceBrightnessLevel;
+    private static boolean automaticallyRestoreBrightnessLevel;
     private static List<String> audioDevices = new ArrayList<>();
+    private static String notificationSoundFileName;
     private static String currentAudioDevice;
+    private static int brightnessControlOption;
     private static int brightnessLevel;
     private static int wakeUpEvery;
     private static int volumeLevel;
-    private static String notificationSoundFileName;
 
     public static boolean isActivateTheAwakeningFeature(){
         return activateTheAwakeningFeature;
@@ -67,11 +71,25 @@ public class ComputerSettings {
         ComputerSettings.enableUnmuteVolumeAutomatically = enableUnmuteVolumeAutomatically;
     }
 
-    public static boolean isEnableSetBrightnessLevel(){
-        return enableSetBrightnessLevel;
+    public static boolean isAutomaticallyReduceAndRestoreBL(){
+        return automaticallyReduceAndRestoreBL;
     }
-    public static void setEnableSetBrightnessLevel(boolean enableSetBrightnessLevel) {
-        ComputerSettings.enableSetBrightnessLevel = enableSetBrightnessLevel;
+    public static void setAutomaticallyReduceAndRestoreBL(boolean automaticallyRestoreBrightnessLevel){
+        ComputerSettings.automaticallyReduceAndRestoreBL = automaticallyRestoreBrightnessLevel;
+    }
+
+    public static boolean isAutomaticallyReduceBrightnessLevel(){
+        return automaticallyReduceBrightnessLevel;
+    }
+    public static void setAutomaticallyReduceBrightnessLevel(boolean automaticallyReduceBrightnessLevel) {
+        ComputerSettings.automaticallyReduceBrightnessLevel = automaticallyReduceBrightnessLevel;
+    }
+
+    public static boolean isAutomaticallyRestoreBrightnessLevel(){
+        return automaticallyRestoreBrightnessLevel;
+    }
+    public static void setAutomaticallyRestoreBrightnessLevel(boolean automaticallyRestoreBrightnessLevel){
+        ComputerSettings.automaticallyRestoreBrightnessLevel = automaticallyRestoreBrightnessLevel;
     }
 
     public static List<String> getAudioDevices(){
@@ -124,6 +142,13 @@ public class ComputerSettings {
     }
     public static void setNotificationSoundFileName(String notificationSoundFileName){
         ComputerSettings.notificationSoundFileName = notificationSoundFileName;
+    }
+
+    public static int getBrightnessControlOption() {
+        return brightnessControlOption;
+    }
+    public static void setBrightnessControlOption(int option) {
+        ComputerSettings.brightnessControlOption = option;
     }
 
     public static int getBrightnessLevel() {

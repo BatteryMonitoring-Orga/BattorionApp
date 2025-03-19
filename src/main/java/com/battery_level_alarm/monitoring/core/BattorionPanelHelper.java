@@ -14,6 +14,12 @@ public class BattorionPanelHelper {
         settingsButton.doClick();
     }
 
+    public static void refreshComputerSettingsPanel() {
+        pcSettingsButton.setText("PC - Settings");
+        setVisibleFalse();
+        pcSettingsButton.doClick();
+    }
+
     public static void refreshDiskInfoPanel(String isA, boolean fromDiskPanel) {
         DiskSpaceInfo.DiskSpace();
         PrepareDiskInfoGUI.createGUI();

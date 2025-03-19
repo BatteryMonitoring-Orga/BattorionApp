@@ -1,15 +1,8 @@
 package com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper;
-
-import com.battery_level_alarm.monitoring.basics.ComputerSettings;
-import com.battery_level_alarm.monitoring.basics.DropDownListStaticQuestionnaires;
-import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
-import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
-
-import javax.swing.*;
-import java.awt.*;
-
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.isEnablingSoundLevelChange;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.isRestoringSoundLevelAfterAlert;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.mainFrame;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.motherPanel;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setDimension;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
@@ -19,74 +12,140 @@ import static com.battery_level_alarm.monitoring.gui_static_method_configuration
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.addMouseListenerToLabel;
 import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.*;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
+
+import com.battery_level_alarm.monitoring.basics.ComputerSettings;
+import com.battery_level_alarm.monitoring.basics.DropDownListStaticQuestionnaires;
+import com.battery_level_alarm.monitoring.basics.EffectDirection;
+import com.battery_level_alarm.monitoring.configuration_records.ComponentHierarchy;
+import com.battery_level_alarm.monitoring.configuration_records.CompoundUpdaterRecord;
+import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
+import com.battery_level_alarm.monitoring.configuration_records.ToggleButtonRecord;
+import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 public class ComputerSettingsThirdPartialPanel {
     private static final boolean[] COMPUTER_SETTINGS_THIRD_PARTIAL_TRUE_ARRAY = {
             isEnablingSoundLevelChange(),
             isRestoringSoundLevelAfterAlert()
     };
+    private static ComponentHierarchy hierarchy;
+    public static Dimension partialPanelDimension;
 
-    public static JProgressBar thirdProgressBar;
+    public static JProgressBar ProgressBar;
     public static JPanel prepareThirdPartialContainer(GridBagConstraints gbc){
-        thirdProgressBar = prepareProgressBar(COMPUTER_SETTINGS_THIRD_PARTIAL_TRUE_ARRAY, 6);
-        return thirdPartialPanel(gbc);
+        ProgressBar = prepareProgressBar(COMPUTER_SETTINGS_THIRD_PARTIAL_TRUE_ARRAY, 6);
+        return createPartialPanel(gbc);
     }
 
-    private static JPanel thirdPartialPanel(GridBagConstraints gbc){
-        JPanel thirdPartialPanel = new JPanel(new BorderLayout());
-        thirdPartialPanel.setOpaque(false);
+    private static JPanel createPartialPanel(GridBagConstraints gbc) {
+        JPanel mainPartialPanel = new JPanel(new BorderLayout());
+        mainPartialPanel.setOpaque(false);
+        JPanel partialPanelContent = new JPanel(new GridBagLayout());
+        partialPanelContent.setOpaque(false);
+        hierarchy = new ComponentHierarchy(
+                null, 0, mainFrame, motherPanel, mainPartialPanel
+        );
 
-        JPanel thirdPartialPanelContent = new JPanel(new GridBagLayout());
-        thirdPartialPanelContent.setOpaque(false);
         int partialIndex = 0;
-        String toChangeSoundLevel = isEnablingSoundLevelChange()? "On":"Off";
-        String toRestoreLevel = isRestoringSoundLevelAfterAlert()? "On":"Off";
+        partialIndex = addToggleFeature(
+                gbc, partialPanelContent, partialIndex,
+                "Enable sound level change:",
+                ComputerSettings::setEnablingSoundLevelChange,
+                ComputerSettings.isEnablingSoundLevelChange()
+        );
 
-        setDimension(partialIndex, 0);
-        addLabel(gbc, thirdPartialPanelContent, "Enable sound level change:", LABELS_FONT);
-        ProgressBarValueUpdater firstProgressBarUpdater = new ProgressBarValueUpdater(
-                thirdProgressBar,
-                COMPUTER_SETTINGS_THIRD_PARTIAL_TRUE_ARRAY,
+        addToggleFeature(
+                gbc, partialPanelContent, partialIndex,
+                "Restore sound level after alert:",
+                ComputerSettings::setRestoringSoundLevelAfterAlert,
+                ComputerSettings.isRestoringSoundLevelAfterAlert()
+        );
+
+        decideTheSizeDimension();
+        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[2] = partialPanelContent;
+        JPanel partialPanelFooter = createPartialPanelFooter();
+        partialPanelFooter.setOpaque(false);
+        mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
+        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
+        return mainPartialPanel;
+    }
+
+    private static int addToggleFeature(GridBagConstraints gbc, JPanel panel, int index,
+                                        String label, Consumer<Boolean> setter, boolean currentState) {
+        setDimension(index, 0);
+        addLabel(gbc, panel, label, LABELS_FONT);
+        CompoundUpdaterRecord compoundUpdaterRecord = getCompoundUpdaterRecord(hierarchy, index);
+        ToggleButtonRecord toggleButtonRecord = new ToggleButtonRecord(
+                setter,
+                ConfigurationFilesManager::saveComputerSettings,
+                currentState ? "On" : "Off",
+                new Dimension(60, 30)
+        );
+
+        setColumn(1);
+        addLabel(gbc, panel, FOUR_SPACE, LABELS_FONT);
+        setColumn(2);
+        addToggleButton(gbc, panel, toggleButtonRecord, compoundUpdaterRecord);
+        return index + 1;
+    }
+
+    private static CompoundUpdaterRecord getCompoundUpdaterRecord(ComponentHierarchy hierarchy, int index) {
+        return switch (index) {
+            case 0 -> getFirstCompoundUpdaterRecord(hierarchy);
+            case 1 -> getSecondCompoundUpdaterRecord(hierarchy);
+            default -> throw new IllegalArgumentException("Invalid index for CompoundUpdaterRecord");
+        };
+    }
+
+    private static @NotNull CompoundUpdaterRecord getFirstCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
                 0,
                 ComputerSettings::isEnablingSoundLevelChange,
-                new JSpinner[]{}
+                new JComponent[]{}
         );
-        setColumn(1);
-        addLabel(gbc, thirdPartialPanelContent, FOUR_SPACE + TWO_SPACE + ONE_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, thirdPartialPanelContent, ComputerSettings::setEnablingSoundLevelChange,
-                ConfigurationFilesManager::saveComputerSettings, toChangeSoundLevel, 60, 30,
-                firstProgressBarUpdater, true
-        );
-
-        setDimension(++partialIndex, 0);
-        addLabel(gbc, thirdPartialPanelContent, "Restore sound level after alert:", LABELS_FONT);
-        ProgressBarValueUpdater secondProgressBarUpdater = new ProgressBarValueUpdater(
-                thirdProgressBar,
-                COMPUTER_SETTINGS_THIRD_PARTIAL_TRUE_ARRAY,
-                1,
-                ComputerSettings::isRestoringSoundLevelAfterAlert,
-                new JSpinner[]{}
-        );
-        setColumn(1);
-        addLabel(gbc, thirdPartialPanelContent, FOUR_SPACE + TWO_SPACE + ONE_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, thirdPartialPanelContent, ComputerSettings::setRestoringSoundLevelAfterAlert,
-                ConfigurationFilesManager::saveComputerSettings, toRestoreLevel, 60, 30,
-                secondProgressBarUpdater, true
-        );
-
-        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[2] = thirdPartialPanelContent;
-        JPanel thirdPartialPanelFooter = createThirdPartialPanelFooter();
-        thirdPartialPanelFooter.setOpaque(false);
-        thirdPartialPanel.add(thirdPartialPanelContent, BorderLayout.CENTER);
-        thirdPartialPanel.add(thirdPartialPanelFooter, BorderLayout.SOUTH);
-        return thirdPartialPanel;
     }
 
-    private static JPanel createThirdPartialPanelFooter(){
+    private static @NotNull CompoundUpdaterRecord getSecondCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                1,
+                ComputerSettings::isRestoringSoundLevelAfterAlert,
+                new JComponent[]{}
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord createCompoundUpdaterRecord(
+            ComponentHierarchy hierarchy,
+            int index,
+            Callable<Boolean> conditionSupplier,
+            JComponent[] components
+    ){
+        ProgressBarValueUpdater progressBarUpdater = new ProgressBarValueUpdater(
+                ProgressBar,
+                COMPUTER_SETTINGS_THIRD_PARTIAL_TRUE_ARRAY,
+                index,
+                conditionSupplier,
+                components
+        );
+        return new CompoundUpdaterRecord(
+                null, null, null,
+                progressBarUpdater,
+                EffectDirection.NONE,
+                hierarchy,
+                null,
+                true,
+                false
+        );
+    }
+
+    private static JPanel createPartialPanelFooter(){
         JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
         about.setFont(TITLE_LISTS_FONT);
         addMouseListenerToLabel(
@@ -104,5 +163,9 @@ public class ComputerSettingsThirdPartialPanel {
         //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
         aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
         return aboutPanel;
+    }
+
+    private static void decideTheSizeDimension(){
+        partialPanelDimension = new Dimension(WIDTH, 140);
     }
 }

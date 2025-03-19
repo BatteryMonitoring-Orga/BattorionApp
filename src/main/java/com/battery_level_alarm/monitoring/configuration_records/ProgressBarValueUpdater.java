@@ -7,5 +7,5 @@ public record ProgressBarValueUpdater(
         boolean[] partialTrueArray,
         int index,
         Callable<Boolean> callable,
-        JSpinner[] spinner
+        JComponent[] components
 ){}

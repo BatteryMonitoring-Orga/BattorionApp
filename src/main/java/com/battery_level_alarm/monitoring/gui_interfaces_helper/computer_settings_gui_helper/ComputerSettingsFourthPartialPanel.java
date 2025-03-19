@@ -1,10 +1,7 @@
 package com.battery_level_alarm.monitoring.gui_interfaces_helper.computer_settings_gui_helper;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
-import static com.battery_level_alarm.monitoring.core.BattorionMain.borderColor;
-import static com.battery_level_alarm.monitoring.cybernate.WakeUpPC.setShiftInX_axis;
-import static com.battery_level_alarm.monitoring.cybernate.WakeUpPC.setShiftInY_axis;
-import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setColumn;
-import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.setDimension;
+import static com.battery_level_alarm.monitoring.core.BattorionMain.*;
+import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToButtons.addToggleButton;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToLabels.addLabel;
@@ -12,144 +9,361 @@ import static com.battery_level_alarm.monitoring.gui_static_method_configuration
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.addLabeledSpinner;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner.getSpinnerValue;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToTextFields.*;
-import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
-import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.LABELS_FONT;
+import static com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.*;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
 import com.battery_level_alarm.monitoring.basics.DropDownListStaticQuestionnaires;
-import com.battery_level_alarm.monitoring.configuration_records.ProgressBarValueUpdater;
-import com.battery_level_alarm.monitoring.configuration_records.SpinnerConfig;
+import com.battery_level_alarm.monitoring.basics.EffectDirection;
+import com.battery_level_alarm.monitoring.configuration_records.*;
+import com.battery_level_alarm.monitoring.core.BattorionPanelHelper;
 import com.battery_level_alarm.monitoring.effects.Brightness;
 import com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToSpinner;
 import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.preparing_gui.ComputerSettingsGUI;
-import org.jdesktop.swingx.border.DropShadowBorder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.util.concurrent.Callable;
 
 public class ComputerSettingsFourthPartialPanel {
-    public static final boolean[] COMPUTER_SETTINGS_FOURTH_PARTIAL_TRUE_ARRAY = {
-            ComputerSettings.isEnableSetBrightnessLevel()
+    private static final boolean[] COMPUTER_SETTINGS_FOURTH_PARTIAL_TRUE_ARRAY = {
+            ComputerSettings.isAutomaticallyReduceAndRestoreBL(),
+            ComputerSettings.isAutomaticallyRestoreBrightnessLevel(),
+            ComputerSettings.isAutomaticallyReduceBrightnessLevel()
     };
-    public static final JSpinner[] COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_ARRAY = {
-            new JSpinner()
+    private static final JPanel[] COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY = {
+            new JPanel(),
+            new JPanel()
+    };
+    private static final JPanel[] COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_PANEL_ARRAY = {
+            new JPanel()
+    };
+    private static final JToggleButton[] COMPUTER_SETTINGS_FOURTH_PARTIAL_TOGGLE_BUTTONS_ARRAY = {
+            new JToggleButton(), new JToggleButton(), new JToggleButton()
     };
 
     public static JTextField sliderValueTextField;
     public static JProgressBar ProgressBar;
+    private static ComponentHierarchy hierarchy;
+    public static Dimension partialPanelDimension;
     public static boolean isEnableRequestFocusInWindow = true;
+    private static boolean thereIsInvisiblePartFlag = false;
 
     public static JPanel prepareFourthPartialContainer(GridBagConstraints gbc){
         ProgressBar = prepareProgressBar(COMPUTER_SETTINGS_FOURTH_PARTIAL_TRUE_ARRAY, 6);
         return createPartialPanel(gbc);
     }
 
-    private static JPanel createPartialPanel(GridBagConstraints gbc){
+    private static JPanel createPartialPanel(GridBagConstraints gbc) {
         JPanel mainPartialPanel = new JPanel(new BorderLayout());
         mainPartialPanel.setOpaque(false);
-        JPanel partialPanelContent = new JPanel(new GridBagLayout());
-        partialPanelContent.setOpaque(false);
-        JPanel northPartialPanelContent = new JPanel(new GridBagLayout());
-        northPartialPanelContent.setOpaque(false);
-
-        int partialIndex = 0;
-        setDimension(partialIndex, 0);
-        Brightness.BrightnessProcess(0, true);
-        JSlider screenBrightnessSlider = addLabeledSlider(
-                gbc, northPartialPanelContent, "Adjust Screen Brightness",
-                0, 100, Brightness.getCurrentBrightness(),
-                20, 5, JSlider.HORIZONTAL,
-                e -> {
-                    JSlider source = (JSlider)e.getSource();
-                    int newValue = source.getValue();
-                    if (!source.getValueIsAdjusting()) {
-                        Brightness.BrightnessProcess(newValue, false);
-                        sliderValueTextField.setText(newValue + "");
-                    }
-                }
+        hierarchy = new ComponentHierarchy(
+                BattorionPanelHelper::refreshComputerSettingsPanel,
+                0, mainFrame,
+                motherPanel, pcSettingScrollPanel
         );
 
         setDimension(0, 0);
+        JPanel northPartialPanelContent = createNorthPartialPanelContent(gbc);
+        JPanel partialPanelContent = createPartialPanelContent(gbc);
+        JPanel partialPanelFooter = createPartialPanelFooter();
+        decideTheSizeDimension();
+
+        northPartialPanelContent.setOpaque(false);
+        partialPanelContent.setOpaque(false);
+        partialPanelFooter.setOpaque(false);
+
+        mainPartialPanel.add(northPartialPanelContent, BorderLayout.NORTH);
+        mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
+        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
+        return mainPartialPanel;
+    }
+
+    private static JPanel createNorthPartialPanelContent(GridBagConstraints gbc) {
+        JPanel northPartialPanelContent = new JPanel(new GridBagLayout());
+        northPartialPanelContent.setOpaque(false);
+
+        Brightness.BrightnessProcess(0, true);
+        JSlider screenBrightnessSlider = createScreenBrightnessSlider(gbc, northPartialPanelContent);
+        JPanel sliderTextPanel = createSliderTextPanel(gbc, screenBrightnessSlider);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        northPartialPanelContent.add(sliderTextPanel, gbc);
+        return northPartialPanelContent;
+    }
+
+    private static JSlider createScreenBrightnessSlider(GridBagConstraints gbc, JPanel parentPanel) {
+        return addLabeledSlider(
+                gbc, parentPanel, "Adjust Screen Brightness",
+                0, 100, Brightness.getCurrentBrightness(),
+                20, 5, JSlider.HORIZONTAL,
+                e -> {
+                    JSlider source = (JSlider) e.getSource();
+                    if (!source.getValueIsAdjusting()) {
+                        int newValue = source.getValue();
+                        Brightness.BrightnessProcess(newValue, false);
+                        sliderValueTextField.setText(String.valueOf(newValue));
+                    }
+                }
+        );
+    }
+
+    private static JPanel createSliderTextPanel(
+            GridBagConstraints gbc, JSlider slider
+    ){
         JPanel sliderTextPanel = new JPanel(new GridBagLayout());
         sliderTextPanel.setPreferredSize(new Dimension(40, 30));
+        setDimension(0, 0);
+
         sliderValueTextField = addTextField(
                 gbc, sliderTextPanel,
-                Brightness.getCurrentBrightness() + "",
+                String.valueOf(Brightness.getCurrentBrightness()),
                 18, 10,
-                BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor)
-                , false
+                BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor),
+                false
         );
-        setPopUpMenu(
-                sliderValueTextField, new JComponent[]{
+
+        setPopUpMenu(sliderValueTextField,
+                new JComponent[]{
                         new JLabel(" Press 'Enter' to save the new brightness value ")
                 }, new Font("Serif", Font.PLAIN, 12), false,
                 ComputerSettingsFourthPartialPanel::setEnableRequestFocusInWindow,
-                ComputerSettingsFourthPartialPanel::isEnableRequestFocusInWindow
-        );
-        setShiftInX_axis(0);
-        setShiftInY_axis(50);
-        setActionListener(
-                sliderValueTextField, Brightness.getCurrentBrightness() + "", true,
+                ComputerSettingsFourthPartialPanel::isEnableRequestFocusInWindow);
+
+        setActionListener(sliderValueTextField, Brightness.getCurrentBrightness() + "", true,
                 new Runnable[]{
-                        () -> screenBrightnessSlider.setValue(Integer.parseInt(sliderValueTextField.getText())),
+                        () -> slider.setValue(Integer.parseInt(sliderValueTextField.getText())),
                         () -> Brightness.BrightnessProcess(Integer.parseInt(sliderValueTextField.getText()), false)
-                }, ComputerSettingsFourthPartialPanel::setEnableRequestFocusInWindow
+                }, ComputerSettingsFourthPartialPanel::setEnableRequestFocusInWindow);
+        return sliderTextPanel;
+    }
+
+    private static JPanel createPartialPanelContent(GridBagConstraints gbc) {
+        JPanel partialPanelContent = new JPanel(new GridBagLayout());
+        Insets inset = gbc.insets;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        int partialIndex = 4;
+        createBrightnessSpinner(gbc, partialIndex);
+
+        setDimension(0, 0);
+        JPanel firstPanel = createFirstPanel(gbc, hierarchy);
+        setDimension(0, 0);
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[0] = createSecondPanel(gbc, hierarchy);
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[0].setVisible(!ComputerSettings.isAutomaticallyReduceAndRestoreBL());
+        setDimension(0, 0);
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[1] = createThirdPanel(gbc, hierarchy);
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[1].setVisible(!ComputerSettings.isAutomaticallyReduceAndRestoreBL());
+
+        JPanel labelPanelContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel labelPanel = new JPanel(new GridBagLayout());
+        addLabel(gbc, labelPanel, "In risk phase:", DEFAULT_FONT);
+        labelPanelContainer.add(labelPanel);
+
+        setDimension(0, 0);
+        JPanel comboBoxPanel = new JPanel(new GridBagLayout());
+        createBrightnessComboBox(gbc, comboBoxPanel);
+
+        gbc.insets = inset;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        partialPanelContent.add(comboBoxPanel, gbc);
+        gbc.gridy++;
+        partialPanelContent.add(firstPanel, gbc);
+        gbc.gridy++;
+        partialPanelContent.add(COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[0], gbc);
+        gbc.gridy++;
+        partialPanelContent.add(labelPanelContainer, gbc);
+        gbc.gridy++;
+        partialPanelContent.add(COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[1], gbc);
+        gbc.gridy++;
+        partialPanelContent.add(COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_PANEL_ARRAY[0], gbc);
+        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[3] = partialPanelContent;
+        return partialPanelContent;
+    }
+
+    private static void createBrightnessComboBox(GridBagConstraints gbc, JPanel panel) {
+        String[] brightnessOptions = {
+                "High & Low Phases",
+                "High Phase Only",
+                "Low Phase Only",
+                "Do Not Adjust"
+        };
+        String selectedItem = brightnessOptions[getBrightnessControlOption()];
+
+        addComboBox(
+                gbc, panel, "When to control brightness automatically:" + ONE_SPACE,
+                brightnessOptions, selectedItem, 3,
+                e -> {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        String selected = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
+                        assert selected != null;
+                        int mode = switch (selected) {
+                            case "High & Low Phases" -> 0;
+                            case "High Phase Only" -> 1;
+                            case "Low Phase Only" -> 2;
+                            case "Do Not Adjust" -> 3;
+                            default -> -1;
+                        };
+                        setBrightnessControlOption(mode);
+                        ConfigurationFilesManager.saveComputerSettings();
+
+                        if(mode == 3){
+                            for(JToggleButton entry : COMPUTER_SETTINGS_FOURTH_PARTIAL_TOGGLE_BUTTONS_ARRAY){
+                                if(entry.isSelected()){
+                                    entry.doClick();
+                                }
+                            }
+                        }
+                    }
+                }, 150, 30
+        );
+    }
+
+    private static JPanel createFirstPanel(GridBagConstraints gbc, ComponentHierarchy hierarchy) {
+        JPanel firstPanel = new JPanel(new GridBagLayout());
+        addLabel(gbc, firstPanel, "Automatically reduce and restore BL:", DEFAULT_FONT);
+        CompoundUpdaterRecord firstCompoundUpdaterRecord = getFirstCompoundUpdaterRecord(hierarchy);
+        ToggleButtonRecord firstToggleButtonRecord = new ToggleButtonRecord(
+                ComputerSettings::setAutomaticallyReduceAndRestoreBL,
+                ConfigurationFilesManager::saveComputerSettings,
+                ComputerSettings.isAutomaticallyReduceAndRestoreBL() ? "On" : "Off",
+                new Dimension(60, 30)
         );
 
-        gbc.gridx = 2;
-        gbc.gridy = partialIndex;
-        northPartialPanelContent.add(sliderTextPanel, gbc);
+        setColumn(1);
+        addLabel(gbc, firstPanel, TWO_SPACE, LABELS_FONT);
+        setColumn(2);
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_TOGGLE_BUTTONS_ARRAY[0] = addToggleButton(
+                gbc, firstPanel, firstToggleButtonRecord, firstCompoundUpdaterRecord
+        );
+        return firstPanel;
+    }
 
-        boolean isEnableSetBrightnessLevel = ComputerSettings.isEnableSetBrightnessLevel();
-        String enableSetBrightnessLevel = isEnableSetBrightnessLevel? "On" : "Off";
-        setDimension(partialIndex, 0);
-        addLabel(gbc, partialPanelContent, "In risk phase:", DEFAULT_FONT);
+    private static JPanel createSecondPanel(GridBagConstraints gbc, ComponentHierarchy hierarchy) {
+        JPanel secondPanel = new JPanel(new GridBagLayout());
+        addLabel(gbc, secondPanel, "Automatically restore brightness level (BL):", DEFAULT_FONT);
 
-        setDimension(++partialIndex, 0);
-        addLabel(gbc, partialPanelContent, "Enable automatic brightness level:", DEFAULT_FONT);
+        CompoundUpdaterRecord secondCompoundUpdaterRecord = getSecondCompoundUpdaterRecord(hierarchy);
+        ToggleButtonRecord secondToggleButtonRecord = new ToggleButtonRecord(
+                ComputerSettings::setAutomaticallyRestoreBrightnessLevel,
+                ConfigurationFilesManager::saveComputerSettings,
+                ComputerSettings.isAutomaticallyRestoreBrightnessLevel() ? "On" : "Off",
+                new Dimension(60, 30)
+        );
+
+        setColumn(1);
+        addLabel(gbc, secondPanel, TWO_SPACE, LABELS_FONT);
+        setColumn(2);
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_TOGGLE_BUTTONS_ARRAY[1] = addToggleButton(
+                gbc, secondPanel, secondToggleButtonRecord, secondCompoundUpdaterRecord
+        );
+        return secondPanel;
+    }
+
+    private static JPanel createThirdPanel(GridBagConstraints gbc, ComponentHierarchy hierarchy) {
+        JPanel thirdPanel = new JPanel(new GridBagLayout());
+        addLabel(gbc, thirdPanel, "Automatically reduce brightness level (BL):", DEFAULT_FONT);
+
+        CompoundUpdaterRecord thirdCompoundUpdaterRecord = getThirdCompoundUpdaterRecord(hierarchy);
+        ToggleButtonRecord thirdToggleButtonRecord = new ToggleButtonRecord(
+                ComputerSettings::setAutomaticallyReduceBrightnessLevel,
+                ConfigurationFilesManager::saveComputerSettings,
+                ComputerSettings.isAutomaticallyReduceBrightnessLevel() ? "On" : "Off",
+                new Dimension(60, 30)
+        );
+
+        setColumn(1);
+        addLabel(gbc, thirdPanel, TWO_SPACE, LABELS_FONT);
+        setColumn(2);
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_TOGGLE_BUTTONS_ARRAY[2] = addToggleButton(
+                gbc, thirdPanel, thirdToggleButtonRecord, thirdCompoundUpdaterRecord
+        );
+        return thirdPanel;
+    }
+
+    private static @NotNull CompoundUpdaterRecord getFirstCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                0,
+                ComputerSettings::isAutomaticallyReduceAndRestoreBL,
+                COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY,
+                EffectDirection.REVERSE
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord getSecondCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                1,
+                ComputerSettings::isAutomaticallyRestoreBrightnessLevel,
+                new JComponent[]{},
+                EffectDirection.NONE
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord getThirdCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                2,
+                ComputerSettings::isAutomaticallyReduceBrightnessLevel,
+                COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_PANEL_ARRAY,
+                EffectDirection.FORWARD
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord createCompoundUpdaterRecord(
+            ComponentHierarchy hierarchy,
+            int index,
+            Callable<Boolean> conditionSupplier,
+            JComponent[] components,
+            EffectDirection effectDirection
+    ) {
         ProgressBarValueUpdater progressBarUpdater = new ProgressBarValueUpdater(
                 ProgressBar,
                 COMPUTER_SETTINGS_FOURTH_PARTIAL_TRUE_ARRAY,
-                0,
-                ComputerSettings::isEnableSetBrightnessLevel,
-                COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_ARRAY
+                index,
+                conditionSupplier,
+                components
         );
-        setColumn(1);
-        addLabel(gbc, partialPanelContent, TWO_SPACE, LABELS_FONT);
-        setColumn(2);
-        addToggleButton(
-                gbc, partialPanelContent, ComputerSettings::setEnableSetBrightnessLevel,
-                ConfigurationFilesManager::saveComputerSettings, enableSetBrightnessLevel,
-                60, 30, progressBarUpdater, true
+        return new CompoundUpdaterRecord(
+                ComputerSettingsFourthPartialPanel::setThereIsInvisiblePartFlag,
+                ComputerSettingsFourthPartialPanel::isThereIsInvisiblePartFlag,
+                ComputerSettingsFourthPartialPanel::setSpinnerVisibility,
+                progressBarUpdater, effectDirection,
+                hierarchy, null,
+                true, true
         );
+    }
 
+    private static void createBrightnessSpinner(GridBagConstraints gbc, int partialIndex){
         SpinnerConfig brightnessConfig = new SpinnerConfig(
-                "The brightness will be set to:",
+                "The brightness will be set to:  " + TEN_SPACE + ONE_SPACE,
                 getBrightnessLevel(), 10, 0, 100, 1,
-                ++partialIndex, 0, 80, 30,
+                partialIndex, 0, 80, 30,
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 0, 10);
                     setBrightnessLevel(value);
                     ConfigurationFilesManager.saveComputerSettings();
                 }
         );
-        COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_ARRAY[0] = RelatedToSpinner.createSpinner(brightnessConfig, false);
-        COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_ARRAY[0].setEnabled(isEnableSetBrightnessLevel);
-        addLabeledSpinner(
-                gbc, partialPanelContent, brightnessConfig,
-                COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_ARRAY[0],
-                true
-        );
+        JSpinner brightnessRiskSpinner = RelatedToSpinner.createSpinner(brightnessConfig, false);
+        brightnessRiskSpinner.setEnabled(
+                ComputerSettings.isAutomaticallyReduceBrightnessLevel() ||
+                ComputerSettings.isAutomaticallyReduceAndRestoreBL());
 
-        COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[3] = partialPanelContent;
-        JPanel partialPanelFooter = createPartialPanelFooter();
-        partialPanelFooter.setOpaque(false);
-        mainPartialPanel.add(northPartialPanelContent, BorderLayout.NORTH);
-        mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
-        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
-        return mainPartialPanel;
+        thereIsInvisiblePartFlag = !ComputerSettings.isAutomaticallyReduceBrightnessLevel();
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_PANEL_ARRAY[0] = new JPanel(new GridBagLayout());
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_PANEL_ARRAY[0].setVisible(
+                !thereIsInvisiblePartFlag || ComputerSettings.isAutomaticallyReduceAndRestoreBL());
+        addLabeledSpinner(
+                gbc, COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_PANEL_ARRAY[0],
+                brightnessConfig, brightnessRiskSpinner, true
+        );
     }
 
     private static JPanel createPartialPanelFooter(){
@@ -177,5 +391,28 @@ public class ComputerSettingsFourthPartialPanel {
     }
     private static boolean isEnableRequestFocusInWindow(){
         return isEnableRequestFocusInWindow;
+    }
+
+    private static void setThereIsInvisiblePartFlag(boolean thereIsInvisiblePartFlag){
+        ComputerSettingsFourthPartialPanel.thereIsInvisiblePartFlag = thereIsInvisiblePartFlag;
+    }
+    private static boolean isThereIsInvisiblePartFlag(){
+        return thereIsInvisiblePartFlag;
+    }
+
+    private static void setSpinnerVisibility(){
+        COMPUTER_SETTINGS_FOURTH_PARTIAL_SPINNER_PANEL_ARRAY[0].setVisible(true);
+    }
+
+    private static void decideTheSizeDimension(){
+        if(ComputerSettings.isAutomaticallyReduceAndRestoreBL()){
+            partialPanelDimension = new Dimension(WIDTH, 300);
+        } else {
+            if(thereIsInvisiblePartFlag){
+                partialPanelDimension = new Dimension(WIDTH, 355);
+            } else {
+                partialPanelDimension = new Dimension(WIDTH, 400);
+            }
+        }
     }
 }

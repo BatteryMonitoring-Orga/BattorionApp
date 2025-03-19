@@ -7,12 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RelatedToLabels {
-    public static void addLabel(GridBagConstraints gbc, JPanel panel, String label, Font font) {
+    public static JLabel addLabel(
+            GridBagConstraints gbc, JPanel panel,
+            String label, Font font
+    ){
         JLabel jLabel = new JLabel(label);
         jLabel.setFont(font);
+        //jLabel.setToolTipText(prompt);
         gbc.gridy = getRow();
         gbc.gridx = getColumn();
         panel.add(jLabel, gbc);
+        return jLabel;
     }
 
     public static void addLabelWithMouseListener(

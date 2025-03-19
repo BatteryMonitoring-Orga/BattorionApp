@@ -34,6 +34,7 @@ public class RecordConfigurations {
     public static DropShadowBorder computerSettingsContainerListShadow;
     private static DropShadowBorder computerSettingsClosedPanelShadow;
     private static DropShadowBorder computerSettingsOpenPanelShadow;
+    public static final int WIDTH = 480;
 
     public static final GridBagConstraintsConfiguration GRID_BAG_CONSTRAINTS_CONFIGURATION = new GridBagConstraintsConfiguration(
             0,
@@ -82,8 +83,8 @@ public class RecordConfigurations {
         JPanel fourthPartialPanel = prepareAppSettingsFourthPartialContainer(gbc);
 
         APP_SETTINGS_FIRST_DDL = new SingleDropDownListRecord(
-                "General Options ",
-                new Dimension(480, 190),
+                "General Options  ",
+                AppSettingsFirstPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isAppSettingsFirstDropDownListEnabled(), 0,
@@ -92,8 +93,8 @@ public class RecordConfigurations {
                 DropDownListStatus::setAppSettingsFirstDropDownListEnabled
         );
         APP_SETTINGS_SECOND_DDL = new SingleDropDownListRecord(
-                "Primary Sound   ",
-                new Dimension(480, 140),
+                "Primary Sound" + ONE_SPACE,
+                AppSettingsSecondPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isAppSettingsSecondDropDownListEnabled(), 1,
@@ -103,7 +104,7 @@ public class RecordConfigurations {
         );
         APP_SETTINGS_THIRD_DDL = new SingleDropDownListRecord(
                 "Secondary Sound",
-                new Dimension(480, 190),
+                AppSettingsThirdPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isAppSettingsThirdDropDownListEnabled(), 2,
@@ -113,7 +114,7 @@ public class RecordConfigurations {
         );
         APP_SETTINGS_FOURTH_DDL = new SingleDropDownListRecord(
                 "Other Alerts " + TWO_SPACE,
-                new Dimension(480, 140),
+                AppSettingsFourthPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isAppSettingsFourthDropDownListEnabled(), 3,
@@ -131,38 +132,38 @@ public class RecordConfigurations {
         JPanel fourthPartialPanel = prepareFourthPartialContainer(gbc);
 
         COMPUTER_SETTINGS_FIRST_DDL = new SingleDropDownListRecord(
-                "General Options ",
-                new Dimension(480, 190),
+                "General Options   ",
+                ComputerSettingsFirstPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isCS_FirstDropDownListEnabled(), 0,
-                ComputerSettingsFirstPartialPanel.firstProgressBar,
+                ComputerSettingsFirstPartialPanel.ProgressBar,
                 firstPartialPanel,
                 DropDownListStatus::setCS_FirstDropDownListEnabled
         );
         COMPUTER_SETTINGS_SECOND_DDL = new SingleDropDownListRecord(
-                "Audio Output " + ONE_SPACE,
-                new Dimension(480, 140),
+                "Audio Output -AO",
+                ComputerSettingsSecondPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isCS_SecondDropDownListEnabled(), 1,
-                ComputerSettingsSecondPartialPanel.secondProgressBar,
+                ComputerSettingsSecondPartialPanel.ProgressBar,
                 secondPartialPanel,
                 DropDownListStatus::setCS_SecondDropDownListEnabled
         );
         COMPUTER_SETTINGS_THIRD_DDL = new SingleDropDownListRecord(
-                "Sound Level" + TWO_SPACE,
-                new Dimension(480, 140),
+                "Sound Level -SL   ",
+                ComputerSettingsThirdPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isCS_ThirdDropDownListEnabled(), 2,
-                ComputerSettingsThirdPartialPanel.thirdProgressBar,
+                ComputerSettingsThirdPartialPanel.ProgressBar,
                 thirdPartialPanel,
                 DropDownListStatus::setCS_ThirdDropDownListEnabled
         );
         COMPUTER_SETTINGS_FOURTH_DDL = new SingleDropDownListRecord(
-                "Brightness   " + TWO_SPACE,
-                new Dimension(480, 260),
+                "Brightness -BL " + ONE_SPACE,
+                ComputerSettingsFourthPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
                 isCS_FourthDropDownListEnabled(), 3,

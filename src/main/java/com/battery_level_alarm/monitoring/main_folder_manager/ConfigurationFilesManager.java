@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.main_folder_manager;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.basics.ComputerSettings.setBrightnessControlOption;
 import static com.battery_level_alarm.monitoring.basics.DropDownListStatus.*;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.progressBarInVerticalMode;
 import static com.battery_level_alarm.monitoring.core.BattorionMain.simulatorMode;
@@ -99,6 +100,10 @@ public class ConfigurationFilesManager {
         json.put("second drop down list 'CS'", isCS_SecondDropDownListEnabled());
         json.put("third drop down list 'CS'", isCS_ThirdDropDownListEnabled());
         json.put("fourth drop down list 'CS'", isCS_FourthDropDownListEnabled());
+        json.put("first drop down list 'AS'", isAppSettingsFirstDropDownListEnabled());
+        json.put("second drop down list 'AS'", isAppSettingsSecondDropDownListEnabled());
+        json.put("third drop down list 'AS'", isAppSettingsThirdDropDownListEnabled());
+        json.put("fourth drop down list 'AS'", isAppSettingsFourthDropDownListEnabled());
         return json;
     }
 
@@ -125,6 +130,10 @@ public class ConfigurationFilesManager {
         setCS_SecondDropDownListEnabled(json.optBoolean("second drop down list 'CS'", false));
         setCS_ThirdDropDownListEnabled(json.optBoolean("third drop down list 'CS'", false));
         setCS_FourthDropDownListEnabled(json.optBoolean("fourth drop down list 'CS'", false));
+        setAppSettingsFirstDropDownListEnabled(json.optBoolean("first drop down list 'AS'", true));
+        setAppSettingsSecondDropDownListEnabled(json.optBoolean("second drop down list 'AS'", false));
+        setAppSettingsThirdDropDownListEnabled(json.optBoolean("third drop down list 'AS'", false));
+        setAppSettingsFourthDropDownListEnabled(json.optBoolean("fourth drop down list 'AS'", false));
     }
 
     private static void loadDefaultDropDownListConfigurations() {
@@ -132,6 +141,10 @@ public class ConfigurationFilesManager {
         setCS_SecondDropDownListEnabled(false);
         setCS_ThirdDropDownListEnabled(false);
         setCS_FourthDropDownListEnabled(false);
+        setAppSettingsFirstDropDownListEnabled(true);
+        setAppSettingsSecondDropDownListEnabled(false);
+        setAppSettingsThirdDropDownListEnabled(false);
+        setAppSettingsFourthDropDownListEnabled(false);
     }
 
     public static void saveSettings() {
@@ -228,11 +241,14 @@ public class ConfigurationFilesManager {
         json.put("Enabling sound level change", isEnablingSoundLevelChange());
         json.put("Restoring sound level after alert", isRestoringSoundLevelAfterAlert());
         json.put("Enable unmute volume automatically", isEnableUnmuteVolumeAutomatically());
-        json.put("Automatic set brightness level", isEnableSetBrightnessLevel());
+        json.put("Automatic set and reset brightness level", isAutomaticallyReduceAndRestoreBL());
+        json.put("Automatic set brightness level", isAutomaticallyReduceBrightnessLevel());
+        json.put("Automatically restore brightness level", isAutomaticallyRestoreBrightnessLevel());
         json.put("Current audio device", getCurrentAudioDevice());
         json.put("Audio devices", getAudioDevices());
         json.put("Volume Level", getVolumeLevel());
         json.put("Brightness level", getBrightnessLevel());
+        json.put("Brightness Control Option", getBrightnessControlOption());
         json.put("Notification Sound File Name", getNotificationSoundFileName());
         return json;
     }
@@ -263,8 +279,11 @@ public class ConfigurationFilesManager {
         setEnableExchangeToAudioOutputUsed(json.optBoolean("Switch audio output to the Used device", true));
         setEnablingSoundLevelChange(json.optBoolean("Enabling sound level change", true));
         setRestoringSoundLevelAfterAlert(json.optBoolean("Restoring sound level after alert", true));
-        setEnableSetBrightnessLevel(json.optBoolean("Automatic set brightness level", true));
+        setAutomaticallyReduceAndRestoreBL(json.optBoolean("Automatic set and reset brightness level", false));
+        setAutomaticallyReduceBrightnessLevel(json.optBoolean("Automatic set brightness level", true));
+        setAutomaticallyRestoreBrightnessLevel(json.optBoolean("Automatically restore brightness level", true));
         setWakeUpEvery(json.optInt("Wake up the PC every (in Minutes)", 2));
+        setBrightnessControlOption(json.optInt("Brightness Control Option", 2));
         setVolumeLevel(json.optInt("Volume Level", 35));
         setBrightnessLevel(json.optInt("Brightness level", 60));
         setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
@@ -291,10 +310,13 @@ public class ConfigurationFilesManager {
         setEnableExchangeToAudioOutputUsed(true);
         setEnablingSoundLevelChange(true);
         setRestoringSoundLevelAfterAlert(true);
-        setEnableSetBrightnessLevel(true);
+        setAutomaticallyReduceAndRestoreBL(false);
+        setAutomaticallyReduceBrightnessLevel(true);
+        setAutomaticallyRestoreBrightnessLevel(true);
         setWakeUpEvery(2);
         setVolumeLevel(35);
         setBrightnessLevel(60);
+        setBrightnessControlOption(2);
         setCurrentAudioDevice("سماعات");
         setAudioDevices(new ArrayList<>());
         setNotificationSoundFileName("Alarm01.wav");

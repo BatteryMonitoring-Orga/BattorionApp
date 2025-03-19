@@ -1,6 +1,5 @@
 package com.battery_level_alarm.monitoring.preparing_gui;
 import static com.battery_level_alarm.monitoring.basics.ComputerSettings.*;
-import static com.battery_level_alarm.monitoring.core.BattorionMain.borderColor;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.gui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.command.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
@@ -10,7 +9,6 @@ import static com.battery_level_alarm.monitoring.gui_static_method_configuration
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.RelatedToTextFields.*;
 import static com.battery_level_alarm.monitoring.gui_static_method_configurations.OtherComponentsConfig.*;
 import static com.battery_level_alarm.monitoring.preparing_gui.DropDownList.prepareListsContainer;
-
 import com.battery_level_alarm.monitoring.configuration_records.*;
 import com.battery_level_alarm.monitoring.basics.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.basics.ComputerSettings;
@@ -21,7 +19,6 @@ import com.battery_level_alarm.monitoring.gui_static_method_configurations.Relat
 import com.battery_level_alarm.monitoring.main_folder_manager.ConfigurationFilesManager;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -30,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ComputerSettingsGUI {
-    public static final Font TITLE_LISTS_FONT = new Font("Serif", Font.BOLD + Font.ITALIC, 15);
+    public static final Font TITLE_LISTS_FONT = new Font("Serif", Font.BOLD, 15);
     public static final Font LABELS_FONT = new Font("Serif", Font.BOLD, 15);
     private static final Color GREEN_COLOR = new Color(0, 150, 0);
     private static final String promptText = "Enter device name";
@@ -52,6 +49,9 @@ public class ComputerSettingsGUI {
     public static final JPanel[] COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY = {
             new JPanel(), new JPanel(), new JPanel(), new JPanel()
     };
+
+    public static JPanel dropDownListsContainer = new JPanel();
+    public static DropDownListsContainerRecord containerOfSingleRecords;
     public static final JTextField outputDeviceName = new JTextField();
     public static JSpinner pcVolumeSpinner;
 
@@ -77,7 +77,7 @@ public class ComputerSettingsGUI {
 
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
         createComputerSettingsDropDownListConfigurations(gbc);
-        DropDownListsContainerRecord containerRecord = new DropDownListsContainerRecord(
+        containerOfSingleRecords = new DropDownListsContainerRecord(
                 "   Do these procedures automatically:",
                 TITLE_LISTS_FONT,
                 computerSettingsContainerListShadow,
@@ -89,7 +89,7 @@ public class ComputerSettingsGUI {
                         COMPUTER_SETTINGS_FOURTH_DDL,
                 }
         );
-        JPanel secondPanel = prepareListsContainer(containerRecord);
+        dropDownListsContainer = prepareListsContainer(containerOfSingleRecords);
 
         int index = 0;
         JPanel thirdPanel = new JPanel(new GridBagLayout());
@@ -132,7 +132,7 @@ public class ComputerSettingsGUI {
         setDocumentListener(audioDeviceName, audioDevicesComboBox, promptText, DEVICE_STATUS_MESSAGES);
         setDimension(++index, 1);
         buttonGroup = getGroupOfButtons(
-                gbc, thirdPanel, getButtonNames(),
+                gbc, thirdPanel, getButtonNames(), getButtonToolTip(),
                 getButtonActions(audioDeviceName, audioDevicesComboBox),
                 getButtonNames().length
         );
@@ -204,7 +204,7 @@ public class ComputerSettingsGUI {
                 }, 180, 40);
 
         computerSettingsGui.add(firstPanel);
-        computerSettingsGui.add(secondPanel);
+        computerSettingsGui.add(dropDownListsContainer);
         computerSettingsGui.add(thirdPanel);
         return computerSettingsGui;
     }
@@ -221,10 +221,19 @@ public class ComputerSettingsGUI {
     }
 
     private static String[] getButtonNames(){
-        return new String[]{"Add", "Delete", "Set as audio output"};
+        return new String[]{"Use the selected AO", "Add", "Delete", "Set it as AO"};
+    }
+    private static String[] getButtonToolTip() {
+        return new String[]{
+                "Use the selected audio output",
+                "Add a new audio output",
+                "Delete the selected audio output",
+                "Set it as the audio output"
+        };
     }
     private static ActionListener[] getButtonActions(JTextField audioDeviceName, JComboBox<String> audioDevicesComboBox){
         return new ActionListener[]{
+                _ -> audioDeviceName.setText(getCurrentAudioDevice()),
                 _ -> {
                     boolean isAdded = ComputerSettings.setItemToAudioList(audioDeviceName.getText());
                     if(isAdded){
@@ -236,8 +245,7 @@ public class ComputerSettingsGUI {
                         audioDeviceName.setText(DEVICE_STATUS_MESSAGES[1]);
                         audioDeviceName.setForeground(Color.RED);
                     }
-                },
-                _ -> {
+                }, _ -> {
                     boolean isDeleted = ComputerSettings.removeItemFromAudioList(audioDeviceName.getText());
                     if (isDeleted) {
                         ConfigurationFilesManager.saveComputerSettings();
@@ -248,8 +256,7 @@ public class ComputerSettingsGUI {
                         audioDeviceName.setText(DEVICE_STATUS_MESSAGES[3]);
                         audioDeviceName.setForeground(Color.RED);
                     }
-                },
-                _ -> {
+                }, _ -> {
                     setSpeakerAsAnAudioOutput(audioDeviceName.getText());
                     outputDeviceName.setText(audioDeviceName.getText());
                     audioDeviceName.setText(DEVICE_STATUS_MESSAGES[4]);

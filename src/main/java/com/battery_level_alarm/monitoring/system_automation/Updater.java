@@ -24,7 +24,10 @@ public class Updater {
 
     public static void update(ComponentHierarchy hierarchy){
         if(hierarchy.children() != null){
-            hierarchy.renovated().run();
+            if(hierarchy.renovated() != null){
+                hierarchy.renovated().run();
+            }
+
             for(JComponent entry : hierarchy.children()){
                 if (entry != null) {
                     entry.repaint();

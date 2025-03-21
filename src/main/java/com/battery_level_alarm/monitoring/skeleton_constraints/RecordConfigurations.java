@@ -8,8 +8,6 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_helpers.compu
 import static com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsSecondPartialPanel.prepareSecondPartialContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsThirdPartialPanel.prepareThirdPartialContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsFourthPartialPanel.prepareFourthPartialContainer;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.ONE_SPACE;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.TWO_SPACE;
 
 import com.battery_level_alarm.monitoring.core_utilities.DropDownListStatus;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.GridBagConstraintsConfiguration;
@@ -34,7 +32,7 @@ public class RecordConfigurations {
     public static DropShadowBorder computerSettingsContainerListShadow;
     private static DropShadowBorder computerSettingsClosedPanelShadow;
     private static DropShadowBorder computerSettingsOpenPanelShadow;
-    public static final int WIDTH = 480;
+    public static final int WIDTH = 500;
 
     public static final GridBagConstraintsConfiguration GRID_BAG_CONSTRAINTS_CONFIGURATION = new GridBagConstraintsConfiguration(
             0,
@@ -83,7 +81,7 @@ public class RecordConfigurations {
         JPanel fourthPartialPanel = prepareAppSettingsFourthPartialContainer(gbc);
 
         APP_SETTINGS_FIRST_DDL = new SingleDropDownListRecord(
-                "General Options  ",
+                "General Options",
                 AppSettingsFirstPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
@@ -93,7 +91,7 @@ public class RecordConfigurations {
                 DropDownListStatus::setAppSettingsFirstDropDownListEnabled
         );
         APP_SETTINGS_SECOND_DDL = new SingleDropDownListRecord(
-                "Primary Sound" + ONE_SPACE,
+                "Primary Sound",
                 AppSettingsSecondPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
@@ -113,7 +111,7 @@ public class RecordConfigurations {
                 DropDownListStatus::setAppSettingsThirdDropDownListEnabled
         );
         APP_SETTINGS_FOURTH_DDL = new SingleDropDownListRecord(
-                "Other Alerts " + TWO_SPACE,
+                "Other Alerts",
                 AppSettingsFourthPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
@@ -132,7 +130,7 @@ public class RecordConfigurations {
         JPanel fourthPartialPanel = prepareFourthPartialContainer(gbc);
 
         COMPUTER_SETTINGS_FIRST_DDL = new SingleDropDownListRecord(
-                "General Options   ",
+                "General Options",
                 ComputerSettingsFirstPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
@@ -152,7 +150,7 @@ public class RecordConfigurations {
                 DropDownListStatus::setCS_SecondDropDownListEnabled
         );
         COMPUTER_SETTINGS_THIRD_DDL = new SingleDropDownListRecord(
-                "Sound Level -SL   ",
+                "Sound Level -SL",
                 ComputerSettingsThirdPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,
@@ -162,7 +160,7 @@ public class RecordConfigurations {
                 DropDownListStatus::setCS_ThirdDropDownListEnabled
         );
         COMPUTER_SETTINGS_FOURTH_DDL = new SingleDropDownListRecord(
-                "Brightness -BL " + ONE_SPACE,
+                "Brightness -BL",
                 ComputerSettingsFourthPartialPanel.partialPanelDimension,
                 computerSettingsOpenPanelShadow,
                 computerSettingsClosedPanelShadow,

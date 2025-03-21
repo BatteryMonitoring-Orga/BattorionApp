@@ -47,7 +47,7 @@ public class SettingsContainerClass {
                 appSettingPanel,
                 TOOLTIP_APP_SETTINGS);
 
-        pcSettingPanel = new JScrollPane(ComputerSettingsGUI.createComputerSettingsGUI(alarmSounds));
+        pcSettingPanel = ComputerSettingsGUI.createComputerSettingsGUI(alarmSounds);
         mainTabbedPanel.addTab(
                 "PC Settings",
                 pcSettingsTabIcon,
@@ -90,7 +90,7 @@ public class SettingsContainerClass {
 
     public static void refreshPCSettingsTab() {
         if (mainTabbedPanel == null) return;
-        pcSettingPanel = new JScrollPane(ComputerSettingsGUI.createComputerSettingsGUI(alarmSounds));
+        pcSettingPanel = ComputerSettingsGUI.createComputerSettingsGUI(alarmSounds);
 
         int index = mainTabbedPanel.indexOfTab("PC Settings");
         if (index != -1) {

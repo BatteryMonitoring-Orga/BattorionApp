@@ -47,6 +47,14 @@ public class ComputerSettingsGUI {
             null,
             new Dimension(120, 40)
     );
+    private static final ScrollConfiguration PC_SET_SCROLL_CONFIGURATION = new ScrollConfiguration(
+            false,
+            true,
+            true,
+            false,
+            null,
+            new Dimension(600, 350)
+    );
     public static final JPanel[] COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY = {
             new JPanel(), new JPanel(), new JPanel(), new JPanel()
     };
@@ -56,7 +64,7 @@ public class ComputerSettingsGUI {
     public static final JTextField outputDeviceName = new JTextField();
     public static JSpinner pcVolumeSpinner;
 
-    public static JPanel createComputerSettingsGUI(AlarmSounds alarmSounds){
+    public static JScrollPane createComputerSettingsGUI(AlarmSounds alarmSounds){
         JPanel computerSettingsGui = new JPanel();
         computerSettingsGui.setLayout(new BoxLayout(computerSettingsGui, BoxLayout.Y_AXIS));
         GridBagConstraints gbc = createGridBagConstraints(GRID_BAG_CONSTRAINTS_CONFIGURATION);
@@ -207,7 +215,9 @@ public class ComputerSettingsGUI {
         computerSettingsGui.add(firstPanel);
         computerSettingsGui.add(dropDownListsContainer);
         computerSettingsGui.add(thirdPanel);
-        return computerSettingsGui;
+        JScrollPane scrollPaneContainer = new JScrollPane(computerSettingsGui);
+        applyScrollConfigurationDetails(scrollPaneContainer, PC_SET_SCROLL_CONFIGURATION);
+        return scrollPaneContainer;
     }
 
     private static String[] getAlarmsArray(){

@@ -3,7 +3,6 @@ import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFiles
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
-
 import com.battery_level_alarm.monitoring.user_interface.ui_config.DropDownListsContainerRecord;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ProgressBarValueUpdater;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SingleDropDownListRecord;
@@ -20,25 +19,24 @@ public class DropDownList {
     public static Color borderForegroundColor;
     private static Font titleListFont;
     private static DropShadowBorder containerListShadow;
-    private static JPanel[] PartialPanelsArray;
 
     public static JPanel prepareListsContainer(DropDownListsContainerRecord containerRecord){
         titleListFont = containerRecord.titleListFont();
         containerListShadow = containerRecord.containerListShadow();
-        PartialPanelsArray = containerRecord.PartialPanelsArray();
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getPreferredSize().height));
-        panel.add(createTitlePanel(containerRecord.title()));
+        JPanel dropDownContainer = new JPanel();
+        dropDownContainer.setLayout(new BoxLayout(dropDownContainer, BoxLayout.Y_AXIS));
+        dropDownContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        dropDownContainer.setMaximumSize(new Dimension(Integer.MAX_VALUE, dropDownContainer.getPreferredSize().height));
+        dropDownContainer.add(createTitlePanel(containerRecord.title()));
 
         for(SingleDropDownListRecord record : containerRecord.SingleDropDownListRecordsArray()){
             JPanel dropDownList = createDropDownList(record);
             dropDownList.setAlignmentY(Component.TOP_ALIGNMENT);
-            panel.add(dropDownList);
+            dropDownContainer.add(dropDownList);
+            dropDownContainer.add(Box.createRigidArea(new Dimension(0, 2)));
         }
-        return panel;
+        return dropDownContainer;
     }
 
     private static JPanel createTitlePanel(String titleText) {
@@ -50,62 +48,61 @@ public class DropDownList {
     }
 
     private static JPanel createDropDownList(SingleDropDownListRecord record){
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel headerPanel = new JPanel(new GridLayout(1, 2));
         boolean initiallyVisible = record.initiallyVisible();
         Dimension listSize = record.listSize();
         DropShadowBorder openPanelShadow = record.openPanelShadow();
         DropShadowBorder closedBorder = record.closedPanelShadow();
         Consumer<Boolean> setStateConsumer = record.setStateConsumer();
-        int index = record.index();
 
+        JPanel checkBoxPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JCheckBox checkBox = new JCheckBox(record.title());
         checkBox.setSelected(initiallyVisible);
         checkBox.setFont(titleListFont);
-        JLabel firstSpace = new JLabel(TEN_SPACE + FOUR_SPACE);
-        JLabel arrowLabel = new JLabel(initiallyVisible ? "\u2003▲" : "\u2003▼");
-        JLabel secondSpace = new JLabel(ONE_SPACE);
+        checkBoxPanel.add(new JLabel(ONE_SPACE));
+        checkBoxPanel.add(checkBox);
+        headerPanel.add(checkBoxPanel);
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        labelPanel.add(checkBox);
-        labelPanel.add(firstSpace);
-        labelPanel.add(record.progressBar());
-        labelPanel.add(arrowLabel);
-        labelPanel.add(secondSpace);
-        labelPanel.setBorder(initiallyVisible ? openPanelShadow : closedBorder);
-        mainPanel.add(labelPanel, BorderLayout.CENTER);
+        JPanel progressAndArrowPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JLabel arrowLabel = new JLabel(initiallyVisible ? ONE_SPACE + "▲" : ONE_SPACE + "▼");
+        progressAndArrowPanel.add(record.progressBar());
+        progressAndArrowPanel.add(arrowLabel);
+        progressAndArrowPanel.add(new JLabel(TWO_SPACE));
+
+        JPanel progressPanelContainer = new JPanel(new BorderLayout());
+        progressPanelContainer.add(progressAndArrowPanel, BorderLayout.CENTER);
+        headerPanel.add(progressPanelContainer);
+        headerPanel.setBorder(initiallyVisible ? openPanelShadow : closedBorder);
 
         JPanel contentPanel = record.dropDownPanel();
         contentPanel.setMaximumSize(listSize);
         contentPanel.setPreferredSize(listSize);
         contentPanel.setVisible(initiallyVisible);
-        PartialPanelsArray[index].setBorder(initiallyVisible ? openPanelShadow : null);
 
         JPanel footerPanel = new JPanel(new BorderLayout());
         footerPanel.add(new JLabel(TWO_SPACE), BorderLayout.CENTER);
         footerPanel.setVisible(initiallyVisible);
 
-        JPanel container = new JPanel();
-        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        JPanel container = new JPanel(new BorderLayout());
         setContainerSpecifications(container, (int) listSize.getHeight(), initiallyVisible);
         container.setAlignmentX(Component.CENTER_ALIGNMENT);
-        container.add(mainPanel);
-        container.add(contentPanel);
+        container.add(headerPanel, BorderLayout.NORTH);
+        container.add(contentPanel, BorderLayout.CENTER);
 
         Runnable toggleVisibilityRunnable = () -> {
             boolean isVisible = !contentPanel.isVisible();
             checkBox.setSelected(isVisible);
             contentPanel.setVisible(isVisible);
             footerPanel.setVisible(isVisible);
-            arrowLabel.setText(isVisible ? "\u2003▲" : "\u2003▼");
-            labelPanel.setBorder(isVisible ? openPanelShadow : closedBorder);
-            PartialPanelsArray[index].setBorder(isVisible ? openPanelShadow : null);
+            arrowLabel.setText(isVisible ? ONE_SPACE + "▲" : ONE_SPACE + "▼");
+            headerPanel.setBorder(isVisible ? openPanelShadow : closedBorder);
             setContainerSpecifications(container, (int) listSize.getHeight(), isVisible);
             setStateConsumer.accept(isVisible);
             saveDropDownListConfigurations();
         };
         checkBox.addActionListener(_ -> SwingUtilities.invokeLater(toggleVisibilityRunnable));
-        addMouseListenerToComponent(labelPanel, toggleVisibilityRunnable, false, labelPanel, checkBox, arrowLabel);
-        addMouseListenerToComponent(checkBox, toggleVisibilityRunnable, true, labelPanel, checkBox, arrowLabel);
+        addMouseListenerToComponent(headerPanel, toggleVisibilityRunnable, false, headerPanel, checkBox, arrowLabel);
+        addMouseListenerToComponent(checkBox, toggleVisibilityRunnable, true, headerPanel, checkBox, arrowLabel);
 
         JPanel mainContainer = new JPanel(new BorderLayout());
         mainContainer.add(new JLabel(TWO_SPACE + " "), BorderLayout.WEST);

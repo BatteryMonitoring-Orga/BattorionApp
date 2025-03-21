@@ -407,10 +407,10 @@ public class ComputerSettingsFourthPartialPanel {
 
     private static void decideTheSizeDimension(){
         if(ComputerSettings.isAutomaticallyReduceAndRestoreBL()){
-            partialPanelDimension = new Dimension(WIDTH, 300);
+            partialPanelDimension = new Dimension(WIDTH, 310);
         } else {
             if(thereIsInvisiblePartFlag){
-                partialPanelDimension = new Dimension(WIDTH, 355);
+                partialPanelDimension = new Dimension(WIDTH, 360);
             } else {
                 partialPanelDimension = new Dimension(WIDTH, 400);
             }

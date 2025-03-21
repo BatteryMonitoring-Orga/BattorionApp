@@ -40,7 +40,7 @@ public class AppSettingsGUI {
             true,
             false,
             null,
-            new Dimension(550, 300)
+            new Dimension(600, 350)
     );
 
     public static final JPanel[] APP_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY = {
@@ -59,7 +59,7 @@ public class AppSettingsGUI {
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
         createAppSettingsDropDownListConfigurations(gbc);
         DropDownListsContainerRecord containerRecord = new DropDownListsContainerRecord(
-                "  Do these procedures automatically:",
+                "   Do these procedures automatically:",
                 TITLE_LISTS_FONT,
                 computerSettingsContainerListShadow,
                 APP_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY,

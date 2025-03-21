@@ -1,13 +1,14 @@
 package com.battery_level_alarm.monitoring.battery_report;
-import static com.battery_level_alarm.monitoring.command.CallCommandLine.RESOURCES_PATH;
-import static com.battery_level_alarm.monitoring.command.CallCommandLine.batteryReport;
+import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.RESOURCES_PATH;
+import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.batteryReport;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.mainFrame;
 import javax.swing.*;
 
 public class ChooseAction {
     public static void choose() {
-        String[] actions = {"open", "create"};
+        String[] actions = {"Open", "Create"};
         int action = JOptionPane.showOptionDialog(
-                null,
+                mainFrame,
                 "Choose action",
                 "Choose action",
                 JOptionPane.DEFAULT_OPTION,

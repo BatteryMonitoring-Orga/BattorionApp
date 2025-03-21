@@ -1,0 +1,23 @@
+.root {
+    -fx-background-color: #2B2B2B;
+    -fx-text-fill: #BBBBBB;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+.button {
+    -fx-background-color: #3C3F41;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #545454;
+}
+.text-field {
+    -fx-background-color: #3C3F41;
+    -fx-border-color: #545454;
+}
+.line-chart {
+    -fx-background-color: transparent;
+}
+.axis-label {
+    -fx-text-fill: #D35400;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Serif';
+    -fx-font-weight: bold;
+}

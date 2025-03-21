@@ -1,0 +1,23 @@
+.root {
+    -fx-background-color: #FAFAFA;
+    -fx-text-fill: #333333;
+    -fx-font-family: "JetBrains Mono", sans-serif;
+}
+.button {
+    -fx-background-color: #E8E8E8;
+    -fx-text-fill: #000000;
+    -fx-border-color: #CCCCCC;
+}
+.text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #DDDDDD;
+}
+.line-chart {
+    -fx-background-color: transparent;
+}
+.axis-label {
+    -fx-text-fill: #D35400;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Serif';
+    -fx-font-weight: bold;
+}

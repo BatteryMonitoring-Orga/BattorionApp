@@ -1,7 +1,8 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
-import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
+import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputLabel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList.prepareListsContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
@@ -61,7 +62,7 @@ public class ComputerSettingsGUI {
 
     public static JPanel dropDownListsContainer = new JPanel();
     public static DropDownListsContainerRecord containerOfSingleRecords;
-    public static final JTextField outputDeviceName = new JTextField();
+    public static final JTextField activeAudioDeviceName = new JTextField();
     public static JSpinner pcVolumeSpinner;
 
     public static JScrollPane createComputerSettingsGUI(AlarmSounds alarmSounds){
@@ -76,12 +77,12 @@ public class ComputerSettingsGUI {
         actionsMap.put("action:openSystemTrayNotification", StaticQuestionnaire::aboutSystemTrayNotification);
         actionsMap.put("action:openNotificationSound", StaticQuestionnaire::aboutPlaySounds);
         addLabelWithMouseListener(
-                gbc, firstPanel, "About", Color.PINK,
+                gbc, firstPanel, "About", new Color(0, 134, 179),
                 () -> StaticQuestionnaire.aboutEditorPanelDispatch(
                         "About Computer Settings Panel",
                         StaticQuestionnaire.getComputerSettingsEditorText(),
                         actionsMap, 500, 300
-                )
+                ), DEFAULT_FONT
         );
 
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
@@ -107,10 +108,10 @@ public class ComputerSettingsGUI {
         returnGBC$ToDefault(gbc);
         setDimension(++index, 0);
         addLabel(gbc, thirdPanel, "Active audio output device:", DEFAULT_FONT);
-        outputDeviceName.setBackground(UIManager.getColor("TextField.background"));
-        outputDeviceName.setForeground(UIManager.getColor("TextField.foreground"));
+        activeAudioDeviceName.setBackground(UIManager.getColor("TextField.background"));
+        activeAudioDeviceName.setForeground(UIManager.getColor("TextField.foreground"));
         JScrollPane textInScroll = addTextInScroll(
-                outputDeviceName, getCurrentAudioDevice(), textFieldFont,
+                activeAudioDeviceName, getCurrentAudioDevice(), textFieldFont,
                 false, false, SCROLL_TEXT_FIELD_CONFIGURATION
         );
         gbc.gridx = getColumn() + 1;
@@ -125,30 +126,32 @@ public class ComputerSettingsGUI {
                         JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
                         setCurrentAudioDevice(selectedSound);
+                        activeAudioDeviceName.setText(selectedSound);
+                        audioOutputLabel.setText(TWO_SPACE + "Audio Output: " + selectedSound);
                         ConfigurationFilesManager.saveComputerSettings();
                     }
                 }, 160, 30);
 
         setDimension(++index, 0);
-        addLabel(gbc, thirdPanel, "Audio output device name:", DEFAULT_FONT);
+        addLabel(gbc, thirdPanel, "Acoustic Output Device Procedure Field:", DEFAULT_FONT);
         setColumn(1);
-        JTextField audioDeviceName = addTextField(
+        JTextField audioDevicesActionField = addTextField(
                 gbc, thirdPanel, promptText, 150, 38,
                 UIManager.getBorder("TextField.border")
                 , false
         );
-        setPromptFeature(audioDeviceName, promptText, DEVICE_STATUS_MESSAGES);
-        setDocumentListener(audioDeviceName, audioDevicesComboBox, promptText, DEVICE_STATUS_MESSAGES);
+        setPromptFeature(audioDevicesActionField, promptText, DEVICE_STATUS_MESSAGES);
+        setDocumentListener(audioDevicesActionField, audioDevicesComboBox, promptText, DEVICE_STATUS_MESSAGES);
         setDimension(++index, 1);
         buttonGroup = getGroupOfButtons(
                 gbc, thirdPanel, getButtonNames(), getButtonToolTip(),
-                getButtonActions(audioDeviceName, audioDevicesComboBox),
+                getButtonActions(audioDevicesActionField, audioDevicesComboBox),
                 getButtonNames().length
         );
         setDimension(++index, 0);
         addLabelWithMouseListener(
                 gbc, thirdPanel, "How do I select the audio output?",
-                Color.CYAN, StaticQuestionnaire::aboutSoundSettingsGuide
+                new Color(0, 134, 179), StaticQuestionnaire::aboutSoundSettingsGuide, DEFAULT_FONT
         );
 
         setDimension(++index, 0);
@@ -242,36 +245,40 @@ public class ComputerSettingsGUI {
                 "Set it as the audio output"
         };
     }
-    private static ActionListener[] getButtonActions(JTextField audioDeviceName, JComboBox<String> audioDevicesComboBox){
+    private static ActionListener[] getButtonActions(
+            JTextField audioDevicesActionField,
+            JComboBox<String> audioDevicesComboBox
+    ){
         return new ActionListener[]{
-                _ -> audioDeviceName.setText(getCurrentAudioDevice()),
+                _ -> audioDevicesActionField.setText(getCurrentAudioDevice()),
                 _ -> {
-                    boolean isAdded = ComputerSettings.setItemToAudioList(audioDeviceName.getText());
+                    boolean isAdded = ComputerSettings.setItemToAudioList(audioDevicesActionField.getText());
                     if(isAdded){
                         ConfigurationFilesManager.saveComputerSettings();
-                        audioDevicesComboBox.addItem(audioDeviceName.getText());
-                        audioDeviceName.setText(DEVICE_STATUS_MESSAGES[0]);
-                        audioDeviceName.setForeground(GREEN_COLOR);
+                        audioDevicesComboBox.addItem(audioDevicesActionField.getText());
+                        audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[0]);
+                        audioDevicesActionField.setForeground(GREEN_COLOR);
                     } else {
-                        audioDeviceName.setText(DEVICE_STATUS_MESSAGES[1]);
-                        audioDeviceName.setForeground(Color.RED);
+                        audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[1]);
+                        audioDevicesActionField.setForeground(Color.RED);
                     }
                 }, _ -> {
-                    boolean isDeleted = ComputerSettings.removeItemFromAudioList(audioDeviceName.getText());
+                    boolean isDeleted = ComputerSettings.removeItemFromAudioList(audioDevicesActionField.getText());
                     if (isDeleted) {
                         ConfigurationFilesManager.saveComputerSettings();
-                        audioDevicesComboBox.removeItem(audioDeviceName.getText());
-                        audioDeviceName.setText(DEVICE_STATUS_MESSAGES[2]);
-                        audioDeviceName.setForeground(GREEN_COLOR);
+                        audioDevicesComboBox.removeItem(audioDevicesActionField.getText());
+                        audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[2]);
+                        audioDevicesActionField.setForeground(GREEN_COLOR);
                     } else {
-                        audioDeviceName.setText(DEVICE_STATUS_MESSAGES[3]);
-                        audioDeviceName.setForeground(Color.RED);
+                        audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[3]);
+                        audioDevicesActionField.setForeground(Color.RED);
                     }
                 }, _ -> {
-                    setSpeakerAsAnAudioOutput(audioDeviceName.getText());
-                    outputDeviceName.setText(audioDeviceName.getText());
-                    audioDeviceName.setText(DEVICE_STATUS_MESSAGES[4]);
-                    audioDeviceName.setForeground(GREEN_COLOR);
+                    setAudioOutputDevice(audioDevicesActionField.getText());
+                    activeAudioDeviceName.setText(audioDevicesActionField.getText());
+                    audioOutputLabel.setText(TWO_SPACE + "Audio Output: " + audioDevicesActionField.getText());
+                    audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[4]);
+                    audioDevicesActionField.setForeground(GREEN_COLOR);
                 }
         };
     }

@@ -13,4 +13,5 @@ module monitoring {
     requires system.tray.notifications;
 
     opens com.battery_level_alarm.monitoring.battery_report to javafx.graphics;
+    opens com.battery_level_alarm.monitoring.graphics to javafx.graphics;
 }

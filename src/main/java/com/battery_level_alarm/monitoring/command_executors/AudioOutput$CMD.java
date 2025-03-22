@@ -34,7 +34,7 @@ public class AudioOutput$CMD {
         }
     }
 
-    public static void setSpeakerAsAnAudioOutput(String sourceName){
+    public static void setAudioOutputDevice(String sourceName){
         try {
             String os = getOS();
             ProcessBuilder processBuilder;

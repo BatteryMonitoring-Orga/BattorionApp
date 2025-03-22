@@ -1,17 +1,57 @@
+/* FlatIntelliJLaf.css - Enhanced and Comprehensive */
+
 .root {
     -fx-background-color: #FAFAFA;
     -fx-text-fill: #333333;
-    -fx-font-family: "JetBrains Mono", sans-serif;
+    -fx-font-family: 'Serif';
 }
+
 .button {
-    -fx-background-color: #E8E8E8;
+    -fx-background-color: linear-gradient(to bottom, #E8E8E8, #DADADA);
     -fx-text-fill: #000000;
     -fx-border-color: #CCCCCC;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px 10px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
 }
+.button:hover {
+    -fx-background-color: #D0D0D0;
+}
+.button:pressed {
+    -fx-background-color: #BEBEBE;
+}
+
 .text-field {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #DDDDDD;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
 }
+
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.tab-pane {
+    -fx-background-color: #F0F0F0;
+    -fx-tab-min-width: 150px;
+    -fx-tab-min-height: 30px;
+}
+.tab {
+    -fx-background-color: #E8E8E8;
+    -fx-border-radius: 2px;
+    -fx-padding: 5px;
+}
+.tab:selected {
+    -fx-background-color: #DADADA;
+    -fx-font-weight: bold;
+}
+
 .line-chart {
     -fx-background-color: transparent;
 }
@@ -20,4 +60,44 @@
     -fx-font-size: 14px;
     -fx-font-family: 'Serif';
     -fx-font-weight: bold;
+}
+
+.tool-bar {
+    -fx-background-color: #E8E8E8;
+    -fx-padding: 5px;
+}
+
+.border-pane {
+    -fx-background-color: #F0F0F0;
+}
+
+.hbox, .vbox {
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
+}
+
+.scroll-pane {
+    -fx-background: #FFFFFF;
+    -fx-border-color: #DDDDDD;
+}
+
+.menu-bar {
+    -fx-background-color: #E8E8E8;
+    -fx-border-color: #CCCCCC;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+}
+.menu-item:hover {
+    -fx-background-color: #D0D0D0;
+}
+
+.progress-bar {
+    -fx-accent: #D35400;
+}
+
+.slider {
+    -fx-control-inner-background: #E8E8E8;
+    -fx-background-color: #D0D0D0;
 }

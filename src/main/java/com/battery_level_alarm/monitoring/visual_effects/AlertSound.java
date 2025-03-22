@@ -1,8 +1,10 @@
 package com.battery_level_alarm.monitoring.visual_effects;
-import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setSpeakerAsAnAudioOutput;
+import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputLabel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isFromCriticalAlert;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.TWO_SPACE;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.outputDeviceName;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
 
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
@@ -171,15 +173,18 @@ public class AlertSound {
         } if(ComputerSettings.isEnableUnmuteVolumeAutomatically()){
             CallCommandLine.setSoundUnmute();
         } if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
-            setSpeakerAsAnAudioOutput(deviceName);
-            outputDeviceName.setText(deviceName);
+            setAudioOutputDevice(deviceName);
+            activeAudioDeviceName.setText(deviceName);
+            audioOutputLabel.setText(TWO_SPACE + "Audio Output: " + deviceName);
         }
     }
 
     private static void prepareAfterEnding(){
         if(ComputerSettings.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
-            setSpeakerAsAnAudioOutput(ComputerSettings.getCurrentAudioDevice());
-            outputDeviceName.setText(ComputerSettings.getCurrentAudioDevice());
+            String deviceName = ComputerSettings.getCurrentAudioDevice();
+            setAudioOutputDevice(deviceName);
+            activeAudioDeviceName.setText(deviceName);
+            audioOutputLabel.setText(TWO_SPACE + "Audio Output: " + deviceName);
         }
 
         try{

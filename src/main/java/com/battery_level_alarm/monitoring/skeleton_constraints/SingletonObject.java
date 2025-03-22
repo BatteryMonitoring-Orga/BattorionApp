@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.skeleton_constraints;
 import com.battery_level_alarm.monitoring.visual_effects.DisplayMessages;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.MAIN_FOLDER_NAME;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.build;
 
 import javax.swing.*;

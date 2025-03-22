@@ -1,7 +1,12 @@
 package com.battery_level_alarm.monitoring.system_core;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI;
+import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.setButtonBackgroundColor;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.mainTabbedPanel;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.pcSettingPanel;
 import static com.battery_level_alarm.monitoring.visual_effects.PanelStyler.applyGradientBackground;
 
 import javax.swing.*;
@@ -20,7 +25,6 @@ public class BattorionPanelHelper {
     }
 
     public static void refreshSettingsPanel() {
-        settingsButton.setText("Settings");
         setVisibleFalse();
         settingsButton.doClick();
     }
@@ -63,18 +67,27 @@ public class BattorionPanelHelper {
         if (DashboardPanel != null && isA.equals(isA_DashboardPanel)) {
             DashboardPanel.setVisible(true);
         } else if (SettingsContainer != null && isA.equals(isA_SettingsContainer)) {
-            settingsButton.setText("Settings");
             settingsButton.doClick();
         } else if (StatisticsContainer != null && isA.equals(isA_StatisticsContainer)) {
-            statisticsButton.setText("Statistics");
             statisticsButton.doClick();
         } else if (SimulatorMainPanel != null && isA.equals(isA_SimulatorPanel)){
-            simulatorButton.setText("Simulator");
             simulatorButton.doClick();
         } else {
             assert DashboardPanel != null;
             DashboardPanel.setVisible(true);
         }
+    }
+
+    static void audioLabelMouseAction(){
+        setVisibleFalse();
+        setButtonBackgroundColor();
+        settingsButton.setBackground(DARK_BLUE);
+        setVisibleTrue(isA_SettingsContainer);
+        mainTabbedPanel.setSelectedIndex(1);
+        SwingUtilities.invokeLater(() -> {
+            JScrollBar verticalBar = pcSettingPanel.getVerticalScrollBar();
+            verticalBar.setValue(250);
+        });
     }
 
     public static String whatIsVisible() {

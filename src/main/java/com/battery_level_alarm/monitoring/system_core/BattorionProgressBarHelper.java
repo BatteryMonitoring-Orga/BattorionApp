@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 
 import javax.swing.*;
 import java.awt.*;

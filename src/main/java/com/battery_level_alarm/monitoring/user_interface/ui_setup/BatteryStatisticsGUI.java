@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
-import com.battery_level_alarm.monitoring.system_core.CoreStaticData;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
 import static com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire.aboutBatteryStatisticsPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GUI_ComponentConstraints.setTableConstraints;
@@ -78,7 +78,7 @@ public class BatteryStatisticsGUI {
         }
 
         JTextArea chTextArea = new JTextArea(history.toString());
-        chTextArea.setFont(CoreStaticData.textFont);
+        chTextArea.setFont(TEXT_FONT);
         chTextArea.setEditable(false);
         return new JScrollPane(chTextArea);
     }
@@ -98,7 +98,7 @@ public class BatteryStatisticsGUI {
         }
 
         JTextArea disTextArea = new JTextArea(history.toString());
-        disTextArea.setFont(CoreStaticData.textFont);
+        disTextArea.setFont(TEXT_FONT);
         disTextArea.setEditable(false);
         return new JScrollPane(disTextArea);
     }

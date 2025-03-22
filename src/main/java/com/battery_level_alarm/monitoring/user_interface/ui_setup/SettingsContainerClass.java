@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import com.battery_level_alarm.monitoring.system_core.CoreStaticData;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +37,7 @@ public class SettingsContainerClass {
 
     public static void createSettingsContainer() {
         mainTabbedPanel = new JTabbedPane();
-        mainTabbedPanel.setFont(CoreStaticData.textFont);
+        mainTabbedPanel.setFont(TEXT_FONT);
 
         AppSettingsGUI.createAndShowGUI();
         appSettingPanel = AppSettingsGUI.getCreatedGUI();

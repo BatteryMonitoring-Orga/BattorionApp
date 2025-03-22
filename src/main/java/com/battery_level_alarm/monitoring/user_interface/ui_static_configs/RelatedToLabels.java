@@ -13,24 +13,24 @@ public class RelatedToLabels {
     ){
         JLabel jLabel = new JLabel(label);
         jLabel.setFont(font);
-        //jLabel.setToolTipText(prompt);
         gbc.gridy = getRow();
         gbc.gridx = getColumn();
         panel.add(jLabel, gbc);
         return jLabel;
     }
 
-    public static void addLabelWithMouseListener(
+    public static JLabel addLabelWithMouseListener(
             GridBagConstraints gbc, JPanel panel, String text,
-            Color highlightedColor, Runnable action
+            Color highlightedColor, Runnable action, Font font
     ){
         JLabel label = new JLabel(text);
         label.setText("<html><u><b>" + label.getText() + "</b></u></html>");
-        label.setFont(DEFAULT_FONT);
+        label.setFont(font);
         addMouseListenerToLabel(label, highlightedColor, action);
         gbc.gridy = getRow();
         gbc.gridx = getColumn();
         panel.add(label, gbc);
+        return label;
     }
 
     public static void addMouseListenerToLabel(JLabel label, Color enteredColor, Runnable action) {

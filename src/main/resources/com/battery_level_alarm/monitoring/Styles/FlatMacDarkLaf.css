@@ -1,17 +1,57 @@
+/* FlatMacDarkLaf.css - Enhanced and Comprehensive */
+
 .root {
     -fx-background-color: #2B2B2B;
     -fx-text-fill: #BBBBBB;
-    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-family: 'Serif';
 }
+
 .button {
-    -fx-background-color: #3C3F41;
+    -fx-background-color: linear-gradient(to bottom, #3C3F41, #2E2E2E);
     -fx-text-fill: #FFFFFF;
     -fx-border-color: #545454;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px 10px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
 }
+.button:hover {
+    -fx-background-color: #505357;
+}
+.button:pressed {
+    -fx-background-color: #383A3C;
+}
+
 .text-field {
     -fx-background-color: #3C3F41;
     -fx-border-color: #545454;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #BBBBBB;
 }
+
+.label {
+    -fx-text-fill: #BBBBBB;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.tab-pane {
+    -fx-background-color: #333333;
+    -fx-tab-min-width: 150px;
+    -fx-tab-min-height: 30px;
+}
+.tab {
+    -fx-background-color: #3C3F41;
+    -fx-border-radius: 2px;
+    -fx-padding: 5px;
+}
+.tab:selected {
+    -fx-background-color: #505357;
+    -fx-font-weight: bold;
+}
+
 .line-chart {
     -fx-background-color: transparent;
 }
@@ -20,4 +60,44 @@
     -fx-font-size: 14px;
     -fx-font-family: 'Serif';
     -fx-font-weight: bold;
+}
+
+.tool-bar {
+    -fx-background-color: #3C3F41;
+    -fx-padding: 5px;
+}
+
+.border-pane {
+    -fx-background-color: #333333;
+}
+
+.hbox, .vbox {
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
+}
+
+.scroll-pane {
+    -fx-background: #3C3F41;
+    -fx-border-color: #545454;
+}
+
+.menu-bar {
+    -fx-background-color: #3C3F41;
+    -fx-border-color: #545454;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #BBBBBB;
+}
+.menu-item:hover {
+    -fx-background-color: #505357;
+}
+
+.progress-bar {
+    -fx-accent: #D35400;
+}
+
+.slider {
+    -fx-control-inner-background: #3C3F41;
+    -fx-background-color: #505357;
 }

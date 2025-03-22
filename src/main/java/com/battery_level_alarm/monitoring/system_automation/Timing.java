@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.system_automation;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,11 @@
 package com.battery_level_alarm.monitoring.system_core;
-import static com.battery_level_alarm.monitoring.battery_emulator.BatteryIcon.mainSimulatorPanel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ButtonTexts.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
+import static com.battery_level_alarm.monitoring.battery_emulator.BatteryIcon.mainSimulatorPanel;
+import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveGeneralConfigurations;
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.battery_emulator.BatteryIcon.BatterySimulationStart;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.setButtonFontAndSize;
@@ -9,7 +13,7 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_setup.Setting
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.mainTabbedPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass.createStatisticsContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass.statisticsMainTabbedPanel;
-import com.battery_level_alarm.monitoring.battery_report.BatteryLevelGraph;
+import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
 
 import javax.swing.*;
@@ -27,7 +31,7 @@ public class BattorionButtonsHelper {
         JButton button = new JButton(title, icon);
         setButtonFontAndSize(
                 button, new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 14),
-                westSidePanelWidthOpenMode - 10, 70, SwingConstants.LEFT, SwingConstants.RIGHT);
+                WEST_PANEL_OPEN_WIDTH - 10, 70, SwingConstants.LEFT, SwingConstants.RIGHT);
         button.setToolTipText(toolTip);
         button.addActionListener(actionListener);
         return button;
@@ -37,22 +41,28 @@ public class BattorionButtonsHelper {
         BatteryLevelGraph.initialize();
 
         return createButton(
-                " Graph", "Display a graph of battery level",
+                GRAPH_PAINTER_TEXT, "Display a graph of battery level",
                 BUTTON_ICONS_PATH, "graph", _ -> BatteryLevelGraph.display());
     }
 
     public static void setUpWestSideButton() {
-        int width = westSidePanelWidthOpenMode;
+        int width = WEST_PANEL_OPEN_WIDTH;
         if(westSideButton.getText().equals(WEST_SIDE_BUTTON_TEXT)){
             setButtonNamesEmpty();
-            width = westSidePanelWidthCloseMode;
+            isWestSidePartAppear = false;
+            width = WEST_PANEL_CLOSED_WIDTH;
         } else {
             returnButtonNames();
+            isWestSidePartAppear = true;
         }
+        refreshWestSide(width);
+    }
 
-        mainButtonsContainer.setPreferredSize(new Dimension(width, frameHeight));
-        mainButtonsContainer.setMaximumSize(new Dimension(width, frameHeight));
+    public static void refreshWestSide(int width){
+        mainButtonsContainer.setPreferredSize(new Dimension(width, FRAME_HEIGHT));
+        mainButtonsContainer.setMaximumSize(new Dimension(width, FRAME_HEIGHT));
         refreshMotherFrame();
+        saveGeneralConfigurations();
     }
 
     private static void setButtonNamesEmpty(){

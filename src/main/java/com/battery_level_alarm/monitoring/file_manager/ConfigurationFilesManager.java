@@ -1,9 +1,8 @@
 package com.battery_level_alarm.monitoring.file_manager;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setBrightnessControlOption;
 import static com.battery_level_alarm.monitoring.core_utilities.DropDownListStatus.*;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.progressBarInVerticalMode;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.simulatorMode;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.Appearance;
@@ -48,6 +47,7 @@ public class ConfigurationFilesManager {
     private static JSONObject createGeneralConfigurationsJson() {
         JSONObject json = new JSONObject();
         json.put("panel mode", progressBarInVerticalMode);
+        json.put("west side mode", isWestSidePartAppear);
         json.put("battery simulator", simulatorMode);
         json.put("theme mode", Appearance.getThemeName());
         return json;
@@ -73,12 +73,14 @@ public class ConfigurationFilesManager {
     private static void loadGeneralConfigurationsJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
         progressBarInVerticalMode = json.optBoolean("panel mode", false);
+        isWestSidePartAppear = json.optBoolean("west side mode", true);
         simulatorMode = json.optBoolean("battery simulator", false);
         Appearance.setThemeName(json.optString("theme mode", "Light"));
     }
 
     private static void loadDefaultGeneralConfigurations() {
         progressBarInVerticalMode = false;
+        isWestSidePartAppear = true;
         simulatorMode = false;
         Appearance.setThemeName("Light");
     }

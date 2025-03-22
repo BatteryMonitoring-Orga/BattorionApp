@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.visual_effects;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.visual_effects.StyleFiles.*;
-import static com.battery_level_alarm.monitoring.battery_report.BatteryLevelGraph.CSS_FILE_NAME;
+import static com.battery_level_alarm.monitoring.graphics.GraphsDefinitions.CSS_FILE_NAME;
 
 import com.battery_level_alarm.monitoring.system_core.Battorion;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
@@ -103,14 +104,14 @@ public class Appearance {
         switch (themeName) {
             case "Light" -> {
                 FlatMacLightLaf.setup();
-                Battorion.isDarkMode = false;
+                isDarkMode = false;
                 CSS_FILE_NAME = FLAT_MAC_LIGHT;
                 borderColor = Color.BLACK;
                 iconName = toDarkThemeIcon;
             }
             case "Dark" -> {
                 FlatMacDarkLaf.setup();
-                Battorion.isDarkMode = true;
+                isDarkMode = true;
                 CSS_FILE_NAME = FLAT_MAC_DARK;
                 borderColor = Color.WHITE;
                 iconName = toLightThemeIcon;
@@ -126,7 +127,7 @@ public class Appearance {
             default -> {
                 Appearance.themeName = "Light";
                 FlatMacLightLaf.setup();
-                Battorion.isDarkMode = false;
+                isDarkMode = false;
                 CSS_FILE_NAME = FLAT_MAC_LIGHT;
                 borderColor = Color.BLACK;
                 iconName = toDarkThemeIcon;
@@ -156,12 +157,12 @@ public class Appearance {
     private static void updateThemeFirstOption() {
         if (!isAfterNoon(true, null)) {
             FlatIntelliJLaf.setup();
-            Battorion.isDarkMode = false;
+            isDarkMode = false;
             CSS_FILE_NAME = FLAT_INTELLIJ;
             setToLightTheme();
         } else {
             FlatHiberbeeDarkIJTheme.setup();
-            Battorion.isDarkMode = true;
+            isDarkMode = true;
             CSS_FILE_NAME = FLAT_HIBERBEE_DARK;
             setToDarkTheme();
         }
@@ -170,12 +171,12 @@ public class Appearance {
     private static void updateThemeSecondOption() {
         if (!isAfterNoon(true, null)) {
             FlatAtomOneLightIJTheme.setup();
-            Battorion.isDarkMode = false;
+            isDarkMode = false;
             CSS_FILE_NAME = FLAT_ATOM_ONE_LIGHT;
             setToLightTheme();
         } else {
             FlatAtomOneDarkIJTheme.setup();
-            Battorion.isDarkMode = true;
+            isDarkMode = true;
             CSS_FILE_NAME = FLAT_ATOM_ONE_DARK;
             setToDarkTheme();
         }

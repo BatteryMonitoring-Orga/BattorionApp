@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.core_utilities;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import com.battery_level_alarm.monitoring.battery_report.HTMLOpener;
 import org.jetbrains.annotations.NotNull;
 

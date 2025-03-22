@@ -1,18 +1,57 @@
+/* FlatMacLightLaf.css - Enhanced and Comprehensive */
+
 .root {
     -fx-background-color: #ECECEC;
     -fx-text-fill: #333333;
-    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-family: 'Serif';
 }
+
 .button {
-    -fx-background-color: #D6D6D6;
+    -fx-background-color: linear-gradient(to bottom, #D6D6D6, #C0C0C0);
     -fx-text-fill: #000000;
     -fx-border-color: #BFBFBF;
-    -fx-border-radius: 4px;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px 10px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
 }
+.button:hover {
+    -fx-background-color: #BFBFBF;
+}
+.button:pressed {
+    -fx-background-color: #A0A0A0;
+}
+
 .text-field {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #CCCCCC;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
 }
+
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.tab-pane {
+    -fx-background-color: #F0F0F0;
+    -fx-tab-min-width: 150px;
+    -fx-tab-min-height: 30px;
+}
+.tab {
+    -fx-background-color: #D6D6D6;
+    -fx-border-radius: 2px;
+    -fx-padding: 5px;
+}
+.tab:selected {
+    -fx-background-color: #BFBFBF;
+    -fx-font-weight: bold;
+}
+
 .line-chart {
     -fx-background-color: transparent;
 }
@@ -21,4 +60,44 @@
     -fx-font-size: 14px;
     -fx-font-family: 'Serif';
     -fx-font-weight: bold;
+}
+
+.tool-bar {
+    -fx-background-color: #D6D6D6;
+    -fx-padding: 5px;
+}
+
+.border-pane {
+    -fx-background-color: #F0F0F0;
+}
+
+.hbox, .vbox {
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
+}
+
+.scroll-pane {
+    -fx-background: #D6D6D6;
+    -fx-border-color: #BFBFBF;
+}
+
+.menu-bar {
+    -fx-background-color: #D6D6D6;
+    -fx-border-color: #BFBFBF;
+}
+.menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+}
+.menu-item:hover {
+    -fx-background-color: #BFBFBF;
+}
+
+.progress-bar {
+    -fx-accent: #D35400;
+}
+
+.slider {
+    -fx-control-inner-background: #D6D6D6;
+    -fx-background-color: #BFBFBF;
 }

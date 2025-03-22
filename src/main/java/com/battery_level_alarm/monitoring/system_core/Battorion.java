@@ -1,4 +1,13 @@
 package com.battery_level_alarm.monitoring.system_core;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ButtonTexts.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire.aboutNotificationsIcon;
 import static com.battery_level_alarm.monitoring.battery_report.ChooseAction.choose;
@@ -6,8 +15,8 @@ import static com.battery_level_alarm.monitoring.system_core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.createButton;
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabelWithMouseListener;
 import static com.battery_level_alarm.monitoring.visual_effects.Appearance.THEME_ICON_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.*;
 import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
@@ -18,7 +27,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
 import static com.battery_level_alarm.monitoring.visual_effects.PanelStyler.applyGradientBackground;
 
-import com.battery_level_alarm.monitoring.battery_report.BatteryLevelGraph;
+import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.download_tracker.DownloadProgressSwingWithFX;
 import com.battery_level_alarm.monitoring.visual_effects.Brightness;
@@ -87,23 +96,21 @@ public class Battorion {
 
     private static JLabel monitoringStatus;
     private static JLabel alertLabel;
+    public static JLabel audioOutputLabel;
     static JLabel ratioChargeLabel;
     static JLabel statusLabel;
 
     private static final int duration = 1000;
+    public static int batteryLevel = 0;
+    public static String status = "";
+    static String lastMode = "";
+
     private static boolean callFlag = false;
+    public static boolean isFromCriticalAlert = false;
+    public static boolean isWasInCriticalPhase = false;
     static boolean isMonitorRunning = false;
     static boolean isCharging = false;
     static boolean operationIsEnd = false;
-    static String status = "";
-    static String lastMode = "";
-
-    public static boolean progressBarInVerticalMode;
-    public static int batteryLevel = 0;
-    public static boolean isFromCriticalAlert = false;
-    public static boolean isWasInCriticalPhase = false;
-    public static boolean isDarkMode = false;
-    public static boolean simulatorMode;
 
 	public static void main(String[] args) {
         dropShadowBorder = new DropShadowBorder(
@@ -132,7 +139,7 @@ public class Battorion {
     }
 
     public static void build(){
-        UIManager.put("ToolTip.font", textFont);
+        UIManager.put("ToolTip.font", TEXT_FONT);
         ToolTipManager.sharedInstance().setEnabled(true);
         ToolTipManager.sharedInstance().setInitialDelay(100);
         ToolTipManager.sharedInstance().setDismissDelay(5000);
@@ -179,6 +186,10 @@ public class Battorion {
         initializeStatusPanel();
         setupMainFrameListeners();
         handleAutoMonitoring();
+
+        if(!isWestSidePartAppear){
+            westSideButton.doClick();
+        }
         mainFrame.setVisible(true);
         Appearance.started = false;
     }
@@ -189,9 +200,10 @@ public class Battorion {
         mainFrame.setIconImage(CallResources.getImage(
                 IMAGES_FOLDER_PATH, "13228401",
                 new Dimension(20, 20), Image.SCALE_SMOOTH).getImage());
-        mainFrame.setSize(frameWidth, frameHeight);
+        mainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         mainFrame.setResizable(false);
         mainFrame.setLocationRelativeTo(null);
+        mainFrame.getRootPane().putClientProperty("JRootPane.titleBarBackground", panelBackgroundColor);
     }
 
     private static void initializePanels() {
@@ -231,16 +243,27 @@ public class Battorion {
     private static void initializeButtonPanel() {
         mainButtonsContainer = createButtonPanel();
         createAndAddButtons(mainButtonsContainer);
-        mainButtonsContainer.setPreferredSize(new Dimension(westSidePanelWidthOpenMode, frameHeight));
-        mainButtonsContainer.setMaximumSize(new Dimension(westSidePanelWidthOpenMode, frameHeight));
+        mainButtonsContainer.setPreferredSize(new Dimension(WEST_PANEL_OPEN_WIDTH, FRAME_HEIGHT));
+        mainButtonsContainer.setMaximumSize(new Dimension(WEST_PANEL_OPEN_WIDTH, FRAME_HEIGHT));
     }
 
     private static void initializeStatusPanel() {
         JPanel statusLabelPanel = new JPanel(new BorderLayout());
-        statusLabel = createLabel(ONE_SPACE + "Battery Status: " + status, 18, Font.PLAIN + Font.BOLD);
+        statusLabel = createLabel(ONE_SPACE + "Battery Status: " + status, 20, Font.PLAIN + Font.BOLD);
         statusLabelPanel.add(statusLabel, BorderLayout.CENTER);
         getBatteryMode(getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel()));
         lastMode = status;
+
+        JPanel secondLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        secondLabelPanel.add(new JLabel(ONE_SPACE));
+        audioOutputLabel = addLabelWithMouseListener(
+                new GridBagConstraints(), new JPanel(),
+                "Audio Output: " + getCurrentAudioDevice(),
+                new Color(0, 134, 179), BattorionPanelHelper::audioLabelMouseAction,
+                new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 12)
+        );
+        secondLabelPanel.add(audioOutputLabel);
+        statusLabelPanel.add(secondLabelPanel, BorderLayout.SOUTH);
 
         JPanel topComponentsContainer = new RoundedPanel(30, new GridLayout(1, 2));
         topComponentsContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -371,37 +394,38 @@ public class Battorion {
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(settingsButton);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
+        setButtonBackgroundColor();
     }
 
     private static void createMainButtons(){
         graphPainter = createGraphButton();
-        westSideButton = createButton(" West Side", "Disappear the west side",
+        westSideButton = createButton(WEST_SIDE_BUTTON_TEXT, "Disappear the west side",
                 BUTTON_ICONS_PATH, "side_bar", _ -> setUpWestSideButton());
-        dashboardButton = createButton(" Dashboard", "Go to dashboard panel",
+        dashboardButton = createButton(DASHBOARD_BUTTON_TEXT, "Go to dashboard panel",
                 BUTTON_ICONS_PATH, "dashboard", _ -> setUpDashboardPanel());
-        statisticsButton = createButton(" Statistics", "Go to statistics panel",
+        statisticsButton = createButton(STATISTICS_BUTTON_TEXT, "Go to statistics panel",
                 BUTTON_ICONS_PATH, "statistics", _ -> {
                     if (!StatisticsContainer.isVisible()) {
                         setUpStatisticsPanel();
                     }
                     refreshMotherFrame();
                 });
-        simulatorButton = createButton(" Simulator", "View simulator",
+        simulatorButton = createButton(SIMULATOR_BUTTON_TEXT, "View simulator",
                 BUTTON_ICONS_PATH, "simulator", _ -> {
                     if (!SimulatorMainPanel.isVisible()) {
                         setUpSimulatorPanel();
                     }
                     refreshMotherFrame();
                 });
-        actionButton = createButton(" Start", "Click to start monitoring",
+        actionButton = createButton(START_BUTTON_TEXT, "Click to start monitoring",
                 BUTTON_ICONS_PATH, "start", _ -> {
-                    if (actionButton.getText().contains("Start")) {
+                    if (actionButton.getText().contains("Start") || !isMonitorRunning) {
                         startMonitoring();
                     } else {
                         stopMonitoring();
                     }
                 });
-        settingsButton = createButton(" Settings", "Open settings tabbed panel",
+        settingsButton = createButton(SETTINGS_BUTTON_TEXT, "Open settings tabbed panel",
                 BUTTON_ICONS_PATH, "settings", _ -> {
                     if (!SettingsContainer.isVisible()) {
                         setUpSettingPanel();
@@ -409,10 +433,10 @@ public class Battorion {
                     refreshMotherFrame();
                 });
         reportButton = createButton(
-                " Life Report", "Generate battery life report",
+                REPORT_BUTTON_TEXT, "Generate battery life report",
                 BUTTON_ICONS_PATH, "report", _ -> choose());
         aboutButton = createButton(
-                " About", "About the application",
+                ABOUT_BUTTON_TEXT, "About the application",
                 BUTTON_ICONS_PATH, "about",
                 _ -> StaticQuestionnaire.aboutDispatch());
     }
@@ -580,17 +604,19 @@ public class Battorion {
             isMonitorRunning = true;
             monitor();
         }
-
         monitoringStatus.setText(
-                BatteryLevelHandler.SPACE
-                        + "The battery under monitoring."
+                BatteryLevelHandler.SPACE + "The battery under monitoring."
         );
-        actionButton.setText(" Stop");
+
+        actionButton.setText("");
         ImageIcon stopIcon = CallResources.getImage(
                 BUTTON_ICONS_PATH, "stop",
                 new Dimension(20, 20), Image.SCALE_SMOOTH);
         actionButton.setIcon(stopIcon);
         actionButton.setToolTipText("Click to stop monitoring");
+        if(!westSideButton.getText().isEmpty()){
+            actionButton.setText(STOP_BUTTON_TEXT);
+        }
     }
 
     private static void stopMonitoring() {
@@ -598,16 +624,19 @@ public class Battorion {
         if (monitoringThread != null) {
             monitoringThread.interrupt();
         }
-
         monitoringStatus.setText(
                 BatteryLevelHandler.SPACE + "Stopped!"
         );
-        actionButton.setText(" Start");
+
+        actionButton.setText("");
         ImageIcon stopIcon = CallResources.getImage(
                 BUTTON_ICONS_PATH, "start",
                 new Dimension(20, 20), Image.SCALE_SMOOTH);
         actionButton.setIcon(stopIcon);
         actionButton.setToolTipText("Click to start monitoring");
+        if(!westSideButton.getText().isEmpty()){
+            actionButton.setText(START_BUTTON_TEXT);
+        }
     }
 
     private static void checkAndReset(Color batteryColor){

@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import static com.battery_level_alarm.monitoring.system_core.CoreStaticData.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.ONE_SPACE;
 
@@ -44,12 +45,12 @@ public class BatteryMode {
             AlertSound.useDefaultDuration = true;
             if(lastMode.contains("Not")){
                 if(UserChoices.isEnableChargeAndDischargeSound()){
-                    AlertSound.playSound(ChargingSoundPath);
+                    AlertSound.playSound(CHARGING_SOUND_PATH);
                 }
                 calcSharpDifference(lastMode);
             } else{
                 if(UserChoices.isEnableChargeAndDischargeSound()){
-                    AlertSound.playSound(DischargingSoundPath);
+                    AlertSound.playSound(DISCHARGING_SOUND_PATH);
                 }
                 calcSharpDifference(lastMode);
             }

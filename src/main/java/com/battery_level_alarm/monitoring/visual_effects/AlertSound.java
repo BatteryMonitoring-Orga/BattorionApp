@@ -1,8 +1,7 @@
 package com.battery_level_alarm.monitoring.visual_effects;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputLabel;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashLabel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isFromCriticalAlert;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.TWO_SPACE;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
 
@@ -175,7 +174,7 @@ public class AlertSound {
         } if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
             setAudioOutputDevice(deviceName);
             activeAudioDeviceName.setText(deviceName);
-            audioOutputLabel.setText(TWO_SPACE + "Audio Output: " + deviceName);
+            audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + deviceName + "</b></u></html>");
         }
     }
 
@@ -184,7 +183,7 @@ public class AlertSound {
             String deviceName = ComputerSettings.getCurrentAudioDevice();
             setAudioOutputDevice(deviceName);
             activeAudioDeviceName.setText(deviceName);
-            audioOutputLabel.setText(TWO_SPACE + "Audio Output: " + deviceName);
+            audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + deviceName + "</b></u></html>");
         }
 
         try{

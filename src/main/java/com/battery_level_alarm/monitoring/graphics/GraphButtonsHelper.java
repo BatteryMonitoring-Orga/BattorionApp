@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.graphics;
 import static com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph.*;
-import static com.battery_level_alarm.monitoring.graphics.FileManager.*;
-import static com.battery_level_alarm.monitoring.graphics.FileManager.loadDataFromJSON;
+import static com.battery_level_alarm.monitoring.graphics.GraphicRecordsManager.*;
+import static com.battery_level_alarm.monitoring.graphics.GraphicRecordsManager.loadDataFromJSON;
 import static com.battery_level_alarm.monitoring.graphics.GraphsDefinitions.*;
 
 import javafx.event.ActionEvent;

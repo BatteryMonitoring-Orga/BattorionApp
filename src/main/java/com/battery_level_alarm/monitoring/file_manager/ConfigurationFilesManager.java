@@ -48,6 +48,7 @@ public class ConfigurationFilesManager {
         JSONObject json = new JSONObject();
         json.put("panel mode", progressBarInVerticalMode);
         json.put("west side mode", isWestSidePartAppear);
+        json.put("audio device cmdlets installed", isAudioDeviceCmdletsInstalled);
         json.put("battery simulator", simulatorMode);
         json.put("theme mode", Appearance.getThemeName());
         return json;
@@ -75,6 +76,7 @@ public class ConfigurationFilesManager {
         progressBarInVerticalMode = json.optBoolean("panel mode", false);
         isWestSidePartAppear = json.optBoolean("west side mode", true);
         simulatorMode = json.optBoolean("battery simulator", false);
+        isAudioDeviceCmdletsInstalled = json.optBoolean("audio device cmdlets installed", false);
         Appearance.setThemeName(json.optString("theme mode", "Light"));
     }
 
@@ -82,6 +84,7 @@ public class ConfigurationFilesManager {
         progressBarInVerticalMode = false;
         isWestSidePartAppear = true;
         simulatorMode = false;
+        isAudioDeviceCmdletsInstalled = false;
         Appearance.setThemeName("Light");
     }
 

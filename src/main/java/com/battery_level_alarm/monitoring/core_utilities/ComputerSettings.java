@@ -98,7 +98,7 @@ public class ComputerSettings {
     public static void setAudioDevices(List<String> audioDevices){
         ComputerSettings.audioDevices = audioDevices;
     }
-    public static boolean setItemToAudioList(String device){
+    public static boolean addItemToAudioList(String device){
         if(!audioDevices.contains(device)){
             audioDevices.add(device);
             return true;

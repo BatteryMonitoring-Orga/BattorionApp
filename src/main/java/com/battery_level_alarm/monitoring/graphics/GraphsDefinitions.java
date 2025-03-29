@@ -8,4 +8,7 @@ public class GraphsDefinitions {
     public static String CSS_FILE_NAME;
     static final XYChart.Series<Number, Number> alterSeries = new XYChart.Series<>();
     static LineChart<Number, Number> alterLineChart;
+
+    static final int WIDTH_INCREASE_VALUE = 200;
+    static final int INCREASE_WIDTH_EACH_TIMES = 10;
 }

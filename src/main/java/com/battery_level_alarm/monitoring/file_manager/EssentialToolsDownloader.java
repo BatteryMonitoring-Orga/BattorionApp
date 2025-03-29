@@ -26,7 +26,7 @@ public class EssentialToolsDownloader {
                     null,
                     "❌ No internet connection! \n" +
                             "The application requires an internet connection to download essential tools.",
-                    "Error", JOptionPane.ERROR_MESSAGE
+                    "Support Center", JOptionPane.ERROR_MESSAGE
             );
             return;
         }
@@ -51,15 +51,15 @@ public class EssentialToolsDownloader {
                 unzip(zipPath);
                 Files.deleteIfExists(Paths.get(zipPath));
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "❌ Error downloading essential tool: " + repoName + ": " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "❌ Error downloading essential tool: " + repoName + ": " + e.getMessage(), "Support Center", JOptionPane.ERROR_MESSAGE);
             }
         }
 
         if(!isForceDownload){
             if(isFileExist && !isAllFilesExist){
-                JOptionPane.showMessageDialog(null, "✔ Some files already exist. Not all tools were downloaded.", "System", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "✔ Some files already exist. Not all tools were downloaded.", "Support Center", JOptionPane.INFORMATION_MESSAGE);
             } else if(isAllFilesExist){
-                JOptionPane.showMessageDialog(null, "✔ All essential tools are already installed.", "System", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "✔ All essential tools are already installed.", "Support Center", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

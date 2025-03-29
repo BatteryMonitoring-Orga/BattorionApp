@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.graphics;
 import static com.battery_level_alarm.monitoring.graphics.GraphPaneHelper.*;
+import static com.battery_level_alarm.monitoring.graphics.GraphsDefinitions.*;
 import static com.battery_level_alarm.monitoring.graphics.LocalScheduledExecutorService.counter;
 import static com.battery_level_alarm.monitoring.graphics.LocalScheduledExecutorService.createMainScheduledExecutor;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
@@ -83,10 +84,12 @@ public class BatteryLevelGraph extends Application {
         xAxis.lookup(".axis-label").setStyle("-fx-text-fill: #D35400; -fx-font-size: 14px; -fx-font-family: 'Serif'; -fx-font-weight: bold;");
         xAxis.setAutoRanging(false);
         xAxis.setLowerBound(0);
-        xAxis.setUpperBound(10);
+        xAxis.setUpperBound(15);
         xAxis.setTickUnit(1);
 
         NumberAxis yAxis = new NumberAxis();
+        yAxis.setLowerBound(0);
+        yAxis.setUpperBound(100);
         yAxis.setLabel("Battery Level (%)");
         yAxis.lookup(".axis-label").setStyle("-fx-text-fill: #D35400; -fx-font-size: 14px; -fx-font-family: 'Serif'; -fx-font-weight: bold;");
 
@@ -144,16 +147,18 @@ public class BatteryLevelGraph extends Application {
         Platform.runLater(() -> {
             series.getData().add(dataPoint);
             NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
-            NumberAxis yAxis = (NumberAxis) lineChart.getYAxis();
-            if (totalTime > xAxis.getUpperBound() && counter < 10) {
-                xAxis.setUpperBound(totalTime + 10);
-                chartWidth += 50;
+            if ((totalTime > xAxis.getUpperBound()) && (counter < INCREASE_WIDTH_EACH_TIMES)) {
+                xAxis.setUpperBound(xAxis.getUpperBound() + INCREASE_WIDTH_EACH_TIMES);
+                chartWidth += WIDTH_INCREASE_VALUE;
                 lineChart.setMinWidth(chartWidth);
-                counter = 0;
-            } if (batteryLevel > yAxis.getUpperBound()) {
-                yAxis.setUpperBound(batteryLevel + 10);
-                chartHeight += 10;
-                lineChart.setMinHeight(chartHeight);
+                counter = 1;
+            } else if(counter == INCREASE_WIDTH_EACH_TIMES) {
+                xAxis.setUpperBound(xAxis.getUpperBound() + INCREASE_WIDTH_EACH_TIMES);
+                chartWidth += WIDTH_INCREASE_VALUE;
+                lineChart.setMinWidth(chartWidth);
+                counter = 1;
+            } else {
+                counter++;
             }
         });
     }

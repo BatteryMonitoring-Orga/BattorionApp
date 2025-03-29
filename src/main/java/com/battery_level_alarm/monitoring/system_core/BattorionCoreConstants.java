@@ -75,5 +75,6 @@ public class BattorionCoreConstants {
         public static boolean isWestSidePartAppear;
         public static boolean simulatorMode;
         public static boolean isDarkMode = false;
+        public static boolean isAudioDeviceCmdletsInstalled;
     }
 }

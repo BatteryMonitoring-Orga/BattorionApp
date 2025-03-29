@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class LocalScheduledExecutorService {
     private static Timeline changeTimer;
-    static int counter = 0;
+    static int counter = 1;
 
     static void createMainScheduledExecutor(){
         createTheTimer();
@@ -38,23 +38,12 @@ public class LocalScheduledExecutorService {
                     toMinute();
                     addDataPoint(totalTime, elapsedTime, batteryLevelForGraphics);
                     batteryStatusLabel.setText("Battery Status: " + status);
-                    mainChartSizeExtend();
                     startTimer();
                 }
                 previousLevel = batteryLevelForGraphics;
                 isValueChanged = false;
             });
         }, 0, 1, TimeUnit.SECONDS);
-    }
-
-    static void mainChartSizeExtend(){
-        if(counter == 10){
-            chartWidth += 50;
-            lineChart.setMinWidth(chartWidth);
-            counter = 0;
-        } else {
-            counter++;
-        }
     }
 
     static void createTheTimer() {

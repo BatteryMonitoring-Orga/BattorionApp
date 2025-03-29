@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core;
+import static com.battery_level_alarm.monitoring.system_core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.*;
@@ -8,43 +9,44 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
-import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
-import static com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire.aboutNotificationsIcon;
-import static com.battery_level_alarm.monitoring.battery_report.ChooseAction.choose;
-import static com.battery_level_alarm.monitoring.system_core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.createButton;
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
+import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.*;
+import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire.aboutNotificationsIcon;
+import static com.battery_level_alarm.monitoring.battery_report.ChooseAction.choose;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabelWithMouseListener;
-import static com.battery_level_alarm.monitoring.visual_effects.Appearance.THEME_ICON_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.*;
-import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.*;
-import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.*;
+import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
+import static com.battery_level_alarm.monitoring.visual_effects.Appearance.THEME_ICON_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.Appearance.getPopupMenu;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
 import static com.battery_level_alarm.monitoring.visual_effects.PanelStyler.applyGradientBackground;
 
 import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
-import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.download_tracker.DownloadProgressSwingWithFX;
-import com.battery_level_alarm.monitoring.visual_effects.Brightness;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass;
+import com.battery_level_alarm.monitoring.file_manager.AudioDeviceToolChecker;
 import com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
+import com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker;
 import com.battery_level_alarm.monitoring.system_automation.WakeUpPC;
 import com.battery_level_alarm.monitoring.visual_effects.Appearance;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
+import com.battery_level_alarm.monitoring.visual_effects.RoundedPanel;
+import com.battery_level_alarm.monitoring.visual_effects.Brightness;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.PrepareDiskInfoGUI;
-import com.battery_level_alarm.monitoring.visual_effects.RoundedPanel;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass;
+import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 import com.notifications.system_tray_notifications.basics.Notifications;
 import com.notifications.system_tray_notifications.system_tray.SystemTrayNotification;
@@ -96,7 +98,7 @@ public class Battorion {
 
     private static JLabel monitoringStatus;
     private static JLabel alertLabel;
-    public static JLabel audioOutputLabel;
+    public static JLabel audioOutputDeviceDashLabel;
     static JLabel ratioChargeLabel;
     static JLabel statusLabel;
 
@@ -108,7 +110,7 @@ public class Battorion {
     private static boolean callFlag = false;
     public static boolean isFromCriticalAlert = false;
     public static boolean isWasInCriticalPhase = false;
-    static boolean isMonitorRunning = false;
+    public static boolean isMonitorRunning = false;
     static boolean isCharging = false;
     static boolean operationIsEnd = false;
 
@@ -122,6 +124,7 @@ public class Battorion {
         loadGeneralConfigurations();
         Appearance.theme_setup();
         EssentialToolsDownloader.Downloader((_, _) -> {}, true);
+        AudioDeviceToolChecker.startCheckingThread();
         SingletonObject.singletonMethod();
 	}
 
@@ -256,13 +259,13 @@ public class Battorion {
 
         JPanel secondLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         secondLabelPanel.add(new JLabel(ONE_SPACE));
-        audioOutputLabel = addLabelWithMouseListener(
+        audioOutputDeviceDashLabel = addLabelWithMouseListener(
                 new GridBagConstraints(), new JPanel(),
                 "Audio Output: " + getCurrentAudioDevice(),
                 new Color(0, 134, 179), BattorionPanelHelper::audioLabelMouseAction,
                 new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 12)
         );
-        secondLabelPanel.add(audioOutputLabel);
+        secondLabelPanel.add(audioOutputDeviceDashLabel);
         statusLabelPanel.add(secondLabelPanel, BorderLayout.SOUTH);
 
         JPanel topComponentsContainer = new RoundedPanel(30, new GridLayout(1, 2));
@@ -457,7 +460,7 @@ public class Battorion {
         updateButton.addActionListener(_ -> System.out.println("new"));
 
         JButton resetButton = new JButton();
-        resetButton.setToolTipText("Reset the alert statement and update 'Disk Info.' panel");
+        resetButton.setToolTipText("Reset the alert statement then update Disk \nInformation tab and audio output device name");
         ImageIcon resetButtonIcon = CallResources.getImage(
                 IMAGES_FOLDER_PATH, "3808356",
                 new Dimension(20, 20), Image.SCALE_SMOOTH);
@@ -466,6 +469,7 @@ public class Battorion {
             alertLabel.setText("");
             checkAndReset(color);
             StatisticsContainerClass.refreshDiskInfoTab();
+            AudioOutputDeviceNameChecker.doExecutionSingleton();
         });
 
         JButton themeButton = new JButton();
@@ -617,6 +621,7 @@ public class Battorion {
         if(!westSideButton.getText().isEmpty()){
             actionButton.setText(STOP_BUTTON_TEXT);
         }
+        AudioOutputDeviceNameChecker.threadStart();
     }
 
     private static void stopMonitoring() {

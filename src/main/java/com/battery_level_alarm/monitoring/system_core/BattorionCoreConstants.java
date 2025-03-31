@@ -72,6 +72,7 @@ public class BattorionCoreConstants {
 
     public static class StateVariables {
         public static boolean progressBarInVerticalMode;
+        public static boolean progressBarInFirstMode;
         public static boolean isWestSidePartAppear;
         public static boolean simulatorMode;
         public static boolean isDarkMode = false;

@@ -66,7 +66,7 @@ public class Battorion {
     static SystemTrayNotification stn;
     static Notifications notify;
     static DropShadowBorder dropShadowBorder;
-
+    
     public static JFrame mainFrame;
     public static JPanel motherFrameContainer;
     public static JPanel motherPanelContainer;
@@ -85,6 +85,7 @@ public class Battorion {
     static JPanel thirdTopAssistantPartialPanel;
 
     static final JPanel progressPanel = new JPanel();
+    static JPanel safeModePanel = new JPanel();
     static JProgressBar batteryBar;
     static JButton westSideButton;
     static JButton dashboardButton;
@@ -104,6 +105,7 @@ public class Battorion {
 
     private static final int duration = 1000;
     public static int batteryLevel = 0;
+    private static int clickCount = 0;
     public static String status = "";
     static String lastMode = "";
 
@@ -211,10 +213,10 @@ public class Battorion {
 
     private static void initializePanels() {
         motherFrameContainer = new JPanel(new BorderLayout());
-        motherFrameContainer = applyGradientBackground(motherFrameContainer, isDarkMode);
+        motherFrameContainer = applyGradientBackground(motherFrameContainer, isDarkMode, false, 0);
         motherPanelContainer = new JPanel();
         motherPanelContainer = applyGradientBackground(
-                motherPanelContainer, isDarkMode
+                motherPanelContainer, isDarkMode, false, 0
         );
         motherPanelContainer.setLayout(new BoxLayout(motherPanelContainer, BoxLayout.Y_AXIS));
 
@@ -232,10 +234,19 @@ public class Battorion {
         Color color = getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel());
 
         createBatteryBar(color);
-        ratioChargeLabel = createLabel("Battery Level: " + batteryLevel + "%", 15, Font.BOLD + Font.ITALIC);
+        ratioChargeLabel = createLabel("Battery Level: " + batteryLevel + "%", 15, Font.BOLD + Font.PLAIN);
 
-        setUpProgressPanel();
-        DashboardPanel.add(progressPanel, BorderLayout.CENTER);
+        setUpSafeModePanel();
+        JPanel eastSidePanel = new JPanel(new GridLayout(3, 1));
+        eastSidePanel.add(new JLabel(""));
+        eastSidePanel.add(new JLabel(""));
+        eastSidePanel.add(safeModePanel);
+        DashboardPanel.add(eastSidePanel, BorderLayout.EAST);
+
+        setUpProgressPanel(progressBarInFirstMode);
+        JPanel progressPanelContainer = new JPanel(new BorderLayout());
+        progressPanelContainer.add(progressPanel, BorderLayout.CENTER);
+        DashboardPanel.add(progressPanelContainer, BorderLayout.CENTER);
 
         alertLabel = createAlertLabel();
         JScrollPane scroll = createScrollPane(alertLabel);
@@ -405,20 +416,25 @@ public class Battorion {
         westSideButton = createButton(WEST_SIDE_BUTTON_TEXT, "Disappear the west side",
                 BUTTON_ICONS_PATH, "side_bar", _ -> setUpWestSideButton());
         dashboardButton = createButton(DASHBOARD_BUTTON_TEXT, "Go to dashboard panel",
-                BUTTON_ICONS_PATH, "dashboard", _ -> setUpDashboardPanel());
+                BUTTON_ICONS_PATH, "dashboard", _ ->{
+                    if(!DashboardPanel.isVisible()){
+                        setUpDashboardPanel();
+                        refreshMotherFrame();
+                    }
+                });
         statisticsButton = createButton(STATISTICS_BUTTON_TEXT, "Go to statistics panel",
                 BUTTON_ICONS_PATH, "statistics", _ -> {
                     if (!StatisticsContainer.isVisible()) {
                         setUpStatisticsPanel();
+                        refreshMotherFrame();
                     }
-                    refreshMotherFrame();
                 });
         simulatorButton = createButton(SIMULATOR_BUTTON_TEXT, "View simulator",
                 BUTTON_ICONS_PATH, "simulator", _ -> {
                     if (!SimulatorMainPanel.isVisible()) {
                         setUpSimulatorPanel();
+                        refreshMotherFrame();
                     }
-                    refreshMotherFrame();
                 });
         actionButton = createButton(START_BUTTON_TEXT, "Click to start monitoring",
                 BUTTON_ICONS_PATH, "start", _ -> {
@@ -427,13 +443,14 @@ public class Battorion {
                     } else {
                         stopMonitoring();
                     }
+                    refreshMotherFrame();
                 });
         settingsButton = createButton(SETTINGS_BUTTON_TEXT, "Open settings tabbed panel",
                 BUTTON_ICONS_PATH, "settings", _ -> {
                     if (!SettingsContainer.isVisible()) {
                         setUpSettingPanel();
+                        refreshMotherFrame();
                     }
-                    refreshMotherFrame();
                 });
         reportButton = createButton(
                 REPORT_BUTTON_TEXT, "Generate battery life report",
@@ -513,13 +530,13 @@ public class Battorion {
         progressBarModeButton.setIcon(progressBarModeIcon);
         progressBarModeButton.addActionListener(_ -> {
             progressBarInVerticalMode = !progressBarInVerticalMode;
+            clickCount++;
+            if (clickCount % 2 == 0) {
+                progressBarInFirstMode = !progressBarInFirstMode;
+            }
+
             setProgressBarMode();
-            setUpProgressPanel();
-
-            DashboardPanel.add(progressPanel, BorderLayout.CENTER);
-            DashboardPanel.repaint();
-            DashboardPanel.revalidate();
-
+            setUpProgressPanel(progressBarInFirstMode);
             setVisibleFalse();
             motherPanel.add(DashboardPanel, BorderLayout.CENTER);
             setVisibleTrue(isA_DashboardPanel);

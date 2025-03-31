@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
+import static com.battery_level_alarm.monitoring.visual_effects.PanelStyler.applyGradientBackground;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,37 +34,85 @@ public class BattorionProgressBarHelper {
         batteryBar.setMinimumSize(size);
     }
 
-    public static void setUpProgressPanel(){
+    public static void setUpProgressPanel(boolean isFirstMode){
         if(progressBarInVerticalMode){
-            progressPanelForVerticalMode();
+            progressPanelForVerticalMode(isFirstMode);
         } else {
-            progressPanelForHorizontalMode();
+            progressPanelForHorizontalMode(isFirstMode);
         }
     }
 
-    private static void progressPanelForVerticalMode(){
+    private static void progressPanelForVerticalMode(boolean isFirstMode) {
         progressPanel.removeAll();
-        progressPanel.setLayout(new BoxLayout(progressPanel, BoxLayout.X_AXIS));
-        progressPanel.add(Box.createHorizontalGlue());
-        progressPanel.add(ratioChargeLabel);
-        progressPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        progressPanel.add(batteryBar);
-        progressPanel.add(Box.createHorizontalGlue());
-        progressPanel.setBackground(UIManager.getColor("Panel.Background"));
+        progressPanel.setLayout(new GridBagLayout());
+        progressPanel.setBackground(UIManager.getColor("Panel.background"));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.insets = new Insets(2, 2, 2, 2);
+
+        JPanel batteryContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        batteryContainer.add(batteryBar);
+        batteryContainer.setOpaque(false);
+
+        JPanel labelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        labelContainer.add(ratioChargeLabel);
+        labelContainer.setOpaque(false);
+
+        if (isFirstMode) {
+            progressPanel.add(labelContainer, gbc);
+            gbc.gridx++;
+            progressPanel.add(batteryContainer, gbc);
+        } else {
+            progressPanel.add(batteryContainer, gbc);
+            gbc.gridx++;
+            progressPanel.add(labelContainer, gbc);
+        }
+
         progressPanel.revalidate();
         progressPanel.repaint();
     }
 
-    private static void progressPanelForHorizontalMode(){
+    private static void progressPanelForHorizontalMode(boolean isFirstMode) {
         progressPanel.removeAll();
-        progressPanel.setLayout(new BoxLayout(progressPanel, BoxLayout.Y_AXIS));
-        progressPanel.add(Box.createVerticalGlue());
-        progressPanel.add(batteryBar);
-        progressPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        progressPanel.add(ratioChargeLabel);
-        progressPanel.add(Box.createVerticalGlue());
-        progressPanel.setBackground(UIManager.getColor("Panel.Background"));
+        progressPanel.setLayout(new GridBagLayout());
+        progressPanel.setBackground(UIManager.getColor("Panel.background"));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.insets = new Insets(2, 2, 2, 2);
+
+        JPanel batteryContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        batteryContainer.add(batteryBar);
+        batteryContainer.setOpaque(false);
+
+        JPanel labelContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        labelContainer.add(ratioChargeLabel);
+        labelContainer.setOpaque(false);
+
+        if (isFirstMode) {
+            progressPanel.add(batteryContainer, gbc);
+            gbc.gridy++;
+            progressPanel.add(labelContainer, gbc);
+        } else {
+            progressPanel.add(labelContainer, gbc);
+            gbc.gridy++;
+            progressPanel.add(batteryContainer, gbc);
+        }
         progressPanel.revalidate();
         progressPanel.repaint();
+    }
+
+    public static void setUpSafeModePanel(){
+        safeModePanel = applyGradientBackground(safeModePanel, isDarkMode, true, 25);
+        safeModePanel.setPreferredSize(new Dimension(150, 120));
+        safeModePanel.setMaximumSize(new Dimension(150, 120));
+        safeModePanel.setLayout(new BorderLayout());
     }
 }

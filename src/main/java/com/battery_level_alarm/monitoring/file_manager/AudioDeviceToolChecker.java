@@ -51,7 +51,7 @@ public class AudioDeviceToolChecker {
     }
 
     private static boolean isModuleNotInstalled() {
-        String command = "powershell -command \"Get-Module -ListAvailable | Where-Object { $_.Name -eq 'AudioDeviceCmdlets' }\"";
+        String command = "powershell -ExecutionPolicy Bypass -NoProfile -Command \"Try { Import-Module AudioDeviceCmdlets -ErrorAction Stop; Get-Module -ListAvailable | Where-Object { $_.Name -eq 'AudioDeviceCmdlets' } } Catch { Write-Host 'ERROR' }\"";
         return executeCommand(command).trim().isEmpty();
     }
 
@@ -62,10 +62,8 @@ public class AudioDeviceToolChecker {
 
     private static void handleMacOS() {
         String output = executeCommand("system_profiler SPAudioDataType");
-
         if (!output.contains("Output Source")) {
             String checkTool = executeCommand("which SwitchAudioSource");
-
             if (checkTool.trim().isEmpty()) {
                 String brewCheck = executeCommand("which brew");
                 if (brewCheck.trim().isEmpty()) {
@@ -104,11 +102,16 @@ public class AudioDeviceToolChecker {
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println("Error: \n" + line);
+            }
+
             boolean finished = process.waitFor(15, TimeUnit.SECONDS);
             if (!finished) {
                 process.destroy();

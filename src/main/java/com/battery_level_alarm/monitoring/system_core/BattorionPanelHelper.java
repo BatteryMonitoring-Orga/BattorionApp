@@ -16,7 +16,7 @@ public class BattorionPanelHelper {
     static void createHBoxPanel(){
         HBoxPanel = new JPanel();
         HBoxPanel = applyGradientBackground(
-                HBoxPanel, isDarkMode
+                HBoxPanel, isDarkMode, false, 0
         );
         HBoxPanel.setLayout(new BoxLayout(HBoxPanel, BoxLayout.X_AXIS));
         HBoxPanel.add(mainButtonsContainer);

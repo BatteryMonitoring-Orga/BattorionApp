@@ -3,7 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelStyler {
-    public static JPanel applyGradientBackground(JPanel panel, boolean isDarkMode) {
+    public static JPanel applyGradientBackground(
+            JPanel panel, boolean isDarkMode, boolean isRoundedCorner, int cornerRadius
+    ){
         Color startColor, endColor;
 
         if (isDarkMode) {
@@ -21,13 +23,19 @@ public class PanelStyler {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
+                Graphics2D g2d = (Graphics2D) g.create();
                 int width = getWidth();
                 int height = getHeight();
+                g2d.setColor(getBackground());
 
                 GradientPaint gradient = new GradientPaint(0, 0, startColor, width, height, endColor);
                 g2d.setPaint(gradient);
-                g2d.fillRect(0, 0, width, height);
+                if (isRoundedCorner) {
+                    g2d.fillRoundRect(0, 0, width, height, cornerRadius, cornerRadius);
+                } else {
+                    g2d.fillRect(0, 0, width, height);
+                }
+                g2d.dispose();
             }
         };
         panel.setLayout(new BorderLayout());

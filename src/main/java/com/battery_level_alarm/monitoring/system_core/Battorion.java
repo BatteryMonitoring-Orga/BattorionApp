@@ -14,6 +14,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHel
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire.aboutNotificationsIcon;
 import static com.battery_level_alarm.monitoring.battery_report.ChooseAction.choose;
@@ -626,7 +627,7 @@ public class Battorion {
             monitor();
         }
         monitoringStatus.setText(
-                BatteryLevelHandler.SPACE + "The battery under monitoring."
+                TWO_SPACE + "The battery under monitoring."
         );
 
         actionButton.setText("");
@@ -647,7 +648,7 @@ public class Battorion {
             monitoringThread.interrupt();
         }
         monitoringStatus.setText(
-                BatteryLevelHandler.SPACE + "Stopped!"
+                TWO_SPACE + "Stopped!"
         );
 
         actionButton.setText("");
@@ -715,8 +716,7 @@ public class Battorion {
                 Thread.currentThread().interrupt();
                 SwingUtilities.invokeLater(() ->
                         alertLabel.setText(
-                                BatteryLevelHandler.SPACE
-                                        + "The Monitoring was Stopped!"
+                                TWO_SPACE + "The Monitoring was Stopped!"
                         )
                 );
             }

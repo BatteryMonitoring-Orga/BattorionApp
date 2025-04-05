@@ -78,4 +78,10 @@ public class BattorionCoreConstants {
         public static boolean isDarkMode = false;
         public static boolean isAudioDeviceCmdletsInstalled;
     }
+
+    public static class BatteryLevelHandlerConstants {
+        public static final int ALERT_AFTER_SECONDS = 60;
+        public static final String CRITICAL_BATTERY_STATUS = "Critical Battery Status";
+        public static final String SPACE = "\u2003\u2003";
+    }
 }

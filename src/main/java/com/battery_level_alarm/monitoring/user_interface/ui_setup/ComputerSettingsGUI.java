@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashLabel;

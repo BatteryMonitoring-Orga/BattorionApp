@@ -2,7 +2,7 @@ package com.battery_level_alarm.monitoring.battery_emulator;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.DEFAULT_FONT;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner.getSpinnerValue;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
 

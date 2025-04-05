@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_static_configs;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SpinnerConfig;
 
 import javax.swing.*;

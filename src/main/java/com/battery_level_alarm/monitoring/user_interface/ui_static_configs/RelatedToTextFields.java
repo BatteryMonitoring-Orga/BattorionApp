@@ -3,7 +3,7 @@ import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getColumn;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getRow;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.buttonGroup;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.textFieldFont;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.applyScrollConfigurationDetails;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 

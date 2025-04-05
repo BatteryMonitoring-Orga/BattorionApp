@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.TITLE_LISTS_FONT;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList.prepareListsContainer;

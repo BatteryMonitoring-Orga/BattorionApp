@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_static_configs;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getColumn;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getRow;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.DEFAULT_FONT;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.visual_effects.Appearance;
 
@@ -10,14 +11,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class OtherComponentsConfig {
-    public static final Font DEFAULT_FONT = new Font("Serif", Font.BOLD, 14);
-    public static final Font textFieldFont = new Font("Serif", Font.PLAIN, 14);
-
-    public static final String ONE_SPACE = "\u2003";
-    public static final String TWO_SPACE = "\u2003\u2003";
-    public static final String FOUR_SPACE = "\u2003\u2003\u2003\u2003";
-    public static final String TEN_SPACE = "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003";
-
     public static JSlider addLabeledSlider(
             GridBagConstraints gbc, JPanel panel, String label,
             int minValue, int maxValue, int initialValue,

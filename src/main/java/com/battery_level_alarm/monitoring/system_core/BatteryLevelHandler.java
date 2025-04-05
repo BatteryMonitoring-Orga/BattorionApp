@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.BatteryLevelHandlerConstants.*;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.AlertSound;
 
@@ -10,10 +11,6 @@ import javax.swing.SwingUtilities;
 
 public class BatteryLevelHandler {
 	private static int counter = 0;
-    private static final int ALERT_AFTER_SECONDS = 120;
-    private static final String CRITICAL_BATTERY_STATUS = "Critical Battery Status";
-    public static final String SPACE = "\u2003\u2003";
-	
     public static void handleHighBattery(JProgressBar batteryBar, JLabel alertLabel, Color batteryColor, String msg) throws InterruptedException {
         SwingUtilities.invokeLater(() -> {
         	batteryBar.setForeground(batteryColor);
@@ -22,11 +19,15 @@ public class BatteryLevelHandler {
         if(UserChoices.isEnablePrimarySound()) {
         	AlertSound.playSound(UserChoices.getSoundPath());
         }
-        
-        counter++;
-        if((counter > ALERT_AFTER_SECONDS) && UserChoices.isEnableText()) {
-            JOptionPane.showMessageDialog(null, "Battery is high for too long! Please unplug the charger immediately.",
-                    CRITICAL_BATTERY_STATUS, JOptionPane.WARNING_MESSAGE);
+
+        if(UserChoices.isEnableText()){
+            counter++;
+            if((counter > ALERT_AFTER_SECONDS)) {
+                JOptionPane.showMessageDialog(null, "Battery is high for too long! Please unplug the charger immediately.",
+                        CRITICAL_BATTERY_STATUS, JOptionPane.WARNING_MESSAGE);
+                counter = 0;
+            }
+        } else {
             counter = 0;
         }
         Thread.sleep(1000);
@@ -40,11 +41,15 @@ public class BatteryLevelHandler {
         if(UserChoices.isEnablePrimarySound()) {
         	AlertSound.playSound(UserChoices.getSoundPath());
         }
-        
-        counter++;
-        if((counter > ALERT_AFTER_SECONDS) && UserChoices.isEnableText()) {
-            JOptionPane.showMessageDialog(null, "Battery is dangerously low! Please charge immediately.",
-                    CRITICAL_BATTERY_STATUS, JOptionPane.WARNING_MESSAGE);
+
+        if(UserChoices.isEnableText()){
+            counter++;
+            if(UserChoices.isEnableText() && (counter > ALERT_AFTER_SECONDS)) {
+                JOptionPane.showMessageDialog(null, "Battery is dangerously low! Please charge immediately.",
+                        CRITICAL_BATTERY_STATUS, JOptionPane.WARNING_MESSAGE);
+                counter = 0;
+            }
+        } else {
             counter = 0;
         }
         Thread.sleep(1000);

@@ -63,11 +63,12 @@ public class GraphicRecordsManager {
                 scanner.nextLine();
                 while (scanner.hasNextLine()) {
                     String[] parts = scanner.nextLine().split(",");
-                    alterSeries.getData().add(new XYChart.Data<>(Double.parseDouble(parts[0]), Integer.parseInt(parts[1])));
+                    double range = Double.parseDouble(parts[0]);
+                    alterSeries.getData().add(new XYChart.Data<>(range, Integer.parseInt(parts[1])));
 
                     if(loadCounter == INCREASE_WIDTH_EACH_TIMES){
                         NumberAxis xAxis = (NumberAxis) alterLineChart.getXAxis();
-                        xAxis.setUpperBound(xAxis.getUpperBound() + INCREASE_WIDTH_EACH_TIMES * 1.7);
+                        xAxis.setUpperBound(range + 5);
                         alterLineChart.setMinWidth(alterLineChart.getMinWidth() + WIDTH_INCREASE_VALUE);
                         loadCounter = 0;
                     } else {
@@ -96,11 +97,12 @@ public class GraphicRecordsManager {
                 JSONArray jsonArray = new JSONArray(jsonContent.toString());
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    alterSeries.getData().add(new XYChart.Data<>(jsonObject.getDouble("time"), jsonObject.getInt("battery_level")));
+                    double range = jsonObject.getDouble("time");
+                    alterSeries.getData().add(new XYChart.Data<>(range, jsonObject.getInt("battery_level")));
 
                     if(loadCounter == INCREASE_WIDTH_EACH_TIMES){
                         NumberAxis xAxis = (NumberAxis) alterLineChart.getXAxis();
-                        xAxis.setUpperBound(xAxis.getUpperBound() + INCREASE_WIDTH_EACH_TIMES * 1.7);
+                        xAxis.setUpperBound(range + 5);
                         alterLineChart.setMinWidth(alterLineChart.getMinWidth() + WIDTH_INCREASE_VALUE);
                         loadCounter = 0;
                     } else {

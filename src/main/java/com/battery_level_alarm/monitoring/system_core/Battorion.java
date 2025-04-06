@@ -152,6 +152,9 @@ public class Battorion {
 
         borderColor = UIManager.getColor("Label.foreground");
         panelBackgroundColor = UIManager.getColor("Button.background");
+        if(Appearance.getThemeName().equals("Dark")){
+            panelBackgroundColor = Color.BLACK;
+        }
         setUIManagerPanelColor(panelBackgroundColor);
         configurationHistoryMap();
         configurationSystemTrayNotifications();

@@ -9,10 +9,10 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.addButton;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.ONE_SPACE;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeNames.getThemeNames;
-import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.getEndPreviewColor;
-import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.getStartPreviewColor;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientThemes.DARK_GRADIENTS;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientThemes.LIGHT_GRADIENTS;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.getAppliedEndColor;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.getAppliedStartColor;
 
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
@@ -155,7 +155,7 @@ public class UIThemesGUI {
         addLabeledColorPicker(
                 gbc, partMainPanel,
                 "Set Gradient Starting Color   " + ONE_SPACE,
-                getStartPreviewColor(),
+                getAppliedStartColor(),
                 GradientPreview::setStartPreviewColor,
                 40, 30
         );
@@ -164,7 +164,7 @@ public class UIThemesGUI {
         addLabeledColorPicker(
                 gbc, partMainPanel,
                 "Set Gradient Ending Color",
-                getEndPreviewColor(),
+                getAppliedEndColor(),
                 GradientPreview::setEndPreviewColor,
                 40, 30
         );

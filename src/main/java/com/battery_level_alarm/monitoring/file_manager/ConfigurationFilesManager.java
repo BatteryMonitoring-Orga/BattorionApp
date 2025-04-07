@@ -6,6 +6,8 @@ import static com.battery_level_alarm.monitoring.core_utilities.DropDownListStat
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.*;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.setEndCustomColor;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.setStartCustomColor;
 
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
@@ -112,14 +114,14 @@ public class ConfigurationFilesManager {
                         Integer.parseInt(rgb[1].trim()),
                         Integer.parseInt(rgb[2].trim())
                 );
-                setStartPreviewColor(startColor);
+                setStartCustomColor(startColor);
             } else {
-                setStartPreviewColor(new Color(5, 56, 89));
+                setStartCustomColor(new Color(5, 56, 89));
                 saveGeneralConfigurations();
             }
         } catch (Exception e) {
             printErrorMessage(e, "Failed to load custom start color");
-            setStartPreviewColor(new Color(5, 56, 89));
+            setStartCustomColor(new Color(5, 56, 89));
             saveGeneralConfigurations();
         }
 
@@ -132,14 +134,14 @@ public class ConfigurationFilesManager {
                         Integer.parseInt(rgb[1].trim()),
                         Integer.parseInt(rgb[2].trim())
                 );
-                setEndPreviewColor(endColor);
+                setEndCustomColor(endColor);
             } else {
-                setEndPreviewColor(new Color(0, 67, 8));
+                setEndCustomColor(new Color(0, 67, 8));
                 saveGeneralConfigurations();
             }
         } catch (Exception e) {
             printErrorMessage(e, "Failed to load custom end color");
-            setEndPreviewColor(new Color(0, 67, 8));
+            setEndCustomColor(new Color(0, 67, 8));
             saveGeneralConfigurations();
         }
     }

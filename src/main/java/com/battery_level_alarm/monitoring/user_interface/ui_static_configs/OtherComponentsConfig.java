@@ -59,7 +59,7 @@ public class OtherComponentsConfig {
         return comboBox;
     }
 
-    public static void addLabeledColorPicker(
+    public static JButton addLabeledColorPicker(
             GridBagConstraints gbc, JPanel panel, String labelText,
             Color initialColor, Consumer<Color> onColorSelected, int width, int height
     ) {
@@ -83,6 +83,7 @@ public class OtherComponentsConfig {
         });
         gbc.gridx = getColumn() + 1;
         panel.add(colorButton, gbc);
+        return colorButton;
     }
 
     public static JCheckBox addCheckbox(

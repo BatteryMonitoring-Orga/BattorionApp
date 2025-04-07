@@ -28,13 +28,13 @@ public class PanelStyler {
     public static void setGradientBackgroundLightModeName(String gradientBackgroundLightModeName) {
         PanelStyler.gradientBackgroundLightModeName = gradientBackgroundLightModeName;
     }
-    public static Color getAppliedStartColor() {
-        return appliedStartColor;
-    }
-    public static Color getAppliedEndColor() {
-        return appliedEndColor;
-    }
 
+    public static Color getStartCustomColor() {
+        return startCustomColor;
+    }
+    public static Color getEndCustomColor() {
+        return endCustomColor;
+    }
     public static void setStartCustomColor(Color startCustomColor) {
         PanelStyler.startCustomColor = startCustomColor;
     }

@@ -26,6 +26,7 @@ import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance.getPopupMenu;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.THEME_ICON_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 
 import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
@@ -139,6 +140,9 @@ public class Battorion {
 
     public static void rebuild() {
         mainFrame.dispose();
+        if(mainPreviewFrame != null){
+            mainPreviewFrame.dispose();
+        }
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {

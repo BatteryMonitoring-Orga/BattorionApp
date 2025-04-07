@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GradientPreview {
-    private static JFrame mainPreviewFrame;
+    public static JFrame mainPreviewFrame;
     private static JPanel gradientPanel;
 
     private static Color startPreviewColor = new Color(5, 56, 89);
@@ -29,6 +29,9 @@ public class GradientPreview {
     }
 
     public static void newGradientPreview() {
+        if(mainPreviewFrame != null){
+            mainPreviewFrame.dispose();
+        }
         mainPreviewFrame = new JFrame();
         gradientPanel = new JPanel();
         gradientPanel = applyGradientBackground(

@@ -86,7 +86,6 @@ public class ComputerSettingsGUI {
                 ), DEFAULT_FONT
         );
 
-        DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
         createComputerSettingsDropDownListConfigurations(gbc);
         containerOfSingleRecords = new DropDownListsContainerRecord(
                 "   Do these procedures automatically:",
@@ -119,7 +118,7 @@ public class ComputerSettingsGUI {
         thirdPanel.add(textInScroll, gbc);
 
         setDimension(++index, 0);
-        JComboBox<String> audioDevicesComboBox = addComboBox(
+        JComboBox<String> audioDevicesComboBox = addLabeledComboBox(
                 gbc, thirdPanel, "Select the audio device used", getAudioDevices().toArray(new String[0]),
                 getCurrentAudioDevice(), 4, e -> {
                     if (e.getSource() instanceof JComboBox<?>) {
@@ -204,7 +203,7 @@ public class ComputerSettingsGUI {
         setDimension(++index, 0);
         addButtonMixWithComboBox(gbc, thirdPanel, "System Notification Sounds:");
         setRow(++index);
-        addComboBox(gbc, thirdPanel, "Pick Your Notification Sound", getAlarmsArray(), getNotificationSoundFileName(), 5,
+        addLabeledComboBox(gbc, thirdPanel, "Pick Your Notification Sound", getAlarmsArray(), getNotificationSoundFileName(), 5,
                 e -> {
                     if (e.getSource() instanceof JComboBox<?>) {
                         @SuppressWarnings("unchecked")

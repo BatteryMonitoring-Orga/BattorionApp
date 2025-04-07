@@ -7,7 +7,7 @@ import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatist
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.setButtonBackgroundColor;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.mainTabbedPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.pcSettingPanel;
-import static com.battery_level_alarm.monitoring.visual_effects.PanelStyler.applyGradientBackground;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ public class BattorionPanelHelper {
     static void createHBoxPanel(){
         HBoxPanel = new JPanel();
         HBoxPanel = applyGradientBackground(
-                HBoxPanel, isDarkMode, false, 0
+                HBoxPanel, isDarkMode, false, 0, false
         );
         HBoxPanel.setLayout(new BoxLayout(HBoxPanel, BoxLayout.X_AXIS));
         HBoxPanel.add(mainButtonsContainer);

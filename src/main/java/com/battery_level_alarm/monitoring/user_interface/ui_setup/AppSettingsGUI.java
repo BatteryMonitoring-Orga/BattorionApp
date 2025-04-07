@@ -16,6 +16,7 @@ import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfigu
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.visual_effects.AlertSound;
+import org.jdesktop.swingx.border.DropShadowBorder;
 
 import java.awt.*;
 import javax.swing.*;
@@ -57,7 +58,6 @@ public class AppSettingsGUI {
         settingsPanel.setLayout(new BoxLayout(settingsPanel, BoxLayout.Y_AXIS));
         GridBagConstraints gbc = createGridBagConstraints(GRID_BAG_CONSTRAINTS_CONFIGURATION);
 
-        DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
         createAppSettingsDropDownListConfigurations(gbc);
         DropDownListsContainerRecord containerRecord = new DropDownListsContainerRecord(
                 "   Do these procedures automatically:",
@@ -88,6 +88,7 @@ public class AppSettingsGUI {
         JPanel centerPanel = new JPanel(new GridBagLayout());
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JTextField pathField = new JTextField();
+        pathField.setOpaque(false);
         southPanel.add(
                 addTextInScroll(
                         pathField, UserChoices.getSoundPath(),
@@ -95,6 +96,10 @@ public class AppSettingsGUI {
                         SCROLL_TEXT_FIELD_CONFIGURATION
                 )
         );
+        pathField.setBorder(new DropShadowBorder(
+                DropDownList.borderForegroundColor, 2, 0.2f, 2,
+                false, false, true, false
+        ));
 
         setDimension(index, 0);
         addSeparator(gbc, centerPanel, 150);

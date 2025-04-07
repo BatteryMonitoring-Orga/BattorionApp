@@ -19,4 +19,6 @@ module monitoring {
 
     opens com.battery_level_alarm.monitoring.battery_report to javafx.graphics;
     opens com.battery_level_alarm.monitoring.graphics to javafx.graphics;
+    exports com.battery_level_alarm.monitoring.visual_effects.appearance;
+    exports com.battery_level_alarm.monitoring.visual_effects.gradient;
 }

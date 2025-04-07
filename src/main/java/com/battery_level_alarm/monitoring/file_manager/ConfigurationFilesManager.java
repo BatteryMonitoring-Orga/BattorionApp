@@ -4,9 +4,14 @@ import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setBrightnessControlOption;
 import static com.battery_level_alarm.monitoring.core_utilities.DropDownListStatus.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
-import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
-import com.battery_level_alarm.monitoring.visual_effects.Appearance;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.*;
 
+import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
+import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
+import com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler;
+
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +57,17 @@ public class ConfigurationFilesManager {
         json.put("audio device cmdlets installed", isAudioDeviceCmdletsInstalled);
         json.put("battery simulator", simulatorMode);
         json.put("theme mode", Appearance.getThemeName());
+        json.put("gradient background dark mode", PanelStyler.getGradientBackgroundDarkModeName());
+        json.put("gradient background light mode", PanelStyler.getGradientBackgroundLightModeName());
+        json.put("customization gradient background", customizationGradientBackground);
+
+        Color startColor = getStartPreviewColor();
+        String colorStr = startColor.getRed() + "," + startColor.getGreen() + "," + startColor.getBlue();
+        json.put("custom start color", colorStr);
+
+        Color endColor = getEndPreviewColor();
+        String colorEnd = endColor.getRed() + "," + endColor.getGreen() + "," + endColor.getBlue();
+        json.put("custom end color", colorEnd);
         return json;
     }
 
@@ -79,7 +95,53 @@ public class ConfigurationFilesManager {
         isWestSidePartAppear = json.optBoolean("west side mode", true);
         simulatorMode = json.optBoolean("battery simulator", false);
         isAudioDeviceCmdletsInstalled = json.optBoolean("audio device cmdlets installed", false);
+        customizationGradientBackground = json.optBoolean("customization gradient background", false);
         Appearance.setThemeName(json.optString("theme mode", "Light"));
+        PanelStyler.setGradientBackgroundDarkModeName(json.optString("gradient background dark mode", "BloodEmber"));
+        PanelStyler.setGradientBackgroundLightModeName(json.optString("gradient background light mode", "FrozenRose"));
+        loadCustomGradientBackgroundColor(json);
+    }
+
+    private static void loadCustomGradientBackgroundColor(JSONObject json) {
+        try {
+            String color = json.getString("custom start color");
+            String[] rgb = color.split(",");
+            if (rgb.length == 3) {
+                Color startColor = new Color(
+                        Integer.parseInt(rgb[0].trim()),
+                        Integer.parseInt(rgb[1].trim()),
+                        Integer.parseInt(rgb[2].trim())
+                );
+                setStartPreviewColor(startColor);
+            } else {
+                setStartPreviewColor(new Color(5, 56, 89));
+                saveGeneralConfigurations();
+            }
+        } catch (Exception e) {
+            printErrorMessage(e, "Failed to load custom start color");
+            setStartPreviewColor(new Color(5, 56, 89));
+            saveGeneralConfigurations();
+        }
+
+        try {
+            String color = json.getString("custom end color");
+            String[] rgb = color.split(",");
+            if (rgb.length == 3) {
+                Color endColor = new Color(
+                        Integer.parseInt(rgb[0].trim()),
+                        Integer.parseInt(rgb[1].trim()),
+                        Integer.parseInt(rgb[2].trim())
+                );
+                setEndPreviewColor(endColor);
+            } else {
+                setEndPreviewColor(new Color(0, 67, 8));
+                saveGeneralConfigurations();
+            }
+        } catch (Exception e) {
+            printErrorMessage(e, "Failed to load custom end color");
+            setEndPreviewColor(new Color(0, 67, 8));
+            saveGeneralConfigurations();
+        }
     }
 
     private static void loadDefaultGeneralConfigurations() {
@@ -87,8 +149,11 @@ public class ConfigurationFilesManager {
         isWestSidePartAppear = true;
         simulatorMode = false;
         isAudioDeviceCmdletsInstalled = false;
+        customizationGradientBackground = false;
         progressBarInFirstMode = true;
         Appearance.setThemeName("Light");
+        PanelStyler.setGradientBackgroundDarkModeName("BloodEmber");
+        PanelStyler.setGradientBackgroundLightModeName("FrozenRose");
     }
 
     public static void saveDropDownListConfigurations(){

@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
-import static com.battery_level_alarm.monitoring.visual_effects.PanelStyler.applyGradientBackground;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 
 import javax.swing.*;
 import java.awt.*;
@@ -110,7 +110,7 @@ public class BattorionProgressBarHelper {
     }
 
     public static void setUpSafeModePanel(){
-        safeModePanel = applyGradientBackground(safeModePanel, isDarkMode, true, 25);
+        safeModePanel = applyGradientBackground(safeModePanel, isDarkMode, true, 25, false);
         safeModePanel.setPreferredSize(new Dimension(150, 120));
         safeModePanel.setMaximumSize(new Dimension(150, 120));
         safeModePanel.setLayout(new BorderLayout());

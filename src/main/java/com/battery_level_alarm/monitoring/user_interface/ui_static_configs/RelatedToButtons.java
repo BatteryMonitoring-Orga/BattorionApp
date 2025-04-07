@@ -85,15 +85,18 @@ public class RelatedToButtons {
         }
     }
 
-    public static void addButton(GridBagConstraints gbc, JPanel secondPartPanel, String label, ActionListener listener) {
+    public static JButton addButton(GridBagConstraints gbc, JPanel secondPartPanel, String label, ActionListener listener) {
         JButton button = new JButton(label);
         button.setFont(DEFAULT_FONT);
         button.setMaximumSize(new Dimension(buttonWidth, buttonHeight));
         button.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.addActionListener(listener);
+
         gbc.gridx = getColumn();
         gbc.gridy = getRow();
         secondPartPanel.add(button, gbc);
+        return button;
     }
 
     public static void setButtonFontAndSize(

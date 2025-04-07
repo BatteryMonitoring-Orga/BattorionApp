@@ -23,10 +23,10 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.*;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
-import static com.battery_level_alarm.monitoring.visual_effects.Appearance.THEME_ICON_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.visual_effects.Appearance.getPopupMenu;
+import static com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance.getPopupMenu;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.visual_effects.PanelStyler.applyGradientBackground;
+import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.THEME_ICON_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 
 import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.download_tracker.DownloadProgressSwingWithFX;
@@ -40,9 +40,10 @@ import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker;
 import com.battery_level_alarm.monitoring.system_automation.WakeUpPC;
-import com.battery_level_alarm.monitoring.visual_effects.Appearance;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList;
+import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
-import com.battery_level_alarm.monitoring.visual_effects.RoundedPanel;
+import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
 import com.battery_level_alarm.monitoring.visual_effects.Brightness;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.PrepareDiskInfoGUI;
@@ -136,8 +137,15 @@ public class Battorion {
         mainFrame.validate();
     }
 
-    public static void rebuild(){
+    public static void rebuild() {
         mainFrame.dispose();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            printErrorMessage(e);
+        }
+
+        setVisibleFalse();
         Appearance.started = true;
         loadGeneralConfigurations();
         Appearance.theme_setup();
@@ -152,6 +160,7 @@ public class Battorion {
 
         borderColor = UIManager.getColor("Label.foreground");
         panelBackgroundColor = UIManager.getColor("Button.background");
+        DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
         if(Appearance.getThemeName().equals("Dark")){
             panelBackgroundColor = Color.BLACK;
         }
@@ -217,10 +226,10 @@ public class Battorion {
 
     private static void initializePanels() {
         motherFrameContainer = new JPanel(new BorderLayout());
-        motherFrameContainer = applyGradientBackground(motherFrameContainer, isDarkMode, false, 0);
+        motherFrameContainer = applyGradientBackground(motherFrameContainer, isDarkMode, false, 0, false);
         motherPanelContainer = new JPanel();
         motherPanelContainer = applyGradientBackground(
-                motherPanelContainer, isDarkMode, false, 0
+                motherPanelContainer, isDarkMode, false, 0, false
         );
         motherPanelContainer.setLayout(new BoxLayout(motherPanelContainer, BoxLayout.Y_AXIS));
 

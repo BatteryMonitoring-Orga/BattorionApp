@@ -198,7 +198,7 @@ public class ComputerSettingsFourthPartialPanel {
         };
         String selectedItem = brightnessOptions[getBrightnessControlOption()];
 
-        addComboBox(
+        addLabeledComboBox(
                 gbc, panel, "When to control brightness automatically:" + ONE_SPACE,
                 brightnessOptions, selectedItem, 3,
                 e -> {

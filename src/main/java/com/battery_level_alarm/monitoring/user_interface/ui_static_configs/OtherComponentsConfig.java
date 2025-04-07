@@ -3,12 +3,13 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.G
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getRow;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.DEFAULT_FONT;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
-import com.battery_level_alarm.monitoring.visual_effects.Appearance;
+import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.function.Consumer;
 
 public class OtherComponentsConfig {
     public static JSlider addLabeledSlider(
@@ -35,7 +36,7 @@ public class OtherComponentsConfig {
         return slider;
     }
 
-    public static JComboBox<String> addComboBox(
+    public static JComboBox<String> addLabeledComboBox(
             GridBagConstraints gbc, JPanel panel, String text,
             String[] dataArray, String selectedItem, int maximumRowCount,
             ItemListener listener, int width, int height
@@ -56,6 +57,32 @@ public class OtherComponentsConfig {
         gbc.gridx = getColumn() + 1;
         panel.add(comboBox, gbc);
         return comboBox;
+    }
+
+    public static void addLabeledColorPicker(
+            GridBagConstraints gbc, JPanel panel, String labelText,
+            Color initialColor, Consumer<Color> onColorSelected, int width, int height
+    ) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(DEFAULT_FONT);
+        gbc.gridx = getColumn();
+        gbc.gridy = getRow();
+        panel.add(label, gbc);
+
+        JButton colorButton = new JButton();
+        colorButton.setBackground(initialColor);
+        colorButton.setPreferredSize(new Dimension(width, height));
+        colorButton.setMaximumSize(new Dimension(width, height));
+        colorButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        colorButton.addActionListener(_ -> {
+            Color chosenColor = JColorChooser.showDialog(null, "Choose Color", colorButton.getBackground());
+            if (chosenColor != null) {
+                colorButton.setBackground(chosenColor);
+                onColorSelected.accept(chosenColor);
+            }
+        });
+        gbc.gridx = getColumn() + 1;
+        panel.add(colorButton, gbc);
     }
 
     public static JCheckBox addCheckbox(

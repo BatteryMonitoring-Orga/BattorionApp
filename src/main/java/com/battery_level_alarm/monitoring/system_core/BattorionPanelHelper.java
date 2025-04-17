@@ -1,13 +1,16 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_HEIGHT;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_WIDTH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.setButtonBackgroundColor;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.mainTabbedPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.pcSettingPanel;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI;
+import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
 
 import javax.swing.*;
 import java.awt.*;

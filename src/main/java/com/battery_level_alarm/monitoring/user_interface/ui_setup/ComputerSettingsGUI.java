@@ -3,7 +3,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashLabel;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList.prepareListsContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
@@ -127,7 +127,7 @@ public class ComputerSettingsGUI {
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
                         setCurrentAudioDevice(selectedSound);
                         activeAudioDeviceName.setText(selectedSound);
-                        audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + selectedSound + "</b></u></html>");
+                        audioOutputDeviceDashTextField.setText(selectedSound);
                         ConfigurationFilesManager.saveComputerSettings();
                     }
                 }, 160, 30);
@@ -276,7 +276,7 @@ public class ComputerSettingsGUI {
                 }, _ -> {
                     setAudioOutputDevice(audioDevicesActionField.getText());
                     activeAudioDeviceName.setText(audioDevicesActionField.getText());
-                    audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + audioDevicesActionField.getText() + "</b></u></html>");
+                    audioOutputDeviceDashTextField.setText(audioDevicesActionField.getText());
                     audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[4]);
                     audioDevicesActionField.setForeground(GREEN_COLOR);
                 }

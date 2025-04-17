@@ -1,9 +1,10 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.BatteryLevelHandlerConstants.*;
+import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.DEFAULT_SECONDARY_SOUND_PATH;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.AlertSound;
 
-import java.awt.Color;
+import java.awt.*;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -17,7 +18,7 @@ public class BatteryLevelHandler {
         	alertLabel.setText(SPACE + msg);
         });
         if(UserChoices.isEnablePrimarySound()) {
-        	AlertSound.playSound(UserChoices.getSoundPath());
+        	AlertSound.playSound(UserChoices.getPrimarySoundPath());
         }
 
         if(UserChoices.isEnableText()){
@@ -39,12 +40,12 @@ public class BatteryLevelHandler {
         	alertLabel.setText(SPACE + msg);
         });
         if(UserChoices.isEnablePrimarySound()) {
-        	AlertSound.playSound(UserChoices.getSoundPath());
+        	AlertSound.playSound(UserChoices.getPrimarySoundPath());
         }
 
         if(UserChoices.isEnableText()){
             counter++;
-            if(UserChoices.isEnableText() && (counter > ALERT_AFTER_SECONDS)) {
+            if((counter > ALERT_AFTER_SECONDS)) {
                 JOptionPane.showMessageDialog(null, "Battery is dangerously low! Please charge immediately.",
                         CRITICAL_BATTERY_STATUS, JOptionPane.WARNING_MESSAGE);
                 counter = 0;
@@ -77,6 +78,12 @@ public class BatteryLevelHandler {
     }
     
     private static void triggerAlert() {
-        java.awt.Toolkit.getDefaultToolkit().beep();
+        if(UserChoices.getSecondarySoundPath().equals(DEFAULT_SECONDARY_SOUND_PATH)){
+            java.awt.Toolkit.getDefaultToolkit().beep();
+        } else {
+            AlertSound.useDefaultDuration = true;
+            AlertSound.playSound(UserChoices.getSecondarySoundPath());
+            AlertSound.useDefaultDuration = false;
+        }
     }
 }

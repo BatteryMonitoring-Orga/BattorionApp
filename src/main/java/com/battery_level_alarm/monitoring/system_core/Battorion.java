@@ -14,12 +14,15 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHel
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.addTextField;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.setMouseListener;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.textFieldFont;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire.aboutNotificationsIcon;
 import static com.battery_level_alarm.monitoring.battery_report.ChooseAction.choose;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabelWithMouseListener;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.*;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
@@ -99,10 +102,10 @@ public class Battorion {
     static JButton graphPainter;
     static JButton reportButton;
     static JButton aboutButton;
-
+    
     private static JLabel monitoringStatus;
     private static JLabel alertLabel;
-    public static JLabel audioOutputDeviceDashLabel;
+    public static JTextField audioOutputDeviceDashTextField;
     static JLabel ratioChargeLabel;
     static JLabel statusLabel;
 
@@ -125,14 +128,14 @@ public class Battorion {
                 4, true, true,
                 true, true
         );
-
+        
         loadGeneralConfigurations();
         Appearance.theme_setup();
         EssentialToolsDownloader.Downloader((_, _) -> {}, true);
         AudioDeviceToolChecker.startCheckingThread();
         SingletonObject.singletonMethod();
 	}
-
+    
     static void refreshMotherFrame() {
         mainFrame.repaint();
         mainFrame.validate();
@@ -161,7 +164,7 @@ public class Battorion {
         ToolTipManager.sharedInstance().setEnabled(true);
         ToolTipManager.sharedInstance().setInitialDelay(100);
         ToolTipManager.sharedInstance().setDismissDelay(5000);
-
+        
         borderColor = UIManager.getColor("Label.foreground");
         panelBackgroundColor = UIManager.getColor("Button.background");
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
@@ -171,7 +174,7 @@ public class Battorion {
         setUIManagerPanelColor(panelBackgroundColor);
         configurationHistoryMap();
         configurationSystemTrayNotifications();
-
+        
         loadSettings();
         loadComputerSettings();
         loadDropDownListConfigurations();
@@ -242,9 +245,9 @@ public class Battorion {
         DashboardPanel = new JPanel(new BorderLayout());
         ifPanelsNullCreate();
     }
-
+    
     private static void initializeDashboard() {
-        monitoringStatus = createLabel("", 15, Font.BOLD + Font.ITALIC);
+        monitoringStatus = createLabel("", 16, Font.ITALIC + Font.PLAIN);
         DashboardPanel.add(monitoringStatus, BorderLayout.NORTH);
 
         batteryLevel = getSafeBatteryLevel();
@@ -287,19 +290,32 @@ public class Battorion {
 
         JPanel secondLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         secondLabelPanel.add(new JLabel(ONE_SPACE));
-        audioOutputDeviceDashLabel = addLabelWithMouseListener(
+        JLabel audioOutputDeviceDashLabel = addLabel(
                 new GridBagConstraints(), new JPanel(),
-                "Audio Output: " + getCurrentAudioDevice(),
-                new Color(0, 134, 179), BattorionPanelHelper::audioLabelMouseAction,
-                new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 12)
+                "Audio Output: ", textFieldFont
         );
+        audioOutputDeviceDashTextField = addTextField(
+                new GridBagConstraints(), new JPanel(),
+                getCurrentAudioDevice(),
+                150, 20, null, false
+        );
+        setMouseListener(
+                audioOutputDeviceDashTextField,
+                BattorionPanelHelper::audioLabelMouseAction,
+                UIManager.getColor("TextField.Foreground"),
+                new Color(0, 134, 179),
+                false, false, true
+        );
+        
         secondLabelPanel.add(audioOutputDeviceDashLabel);
+        secondLabelPanel.add(audioOutputDeviceDashTextField);
         statusLabelPanel.add(secondLabelPanel, BorderLayout.SOUTH);
 
         JPanel topComponentsContainer = new RoundedPanel(30, new GridLayout(1, 2));
         topComponentsContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         topComponentsContainer.add(statusLabelPanel);
-        topComponentsContainer.add(createTopAssistPanel(getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel())));
+        topComponentsContainer.add(createTopAssistPanel(
+                getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel())));
         motherPanelContainer.add(topComponentsContainer);
         motherPanelContainer.add(Box.createRigidArea(new Dimension(0, 15)));
         createHBoxPanel();
@@ -366,7 +382,7 @@ public class Battorion {
 
     private static JLabel createAlertLabel() {
         JLabel label = new JLabel("");
-        label.setFont(new Font("Serif", Font.BOLD + Font.ITALIC, 15));
+        label.setFont(new Font("Serif", Font.PLAIN + Font.ITALIC, 16));
         label.setOpaque(true);
         label.setForeground(Color.RED);
         return label;
@@ -643,7 +659,7 @@ public class Battorion {
             monitor();
         }
         monitoringStatus.setText(
-                TWO_SPACE + "The battery under monitoring."
+                TWO_SPACE + "Battery is currently under monitoring."
         );
 
         actionButton.setText("");
@@ -732,7 +748,7 @@ public class Battorion {
                 Thread.currentThread().interrupt();
                 SwingUtilities.invokeLater(() ->
                         alertLabel.setText(
-                                TWO_SPACE + "The Monitoring was Stopped!"
+                                TWO_SPACE + "Battery Monitoring was Stopped!"
                         )
                 );
             }

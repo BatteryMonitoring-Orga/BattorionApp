@@ -84,6 +84,8 @@ public class ConfigurationFilesManager {
         } catch (IOException | JSONException e) {
             printErrorMessage(e, "Failed to load panel mode");
             loadDefaultGeneralConfigurations();
+            setStartCustomColor(new Color(5, 56, 89));
+            setEndCustomColor(new Color(0, 67, 8));
             saveGeneralConfigurations();
         }
     }
@@ -233,8 +235,9 @@ public class ConfigurationFilesManager {
 
     private static JSONObject createSettingsJson() {
         JSONObject json = new JSONObject();
-        json.put("Sound Path", UserChoices.getSoundPath());
-        json.put("Sound Duration", UserChoices.getSoundDuration());
+        json.put("Primary Sound Path", UserChoices.getPrimarySoundPath());
+        json.put("Primary Sound Duration", UserChoices.getSoundDuration());
+        json.put("Secondary Sound Path", UserChoices.getSecondarySoundPath());
         json.put("Minimum Level", UserChoices.getMinimumLevel());
         json.put("Maximum Level", UserChoices.getMaximumLevel());
         json.put("Run secondary alarm before", UserChoices.getAlertBeforeRiskPhaseBy());
@@ -266,8 +269,9 @@ public class ConfigurationFilesManager {
 
     private static void loadSettingsFromJson(StringBuilder jsonContent){
         JSONObject json = new JSONObject(jsonContent.toString());
-        UserChoices.setSoundPath(json.optString("Sound Path", "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav"));
-        UserChoices.setSoundDuration(json.optInt("Sound Duration", 5));
+        UserChoices.setPrimarySoundPath(json.optString("Primary Sound Path", "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav"));
+        UserChoices.setSoundDuration(json.optInt("Primary Sound Duration", 5));
+        UserChoices.setSecondarySoundPath(json.optString("Secondary Sound Path", "java.awt.Toolkit.getDefaultToolkit().beep()"));
         UserChoices.setMinimumLevel(json.optInt("Minimum Level", 25));
         UserChoices.setMaximumLevel(json.optInt("Maximum Level", 85));
         UserChoices.setAlertBeforeRiskPhaseBy(json.optInt("Run secondary alarm before", 5));
@@ -280,7 +284,8 @@ public class ConfigurationFilesManager {
     }
 
     private static void loadDefaultSettings() {
-        UserChoices.setSoundPath("/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav");
+        UserChoices.setPrimarySoundPath("/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav");
+        UserChoices.setSecondarySoundPath("java.awt.Toolkit.getDefaultToolkit().beep()");
         UserChoices.setSoundDuration(5);
         UserChoices.setMinimumLevel(25);
         UserChoices.setMaximumLevel(85);

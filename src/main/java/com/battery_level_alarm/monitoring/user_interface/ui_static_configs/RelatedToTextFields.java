@@ -12,10 +12,7 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -85,6 +82,33 @@ public class RelatedToTextFields {
                 } catch (AWTException ex) {
                     throw new RuntimeException(ex);
                 }
+            }
+        });
+    }
+    
+    public static void setMouseListener(
+            JTextField textField, Runnable action,
+            Color originalColor, Color mouseEnteredColor,
+            boolean isFocusable, boolean isEditable, boolean isEnabled
+    ){
+        textField.setFocusable(isFocusable);
+        textField.setEditable(isEditable);
+        textField.setEnabled(isEnabled);
+        
+        textField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                action.run();
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                textField.setForeground(mouseEnteredColor);
+                textField.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                textField.setForeground(originalColor);
+                textField.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
     }

@@ -1,7 +1,8 @@
 package com.battery_level_alarm.monitoring.core_utilities;
 
 public class UserChoices {
-    private static String soundPath;
+    private static String primarySoundPath;
+    private static String secondarySoundPath;
     private static int minimumLevel;
     private static int maximumLevel;
     private static int alertBeforeRiskPhaseBy;
@@ -13,13 +14,20 @@ public class UserChoices {
     private static boolean enableChargeAndDischargeSound;
     private static boolean enableText;
     
-    public static String getSoundPath() {
-        return soundPath;
+    public static String getPrimarySoundPath() {
+        return primarySoundPath;
     }
-    public static void setSoundPath(String soundPath) {
-        UserChoices.soundPath = soundPath;
+    public static void setPrimarySoundPath(String primarySoundPath) {
+        UserChoices.primarySoundPath = primarySoundPath;
     }
-
+    
+    public static String getSecondarySoundPath() {
+        return secondarySoundPath;
+    }
+    public static void setSecondarySoundPath(String secondarySoundPath) {
+        UserChoices.secondarySoundPath = secondarySoundPath;
+    }
+    
     public static int getMinimumLevel() {
         return minimumLevel;
     }

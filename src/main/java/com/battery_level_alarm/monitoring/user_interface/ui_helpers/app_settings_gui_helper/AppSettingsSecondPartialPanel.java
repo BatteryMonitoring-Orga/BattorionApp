@@ -58,7 +58,7 @@ public class AppSettingsSecondPartialPanel {
 
         SpinnerConfig soundDurationConfig = new SpinnerConfig(
                 "Sound Duration (in Seconds):  " + FOUR_SPACE + ONE_SPACE,
-                UserChoices.getSoundDuration(), 5, 1, 10, 1,
+                UserChoices.getSoundDuration(), 5, 1, 30, 1,
                 0, 0, 80, 30,
                 e -> {
                     int value = getSpinnerValue((JSpinner) e.getSource(), 1, 5);

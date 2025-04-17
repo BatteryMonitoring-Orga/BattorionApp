@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getAudioDevices;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashLabel;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isMonitorRunning;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isAudioDeviceCmdletsInstalled;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
@@ -36,7 +36,7 @@ public class AudioOutputDeviceNameChecker {
                 if (!currentDevice.isEmpty() && !currentDevice.equals(lastOutputDevice)) {
                     lastOutputDevice = currentDevice;
                     activeAudioDeviceName.setText(lastOutputDevice);
-                    audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + lastOutputDevice + "</b></u></html>");
+                    audioOutputDeviceDashTextField.setText(lastOutputDevice);
                 }
             }
         }, 0, 5, TimeUnit.SECONDS);
@@ -48,7 +48,7 @@ public class AudioOutputDeviceNameChecker {
             if (!currentDevice.isEmpty() && !currentDevice.equals(lastOutputDevice)) {
                 lastOutputDevice = currentDevice;
                 activeAudioDeviceName.setText(lastOutputDevice);
-                audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + lastOutputDevice + "</b></u></html>");
+                audioOutputDeviceDashTextField.setText(lastOutputDevice);
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.visual_effects;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashLabel;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isFromCriticalAlert;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
@@ -20,24 +20,25 @@ import java.net.URI;
 import java.net.URL;
 
 public class AlertSound {
-    private static final String DEFAULT_SOUND = "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav";
+    public static final String DEFAULT_PRIMARY_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav";
+    public static final String DEFAULT_SECONDARY_SOUND_PATH = "java.awt.Toolkit.getDefaultToolkit().beep()";
     private static Player player;
     private static Thread playThread;
-
+    
     private static int volumeLevel = 0;
     private static final int defaultSoundDuration = 1;
     public static boolean useDefaultDuration = false;
-
+    
     public static void playSound(String filePath) {
         try {
             InputStream soundStream = getSoundStream(filePath);
             if (soundStream == null) {
                 showErrorMessage("Sound file not found, using default sound.\nFile Path: '" + filePath + "'");
-                soundStream = getSoundStream(DEFAULT_SOUND);
+                soundStream = getSoundStream(DEFAULT_PRIMARY_SOUND_PATH);
             }
             
             if (soundStream == null) {
-                showErrorMessage("Default sound file not found.\nFile Path: '" + DEFAULT_SOUND + "'");
+                showErrorMessage("Default sound file not found.\nFile Path: '" + DEFAULT_PRIMARY_SOUND_PATH + "'");
                 return;
             }
             
@@ -47,7 +48,7 @@ public class AlertSound {
                 playWAV(soundStream);
             } else {
                 showErrorMessage("Unsupported file format. Using default sound.\n*Supported file formats: (wav, mp3)");
-                playWAV(getSoundStream(DEFAULT_SOUND));
+                playWAV(getSoundStream(DEFAULT_PRIMARY_SOUND_PATH));
             }
         } catch (IOException | LineUnavailableException | InterruptedException | UnsupportedAudioFileException e) {
             printErrorMessage(e);
@@ -174,7 +175,7 @@ public class AlertSound {
         } if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
             setAudioOutputDevice(deviceName);
             activeAudioDeviceName.setText(deviceName);
-            audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + deviceName + "</b></u></html>");
+            audioOutputDeviceDashTextField.setText(deviceName);
         }
     }
 
@@ -183,7 +184,7 @@ public class AlertSound {
             String deviceName = ComputerSettings.getCurrentAudioDevice();
             setAudioOutputDevice(deviceName);
             activeAudioDeviceName.setText(deviceName);
-            audioOutputDeviceDashLabel.setText("<html><u><b>" + "Audio Output: " + deviceName + "</b></u></html>");
+            audioOutputDeviceDashTextField.setText(deviceName);
         }
 
         try{

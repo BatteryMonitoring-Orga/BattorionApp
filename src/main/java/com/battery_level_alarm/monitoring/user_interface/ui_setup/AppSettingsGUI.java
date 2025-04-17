@@ -8,6 +8,8 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.addTextInScroll;
+import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.DEFAULT_PRIMARY_SOUND_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.DEFAULT_SECONDARY_SOUND_PATH;
 
 import com.battery_level_alarm.monitoring.user_interface.ui_config.DropDownListsContainerRecord;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SingleDropDownListRecord;
@@ -23,10 +25,10 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class AppSettingsGUI {
-    private static final String DEFAULT_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav";
-    private static String soundPath = DEFAULT_SOUND_PATH;
+    private static String primarySoundPath = DEFAULT_PRIMARY_SOUND_PATH;
+    private static String secondarySoundPath = DEFAULT_SECONDARY_SOUND_PATH;
     private static boolean soundPlayed = false;
-
+    
     private static JScrollPane CreatedGUI;
     private static final ScrollConfiguration SCROLL_TEXT_FIELD_CONFIGURATION = new ScrollConfiguration(
             false,
@@ -75,10 +77,12 @@ public class AppSettingsGUI {
         int index = 0;
         JPanel firstPartPanel = prepareListsContainer(containerRecord);
         JPanel secondPartPanel = getSecondPartPanel(gbc, index);
+        JPanel thirdPartPanel = getThirdPartPanel(gbc, index);
         returnGBC$ToDefault(gbc);
         settingsPanel.add(firstPartPanel);
         settingsPanel.add(secondPartPanel);
-
+        settingsPanel.add(thirdPartPanel);
+        
         CreatedGUI = new JScrollPane(settingsPanel);
         applyScrollConfigurationDetails(CreatedGUI, SCROLL_PANEL_CONFIGURATION);
     }
@@ -91,7 +95,7 @@ public class AppSettingsGUI {
         pathField.setOpaque(false);
         southPanel.add(
                 addTextInScroll(
-                        pathField, UserChoices.getSoundPath(),
+                        pathField, UserChoices.getPrimarySoundPath(),
                         DEFAULT_FONT, false, false,
                         SCROLL_TEXT_FIELD_CONFIGURATION
                 )
@@ -104,13 +108,16 @@ public class AppSettingsGUI {
         setDimension(index, 0);
         addSeparator(gbc, centerPanel, 150);
         returnGBC$ToDefault(gbc);
-        boolean isSelected = DEFAULT_SOUND_PATH.equals(UserChoices.getSoundPath());
+        boolean isSelected = DEFAULT_PRIMARY_SOUND_PATH.equals(UserChoices.getPrimarySoundPath());
+        setDimension(++index, 0);
+        addLabel(gbc,centerPanel, "Primary Sound", DEFAULT_FONT);
+        
         setDimension(++index, 0);
         JCheckBox defaultSoundCheckBox = addCheckbox(
                 gbc, centerPanel, "Select the default sound", isSelected,
                 _ -> {
-                    UserChoices.setSoundPath(DEFAULT_SOUND_PATH);
-                    pathField.setText(DEFAULT_SOUND_PATH);
+                    UserChoices.setPrimarySoundPath(DEFAULT_PRIMARY_SOUND_PATH);
+                    pathField.setText(DEFAULT_PRIMARY_SOUND_PATH);
                     ConfigurationFilesManager.saveSettings();
                     BattorionPanelHelper.refreshSettingsPanel();
                 });
@@ -126,16 +133,16 @@ public class AppSettingsGUI {
                     JFileChooser fileChooser = new JFileChooser();
                     fileChooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3"));
                     if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                        soundPath = fileChooser.getSelectedFile().getAbsolutePath();
-                        if(DEFAULT_SOUND_PATH.equals(soundPath)) {
+                        primarySoundPath = fileChooser.getSelectedFile().getAbsolutePath();
+                        if(DEFAULT_PRIMARY_SOUND_PATH.equals(primarySoundPath)) {
                             defaultSoundCheckBox.setSelected(true);
-                            pathField.setText(DEFAULT_SOUND_PATH);
+                            pathField.setText(DEFAULT_PRIMARY_SOUND_PATH);
                         } else {
                             defaultSoundCheckBox.setSelected(false);
-                            pathField.setText(soundPath);
+                            pathField.setText(primarySoundPath);
                         }
 
-                        UserChoices.setSoundPath(soundPath);
+                        UserChoices.setPrimarySoundPath(primarySoundPath);
                         ConfigurationFilesManager.saveSettings();
                         BattorionPanelHelper.refreshSettingsPanel();
                     }
@@ -155,7 +162,7 @@ public class AppSettingsGUI {
 
                     soundPlayed = true;
                     Thread playThread = new Thread(() -> {
-                        AlertSound.playSound(UserChoices.getSoundPath());
+                        AlertSound.playSound(UserChoices.getPrimarySoundPath());
                         soundPlayed = false;
                     });
                     playThread.start();
@@ -165,5 +172,98 @@ public class AppSettingsGUI {
         secondPartPanel.add(centerPanel, BorderLayout.CENTER);
         secondPartPanel.add(southPanel, BorderLayout.SOUTH);
         return secondPartPanel;
+    }
+    
+    private static JPanel getThirdPartPanel(GridBagConstraints gbc, int index){
+        JPanel thirdPartPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JTextField pathField = new JTextField();
+        pathField.setOpaque(false);
+        southPanel.add(
+                addTextInScroll(
+                        pathField, UserChoices.getSecondarySoundPath(),
+                        DEFAULT_FONT, false, false,
+                        SCROLL_TEXT_FIELD_CONFIGURATION
+                )
+        );
+        pathField.setBorder(new DropShadowBorder(
+                DropDownList.borderForegroundColor, 2, 0.2f, 2,
+                false, false, true, false
+        ));
+        
+        setDimension(index, 0);
+        addSeparator(gbc, centerPanel, 150);
+        returnGBC$ToDefault(gbc);
+        boolean isSelected = DEFAULT_SECONDARY_SOUND_PATH.equals(UserChoices.getSecondarySoundPath());
+        setDimension(++index, 0);
+        addLabel(gbc,centerPanel, "Secondary Sound", DEFAULT_FONT);
+        
+        setDimension(++index, 0);
+        JCheckBox defaultSoundCheckBox = addCheckbox(
+                gbc, centerPanel, "Select the default sound", isSelected,
+                _ -> {
+                    UserChoices.setSecondarySoundPath(DEFAULT_SECONDARY_SOUND_PATH);
+                    pathField.setText(DEFAULT_SECONDARY_SOUND_PATH);
+                    ConfigurationFilesManager.saveSettings();
+                    BattorionPanelHelper.refreshSettingsPanel();
+                });
+        
+        setRow(++index);
+        addLabel(gbc, centerPanel, "Sound File Path: ", DEFAULT_FONT);
+        setColumn(1);
+        addLabel(gbc, centerPanel, "\u2003", DEFAULT_FONT);
+        setDimension(index, 2);
+        setButtonSize(200, 30);
+        addButton(gbc, centerPanel, "Choose Sound",
+                _ -> {
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setFileFilter(new FileNameExtensionFilter("Audio Files", "wav", "mp3"));
+                    if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                        secondarySoundPath = fileChooser.getSelectedFile().getAbsolutePath();
+                        if(DEFAULT_SECONDARY_SOUND_PATH.equals(secondarySoundPath)) {
+                            defaultSoundCheckBox.setSelected(true);
+                            pathField.setText(DEFAULT_SECONDARY_SOUND_PATH);
+                        } else {
+                            defaultSoundCheckBox.setSelected(false);
+                            pathField.setText(secondarySoundPath);
+                        }
+                        
+                        UserChoices.setSecondarySoundPath(secondarySoundPath);
+                        ConfigurationFilesManager.saveSettings();
+                        BattorionPanelHelper.refreshSettingsPanel();
+                    }
+                });
+        
+        setDimension(++index, 0);
+        addLabel(gbc, centerPanel, "Simulation of alarm sound: ", DEFAULT_FONT);
+        setColumn(1);
+        addLabel(gbc, centerPanel, "\u2003", DEFAULT_FONT);
+        setButtonDefaultSize();
+        setDimension(index, 2);
+        addButton(gbc, centerPanel, "  ⏯  ",
+                _ -> {
+                    if (soundPlayed) {
+                        return;
+                    }
+                    
+                    soundPlayed = true;
+                    Thread playThread = new Thread(() -> {
+                        if(UserChoices.getSecondarySoundPath().equals(DEFAULT_SECONDARY_SOUND_PATH)){
+                            java.awt.Toolkit.getDefaultToolkit().beep();
+                        } else {
+                            AlertSound.useDefaultDuration = true;
+                            AlertSound.playSound(UserChoices.getSecondarySoundPath());
+                            AlertSound.useDefaultDuration = false;
+                        }
+                        soundPlayed = false;
+                    });
+                    playThread.start();
+                });
+        
+        setButtonDefaultSize();
+        thirdPartPanel.add(centerPanel, BorderLayout.CENTER);
+        thirdPartPanel.add(southPanel, BorderLayout.SOUTH);
+        return thirdPartPanel;
     }
 }

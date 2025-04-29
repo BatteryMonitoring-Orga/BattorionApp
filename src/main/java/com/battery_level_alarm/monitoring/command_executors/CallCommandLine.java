@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class CallCommandLine {
-    public static final String NIR_CMD_PATH = MAIN_FOLDER_PATH + "/NirCMD-main/NirCMD";
+    public static final String NIR_CMD_PATH = MAIN_FOLDER_PATH + "/NirCMD-main/nircmd";
     public static final String RESOURCES_PATH = System.getProperty("user.home") + MAIN_FOLDER_NAME + "\\battery-report.html";
     public static String getOS() {
         return System.getProperty("os.name").toLowerCase();
@@ -81,13 +81,13 @@ public class CallCommandLine {
         return (int) (65535 * (percentage / 100.0));
     }
 
-    private static ProcessBuilder getProcessBuilderForUnmute(String os) throws UnsupportedOperationException {
+    private static ProcessBuilder getProcessBuilderForUnmute(String os, int unmute) throws UnsupportedOperationException {
         if (os.toLowerCase().contains("win")) {
             String nircmdPath = NIR_CMD_PATH + "/nircmd.exe";
             if (!new java.io.File(nircmdPath).exists()) {
                 throw new UnsupportedOperationException("File not found: " + nircmdPath);
             }
-            String command = nircmdPath + " mutesysvolume 0";
+            String command = nircmdPath + " mutesysvolume " + unmute;
             return new ProcessBuilder("cmd.exe", "/c", command);
         } else if (os.toLowerCase().contains("nix") || os.toLowerCase().contains("nux")) {
             String amixerPath = "/usr/bin/amixer";
@@ -187,10 +187,10 @@ public class CallCommandLine {
         }
     }
 
-    public static void setSoundUnmute(){
+    public static void setSoundUnmute(int unmute){
         try {
             String os = getOS();
-            ProcessBuilder processBuilder = getProcessBuilderForUnmute(os);
+            ProcessBuilder processBuilder = getProcessBuilderForUnmute(os, unmute);
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
 

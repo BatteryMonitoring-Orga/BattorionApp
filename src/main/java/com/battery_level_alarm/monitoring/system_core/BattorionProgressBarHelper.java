@@ -1,6 +1,11 @@
 package com.battery_level_alarm.monitoring.system_core;
+import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
+import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;
+import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 
 import javax.swing.*;
@@ -108,11 +113,84 @@ public class BattorionProgressBarHelper {
         progressPanel.revalidate();
         progressPanel.repaint();
     }
-
-    public static void setUpSafeModePanel(){
+    
+    public static void setupSafeModePanel(){
         safeModePanel = applyGradientBackground(safeModePanel, isDarkMode, true, 25, false);
         safeModePanel.setPreferredSize(new Dimension(150, 120));
         safeModePanel.setMaximumSize(new Dimension(150, 120));
         safeModePanel.setLayout(new BorderLayout());
+    }
+    
+    public static JPanel setupDashboardControlPanel(Color color){
+        JPanel mainContainer = new JPanel(new GridLayout(3, 1));
+        soundControlPanel = new JPanel(new BorderLayout());
+        setupSoundControlPanel();
+        soundControlPanel.setVisible(false);
+        mainContainer.add(soundControlPanel);
+        mainContainer.add(new JLabel(""));
+        mainContainer.add(new JLabel(""));
+        return mainContainer;
+    }
+    
+    public static void setupSoundControlPanel(){
+        JButton muteButton = BattorionButtonsHelper.createButton(
+                "Mute the alert sound", ICONS_FOLDER_PATH, "mute",
+                _ -> {
+                    CallCommandLine.setSoundUnmute(1);
+                    soundControlPanel.setVisible(false);
+                }
+        );
+        
+        JButton soundButton = BattorionButtonsHelper.createButton(
+                "Adjust the alert sound volume", ICONS_FOLDER_PATH,
+                "sound_level", null
+        );
+        soundButton.addActionListener(_ -> {
+            JPopupMenu menu = createSoundMenu((int) SoundVolumeReader.getVolumeLevel());
+            menu.show(soundButton, -83, soundButton.getHeight() + 5);
+        });
+        
+        JButton stopSoundButton = BattorionButtonsHelper.createButton(
+                "Stop the alert sound", ICONS_FOLDER_PATH, "stop",
+                _ -> {
+                    stopWAV();
+                    stopMP3();
+                    prepareAfterEnding();
+                    soundControlPanel.setVisible(false);
+                }
+        );
+        
+        RoundedPanel buttonContainer = new RoundedPanel(
+                new GridLayout(1, 3), true,
+                Color.BLUE, 15, 2, true
+        );
+        buttonContainer.add(muteButton);
+        buttonContainer.add(soundButton);
+        buttonContainer.add(stopSoundButton);
+        
+        soundControlPanel.add(new JLabel("   "), BorderLayout.WEST);
+        soundControlPanel.add(buttonContainer, BorderLayout.CENTER);
+        soundControlPanel.add(new JLabel("   "), BorderLayout.EAST);
+    }
+    
+    public static JPopupMenu createSoundMenu(int soundLevel) {
+        JPopupMenu soundMenu = new JPopupMenu();
+        JSlider soundSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, soundLevel);
+        JLabel soundLabel = new JLabel(soundLevel + " %");
+        soundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        soundSlider.addChangeListener(e -> {
+            JSlider source = (JSlider)e.getSource();
+            int newValue = source.getValue();
+            soundLabel.setText(newValue + " %");
+            if (!source.getValueIsAdjusting()) {
+                CallCommandLine.setPCVolume(newValue);
+            }
+        });
+        
+        soundMenu.add(soundLabel);
+        soundMenu.add(Box.createVerticalStrut(5));
+        soundMenu.add(soundSlider);
+        return soundMenu;
     }
 }

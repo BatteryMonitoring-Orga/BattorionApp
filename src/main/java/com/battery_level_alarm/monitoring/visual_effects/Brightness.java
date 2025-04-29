@@ -76,6 +76,7 @@ public class Brightness {
         JSlider brightnessSlider = new JSlider(JSlider.HORIZONTAL, MIN_BRIGHTNESS, MAX_BRIGHTNESS, brightnessValue);
         JLabel brightnessLabel = new JLabel(brightnessValue + " %");
         brightnessLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         brightnessSlider.addChangeListener(e -> {
             JSlider source = (JSlider)e.getSource();
             int newValue = source.getValue();
@@ -84,6 +85,7 @@ public class Brightness {
                 BrightnessProcess(newValue, false);
             }
         });
+        
         brightnessMenu.add(brightnessLabel);
         brightnessMenu.add(Box.createVerticalStrut(5));
         brightnessMenu.add(brightnessSlider);

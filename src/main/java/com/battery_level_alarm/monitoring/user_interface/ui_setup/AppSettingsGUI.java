@@ -110,9 +110,9 @@ public class AppSettingsGUI {
         returnGBC$ToDefault(gbc);
         boolean isSelected = DEFAULT_PRIMARY_SOUND_PATH.equals(UserChoices.getPrimarySoundPath());
         setDimension(++index, 0);
-        addLabel(gbc,centerPanel, "Primary Sound", DEFAULT_FONT);
+        addLabel(gbc,centerPanel, "Primary Sound Configuration ", DEFAULT_FONT);
         
-        setDimension(++index, 0);
+        setColumn(2);
         JCheckBox defaultSoundCheckBox = addCheckbox(
                 gbc, centerPanel, "Select the default sound", isSelected,
                 _ -> {
@@ -121,8 +121,8 @@ public class AppSettingsGUI {
                     ConfigurationFilesManager.saveSettings();
                     BattorionPanelHelper.refreshSettingsPanel();
                 });
-
-        setRow(++index);
+        
+        setDimension(++index, 0);
         addLabel(gbc, centerPanel, "Sound File Path: ", DEFAULT_FONT);
         setColumn(1);
         addLabel(gbc, centerPanel, "\u2003", DEFAULT_FONT);
@@ -197,9 +197,9 @@ public class AppSettingsGUI {
         returnGBC$ToDefault(gbc);
         boolean isSelected = DEFAULT_SECONDARY_SOUND_PATH.equals(UserChoices.getSecondarySoundPath());
         setDimension(++index, 0);
-        addLabel(gbc,centerPanel, "Secondary Sound", DEFAULT_FONT);
+        addLabel(gbc,centerPanel, "Secondary Sound Configuration ", DEFAULT_FONT);
         
-        setDimension(++index, 0);
+        setColumn(2);
         JCheckBox defaultSoundCheckBox = addCheckbox(
                 gbc, centerPanel, "Select the default sound", isSelected,
                 _ -> {
@@ -209,7 +209,7 @@ public class AppSettingsGUI {
                     BattorionPanelHelper.refreshSettingsPanel();
                 });
         
-        setRow(++index);
+        setDimension(++index, 0);
         addLabel(gbc, centerPanel, "Sound File Path: ", DEFAULT_FONT);
         setColumn(1);
         addLabel(gbc, centerPanel, "\u2003", DEFAULT_FONT);

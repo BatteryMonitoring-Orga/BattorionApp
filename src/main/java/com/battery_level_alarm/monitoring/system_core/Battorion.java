@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.BordersConfiguration.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ButtonTexts.*;
@@ -8,7 +9,6 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.createButton;
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
@@ -56,7 +56,6 @@ import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfigu
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 import com.notifications.system_tray_notifications.basics.Notifications;
 import com.notifications.system_tray_notifications.system_tray.SystemTrayNotification;
-import org.jdesktop.swingx.border.DropShadowBorder;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -71,7 +70,6 @@ public class Battorion {
     public static AlarmSounds alarmSounds;
     static SystemTrayNotification stn;
     static Notifications notify;
-    static DropShadowBorder dropShadowBorder;
     
     public static JFrame mainFrame;
     public static JPanel motherFrameContainer;
@@ -84,12 +82,13 @@ public class Battorion {
     static JPanel DashboardPanel;
     static JPanel SimulatorMainPanel;
     static JPanel downloaderPanel;
-
+    
     static JPanel topAssistantPartialPanelsContainer;
-    static JPanel firstTopAssistantPartialPanel;
-    static JPanel secondTopAssistantPartialPanel;
-    static JPanel thirdTopAssistantPartialPanel;
-
+    static RoundedPanel firstTopAssistantPartialPanel;
+    static RoundedPanel secondTopAssistantPartialPanel;
+    static RoundedPanel thirdTopAssistantPartialPanel;
+    
+    public static JPanel soundControlPanel;
     static final JPanel progressPanel = new JPanel();
     static JPanel safeModePanel = new JPanel();
     static JProgressBar batteryBar;
@@ -123,12 +122,6 @@ public class Battorion {
     static boolean operationIsEnd = false;
 
 	public static void main(String[] args) {
-        dropShadowBorder = new DropShadowBorder(
-                Color.WHITE, 5, 0.8f,
-                4, true, true,
-                true, true
-        );
-        
         loadGeneralConfigurations();
         Appearance.theme_setup();
         EssentialToolsDownloader.Downloader((_, _) -> {}, true);
@@ -255,14 +248,14 @@ public class Battorion {
 
         createBatteryBar(color);
         ratioChargeLabel = createLabel("Battery Level: " + batteryLevel + "%", 15, Font.BOLD + Font.PLAIN);
-
-        setUpSafeModePanel();
+        
+        setupSafeModePanel();
         JPanel eastSidePanel = new JPanel(new GridLayout(3, 1));
-        eastSidePanel.add(new JLabel(""));
+        eastSidePanel.add(setupDashboardControlPanel(color));
         eastSidePanel.add(new JLabel(""));
         eastSidePanel.add(safeModePanel);
         DashboardPanel.add(eastSidePanel, BorderLayout.EAST);
-
+        
         setUpProgressPanel(progressBarInFirstMode);
         JPanel progressPanelContainer = new JPanel(new BorderLayout());
         progressPanelContainer.add(progressPanel, BorderLayout.CENTER);
@@ -500,39 +493,32 @@ public class Battorion {
         downloaderPanel = createDownloaderPanel.getDownloadProgressPanel();
         downloaderPanel.setPreferredSize(new Dimension(30, 30));
         downloaderPanel.setMaximumSize(new Dimension(30, 30));
+        
+        JButton updateButton = BattorionButtonsHelper.createButton(
+                "Install new updates/versions of app", IMAGES_FOLDER_PATH, "2878768",
+                _ -> System.out.println("new")
+        );
 
-        JButton updateButton = new JButton();
-        updateButton.setToolTipText("Install new updates/versions of app");
-        ImageIcon updateIcon = CallResources.getImage(
-                IMAGES_FOLDER_PATH, "2878768",
-                new Dimension(20, 20), Image.SCALE_SMOOTH);
-        updateButton.setIcon(updateIcon);
-        updateButton.addActionListener(_ -> System.out.println("new"));
-
-        JButton resetButton = new JButton();
-        resetButton.setToolTipText("Reset the alert statement then update Disk \nInformation tab and audio output device name");
-        ImageIcon resetButtonIcon = CallResources.getImage(
+        JButton resetButton = BattorionButtonsHelper.createButton(
+                "Reset the alert statement then update Disk \nInformation tab and audio output device name",
                 IMAGES_FOLDER_PATH, "3808356",
-                new Dimension(20, 20), Image.SCALE_SMOOTH);
-        resetButton.setIcon(resetButtonIcon);
-        resetButton.addActionListener(_ -> {
-            alertLabel.setText("");
-            checkAndReset(color);
-            StatisticsContainerClass.refreshDiskInfoTab();
-            AudioOutputDeviceNameChecker.doExecutionSingleton();
-        });
-
-        JButton themeButton = new JButton();
-        themeButton.setToolTipText("Switch the theme, right-click to open the context menu");
-        ImageIcon themeIcon = CallResources.getImage(
+                _ -> {
+                    alertLabel.setText("");
+                    checkAndReset(color);
+                    StatisticsContainerClass.refreshDiskInfoTab();
+                    AudioOutputDeviceNameChecker.doExecutionSingleton();
+                }
+        );
+        
+        JButton themeButton = BattorionButtonsHelper.createButton(
+                "Switch the theme, right-click to open the context menu",
                 THEME_ICON_FOLDER_PATH, Appearance.iconName,
-                new Dimension(20, 20), Image.SCALE_SMOOTH);
-        themeButton.setIcon(themeIcon);
-        themeButton.addActionListener(_ -> {
-            Appearance.switchToOtherMode();
-            ConfigurationFilesManager.saveGeneralConfigurations();
-            rebuild();
-        });
+                _ -> {
+                    Appearance.switchToOtherMode();
+                    ConfigurationFilesManager.saveGeneralConfigurations();
+                    rebuild();
+                }
+        );
         themeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -543,60 +529,46 @@ public class Battorion {
             }
         });
 
-        JButton brightnessButton = new JButton();
-        brightnessButton.setToolTipText("Change the brightness of the screen");
-        ImageIcon brightnessIcon = CallResources.getImage(
-                IMAGES_FOLDER_PATH, "brightness",
-                new Dimension(20, 20), Image.SCALE_SMOOTH);
-        brightnessButton.setIcon(brightnessIcon);
+        JButton brightnessButton = BattorionButtonsHelper.createButton(
+                "Change the brightness of the screen", IMAGES_FOLDER_PATH,
+                "brightness", null
+        );
         brightnessButton.addActionListener(_ -> {
             Brightness.BrightnessProcess(0, true);
             JPopupMenu menu = Brightness.createBrightnessMenu(Brightness.getCurrentBrightness());
             menu.show(brightnessButton, -100, brightnessButton.getHeight() + 12);
         });
+        
+        JButton progressBarModeButton = BattorionButtonsHelper.createButton(
+                "Convert to the other mode", IMAGES_FOLDER_PATH, "9213472",
+                _ -> {
+                    progressBarInVerticalMode = !progressBarInVerticalMode;
+                    clickCount++;
+                    if (clickCount % 2 == 0) {
+                        progressBarInFirstMode = !progressBarInFirstMode;
+                    }
+                    
+                    setProgressBarMode();
+                    setUpProgressPanel(progressBarInFirstMode);
+                    setVisibleFalse();
+                    motherPanel.add(DashboardPanel, BorderLayout.CENTER);
+                    setVisibleTrue(isA_DashboardPanel);
+                    motherPanel.repaint();
+                    motherPanel.revalidate();
+                    saveGeneralConfigurations();
+                }
+        );
 
-        JButton progressBarModeButton = new JButton();
-        progressBarModeButton.setToolTipText("Convert to the other mode");
-        ImageIcon progressBarModeIcon = CallResources.getImage(
-                IMAGES_FOLDER_PATH, "9213472",
-                new Dimension(20, 20), Image.SCALE_SMOOTH);
-        progressBarModeButton.setIcon(progressBarModeIcon);
-        progressBarModeButton.addActionListener(_ -> {
-            progressBarInVerticalMode = !progressBarInVerticalMode;
-            clickCount++;
-            if (clickCount % 2 == 0) {
-                progressBarInFirstMode = !progressBarInFirstMode;
-            }
-
-            setProgressBarMode();
-            setUpProgressPanel(progressBarInFirstMode);
-            setVisibleFalse();
-            motherPanel.add(DashboardPanel, BorderLayout.CENTER);
-            setVisibleTrue(isA_DashboardPanel);
-            motherPanel.repaint();
-            motherPanel.revalidate();
-            saveGeneralConfigurations();
-        });
-
-        JButton notificationAboutButton = new JButton();
-        ImageIcon notificationIcon = CallResources.getImage(
-                IMAGES_FOLDER_PATH, "9783934",
-                new Dimension(20, 20), Image.SCALE_SMOOTH);
-        notificationAboutButton.setIcon(notificationIcon);
-        notificationAboutButton.addActionListener(_ -> aboutNotificationsIcon());
-
-        hyalineButton(resetButton, false);
-        hyalineButton(updateButton, false);
-        hyalineButton(themeButton, false);
-        hyalineButton(brightnessButton, false);
-        hyalineButton(progressBarModeButton, false);
-        hyalineButton(notificationAboutButton, false);
-
+        JButton notificationAboutButton = BattorionButtonsHelper.createButton(
+                "Learn more about how notifications work", IMAGES_FOLDER_PATH,
+                "9783934", _ -> aboutNotificationsIcon()
+        );
+        
         topAssistantPartialPanelsContainer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        firstTopAssistantPartialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        secondTopAssistantPartialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        thirdTopAssistantPartialPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
+        firstTopAssistantPartialPanel = new RoundedPanel(LAYOUT_MANAGER, true, color, RADIUS, THICKNESS, false);
+        secondTopAssistantPartialPanel = new RoundedPanel(LAYOUT_MANAGER, true, color, RADIUS, THICKNESS, false);
+        thirdTopAssistantPartialPanel = new RoundedPanel(LAYOUT_MANAGER, true, color, RADIUS, THICKNESS, false);
+        
         firstTopAssistantPartialPanel.add(themeButton);
         firstTopAssistantPartialPanel.add(brightnessButton);
         secondTopAssistantPartialPanel.add(updateButton);
@@ -604,53 +576,12 @@ public class Battorion {
         secondTopAssistantPartialPanel.add(resetButton);
         thirdTopAssistantPartialPanel.add(progressBarModeButton);
         thirdTopAssistantPartialPanel.add(notificationAboutButton);
-
+        
         topAssistantPartialPanelsContainer.add(firstTopAssistantPartialPanel);
         topAssistantPartialPanelsContainer.add(secondTopAssistantPartialPanel);
         topAssistantPartialPanelsContainer.add(thirdTopAssistantPartialPanel);
         refreshTopAssistantPartialPanelsShadow(color);
         return topAssistantPartialPanelsContainer;
-    }
-
-    private static void hyalineButton(JButton button, boolean isColoredAble, boolean... values) {
-        if (values.length == 0) {
-            button.setOpaque(false);
-            button.setContentAreaFilled(false);
-            button.setBorderPainted(false);
-        } else {
-            if (values.length >= 1) {
-                button.setOpaque(values[0]);
-            } if (values.length >= 2) {
-                button.setContentAreaFilled(values[1]);
-            } if (values.length >= 3) {
-                button.setBorderPainted(values[2]);
-            }
-        }
-
-        boolean isBorderPainted = values.length < 3 || values[2];
-        addHandMouseListener(button, isColoredAble, isBorderPainted);
-    }
-
-    private static void addHandMouseListener(JButton button, boolean isColoredAble, boolean isBorderPainted){
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                button.setBorderPainted(true);
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                button.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                button.setBorderPainted(isBorderPainted);
-            }
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if(isColoredAble){
-                    setButtonBackgroundColor();
-                    button.setBackground(DARK_BLUE);
-                }
-            }
-        });
     }
 
     private static void startMonitoring() {

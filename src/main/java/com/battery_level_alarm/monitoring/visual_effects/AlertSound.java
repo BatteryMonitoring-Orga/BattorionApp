@@ -1,20 +1,18 @@
 package com.battery_level_alarm.monitoring.visual_effects;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.isFromCriticalAlert;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
 
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
-
 import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import javax.sound.sampled.*;
 import javax.swing.JOptionPane;
-
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -23,6 +21,7 @@ public class AlertSound {
     public static final String DEFAULT_PRIMARY_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav";
     public static final String DEFAULT_SECONDARY_SOUND_PATH = "java.awt.Toolkit.getDefaultToolkit().beep()";
     private static Player player;
+    private static Clip clip;
     private static Thread playThread;
     
     private static int volumeLevel = 0;
@@ -35,14 +34,14 @@ public class AlertSound {
             if (soundStream == null) {
                 showErrorMessage("Sound file not found, using default sound.\nFile Path: '" + filePath + "'");
                 soundStream = getSoundStream(DEFAULT_PRIMARY_SOUND_PATH);
-            }
-            
-            if (soundStream == null) {
+            } if (soundStream == null) {
                 showErrorMessage("Default sound file not found.\nFile Path: '" + DEFAULT_PRIMARY_SOUND_PATH + "'");
                 return;
             }
             
-            if (filePath.toLowerCase().endsWith(".mp3")) {
+            if(isFromCriticalAlert && soundControlPanel != null){
+                soundControlPanel.setVisible(true);
+            } if (filePath.toLowerCase().endsWith(".mp3")) {
                 playMP3(soundStream);
             } else if (filePath.toLowerCase().endsWith(".wav")) {
                 playWAV(soundStream);
@@ -113,7 +112,7 @@ public class AlertSound {
     private static void playWAV(InputStream soundStream) throws UnsupportedAudioFileException, IOException, LineUnavailableException, InterruptedException {
         prepareBeforeStarting();
     	AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundStream);
-        Clip clip = AudioSystem.getClip();
+        clip = AudioSystem.getClip();
         clip.open(audioStream);
         clip.start();
 
@@ -122,9 +121,15 @@ public class AlertSound {
         } else{
             Thread.sleep(UserChoices.getSoundDuration() * 1000L);
         }
-        clip.stop();
-        clip.close();
+        stopWAV();
         prepareAfterEnding();
+    }
+    
+    public static void stopWAV() {
+        if (clip != null && clip.isRunning() && clip.isOpen() && clip.isActive()){
+            clip.stop();
+            clip.close();
+        }
     }
     
     private static void playMP3(InputStream soundStream) throws InterruptedException {
@@ -171,7 +176,7 @@ public class AlertSound {
         if(ComputerSettings.isEnablingSoundLevelChange()){
             CallCommandLine.setPCVolume(ComputerSettings.getVolumeLevel());
         } if(ComputerSettings.isEnableUnmuteVolumeAutomatically()){
-            CallCommandLine.setSoundUnmute();
+            CallCommandLine.setSoundUnmute(0);
         } if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
             setAudioOutputDevice(deviceName);
             activeAudioDeviceName.setText(deviceName);
@@ -179,14 +184,17 @@ public class AlertSound {
         }
     }
 
-    private static void prepareAfterEnding(){
+    public static void prepareAfterEnding(){
         if(ComputerSettings.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
             String deviceName = ComputerSettings.getCurrentAudioDevice();
             setAudioOutputDevice(deviceName);
             activeAudioDeviceName.setText(deviceName);
             audioOutputDeviceDashTextField.setText(deviceName);
+            if(soundControlPanel != null){
+                soundControlPanel.setVisible(false);
+            }
         }
-
+        
         try{
             if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
                 CallCommandLine.setPCVolume(volumeLevel);

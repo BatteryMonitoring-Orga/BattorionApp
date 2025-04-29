@@ -1,4 +1,6 @@
 package com.battery_level_alarm.monitoring.system_core;
+import org.jdesktop.swingx.border.DropShadowBorder;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -83,5 +85,11 @@ public class BattorionCoreConstants {
         public static final int ALERT_AFTER_SECONDS = 60;
         public static final String CRITICAL_BATTERY_STATUS = "Critical Battery Status";
         public static final String SPACE = "\u2003\u2003";
+    }
+    
+    public static class BordersConfiguration {
+        public static final int THICKNESS = 3;
+        public static final int RADIUS = 15;
+        public static final LayoutManager LAYOUT_MANAGER = new FlowLayout(FlowLayout.CENTER);
     }
 }

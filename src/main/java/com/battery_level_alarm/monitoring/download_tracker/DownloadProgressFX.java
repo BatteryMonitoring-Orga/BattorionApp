@@ -52,7 +52,7 @@ public class DownloadProgressFX {
         downloadIcon.setFitWidth(23);
         downloadIcon.setFitHeight(23);
         downloadIcon.setOpacity(0.85);
-        downloadIcon.setX(1);
+        downloadIcon.setX(3);
         downloadIcon.setY(0);
         downloadIcon.setCursor(Cursor.HAND);
         Tooltip.install(downloadIcon, tooltip);

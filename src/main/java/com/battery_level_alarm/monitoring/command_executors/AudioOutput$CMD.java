@@ -9,7 +9,7 @@ public class AudioOutput$CMD {
         if (sourceName == null || sourceName.isEmpty()) {
             throw new IllegalArgumentException("Source name cannot be null or empty");
         }
-
+        
         if (os.contains("win")) {
             String nircmdPath = NIR_CMD_PATH + "/nircmd.exe";
             if (!new java.io.File(nircmdPath).exists()) {

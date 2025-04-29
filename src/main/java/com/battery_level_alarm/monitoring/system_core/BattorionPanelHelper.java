@@ -1,7 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_HEIGHT;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_WIDTH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
@@ -10,7 +8,6 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_setup.Setting
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.pcSettingPanel;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI;
-import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,11 +34,14 @@ public class BattorionPanelHelper {
     }
 
     public static void refreshTopAssistantPartialPanelsShadow(Color color){
-        dropShadowBorder.setShadowColor(color);
-        firstTopAssistantPartialPanel.setBorder(dropShadowBorder);
-        secondTopAssistantPartialPanel.setBorder(dropShadowBorder);
-        thirdTopAssistantPartialPanel.setBorder(dropShadowBorder);
-
+        firstTopAssistantPartialPanel.setRoundedBorderColor(color);
+        secondTopAssistantPartialPanel.setRoundedBorderColor(color);
+        thirdTopAssistantPartialPanel.setRoundedBorderColor(color);
+        
+        firstTopAssistantPartialPanel.repaint();
+        secondTopAssistantPartialPanel.repaint();
+        thirdTopAssistantPartialPanel.repaint();
+        
         topAssistantPartialPanelsContainer.repaint();
         topAssistantPartialPanelsContainer.revalidate();
     }

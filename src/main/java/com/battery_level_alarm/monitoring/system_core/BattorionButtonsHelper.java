@@ -6,6 +6,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.battery_emulator.BatteryIcon.mainSimulatorPanel;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveGeneralConfigurations;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.battery_emulator.BatteryIcon.BatterySimulationStart;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.setButtonFontAndSize;
@@ -19,6 +20,8 @@ import com.battery_level_alarm.monitoring.visual_effects.CallResources;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class BattorionButtonsHelper {
     public static JButton createButton(
@@ -26,8 +29,12 @@ public class BattorionButtonsHelper {
             String imageIconPath, String iconName,
             ActionListener actionListener
     ){
-        ImageIcon icon = CallResources.getImage(
-                imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
+        ImageIcon icon = null;
+        if(iconName != null){
+            icon = CallResources.getImage(
+                    imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
+        }
+        
         JButton button = new JButton(title, icon);
         setButtonFontAndSize(
                 button, new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 14),
@@ -35,6 +42,64 @@ public class BattorionButtonsHelper {
         button.setToolTipText(toolTip);
         button.addActionListener(actionListener);
         return button;
+    }
+    
+    public static JButton createButton(
+            String toolTip, String imageIconPath, String iconName,
+            ActionListener actionListener
+    ){
+        if(iconName == null){
+            return new JButton();
+        }
+        ImageIcon icon = CallResources.getImage(
+                imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
+        
+        JButton button = new JButton(icon);
+        button.setPreferredSize(new Dimension(30, 30));
+        button.setToolTipText(toolTip);
+        hyalineButton(button, false);
+        button.addActionListener(actionListener);
+        return button;
+    }
+    
+    static void hyalineButton(JButton button, boolean isColoredAble, boolean... values) {
+        if (values.length == 0) {
+            button.setOpaque(false);
+            button.setContentAreaFilled(false);
+            button.setBorderPainted(false);
+        } else {
+            button.setOpaque(values[0]);
+            if (values.length >= 2) {
+                button.setContentAreaFilled(values[1]);
+            } if (values.length >= 3) {
+                button.setBorderPainted(values[2]);
+            }
+        }
+        
+        boolean isBorderPainted = values.length < 3 || values[2];
+        addHandMouseListener(button, isColoredAble, isBorderPainted);
+    }
+    
+    private static void addHandMouseListener(JButton button, boolean isColoredAble, boolean isBorderPainted){
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                button.setBorderPainted(true);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                button.setBorderPainted(isBorderPainted);
+            }
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(isColoredAble){
+                    setButtonBackgroundColor();
+                    button.setBackground(DARK_BLUE);
+                }
+            }
+        });
     }
 
     static JButton createGraphButton(){

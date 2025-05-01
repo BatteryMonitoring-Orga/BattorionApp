@@ -4,6 +4,7 @@ import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;
 import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.pcVolumeSpinner;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
@@ -185,6 +186,9 @@ public class BattorionProgressBarHelper {
             soundLabel.setText(newValue + " %");
             if (!source.getValueIsAdjusting()) {
                 CallCommandLine.setPCVolume(newValue);
+                if(pcVolumeSpinner != null){
+                    pcVolumeSpinner.setValue(newValue);
+                }
             }
         });
         

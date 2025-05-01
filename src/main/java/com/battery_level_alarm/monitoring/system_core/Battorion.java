@@ -411,7 +411,7 @@ public class Battorion {
         hyalineButton(actionButton, true, false, true, false);
         hyalineButton(aboutButton, true, false, true, false);
         hyalineButton(settingsButton, true, false, true, false);
-
+        
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(westSideButton);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -777,8 +777,8 @@ public class Battorion {
         if(isCharging) return Color.CYAN;
         else if(charge >= (max-1)) return Color.darkGray;
         else if(charge > min){
-            if (charge > 60) return Color.GREEN;
-            else if (charge > 30) return Color.ORANGE;
+            if (charge > 60) return new Color(0, 140, 0);
+            else if (charge > 30) return new Color(202, 88, 25);
             else return Color.RED;
         }
         else return Color.RED;

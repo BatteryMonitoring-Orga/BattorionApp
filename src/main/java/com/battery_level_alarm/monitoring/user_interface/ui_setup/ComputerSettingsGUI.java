@@ -1,5 +1,7 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.createSoundMenu;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
@@ -17,6 +19,7 @@ import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
 import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.*;
+import com.battery_level_alarm.monitoring.visual_effects.CallResources;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 import com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
@@ -127,7 +130,6 @@ public class ComputerSettingsGUI {
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
                         setCurrentAudioDevice(selectedSound);
                         activeAudioDeviceName.setText(selectedSound);
-                        audioOutputDeviceDashTextField.setText(selectedSound);
                         ConfigurationFilesManager.saveComputerSettings();
                     }
                 }, 160, 30);
@@ -169,7 +171,7 @@ public class ComputerSettingsGUI {
         );
         JSpinner wakeUpConfigSpinner = RelatedToSpinner.createSpinner(wakeUpConfig, false);
         addLabeledSpinner(gbc, thirdPanel, wakeUpConfig, wakeUpConfigSpinner, false);
-
+        
         int initialValue = (int) SoundVolumeReader.getVolumeLevel();
         int stepSize = (initialValue % 2 == 0) ? 2 : 1;
         setGridBagConstraintsInsets(gbc, new InsetsRecord(10, 10, 0, 10), true);
@@ -177,18 +179,20 @@ public class ComputerSettingsGUI {
                 "Set PC Volume Level (%):", initialValue,
                 35, 0, 100, stepSize, ++index, 0, 180, 30,
                 e -> {
-                    int percentage = getSpinnerValue((JSpinner) e.getSource(), 20, 35);
+                    int percentage = getSpinnerValue((JSpinner) e.getSource(), 0, 35);
                     CallCommandLine.setPCVolume(percentage);
                 }
         );
         pcVolumeSpinner = RelatedToSpinner.createSpinner(pcVolumeConfig, true);
         addLabeledSpinner(gbc, thirdPanel, pcVolumeConfig, pcVolumeSpinner, false);
-
+        
         setGridBagConstraintsInsets(gbc, new InsetsRecord(0, 10, 10, 10), true);
         setDimension(++index, 1);
-        addLabel(gbc, thirdPanel, "  Use the spinner buttons only", DEFAULT_FONT);
+        gbc.gridx = getColumn();
+        gbc.gridy = getRow();
+        thirdPanel.add(createPCVolumeLabel(), gbc);
         setGridBagConstraintsInsets(gbc, null, false);
-
+        
         SpinnerConfig volumeConfig = new SpinnerConfig(
                 "Set Alert Volume Level (%):", ComputerSettings.getVolumeLevel(),
                 35, 20, 100, 1, ++index, 0, 180, 30,
@@ -214,13 +218,49 @@ public class ComputerSettingsGUI {
                         ConfigurationFilesManager.saveComputerSettings();
                     }
                 }, 180, 40);
-
+        
         computerSettingsGui.add(firstPanel);
         computerSettingsGui.add(dropDownListsContainer);
         computerSettingsGui.add(thirdPanel);
         JScrollPane scrollPaneContainer = new JScrollPane(computerSettingsGui);
         applyScrollConfigurationDetails(scrollPaneContainer, PC_SET_SCROLL_CONFIGURATION);
         return scrollPaneContainer;
+    }
+    
+    private static JPanel createPCVolumeLabel(){
+        JLabel iconLabel = new JLabel();
+        ImageIcon icon = CallResources.getImage(
+                ICONS_FOLDER_PATH, "sound_level",
+                new Dimension(25, 25), Image.SCALE_SMOOTH);
+        iconLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JPopupMenu menu = createSoundMenu((int) SoundVolumeReader.getVolumeLevel());
+                menu.show(iconLabel, -83, iconLabel.getHeight() + 5);
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                iconLabel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                iconLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+        });
+        
+        iconLabel.setIcon(icon);
+        iconLabel.setHorizontalTextPosition(JLabel.LEFT);
+        iconLabel.setVerticalTextPosition(JLabel.CENTER);
+        
+        JLabel textLabel = new JLabel("Use spinner buttons only or → ");
+        textLabel.setFont(new Font("Serif", Font.BOLD, 14));
+        textLabel.setHorizontalTextPosition(JLabel.LEFT);
+        textLabel.setVerticalTextPosition(JLabel.CENTER);
+        
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.add(textLabel);
+        panel.add(iconLabel);
+        return panel;
     }
 
     private static String[] getAlarmsArray(){

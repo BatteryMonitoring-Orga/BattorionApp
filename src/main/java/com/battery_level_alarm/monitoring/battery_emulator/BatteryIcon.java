@@ -15,12 +15,12 @@ public class BatteryIcon extends JPanel {
     private static BatteryIcon battery;
     private static Timer simulator;
     public static JPanel mainSimulatorPanel;
-
+    private static boolean isDarkThemeCurrently = false;
     private static int chargeLevel;
     private static int spinnerValue = 65;
 
     public static BatteryIcon createBatteryIconObject(int batteryLevel) {
-        if (battery == null) {
+        if (battery == null || isDarkThemeCurrently != isDarkMode) {
             battery = new BatteryIcon(batteryLevel);
         } else {
             updateChargeLevel(batteryLevel);
@@ -35,7 +35,7 @@ public class BatteryIcon extends JPanel {
     }
 
     public static void BatterySimulationStart(){
-        if(mainSimulatorPanel != null){
+        if(mainSimulatorPanel != null && isDarkThemeCurrently == isDarkMode){
             return;
         }
 
@@ -47,6 +47,7 @@ public class BatteryIcon extends JPanel {
         mainSimulatorPanel.add(createNorthSimulatorPanel(), BorderLayout.NORTH);
         mainSimulatorPanel.add(batteryIcon, BorderLayout.CENTER);
         StartSimulator();
+        isDarkThemeCurrently = isDarkMode;
     }
 
     private static void addMouseListenerForFrame(JFrame frame){
@@ -137,9 +138,19 @@ public class BatteryIcon extends JPanel {
         int width = 85, height = 200;
         int x = 20, y = 20;
         int capWidth = 30, capHeight = 9;
-
-        g2d.setColor(Color.BLACK);
+        
+        if(isDarkMode){
+            g2d.setColor(Color.BLACK);
+        } else {
+            g2d.setColor(Color.WHITE);
+        }
         g2d.setStroke(new BasicStroke(4));
+        
+        if(isDarkMode){
+            g2d.setColor(Color.WHITE);
+        } else {
+            g2d.setColor(Color.BLACK);
+        }
         g2d.drawRect(x, y, width, height);
 
         g2d.fillRect(x + (width / 2) - (capWidth / 2), y - capHeight, capWidth, capHeight);
@@ -149,16 +160,16 @@ public class BatteryIcon extends JPanel {
         g2d.fillRect(x + 2, fillY, width - 3, fillHeight);
 
         drawArrowWithText(g2d, x + width + 20, 25, "Overcharge (85% or Above)", Color.DARK_GRAY);
-        drawArrowWithText(g2d, x + width + 20, 85, "High Charge (60% - 84%)", Color.GREEN);
-        drawArrowWithText(g2d, x + width + 20, 135, "Medium Charge (26% - 59%)", Color.ORANGE);
+        drawArrowWithText(g2d, x + width + 20, 85, "High Charge (60% - 84%)", new Color(0, 140, 0));
+        drawArrowWithText(g2d, x + width + 20, 135, "Medium Charge (26% - 59%)", new Color(202, 88, 25));
         drawArrowWithText(g2d, x + width + 20, 195, "Low Charge (25% or Below)", Color.RED);
         drawBatteryPercentage(g2d, x + width / 2, y + height / 2);
     }
 
     private Color getBatteryColor(int charge) {
         if (charge >= 85) return Color.DARK_GRAY;
-        else if (charge >= 60) return Color.GREEN;
-        else if (charge > 25) return Color.ORANGE;
+        else if (charge >= 60) return new Color(0, 140, 0);
+        else if (charge > 25) return new Color(202, 88, 25);
         else return Color.RED;
     }
 
@@ -173,7 +184,11 @@ public class BatteryIcon extends JPanel {
     }
 
     private void drawBatteryPercentage(Graphics2D g2d, int centerX, int centerY) {
-        g2d.setColor(Color.BLACK);
+        if(isDarkMode){
+            g2d.setColor(Color.WHITE);
+        } else {
+            g2d.setColor(Color.BLACK);
+        }
         g2d.setFont(new Font("Arial", Font.BOLD, 20));
         String percentageText = chargeLevel + "%";
         FontMetrics metrics = g2d.getFontMetrics();

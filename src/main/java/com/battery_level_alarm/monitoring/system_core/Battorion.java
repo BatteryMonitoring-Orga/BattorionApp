@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core;
+import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
 import static com.battery_level_alarm.monitoring.system_core.BatteryMode.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.BordersConfiguration.*;
@@ -32,6 +33,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.appearance.Theme
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 
+import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
 import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.download_tracker.DownloadProgressSwingWithFX;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
@@ -113,21 +115,25 @@ public class Battorion {
     private static int clickCount = 0;
     public static String status = "";
     static String lastMode = "";
-
-    private static boolean callFlag = false;
+    
+    private static volatile boolean callFlag = false;
+    private static volatile boolean interruptRequest = false;
+    public static volatile boolean isMonitorRunning = false;
     public static boolean isFromCriticalAlert = false;
     public static boolean isWasInCriticalPhase = false;
-    public static boolean isMonitorRunning = false;
     static boolean isCharging = false;
     static boolean operationIsEnd = false;
-
+    
 	public static void main(String[] args) {
+        System.setProperty("flatlaf.useSystemFonts", "false");
+        UIManager.put("defaultFont", new Font("SansSerif", Font.PLAIN, 12));
+
         loadGeneralConfigurations();
         Appearance.theme_setup();
         EssentialToolsDownloader.Downloader((_, _) -> {}, true);
         AudioDeviceToolChecker.startCheckingThread();
         SingletonObject.singletonMethod();
-	}
+    }
     
     static void refreshMotherFrame() {
         mainFrame.repaint();
@@ -166,15 +172,25 @@ public class Battorion {
         }
         setUIManagerPanelColor(panelBackgroundColor);
         configurationHistoryMap();
-        configurationSystemTrayNotifications();
-        
         loadSettings();
         loadComputerSettings();
+        configurationSystemTrayNotifications();
+        
         loadDropDownListConfigurations();
         DiskSpaceInfo.DiskSpace();
         PrepareDiskInfoGUI.createGUI();
         BatteryStatisticsGUI.createGUI();
         SwingUtilities.invokeLater(Battorion::createAndShowGUI);
+        
+        if(getDefaultSpeakerOutputDeviceName().equals(UNKNOWN_OUTPUT_DEVICE)){
+            String defaultSpeakerOutputDeviceName = DefaultSoundDeviceNameFinder.findFirstValidRenderDevice();
+            setDefaultSpeakerOutputDeviceName(defaultSpeakerOutputDeviceName);
+            String item = getItemFromAudioList(defaultSpeakerOutputDeviceName);
+            if(item == null){
+                addItemToAudioList(defaultSpeakerOutputDeviceName);
+            }
+            saveComputerSettings();
+        }
     }
 
     private static void configurationSystemTrayNotifications() {
@@ -187,7 +203,9 @@ public class Battorion {
                 false
         );
         stn = new SystemTrayNotification();
-        alarmSounds = new AlarmSounds(1);
+        
+        int sequence = AlarmSounds.getIndexBySoundName(getNotificationSoundFileName());
+        alarmSounds = new AlarmSounds(sequence);
     }
 
     private static void callNotifier(String msg){
@@ -251,7 +269,7 @@ public class Battorion {
         
         setupSafeModePanel();
         JPanel eastSidePanel = new JPanel(new GridLayout(3, 1));
-        eastSidePanel.add(setupDashboardControlPanel(color));
+        eastSidePanel.add(setupDashboardControlPanel());
         eastSidePanel.add(new JLabel(""));
         eastSidePanel.add(safeModePanel);
         DashboardPanel.add(eastSidePanel, BorderLayout.EAST);
@@ -440,25 +458,25 @@ public class Battorion {
     private static void createMainButtons(){
         graphPainter = createGraphButton();
         westSideButton = createButton(WEST_SIDE_BUTTON_TEXT, "Disappear the west side",
-                BUTTON_ICONS_PATH, "side_bar", _ -> setUpWestSideButton());
+                BUTTON_ICONS_PATH, "side_bar", _ -> setupWestSideButton());
         dashboardButton = createButton(DASHBOARD_BUTTON_TEXT, "Go to dashboard panel",
                 BUTTON_ICONS_PATH, "dashboard", _ ->{
                     if(!DashboardPanel.isVisible()){
-                        setUpDashboardPanel();
+                        setupDashboardPanel();
                         refreshMotherFrame();
                     }
                 });
         statisticsButton = createButton(STATISTICS_BUTTON_TEXT, "Go to statistics panel",
                 BUTTON_ICONS_PATH, "statistics", _ -> {
                     if (!StatisticsContainer.isVisible()) {
-                        setUpStatisticsPanel();
+                        setupStatisticsPanel();
                         refreshMotherFrame();
                     }
                 });
         simulatorButton = createButton(SIMULATOR_BUTTON_TEXT, "View simulator",
                 BUTTON_ICONS_PATH, "simulator", _ -> {
                     if (!SimulatorMainPanel.isVisible()) {
-                        setUpSimulatorPanel();
+                        setupSimulatorPanel();
                         refreshMotherFrame();
                     }
                 });
@@ -474,7 +492,7 @@ public class Battorion {
         settingsButton = createButton(SETTINGS_BUTTON_TEXT, "Open settings tabbed panel",
                 BUTTON_ICONS_PATH, "settings", _ -> {
                     if (!SettingsContainer.isVisible()) {
-                        setUpSettingPanel();
+                        setupSettingPanel();
                         refreshMotherFrame();
                     }
                 });
@@ -502,12 +520,12 @@ public class Battorion {
         JButton resetButton = BattorionButtonsHelper.createButton(
                 "Reset the alert statement then update Disk \nInformation tab and audio output device name",
                 IMAGES_FOLDER_PATH, "3808356",
-                _ -> {
+                _ -> Thread.ofVirtual().start(() -> {
                     alertLabel.setText("");
                     checkAndReset(color);
                     StatisticsContainerClass.refreshDiskInfoTab();
                     AudioOutputDeviceNameChecker.doExecutionSingleton();
-                }
+                })
         );
         
         JButton themeButton = BattorionButtonsHelper.createButton(
@@ -605,7 +623,7 @@ public class Battorion {
         AudioOutputDeviceNameChecker.threadStart();
     }
 
-    private static void stopMonitoring() {
+    static void stopMonitoring() {
         isMonitorRunning = false;
         if (monitoringThread != null) {
             monitoringThread.interrupt();
@@ -622,6 +640,21 @@ public class Battorion {
         actionButton.setToolTipText("Click to start monitoring");
         if(!westSideButton.getText().isEmpty()){
             actionButton.setText(START_BUTTON_TEXT);
+        }
+    }
+    
+    static void mainMonitorInterruptRequest() {
+        try {
+            interruptRequest = true;
+            if (monitoringThread != null && monitoringThread.isAlive()) {
+                monitoringThread.join(3000);
+                
+                if (monitoringThread.isAlive()) {
+                    monitoringThread.interrupt();
+                }
+            }
+        } catch (Exception ex) {
+            printErrorMessage(ex);
         }
     }
 
@@ -643,7 +676,7 @@ public class Battorion {
                     int maxValue = UserChoices.getMaximumLevel();
                     int minValue = UserChoices.getMinimumLevel();
                     Color batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
-
+                    
                 	checkAndReset(batteryColor);
                     batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
                     refreshTopAssistantPartialPanelsShadow(batteryColor);
@@ -673,6 +706,9 @@ public class Battorion {
 
                     if(ComputerSettings.isActivateTheAwakeningFeature()){
                         WakeUpPC.wakeUp();
+                    } if(interruptRequest) {
+                        isMonitorRunning = false;
+                        break;
                     }
                 }
             } catch (InterruptedException e) {
@@ -747,7 +783,7 @@ public class Battorion {
         Brightness.BrightnessProcess(0, true);
         Brightness.BrightnessProcess(getBrightnessLevel(), false);
     }
-
+    
     private static void organizationOfRecallProcess(String msg){
         if(callFlag){
             return;
@@ -756,7 +792,7 @@ public class Battorion {
         callNotifier(msg);
 
         Timer organizer = new Timer(
-                60000,
+                15000,
                 _ -> callFlag = false
         );
         organizer.setRepeats(false);

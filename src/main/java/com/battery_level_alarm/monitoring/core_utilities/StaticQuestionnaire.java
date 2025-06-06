@@ -13,31 +13,32 @@ import javax.swing.event.HyperlinkEvent;
 
 public class StaticQuestionnaire {
 	public static void aboutDispatch() {
-        JEditorPane aboutEditor = new JEditorPane("text/html",
-                "<html><body style='font-family:Serif; font-size:11px;'>"
-                        + "<b>About Battorion</b><br><br>"
-                        + "<b>Version:</b> " + APP_VERSION + "<br>"
-                        + "<b>Author:</b> Muath Hassoun<br><br>"
-                        + "This application monitors your battery level and provides alerts in the following cases:<br>"
-                        + "- <b>High Battery</b>: If the level reaches <b>85% or more</b>, you will be asked to unplug the charger.<br>"
-                        + "- <b>Low Battery</b>: If the level drops to <b>25% or less</b>, you will be reminded to charge the battery.<br><br>"
-                        + "The program operates in the background, periodically checking the battery level.<br>"
-                        + "It is compatible with Windows, Linux, and macOS.<br><br>"
-                        + "To use the application:<br>"
-                        + "- Click '<b>Start</b>' to begin monitoring.<br>"
-                        + "- Click '<b>Stop</b>' to halt monitoring.<br><br>"
-                        + "Thank you for using Battorion!"
-                        + "<p><a href='action:openComprehensiveBatteryGuideInArabic'><b>Comprehensive guide in Arabic</b></a></p>"
-                        + "<p><a href='action:openComprehensiveBatteryGuideInEnglish'><b>Comprehensive guide in English</b></a></p>"
-                        + "</body></html>"
-        );
-
+        JEditorPane aboutEditor = new JEditorPane("text/html", getAboutDispatchText());
         Map<String, Runnable> actionsMap = getStringRunnableMap();
         aboutEditorPanelDispatch(
                 "About Battorion",
                 aboutEditor,
                 actionsMap, 600, 400
         );
+    }
+    
+    private static String getAboutDispatchText() {
+        return "<html><body style='font-family:Serif; font-size:11px;'>"
+                + "<b>About Battorion</b><br><br>"
+                + "<b>Version:</b> " + APP_VERSION + "<br>"
+                + "<b>Author:</b> Muath Hassoun<br><br>"
+                + "This application monitors your battery level and provides alerts in the following cases:<br>"
+                + "- <b>High Battery</b>: If the level reaches <b>85% or more</b>, you will be asked to unplug the charger.<br>"
+                + "- <b>Low Battery</b>: If the level drops to <b>25% or less</b>, you will be reminded to charge the battery.<br><br>"
+                + "The program operates in the background, periodically checking the battery level.<br>"
+                + "It is compatible with Windows, Linux, and macOS.<br><br>"
+                + "To use the application:<br>"
+                + "- Click '<b>Start</b>' to begin monitoring.<br>"
+                + "- Click '<b>Stop</b>' to halt monitoring.<br><br>"
+                + "Thank you for using Battorion!"
+                + "<p><a href='action:openComprehensiveBatteryGuideInArabic'><b>Comprehensive guide in Arabic</b></a></p>"
+                + "<p><a href='action:openComprehensiveBatteryGuideInEnglish'><b>Comprehensive guide in English</b></a></p>"
+                + "</body></html>";
     }
 
     private static @NotNull Map<String, Runnable> getStringRunnableMap() {

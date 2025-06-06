@@ -1,16 +1,34 @@
 package com.battery_level_alarm.monitoring.system_core;
-import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
-import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;
-import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
+import static com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker.AudioDeviceThread;
+import static com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph.alternativeStage;
+import static com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph.scheduler;
+import static com.battery_level_alarm.monitoring.graphics.LocalScheduledExecutorService.changeTimer;
+import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.wakeUpThreadInterruptRequest;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.Monitor.backgroundProcessMonitoring;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.pcVolumeSpinner;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
-import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
+import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientThemes.*;
+import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
 
+import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
+import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI;
+import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedButton;
+import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
+import org.jetbrains.annotations.NotNull;
+
+import javafx.application.Platform;
+import javafx.stage.Stage;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class BattorionProgressBarHelper {
     public static void setProgressBarMode(){
@@ -115,14 +133,128 @@ public class BattorionProgressBarHelper {
         progressPanel.repaint();
     }
     
-    public static void setupSafeModePanel(){
+    public static void setupSafeModePanel() {
+        safeModePanel = new JPanel();
         safeModePanel = applyGradientBackground(safeModePanel, isDarkMode, true, 25, false);
-        safeModePanel.setPreferredSize(new Dimension(150, 120));
-        safeModePanel.setMaximumSize(new Dimension(150, 120));
-        safeModePanel.setLayout(new BorderLayout());
+        safeModePanel.setPreferredSize(new Dimension(180, 140));
+        safeModePanel.setMaximumSize(new Dimension(180, 140));
+        safeModePanel.setLayout(new BoxLayout(safeModePanel, BoxLayout.Y_AXIS));
+        safeModePanel.setOpaque(false);
+        
+        JLabel infoLabel = createSafeModePanelLabel();
+        JButton toggleButton = createSafeModePanelButton();
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        toggleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        safeModePanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        safeModePanel.add(infoLabel);
+        safeModePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        safeModePanel.add(toggleButton);
     }
     
-    public static JPanel setupDashboardControlPanel(Color color){
+    private static JLabel createSafeModePanelLabel() {
+        JLabel label = new JLabel("Power Saver Mode", SwingConstants.CENTER);
+        label.setFont(new Font("Serif", Font.BOLD, 14));
+        label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        label.setOpaque(false);
+        
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTextArea textArea = getTextArea();
+                
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                scrollPane.setPreferredSize(new Dimension(320, 160));
+                scrollPane.setBorder(BorderFactory.createEmptyBorder());
+                scrollPane.getViewport().setOpaque(false);
+                scrollPane.setOpaque(false);
+                
+                JOptionPane.showMessageDialog(
+                        safeModePanel,
+                        scrollPane,
+                        "Power Saver Mode Info",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+            
+            private static @NotNull JTextArea getTextArea() {
+                JTextArea textArea = new JTextArea("""
+                    In Power Saver Mode, the application will minimize to the system tray\s
+                    and continue running silently in the background.
+        
+                    This mode is ideal for battery monitoring without keeping the main window open,\s
+                    helping to reduce resource usage and power consumption.
+        
+                    Use the button below to activate or deactivate Power Saver Mode.
+                """);
+                
+                textArea.setWrapStyleWord(true);
+                textArea.setLineWrap(true);
+                textArea.setEditable(false);
+                textArea.setFocusable(false);
+                textArea.setOpaque(false);
+                textArea.setFont(new Font("Serif", Font.PLAIN, 14));
+                return textArea;
+            }
+        });
+        return label;
+    }
+    
+    private static JButton createSafeModePanelButton() {
+        Color backgroundColor;
+        if(!customizationGradientBackground) {
+            if(isDarkMode) {
+                String dark = getGradientBackgroundDarkModeName();
+                backgroundColor = DARK_GRADIENTS.get(dark)[0];
+            } else {
+                String light = getGradientBackgroundLightModeName();
+                backgroundColor = LIGHT_GRADIENTS.get(light)[0];
+            }
+        } else {
+            backgroundColor = getStartCustomColor();
+        }
+	    return getButton(backgroundColor);
+    }
+    
+    private static @NotNull JButton getButton(Color backgroundColor) {
+        Dimension dimension = new Dimension(140, 30);
+        JButton button = new RoundedButton("Run in Background", dimension, 30);
+        button.setFont(new Font("Serif", Font.BOLD, 13));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBackground(backgroundColor);
+        button.setPreferredSize(dimension);
+        button.setMinimumSize(dimension);
+        button.setMaximumSize(dimension);
+        button.addActionListener(_ -> {
+            mainFrame.dispose();
+            try {
+                mainMonitorInterruptRequest();
+                wakeUpThreadInterruptRequest();
+                AudioDeviceThread.interrupt();
+                Platform.runLater(() -> {
+                    alternativeStage.hide();
+                    changeTimer.stop();
+                    scheduler.shutdown();
+                });
+                
+                if(mainPreviewFrame != null) {
+                    mainPreviewFrame.dispose();
+                } if(isProcessesApplied) {
+                    prepareAfterEnding();
+                }
+            } catch (Exception exception) {
+                printErrorMessage(exception);
+            }
+//            Platform.setImplicitExit(false);
+            Platform.runLater(() -> {
+                new BattorionTrayUI().start(new Stage());
+                backgroundProcessMonitoring();
+            });
+        });
+        return button;
+    }
+    
+    public static JPanel setupDashboardControlPanel(){
         JPanel mainContainer = new JPanel(new GridLayout(3, 1));
         soundControlPanel = new JPanel(new BorderLayout());
         setupSoundControlPanel();
@@ -133,7 +265,7 @@ public class BattorionProgressBarHelper {
         return mainContainer;
     }
     
-    public static void setupSoundControlPanel(){
+    private static void setupSoundControlPanel(){
         JButton muteButton = BattorionButtonsHelper.createButton(
                 "Mute the alert sound", ICONS_FOLDER_PATH, "mute",
                 _ -> {

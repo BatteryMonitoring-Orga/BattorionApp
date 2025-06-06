@@ -38,18 +38,13 @@ public class PrepareDiskInfoGUI {
         setButtonFontAndSize(
                 cleanTempButton, new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 13),
                 250, 30,  SwingConstants.CENTER, SwingConstants.CENTER);
-        cleanTempButton.addActionListener(_ -> {
+        cleanTempButton.addActionListener(_ -> Thread.ofVirtual().start(() -> {
             if(!isUnderTracking) {
                 isUnderTracking = true;
-
-                tracking = new Thread(() -> {
-                    DiskSpaceInfo.cleanTempFiles();
-                    StatisticsContainerClass.refreshDiskInfoTab();
-                    checkFlag();
-                });
-                tracking.start();
+                DiskSpaceInfo.cleanTempFiles();
+                StatisticsContainerClass.refreshDiskInfoTab();
             }
-        });
+        }));
 
         JButton whatIsTempButton = new JButton("What Is Temp Files?");
         setButtonFontAndSize(
@@ -84,11 +79,5 @@ public class PrepareDiskInfoGUI {
 
         String[] columns = {"\u2003Type\u2003", "\u2003Value\u2003"};
         return setTableConstraints(data, columns);
-    }
-    
-    private static void checkFlag() {
-    	if(!isUnderTracking) {
-    		tracking.interrupt();
-    	}
     }
 }

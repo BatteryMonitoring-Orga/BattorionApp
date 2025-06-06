@@ -15,7 +15,7 @@ public class CallResources {
         if(!(imageName.contains(".png") && imageName.contains(".jpg"))){
             iconName = imageName + ".png";
         }
-		URL resource = Battorion.class.getResource( parentFolder + iconName);
+		URL resource = CallResources.class.getResource( parentFolder + iconName);
         if (resource == null) {
             throw new IllegalArgumentException("File not found: " + parentFolder + imageName + ".png");
         }

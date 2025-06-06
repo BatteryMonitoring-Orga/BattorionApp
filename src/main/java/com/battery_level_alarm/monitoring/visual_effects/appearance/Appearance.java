@@ -28,7 +28,7 @@ public class Appearance {
     private static int delay = 100;
     public static boolean started = true;
     private static boolean isBeforeNoon = false;
-
+    
     public static String getThemeName() {
         return themeName;
     }
@@ -38,7 +38,7 @@ public class Appearance {
     public static Color getBorderColor() {
         return borderColor;
     }
-
+    
     public static void theme_setup() {
         switch (themeName) {
             case LIGHT -> {

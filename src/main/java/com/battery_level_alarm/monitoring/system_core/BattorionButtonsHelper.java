@@ -110,7 +110,7 @@ public class BattorionButtonsHelper {
                 BUTTON_ICONS_PATH, "graph", _ -> BatteryLevelGraph.display());
     }
 
-    public static void setUpWestSideButton() {
+    public static void setupWestSideButton() {
         int width = WEST_PANEL_OPEN_WIDTH;
         if(westSideButton.getText().equals(WEST_SIDE_BUTTON_TEXT)){
             setButtonNamesEmpty();
@@ -159,13 +159,13 @@ public class BattorionButtonsHelper {
         }
     }
 
-    public static void setUpDashboardPanel() {
+    public static void setupDashboardPanel() {
         setVisibleFalse();
         DashboardPanel.setVisible(true);
         motherPanel.add(DashboardPanel, BorderLayout.CENTER);
     }
 
-    public static void setUpSettingPanel() {
+    public static void setupSettingPanel() {
         createSettingsContainer();
         SettingsContainer = mainTabbedPanel;
 
@@ -175,7 +175,7 @@ public class BattorionButtonsHelper {
         motherPanel.add(SettingsContainer, BorderLayout.CENTER);
     }
 
-    public static void setUpStatisticsPanel() {
+    public static void setupStatisticsPanel() {
         createStatisticsContainer();
         StatisticsContainer = statisticsMainTabbedPanel;
 
@@ -185,7 +185,7 @@ public class BattorionButtonsHelper {
         motherPanel.add(StatisticsContainer, BorderLayout.CENTER);
     }
 
-    public static void setUpSimulatorPanel() {
+    public static void setupSimulatorPanel() {
         BatterySimulationStart();
         SimulatorMainPanel = new JPanel(new BorderLayout());
         SimulatorMainPanel.add(new JScrollPane(mainSimulatorPanel), BorderLayout.CENTER);

@@ -17,42 +17,53 @@ import java.util.concurrent.TimeUnit;
 
 public class AudioOutputDeviceNameChecker {
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-    private static Thread AudioDeviceThread;
-    private static String lastOutputDevice = "";
-
+    public static Thread AudioDeviceThread;
+    public static String lastOutputDevice = "";
+    
     public static void threadStart(){
         if(AudioDeviceThread != null){
             return;
         }
-
-        AudioDeviceThread = Thread.ofVirtual().start(
-                AudioOutputDeviceNameChecker::startDeviceChecking);
+        AudioDeviceThread = Thread.ofVirtual().start(AudioOutputDeviceNameChecker::startDeviceChecking);
     }
 
     private static void startDeviceChecking() {
         scheduler.scheduleAtFixedRate(() -> {
-            if (isMonitorRunning && isAudioDeviceCmdletsInstalled) {
-                String currentDevice = checkDevicesList(getCurrentAudioOutputDevice());
-                if (!currentDevice.isEmpty() && !currentDevice.equals(lastOutputDevice)) {
-                    lastOutputDevice = currentDevice;
-                    activeAudioDeviceName.setText(lastOutputDevice);
-                    audioOutputDeviceDashTextField.setText(lastOutputDevice);
-                }
+            if (isMonitorRunning) {
+                doExecutionSingleton();
             }
         }, 0, 5, TimeUnit.SECONDS);
     }
 
     public static void doExecutionSingleton(){
         if (isAudioDeviceCmdletsInstalled) {
-            String currentDevice = checkDevicesList(getCurrentAudioOutputDevice());
+            String returnedOutput = getCurrentAudioOutputDevice();
+            String currentDevice = checkDevicesList(returnedOutput);
+            String currentDeviceFullName = getDeviceFullName(returnedOutput);
             if (!currentDevice.isEmpty() && !currentDevice.equals(lastOutputDevice)) {
                 lastOutputDevice = currentDevice;
                 activeAudioDeviceName.setText(lastOutputDevice);
-                audioOutputDeviceDashTextField.setText(lastOutputDevice);
+                audioOutputDeviceDashTextField.setText(currentDeviceFullName);
+            } else if (!lastOutputDevice.equals(currentDeviceFullName)){
+                audioOutputDeviceDashTextField.setText(currentDeviceFullName);
             }
         }
     }
-
+    
+    public static String[] getAudioOutputDevice() {
+        if(isAudioDeviceCmdletsInstalled) {
+            String returnedOutput = getCurrentAudioOutputDevice();
+            String currentDevice = checkDevicesList(returnedOutput);
+            String currentDeviceFullName = getDeviceFullName(returnedOutput);
+            
+            return new String[] {
+                    currentDevice,
+                    currentDeviceFullName
+            };
+        }
+        return new String[]{};
+    }
+    
     private static String getCurrentAudioOutputDevice() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -78,10 +89,12 @@ public class AudioOutputDeviceNameChecker {
             Process process = processBuilder.start();
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+            
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
+            
             boolean finished = process.waitFor(5, TimeUnit.SECONDS);
             if (!finished) {
                 process.destroy();
@@ -99,8 +112,19 @@ public class AudioOutputDeviceNameChecker {
                 return entry;
             }
         }
-
         addItemToAudioList(currentDevice);
+        return currentDevice;
+    }
+    
+    private static String getDeviceFullName(String currentDevice){
+        String[] lines = currentDevice.split("\\R");
+        for (String line : lines) {
+            for (String entry : getAudioDevices()) {
+                if (line.contains(entry)) {
+                    return line.trim();
+                }
+            }
+        }
         return currentDevice;
     }
 }

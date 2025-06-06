@@ -1,13 +1,28 @@
 package com.battery_level_alarm.monitoring.system_core;
-import org.jdesktop.swingx.border.DropShadowBorder;
+import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 
+import java.io.File;
 import javax.swing.*;
 import java.awt.*;
 
 public class BattorionCoreConstants {
     public static class AppInfo {
         public static final String APP_VERSION = Battorion.class.getPackage().getImplementationVersion();
-        static final String APP_NAME = "Battorion";
+        public static final String APP_NAME = "Battorion";
+        
+        public static String getCurrentExeDirectory() {
+            try {
+                File codeSourceFile = new File(AppInfo.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                String path = codeSourceFile.getParent();
+                if (path == null || path.isEmpty()) {
+                    path = System.getProperty("user.dir");
+                }
+                return path;
+            } catch (Exception e) {
+                printErrorMessage(e);
+                return System.getProperty("user.dir");
+            }
+        }
     }
 
     public static class UI {

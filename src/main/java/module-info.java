@@ -11,14 +11,19 @@ module monitoring {
     requires org.json;
     requires swingx.core;
     requires system.tray.notifications;
-
+	requires java.prefs;
+	requires javafx.web;
+    requires jdk.jsobject;
+    
     exports com.battery_level_alarm.monitoring.system_core;
     exports com.battery_level_alarm.monitoring.visual_effects;
     exports com.battery_level_alarm.monitoring.graphics;
+    exports com.battery_level_alarm.monitoring.tray_manager.ui_setup;
     exports com.battery_level_alarm.monitoring.battery_report;
 
     opens com.battery_level_alarm.monitoring.battery_report to javafx.graphics;
     opens com.battery_level_alarm.monitoring.graphics to javafx.graphics;
+    opens com.battery_level_alarm.monitoring.tray_manager.ui_setup to javafx.swing;
     exports com.battery_level_alarm.monitoring.visual_effects.appearance;
     exports com.battery_level_alarm.monitoring.visual_effects.gradient;
 }

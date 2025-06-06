@@ -27,7 +27,6 @@ import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -207,8 +206,9 @@ public class ComputerSettingsGUI {
         setDimension(++index, 0);
         addButtonMixWithComboBox(gbc, thirdPanel, "System Notification Sounds:");
         setRow(++index);
-        addLabeledComboBox(gbc, thirdPanel, "Pick Your Notification Sound", getAlarmsArray(), getNotificationSoundFileName(), 5,
-                e -> {
+        addLabeledComboBox(gbc, thirdPanel, "Pick Your Notification Sound",
+                AlarmSounds.getFullSoundSequence(), getNotificationSoundFileName(),
+                5, e -> {
                     if (e.getSource() instanceof JComboBox<?>) {
                         @SuppressWarnings("unchecked")
                         JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
@@ -263,20 +263,10 @@ public class ComputerSettingsGUI {
         return panel;
     }
 
-    private static String[] getAlarmsArray(){
-        ArrayList<String> data = new ArrayList<>();
-        AlarmSounds alarmSounds_Object = new AlarmSounds(1);
-
-        for(int i = 1; i < 11; i++){
-            alarmSounds_Object.setSoundSequenceNumber(i);
-            data.add(alarmSounds_Object.getSoundFileName());
-        }
-        return data.toArray(new String[0]);
-    }
-
     private static String[] getButtonNames(){
         return new String[]{"Use the selected AO", "Add", "Delete", "Set it as AO"};
     }
+    
     private static String[] getButtonToolTip() {
         return new String[]{
                 "Use the selected audio output",
@@ -285,6 +275,7 @@ public class ComputerSettingsGUI {
                 "Set it as the audio output"
         };
     }
+    
     private static ActionListener[] getButtonActions(
             JTextField audioDevicesActionField,
             JComboBox<String> audioDevicesComboBox

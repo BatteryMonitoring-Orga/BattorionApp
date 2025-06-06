@@ -51,7 +51,7 @@ public class AudioDeviceToolChecker {
     }
 
     private static boolean isModuleNotInstalled() {
-        String command = "powershell -ExecutionPolicy Bypass -NoProfile -Command \"Try { Import-Module AudioDeviceCmdlets -ErrorAction Stop; Get-Module -ListAvailable | Where-Object { $_.Name -eq 'AudioDeviceCmdlets' } } Catch { Write-Host 'ERROR' }\"";
+        String command = "powershell -ExecutionPolicy Bypass -NoProfile -Command \"Try { Import-Module AudioDeviceCmdlets -ErrorAction Stop; Get-Module -ListAvailable | Where-Object { $_.Name -eq 'AudioDeviceCmdlets' } } Catch { Write-Host 'UNKNOWN_OUTPUT_DEVICE' }\"";
         return executeCommand(command).trim().isEmpty();
     }
 

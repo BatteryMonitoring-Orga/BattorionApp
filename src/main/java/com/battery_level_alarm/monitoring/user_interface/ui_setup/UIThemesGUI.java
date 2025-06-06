@@ -145,6 +145,7 @@ public class UIThemesGUI {
     }
 
     private static JPanel createSecondPartPanel(GridBagConstraints gbc, int index){
+        Color borderColor = UIManager.getColor("Label.foreground");
         JPanel partMainPanel = new JPanel(new GridBagLayout());
         setDimension(index, 0);
         addSeparator(gbc, partMainPanel, 150);
@@ -158,6 +159,7 @@ public class UIThemesGUI {
                 GradientPreview::setStartPreviewColor,
                 40, 30
         );
+        startColorButton.setBorder(BorderFactory.createLineBorder(borderColor, 2, true));
 
         setDimension(++index, 0);
         JButton endColorButton = addLabeledColorPicker(
@@ -167,7 +169,8 @@ public class UIThemesGUI {
                 GradientPreview::setEndPreviewColor,
                 40, 30
         );
-
+        endColorButton.setBorder(BorderFactory.createLineBorder(borderColor, 2, true));
+        
         setDimension(++index, 1);
         JButton saveCustomColorButton = addButton(
                 gbc, new JPanel(), "Save Custom Colors",

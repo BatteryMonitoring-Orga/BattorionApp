@@ -24,13 +24,13 @@ public class BatteryLevelGraph extends Application {
     static LineChart<Number, Number> lineChart;
 
     public static ScheduledExecutorService scheduler;
-    private static Stage alternativeStage;
+    public static Stage alternativeStage;
     static Label batteryStatusLabel;
-
-    static boolean isInitialized = false;
-    static boolean isValueChanged = true;
+    
+    static volatile boolean isValueChanged = true;
+    static volatile boolean isInitialized = false;
     public static volatile boolean isRunning = true;
-
+    
     static double totalTime = 0;
     static double chartWidth;
     static double chartHeight;
@@ -40,7 +40,8 @@ public class BatteryLevelGraph extends Application {
 
     public static void initialize() {
         if (!isInitialized) {
-            new Thread(() -> Application.launch(BatteryLevelGraph.class)).start();
+//            new Thread(() -> Application.launch(BatteryLevelGraph.class)).start();
+            Platform.runLater(() -> new BatteryLevelGraph().start(new Stage()));
             isInitialized = true;
         }
     }

@@ -3,11 +3,14 @@ import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.visual_effects.DisplayMessages;
 import java.awt.*;
 
+import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+
 public class WakeUpPC {
-	private static Thread wakeUpThread;
+	public static Thread wakeUpThread;
 	private static int shiftInY_axis = 0;
 	private static int shiftInX_axis = 0;
-
+	private static volatile boolean interruptRequest = false;
+	
 	public static int getShiftInY_axis() {
 		return shiftInY_axis;
 	}
@@ -28,7 +31,7 @@ public class WakeUpPC {
 	    try {
 	        java.awt.Robot robot = new java.awt.Robot();
 			wakeUpThread = Thread.ofVirtual().start(() -> {
-                while (ComputerSettings.isActivateTheAwakeningFeature()) {
+                while (ComputerSettings.isActivateTheAwakeningFeature() && !interruptRequest) {
 					Point position = getMousePosition();
 					doRobotAction(robot, position, false, 0, 0);
 					try{
@@ -42,6 +45,21 @@ public class WakeUpPC {
 	    } catch (Exception e) {
 			DisplayMessages.printErrorMessage(e);
 	    }
+	}
+	
+	public static void wakeUpThreadInterruptRequest() {
+		try {
+			interruptRequest = true;
+			if (wakeUpThread != null && wakeUpThread.isAlive()) {
+				wakeUpThread.join(3000);
+				
+				if (wakeUpThread.isAlive()) {
+					wakeUpThread.interrupt();
+				}
+			}
+		} catch (Exception ex) {
+			printErrorMessage(ex);
+		}
 	}
 
 	private static boolean checkThread(){

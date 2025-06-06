@@ -7,6 +7,7 @@ import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonO
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
 
+import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
 import com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler;
@@ -28,13 +29,14 @@ public class ConfigurationFilesManager {
     private static final String CONFIG_SETTINGS_FILE_PATH = "./_settings.cfg";
     private static final String PC_SETTINGS_FILE_PATH = "./_pc-settings.cfg";
     private static final Logger logger = Logger.getLogger(ConfigurationFilesManager.class.getName());
-
+    public static final String UNKNOWN_OUTPUT_DEVICE = "Unknown (S) E404";
+    
     private static File getMainFolderPath(String configFileName){
         File folderDir = new File(MAIN_FOLDER_PATH);
         if (!folderDir.exists()) {
             folderDir.mkdir();
         }
-
+        
         return new File(folderDir, configFileName);
     }
 
@@ -60,7 +62,7 @@ public class ConfigurationFilesManager {
         json.put("gradient background dark mode", PanelStyler.getGradientBackgroundDarkModeName());
         json.put("gradient background light mode", PanelStyler.getGradientBackgroundLightModeName());
         json.put("customization gradient background", customizationGradientBackground);
-
+        
         Color startColor = getStartCustomColor();
         String colorStr = startColor.getRed() + "," + startColor.getGreen() + "," + startColor.getBlue();
         json.put("custom start color", colorStr);
@@ -298,7 +300,7 @@ public class ConfigurationFilesManager {
         UserChoices.setEnableText(true);
     }
 
-    public static void saveComputerSettings(){
+    public static void saveComputerSettings() {
         JSONObject json = createComputerSettingsJson();
         try (FileWriter file = new FileWriter(
                 getMainFolderPath(PC_SETTINGS_FILE_PATH).getAbsolutePath()
@@ -322,6 +324,7 @@ public class ConfigurationFilesManager {
         json.put("Automatic set and reset brightness level", isAutomaticallyReduceAndRestoreBL());
         json.put("Automatic set brightness level", isAutomaticallyReduceBrightnessLevel());
         json.put("Automatically restore brightness level", isAutomaticallyRestoreBrightnessLevel());
+        json.put("Default Speaker Output Device Name", getDefaultSpeakerOutputDeviceName());
         json.put("Current audio device", getCurrentAudioDevice());
         json.put("Audio devices", getAudioDevices());
         json.put("Volume Level", getVolumeLevel());
@@ -364,7 +367,8 @@ public class ConfigurationFilesManager {
         setBrightnessControlOption(json.optInt("Brightness Control Option", 2));
         setVolumeLevel(json.optInt("Volume Level", 35));
         setBrightnessLevel(json.optInt("Brightness level", 60));
-        setCurrentAudioDevice(json.optString("Current audio device", "سماعات"));
+        setDefaultSpeakerOutputDeviceName(json.optString("Default Speaker Output Device Name", UNKNOWN_OUTPUT_DEVICE));
+        setCurrentAudioDevice(json.optString("Current audio device", getDefaultSpeakerOutputDeviceName()));
         loadAudioDevicesList(json);
         setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
     }
@@ -380,7 +384,7 @@ public class ConfigurationFilesManager {
         setAudioDevices(audioDevicesList);
     }
 
-    public static void loadDefaultComputerSettings(){
+    private static void loadDefaultComputerSettings(){
         setActivateTheAwakeningFeature(false);
         setEnableSystemNotificationSound(true);
         setEnableUnmuteVolumeAutomatically(true);
@@ -395,9 +399,21 @@ public class ConfigurationFilesManager {
         setVolumeLevel(35);
         setBrightnessLevel(60);
         setBrightnessControlOption(2);
-        setCurrentAudioDevice("سماعات");
         setAudioDevices(new ArrayList<>());
         setNotificationSoundFileName("Alarm01.wav");
+        initializeDefaultSpeakerDevice();
+    }
+    
+    private static void initializeDefaultSpeakerDevice() {
+        try {
+            String defaultSpeakerOutputDeviceName = DefaultSoundDeviceNameFinder.findFirstValidRenderDevice();
+            setDefaultSpeakerOutputDeviceName(defaultSpeakerOutputDeviceName);
+            setCurrentAudioDevice(defaultSpeakerOutputDeviceName);
+        } catch (Exception e) {
+            printErrorMessage(e, "Failed to get default speaker output device name");
+            setDefaultSpeakerOutputDeviceName(UNKNOWN_OUTPUT_DEVICE);
+            setCurrentAudioDevice(UNKNOWN_OUTPUT_DEVICE);
+        }
     }
 
     private static void printErrorMessage(Throwable e, String loggerText){

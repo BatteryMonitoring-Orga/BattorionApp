@@ -16,6 +16,7 @@ public class ComputerSettings {
     private static boolean automaticallyRestoreBrightnessLevel;
     private static List<String> audioDevices = new ArrayList<>();
     private static String notificationSoundFileName;
+    private static String defaultSpeakerOutputDeviceName;
     private static String currentAudioDevice;
     private static int brightnessControlOption;
     private static int brightnessLevel;
@@ -129,7 +130,17 @@ public class ComputerSettings {
         }
         return false;
     }
-
+    
+    public static String getDefaultSpeakerOutputDeviceName(){
+        return defaultSpeakerOutputDeviceName;
+    }
+    public static void setDefaultSpeakerOutputDeviceName(String defaultSpeakerOutputDeviceName){
+        ComputerSettings.defaultSpeakerOutputDeviceName = defaultSpeakerOutputDeviceName;
+        if(currentAudioDevice == null){
+            currentAudioDevice = defaultSpeakerOutputDeviceName;
+        }
+    }
+    
     public static String getCurrentAudioDevice(){
         return currentAudioDevice;
     }

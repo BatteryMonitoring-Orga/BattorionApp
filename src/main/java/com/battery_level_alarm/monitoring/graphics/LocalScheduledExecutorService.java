@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class LocalScheduledExecutorService {
-    private static Timeline changeTimer;
+    public static Timeline changeTimer;
     static int counter = 1;
 
     static void createMainScheduledExecutor(){

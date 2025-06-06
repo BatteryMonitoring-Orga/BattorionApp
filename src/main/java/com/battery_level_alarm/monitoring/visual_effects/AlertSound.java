@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.visual_effects;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
+import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getDefaultSpeakerOutputDeviceName;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
@@ -27,6 +28,7 @@ public class AlertSound {
     private static int volumeLevel = 0;
     private static final int defaultSoundDuration = 1;
     public static boolean useDefaultDuration = false;
+    public static volatile boolean isProcessesApplied = false;
     
     public static void playSound(String filePath) {
         try {
@@ -163,28 +165,45 @@ public class AlertSound {
     }
 
     private static void prepareBeforeStarting() {
+        isProcessesApplied = true;
         try{
             if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
                 volumeLevel = (int) SoundVolumeReader.getVolumeLevel();
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            printErrorMessage(e);
         }
-
-        String deviceName = "سماعات";
+        
+        try {
+            String deviceName = getDefaultSpeakerOutputDeviceName();
+            if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
+                setAudioOutputDevice(deviceName);
+                activeAudioDeviceName.setText(deviceName);
+                audioOutputDeviceDashTextField.setText(deviceName);
+            }
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            printErrorMessage(e);
+        }
+        
         if(ComputerSettings.isEnablingSoundLevelChange()){
             CallCommandLine.setPCVolume(ComputerSettings.getVolumeLevel());
         } if(ComputerSettings.isEnableUnmuteVolumeAutomatically()){
             CallCommandLine.setSoundUnmute(0);
-        } if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
-            setAudioOutputDevice(deviceName);
-            activeAudioDeviceName.setText(deviceName);
-            audioOutputDeviceDashTextField.setText(deviceName);
         }
     }
 
     public static void prepareAfterEnding(){
+        try{
+            if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
+                CallCommandLine.setPCVolume(volumeLevel);
+                Thread.sleep(100);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        
         if(ComputerSettings.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
             String deviceName = ComputerSettings.getCurrentAudioDevice();
             setAudioOutputDevice(deviceName);
@@ -194,15 +213,7 @@ public class AlertSound {
                 soundControlPanel.setVisible(false);
             }
         }
-        
-        try{
-            if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
-                CallCommandLine.setPCVolume(volumeLevel);
-                Thread.sleep(100);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        isProcessesApplied = false;
     }
 
     private static void showErrorMessage(String message) {

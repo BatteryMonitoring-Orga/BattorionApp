@@ -15,6 +15,8 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHel
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.*;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.Monitor.backgroundProcessMonitoring;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.prefs;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.addTextField;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.setMouseListener;
@@ -32,6 +34,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.THEME_ICON_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.DepartureModes;
 
 import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
 import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
@@ -46,6 +49,7 @@ import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker;
 import com.battery_level_alarm.monitoring.system_automation.WakeUpPC;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
@@ -59,13 +63,17 @@ import com.notifications.system_tray_notifications.basics.AlarmSounds;
 import com.notifications.system_tray_notifications.basics.Notifications;
 import com.notifications.system_tray_notifications.system_tray.SystemTrayNotification;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.prefs.Preferences;
 
-public class Battorion {
+public class Battorion extends Application {
     private static Thread monitoringThread;
     public static Color borderColor;
     public static Color panelBackgroundColor;
@@ -113,6 +121,7 @@ public class Battorion {
     private static final int duration = 1000;
     public static int batteryLevel = 0;
     private static int clickCount = 0;
+    private static String modeToUse;
     public static String status = "";
     static String lastMode = "";
     
@@ -124,70 +133,111 @@ public class Battorion {
     static boolean isCharging = false;
     static boolean operationIsEnd = false;
     
-	public static void main(String[] args) {
+    public static void main(String[] args) {
+        setupUIFont();
+        prefs = Preferences.userNodeForPackage(BattorionTrayUI.class);
+        modeToUse = prefs.get("StartBattorionWith", String.valueOf(DepartureModes.START_WITH_APPLICATION));
+        launch(args);
+    }
+    
+    private static void setupUIFont() {
         System.setProperty("flatlaf.useSystemFonts", "false");
         UIManager.put("defaultFont", new Font("SansSerif", Font.PLAIN, 12));
-
+    }
+    
+    @Override
+    public void start(Stage primaryStage) {
         loadGeneralConfigurations();
         Appearance.theme_setup();
         EssentialToolsDownloader.Downloader((_, _) -> {}, true);
         AudioDeviceToolChecker.startCheckingThread();
-        SingletonObject.singletonMethod();
+        departure(modeToUse);
+    }
+    
+    private static void departure(String startOnBoot) {
+        DepartureModes mode = BattorionTrayUI.DepartureModes.valueOf(startOnBoot);
+        switch (mode) {
+            case START_WITH_TRAY -> {
+                loadSettings();
+                loadComputerSettings();
+                Platform.runLater(() -> {
+                    new BattorionTrayUI().start(new Stage());
+                    backgroundProcessMonitoring();
+                });
+            }
+            case START_WITH_APPLICATION -> SingletonObject.singletonMethod();
+            default -> SingletonObject.singletonMethod();
+        }
     }
     
     static void refreshMotherFrame() {
         mainFrame.repaint();
         mainFrame.validate();
     }
-
+    
     public static void rebuild() {
         mainFrame.dispose();
-        if(mainPreviewFrame != null){
+        if (mainPreviewFrame != null) {
             mainPreviewFrame.dispose();
         }
+        
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             printErrorMessage(e);
         }
-
+        
         setVisibleFalse();
         Appearance.started = true;
         loadGeneralConfigurations();
         Appearance.theme_setup();
         build();
     }
-
-    public static void build(){
+    
+    public static void build() {
+        setupToolTips();
+        setupColors();
+        setUIManagerPanelColor(panelBackgroundColor);
+        configurationHistoryMap();
+        
+        loadSettings();
+        loadComputerSettings();
+        configurationSystemTrayNotifications();
+        loadDropDownListConfigurations();
+        
+        DiskSpaceInfo.DiskSpace();
+        PrepareDiskInfoGUI.createGUI();
+        BatteryStatisticsGUI.createGUI();
+        
+        SwingUtilities.invokeLater(Battorion::createAndShowGUI);
+        setupDefaultAudioDeviceIfUnknown();
+    }
+    
+    private static void setupToolTips() {
         UIManager.put("ToolTip.font", TEXT_FONT);
         ToolTipManager.sharedInstance().setEnabled(true);
         ToolTipManager.sharedInstance().setInitialDelay(100);
         ToolTipManager.sharedInstance().setDismissDelay(5000);
-        
+    }
+    
+    private static void setupColors() {
         borderColor = UIManager.getColor("Label.foreground");
         panelBackgroundColor = UIManager.getColor("Button.background");
         DropDownList.borderForegroundColor = UIManager.getColor("Label.foreground");
-        if(Appearance.getThemeName().equals("Dark")){
+        
+        if (Appearance.getThemeName().equals("Dark")) {
             panelBackgroundColor = Color.BLACK;
         }
-        setUIManagerPanelColor(panelBackgroundColor);
-        configurationHistoryMap();
-        loadSettings();
-        loadComputerSettings();
-        configurationSystemTrayNotifications();
-        
-        loadDropDownListConfigurations();
-        DiskSpaceInfo.DiskSpace();
-        PrepareDiskInfoGUI.createGUI();
-        BatteryStatisticsGUI.createGUI();
-        SwingUtilities.invokeLater(Battorion::createAndShowGUI);
-        
-        if(getDefaultSpeakerOutputDeviceName().equals(UNKNOWN_OUTPUT_DEVICE)){
-            String defaultSpeakerOutputDeviceName = DefaultSoundDeviceNameFinder.findFirstValidRenderDevice();
-            setDefaultSpeakerOutputDeviceName(defaultSpeakerOutputDeviceName);
-            String item = getItemFromAudioList(defaultSpeakerOutputDeviceName);
-            if(item == null){
-                addItemToAudioList(defaultSpeakerOutputDeviceName);
+    }
+    
+    private static void setupDefaultAudioDeviceIfUnknown() {
+        if (getDefaultSpeakerOutputDeviceName().equals(UNKNOWN_OUTPUT_DEVICE)) {
+            String defaultDevice = DefaultSoundDeviceNameFinder.findFirstValidRenderDevice();
+            setDefaultSpeakerOutputDeviceName(defaultDevice);
+            
+            String item = getItemFromAudioList(defaultDevice);
+            if (item == null) {
+                addItemToAudioList(defaultDevice);
             }
             saveComputerSettings();
         }

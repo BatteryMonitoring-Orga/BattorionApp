@@ -104,7 +104,6 @@ public class BattorionButtonsHelper {
 
     static JButton createGraphButton(){
         BatteryLevelGraph.initialize();
-
         return createButton(
                 GRAPH_PAINTER_TEXT, "Display a graph of battery level",
                 BUTTON_ICONS_PATH, "graph", _ -> BatteryLevelGraph.display());

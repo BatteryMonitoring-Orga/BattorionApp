@@ -10,6 +10,7 @@ public class SettingsContainerClass {
     public static final String ICONS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Icons/";
     private static final String TOOLTIP_APP_SETTINGS = "Manage general application preferences and behavior.";
     private static final String TOOLTIP_PC_SETTINGS = "Adjust settings related to your computer and hardware.";
+    private static final String TOOLTIP_TRAY_SETTINGS = "Configure how the application appears and behaves in the system tray area.";
     private static final String TOOLTIP_UPDATES_SETTINGS = "Control update preferences and version management.";
     private static final String TOOLTIP_GRAPHICS_SETTINGS = "Configure graphics options and visual performance.";
     private static final String TOOLTIP_THEMES_SETTINGS = "Manage visual themes and interface customization options.";
@@ -19,6 +20,9 @@ public class SettingsContainerClass {
     );
     private static final ImageIcon PC_SETTINGS_TAB_ICON = resizeIcon(
             new ImageIcon(Objects.requireNonNull(SettingsContainerClass.class.getResource(ICONS_FOLDER_PATH + "18237560.png")))
+    );
+    private static final ImageIcon TRAY_SETTINGS_TAB_ICON = resizeIcon(
+            new ImageIcon(Objects.requireNonNull(SettingsContainerClass.class.getResource(ICONS_FOLDER_PATH + "battorion_background.png")))
     );
     private static final ImageIcon UPDATES_SETTINGS_TAB_ICON = resizeIcon(
             new ImageIcon(Objects.requireNonNull(SettingsContainerClass.class.getResource(ICONS_FOLDER_PATH + "2879431.png")))
@@ -36,12 +40,13 @@ public class SettingsContainerClass {
     public static JTabbedPane mainTabbedPanel;
     public static JScrollPane appSettingPanel;
     public static JScrollPane pcSettingPanel;
+    public static JScrollPane traySettingPanel;
     public static JScrollPane updatesSettingsPanel;
     public static JScrollPane graphicSettingsPanel;
     public static JPanel uiThemesSettingsPanel;
 
     public static void createSettingsContainer() {
-        mainTabbedPanel = new JTabbedPane();
+        mainTabbedPanel = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         mainTabbedPanel.setFont(TEXT_FONT);
 
         AppSettingsGUI.createAndShowGUI();
@@ -58,6 +63,13 @@ public class SettingsContainerClass {
                 PC_SETTINGS_TAB_ICON,
                 pcSettingPanel,
                 TOOLTIP_PC_SETTINGS);
+        
+        traySettingPanel = TraySettingsGUI.createTraySettingsGUI();
+        mainTabbedPanel.addTab(
+                "Tray Settings",
+                TRAY_SETTINGS_TAB_ICON,
+                traySettingPanel,
+                TOOLTIP_TRAY_SETTINGS);
 
         updatesSettingsPanel = new JScrollPane();
         mainTabbedPanel.addTab(

@@ -22,11 +22,15 @@ public class BattorionTrayUI extends Application {
 	static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/light-theme.css";
 	static Stage primaryStage;
 	static TabPane primaryTabPane;
-	static Preferences prefs;
+	public static Preferences prefs;
+	
+	public enum DepartureModes {
+		START_WITH_TRAY,
+		START_WITH_APPLICATION
+	}
 	
 	@Override
 	public void start(Stage stage) {
-		prefs = Preferences.userNodeForPackage(BattorionTrayUI.class);
 		primaryStage = stage;
 		setupPrimaryStage();
 		createPopupWindow();

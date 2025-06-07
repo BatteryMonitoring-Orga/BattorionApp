@@ -5,6 +5,7 @@ import java.io.*;
 public class AutoStartManager {
 	public static void enableAutoStart(String appName, String targetPath) {
 		try {
+			appName = appName.replaceAll("[\\\\/:*?\"<>|]", "_");
 			String startupPath = System.getenv("APPDATA") + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup";
 			String shortcutPath = startupPath + "\\" + appName + ".lnk";
 			

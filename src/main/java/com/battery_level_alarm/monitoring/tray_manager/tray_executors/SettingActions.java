@@ -1,6 +1,5 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
-import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setEnableSystemNotificationSound;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setNotificationSoundFileName;
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.setMaximumLevel;
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.setMinimumLevel;
@@ -8,7 +7,6 @@ import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFiles
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveSettings;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.Monitor.alarmSoundsBackgroundProcess;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.SettingsTab.*;
-
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
 

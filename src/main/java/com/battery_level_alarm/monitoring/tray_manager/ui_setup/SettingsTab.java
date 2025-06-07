@@ -1,5 +1,7 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.DepartureModes.START_WITH_APPLICATION;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.DepartureModes.START_WITH_TRAY;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.prefs;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.TrayTheme.applyTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.UITabs.createBackButton;
@@ -114,7 +116,6 @@ public class SettingsTab {
 		addAudioDevice.setOnAction(_ -> RadioButtonsActions.addAudioDeviceAction());
 		deleteAudioDevice.setOnAction(_ -> RadioButtonsActions.deleteAudioDeviceAction());
 		setAsDefaultAO.setOnAction(_ -> RadioButtonsActions.setAsDefaultAOAction());
-		
 		return new HBox(10, useSelectedAO, addAudioDevice, deleteAudioDevice, setAsDefaultAO);
 	}
 	
@@ -124,8 +125,21 @@ public class SettingsTab {
 	}
 	
 	private static VBox createAutomationSection() {
+		String mode = prefs.get("StartBattorionWith", String.valueOf(START_WITH_APPLICATION));
+		CheckBox startWithTray = new CheckBox("Start with Tray window");
+		startWithTray.setSelected(mode.equals(String.valueOf(START_WITH_TRAY)));
+		startWithTray.setTooltip(new Tooltip(
+				"Tray Window: the small icon near the clock where the app runs in background.\n"
+					+ "If enabled, the app will start hidden in the system tray."
+		));
+		startWithTray.selectedProperty().addListener((_, _, newValue) -> {
+			String newMode = newValue ? String.valueOf(START_WITH_TRAY) : String.valueOf(START_WITH_APPLICATION);
+			prefs.put("StartBattorionWith", newMode);
+		});
+		
 		VBox box = new VBox(10,
 				new Label("\uD83D\uDEE0 Automation"),
+				startWithTray,
 				new Label("PC - Brightness Level"),
 				createSlider()
 		);

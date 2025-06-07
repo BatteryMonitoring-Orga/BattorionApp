@@ -3,7 +3,6 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.AutoStartManager.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
-
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.Monitor;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.TrayAlerts;
 

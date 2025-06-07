@@ -15,8 +15,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHel
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.*;
-import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.Monitor.backgroundProcessMonitoring;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.prefs;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.addTextField;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.setMouseListener;
@@ -34,7 +33,6 @@ import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.THEME_ICON_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.DepartureModes;
 
 import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
 import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
@@ -63,9 +61,6 @@ import com.notifications.system_tray_notifications.basics.AlarmSounds;
 import com.notifications.system_tray_notifications.basics.Notifications;
 import com.notifications.system_tray_notifications.system_tray.SystemTrayNotification;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.stage.Stage;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -73,7 +68,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.prefs.Preferences;
 
-public class Battorion extends Application {
+public class Battorion {
     private static Thread monitoringThread;
     public static Color borderColor;
     public static Color panelBackgroundColor;
@@ -121,8 +116,7 @@ public class Battorion extends Application {
     private static final int duration = 1000;
     public static int batteryLevel = 0;
     private static int clickCount = 0;
-    private static String modeToUse;
-    public static String status = "";
+	public static String status = "";
     static String lastMode = "";
     
     private static volatile boolean callFlag = false;
@@ -136,8 +130,13 @@ public class Battorion extends Application {
     public static void main(String[] args) {
         setupUIFont();
         prefs = Preferences.userNodeForPackage(BattorionTrayUI.class);
-        modeToUse = prefs.get("StartBattorionWith", String.valueOf(DepartureModes.START_WITH_APPLICATION));
-        launch(args);
+	    String modeToUse = prefs.get("StartBattorionWith", String.valueOf(DepartureModes.START_WITH_APPLICATION));
+        
+        loadGeneralConfigurations();
+        Appearance.theme_setup();
+        EssentialToolsDownloader.Downloader((_, _) -> {}, true);
+        AudioDeviceToolChecker.startCheckingThread();
+        departure(modeToUse, args);
     }
     
     private static void setupUIFont() {
@@ -145,25 +144,13 @@ public class Battorion extends Application {
         UIManager.put("defaultFont", new Font("SansSerif", Font.PLAIN, 12));
     }
     
-    @Override
-    public void start(Stage primaryStage) {
-        loadGeneralConfigurations();
-        Appearance.theme_setup();
-        EssentialToolsDownloader.Downloader((_, _) -> {}, true);
-        AudioDeviceToolChecker.startCheckingThread();
-        departure(modeToUse);
-    }
-    
-    private static void departure(String startOnBoot) {
+    private static void departure(String startOnBoot, String[] args) {
         DepartureModes mode = BattorionTrayUI.DepartureModes.valueOf(startOnBoot);
         switch (mode) {
             case START_WITH_TRAY -> {
                 loadSettings();
                 loadComputerSettings();
-                Platform.runLater(() -> {
-                    new BattorionTrayUI().start(new Stage());
-                    backgroundProcessMonitoring();
-                });
+                main_fx(args);
             }
             case START_WITH_APPLICATION -> SingletonObject.singletonMethod();
             default -> SingletonObject.singletonMethod();

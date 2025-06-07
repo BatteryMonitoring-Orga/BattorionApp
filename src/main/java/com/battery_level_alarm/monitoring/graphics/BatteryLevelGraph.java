@@ -47,7 +47,7 @@ public class BatteryLevelGraph extends Application {
     }
 
     static {
-        Platform.runLater(() -> {
+        Platform.startup(() -> {
             mainGraphScrolls[0] = new ScrollPane();
             mainGraphScrolls[1] = new ScrollPane();
         });

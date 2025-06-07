@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.Monitor.backgroundProcessMonitoring;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.TrayIconManager.createTrayIcon;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.TrayTheme.applyTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.UITabs.createTabsPanel;
@@ -27,6 +28,11 @@ public class BattorionTrayUI extends Application {
 	public enum DepartureModes {
 		START_WITH_TRAY,
 		START_WITH_APPLICATION
+	}
+	
+	public static void main_fx( String[] args) {
+		launch(args);
+		backgroundProcessMonitoring();
 	}
 	
 	@Override

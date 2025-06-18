@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.graphics.GraphPaneHelper.*;
 import static com.battery_level_alarm.monitoring.graphics.GraphsDefinitions.*;
 import static com.battery_level_alarm.monitoring.graphics.LocalScheduledExecutorService.counter;
 import static com.battery_level_alarm.monitoring.graphics.LocalScheduledExecutorService.createMainScheduledExecutor;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
 
@@ -45,14 +46,22 @@ public class BatteryLevelGraph extends Application {
             isInitialized = true;
         }
     }
-
+    
     static {
-        Platform.startup(() -> {
-            mainGraphScrolls[0] = new ScrollPane();
-            mainGraphScrolls[1] = new ScrollPane();
-        });
+        try {
+            Platform.startup(() -> {
+                mainGraphScrolls[0] = new ScrollPane();
+                mainGraphScrolls[1] = new ScrollPane();
+            });
+        } catch (Exception e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
+            Platform.runLater(() -> {
+                mainGraphScrolls[0] = new ScrollPane();
+                mainGraphScrolls[1] = new ScrollPane();
+            });
+        }
     }
-
+    
     @Override
     public void start(Stage primaryStage) {
         chartWidth = FRAME_WIDTH;

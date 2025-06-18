@@ -1,17 +1,16 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
-import com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.GRID_BAG_CONSTRAINTS_CONFIGURATION;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_APPLICATION;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_TRAY;
+import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.createGridBagConstraints;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.addCheckbox;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.applyScrollConfigurationDetails;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.GRID_BAG_CONSTRAINTS_CONFIGURATION;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.DepartureModes.START_WITH_APPLICATION;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.DepartureModes.START_WITH_TRAY;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.prefs;
-import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.createGridBagConstraints;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.addCheckbox;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.applyScrollConfigurationDetails;
 
 public class TraySettingsGUI {
 	private static final ScrollConfiguration TRAY_SET_SCROLL_CONFIGURATION = new ScrollConfiguration(

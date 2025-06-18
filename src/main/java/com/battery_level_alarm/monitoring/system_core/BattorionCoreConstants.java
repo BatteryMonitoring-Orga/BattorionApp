@@ -8,6 +8,7 @@ public class BattorionCoreConstants {
     public static class AppInfo {
         public static final String APP_VERSION = Battorion.class.getPackage().getImplementationVersion();
         public static final String APP_NAME = "Battorion";
+        public static final String TRAY_NOTIFICATION_ICON = "Battorion - Tray Icon";
         
         public static String getCurrentExeDirectory() {
             try {

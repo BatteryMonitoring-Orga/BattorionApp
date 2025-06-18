@@ -1,24 +1,18 @@
 package com.battery_level_alarm.monitoring.system_core;
-import static com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker.AudioDeviceThread;
-import static com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph.alternativeStage;
-import static com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph.scheduler;
-import static com.battery_level_alarm.monitoring.graphics.LocalScheduledExecutorService.changeTimer;
-import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.wakeUpThreadInterruptRequest;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
-import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.Monitor.backgroundProcessMonitoring;
+import static com.battery_level_alarm.monitoring.system_core.BattorionMainProcessHelper.cleanup;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.backgroundProcessMonitoring;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.pcVolumeSpinner;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
-import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientThemes.*;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
 
 import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
 import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;
-import com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedButton;
 import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
 import org.jetbrains.annotations.NotNull;
@@ -146,7 +140,7 @@ public class BattorionProgressBarHelper {
         infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         toggleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        safeModePanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        safeModePanel.add(Box.createRigidArea(new Dimension(0, 15)));
         safeModePanel.add(infoLabel);
         safeModePanel.add(Box.createRigidArea(new Dimension(0, 10)));
         safeModePanel.add(toggleButton);
@@ -218,7 +212,7 @@ public class BattorionProgressBarHelper {
     
     private static @NotNull JButton getButton(Color backgroundColor) {
         Dimension dimension = new Dimension(140, 30);
-        JButton button = new RoundedButton("Run in Background", dimension, 30);
+        JButton button = new RoundedButton("Run in Background", dimension, 1.5f, 30);
         button.setFont(new Font("Serif", Font.BOLD, 13));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setBackground(backgroundColor);
@@ -227,25 +221,8 @@ public class BattorionProgressBarHelper {
         button.setMaximumSize(dimension);
         button.addActionListener(_ -> {
             mainFrame.dispose();
-            try {
-                mainMonitorInterruptRequest();
-                wakeUpThreadInterruptRequest();
-                AudioDeviceThread.interrupt();
-                Platform.runLater(() -> {
-                    alternativeStage.hide();
-                    changeTimer.stop();
-                    scheduler.shutdown();
-                });
-                
-                if(mainPreviewFrame != null) {
-                    mainPreviewFrame.dispose();
-                } if(isProcessesApplied) {
-                    prepareAfterEnding();
-                }
-            } catch (Exception exception) {
-                printErrorMessage(exception);
-            }
-//            Platform.setImplicitExit(false);
+            cleanup(true);
+            Platform.setImplicitExit(false);
             Platform.runLater(() -> {
                 new BattorionTrayUI().start(new Stage());
                 backgroundProcessMonitoring();
@@ -288,7 +265,7 @@ public class BattorionProgressBarHelper {
                 _ -> {
                     stopWAV();
                     stopMP3();
-                    prepareAfterEnding();
+                    cleanupAudioSettingsAfterAlert();
                     soundControlPanel.setVisible(false);
                 }
         );

@@ -1,0 +1,7 @@
+System.out.println("🧵 Active Threads:");
+Thread.getAllStackTraces().keySet().forEach(t -> {
+    System.out.println(" - " + t.getName() + " (daemon: " + t.isDaemon() + ")");
+    if (!t.isDaemon() && t != Thread.currentThread()) {
+         t.interrupt();
+    }
+});

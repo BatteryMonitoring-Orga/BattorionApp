@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_static_configs;
 import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.*;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getColumn;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getRow;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.buttonGroup;
@@ -78,8 +79,10 @@ public class RelatedToTextFields {
                         doRobotAction(new java.awt.Robot(), mousePosition[0], true, getShiftInY_axis(), getShiftInX_axis());
                     }
                 } catch (NumberFormatException exception){
+                    logger.severe("[EXCEPTION]: " + exception.getMessage());
                     textField.setText(DefaultValue);
                 } catch (AWTException ex) {
+                    logger.severe("[EXCEPTION]: " + ex.getMessage());
                     throw new RuntimeException(ex);
                 }
             }

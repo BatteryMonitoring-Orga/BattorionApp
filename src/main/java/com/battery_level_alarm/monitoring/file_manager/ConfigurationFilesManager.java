@@ -6,7 +6,6 @@ import static com.battery_level_alarm.monitoring.core_utilities.DropDownListStat
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
-
 import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +34,6 @@ public class ConfigurationFilesManager {
         if (!folderDir.exists()) {
             folderDir.mkdir();
         }
-        
         return new File(folderDir, configFileName);
     }
 

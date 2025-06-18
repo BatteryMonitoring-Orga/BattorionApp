@@ -1,0 +1,40 @@
+.try-notification-vbox {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.try-notification-hbox {
+    -fx-spacing: 10;
+}
+
+.try-notification-button {
+    -fx-background-color: #00b3b3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+}
+
+.try-notification-button:hover {
+    -fx-background-color: #009999;
+}
+
+.try-notification-combo {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5 8 5 8;
+}
+
+.try-notification-combo .list-cell {
+    -fx-text-fill: #222222;
+}

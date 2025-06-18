@@ -55,7 +55,6 @@ public class AudioOutputDeviceNameChecker {
             String returnedOutput = getCurrentAudioOutputDevice();
             String currentDevice = checkDevicesList(returnedOutput);
             String currentDeviceFullName = getDeviceFullName(returnedOutput);
-            
             return new String[] {
                     currentDevice,
                     currentDeviceFullName

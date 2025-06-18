@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.notifications</groupId>
             <artifactId>system_tray_notifications</artifactId>
-            <version>1.4.3</version>
+            <version>2.1.6</version>
         </dependency>
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>

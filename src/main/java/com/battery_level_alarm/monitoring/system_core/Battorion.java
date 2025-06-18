@@ -12,10 +12,11 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionButtonsHelper.createButton;
+import static com.battery_level_alarm.monitoring.system_core.BattorionMainProcessHelper.cleanup;
 import static com.battery_level_alarm.monitoring.system_core.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.BatteryLevelHandler.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionProgressBarHelper.*;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI.*;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.addTextField;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.setMouseListener;
@@ -33,6 +34,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.THEME_ICON_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
+import static java.util.logging.Level.SEVERE;
 
 import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
 import com.battery_level_alarm.monitoring.graphics.BatteryLevelGraph;
@@ -47,7 +49,7 @@ import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker;
 import com.battery_level_alarm.monitoring.system_automation.WakeUpPC;
-import com.battery_level_alarm.monitoring.tray_manager.ui_setup.BattorionTrayUI;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
@@ -66,10 +68,15 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 public class Battorion {
+    public static final Logger logger = Logger.getLogger(Battorion.class.getName());
     private static Thread monitoringThread;
+    public static Preferences prefs;
     public static Color borderColor;
     public static Color panelBackgroundColor;
     public static AlarmSounds alarmSounds;
@@ -114,7 +121,7 @@ public class Battorion {
     static JLabel statusLabel;
 
     private static final int duration = 1000;
-    public static int batteryLevel = 0;
+     public static int batteryLevel = 0;
     private static int clickCount = 0;
 	public static String status = "";
     static String lastMode = "";
@@ -122,6 +129,7 @@ public class Battorion {
     private static volatile boolean callFlag = false;
     private static volatile boolean interruptRequest = false;
     public static volatile boolean isMonitorRunning = false;
+    public static boolean isApplicationMode = true;
     public static boolean isFromCriticalAlert = false;
     public static boolean isWasInCriticalPhase = false;
     static boolean isCharging = false;
@@ -129,14 +137,17 @@ public class Battorion {
     
     public static void main(String[] args) {
         setupUIFont();
-        prefs = Preferences.userNodeForPackage(BattorionTrayUI.class);
+        prefs = Preferences.userNodeForPackage(Battorion.class);
 	    String modeToUse = prefs.get("StartBattorionWith", String.valueOf(DepartureModes.START_WITH_APPLICATION));
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
+            logger.log(SEVERE, "🚨 Uncaught exception in thread: " + thread.getName(), throwable)
+        );
         
         loadGeneralConfigurations();
         Appearance.theme_setup();
         EssentialToolsDownloader.Downloader((_, _) -> {}, true);
         AudioDeviceToolChecker.startCheckingThread();
-        departure(modeToUse, args);
+        SingletonObject.singletonMethod(modeToUse, args);
     }
     
     private static void setupUIFont() {
@@ -144,17 +155,17 @@ public class Battorion {
         UIManager.put("defaultFont", new Font("SansSerif", Font.PLAIN, 12));
     }
     
-    private static void departure(String startOnBoot, String[] args) {
-        DepartureModes mode = BattorionTrayUI.DepartureModes.valueOf(startOnBoot);
-        switch (mode) {
-            case START_WITH_TRAY -> {
-                loadSettings();
-                loadComputerSettings();
-                main_fx(args);
-            }
-            case START_WITH_APPLICATION -> SingletonObject.singletonMethod();
-            default -> SingletonObject.singletonMethod();
-        }
+    public static void departure(String modeToUse, String[] args) {
+        DepartureModes mode = BattorionTrayUI.DepartureModes.valueOf(modeToUse);
+	    if (mode == DepartureModes.START_WITH_TRAY) {
+            isApplicationMode = false;
+		    loadSettings();
+		    loadComputerSettings();
+		    main_fx(args);
+	    } else {
+            isApplicationMode = true;
+		    build();
+	    }
     }
     
     static void refreshMotherFrame() {
@@ -163,14 +174,13 @@ public class Battorion {
     }
     
     public static void rebuild() {
-        mainFrame.dispose();
-        if (mainPreviewFrame != null) {
-            mainPreviewFrame.dispose();
-        }
-        
         try {
+            mainFrame.dispose();
+            if (mainPreviewFrame != null) {
+                mainPreviewFrame.dispose();
+            }
             Thread.sleep(100);
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             printErrorMessage(e);
         }
         
@@ -195,7 +205,6 @@ public class Battorion {
         DiskSpaceInfo.DiskSpace();
         PrepareDiskInfoGUI.createGUI();
         BatteryStatisticsGUI.createGUI();
-        
         SwingUtilities.invokeLater(Battorion::createAndShowGUI);
         setupDefaultAudioDeviceIfUnknown();
     }
@@ -233,22 +242,20 @@ public class Battorion {
     private static void configurationSystemTrayNotifications() {
         notify = new Notifications(
                 APP_NAME,
-                IMAGES_FOLDER_PATH + "/13228401.png",
+                IMAGES_FOLDER_PATH + "/alert_stn.png",
                 "Battery Reminder",
                 "Battery is in risk!",
                 duration,
                 false
         );
         stn = new SystemTrayNotification();
-        
-        int sequence = AlarmSounds.getIndexBySoundName(getNotificationSoundFileName());
-        alarmSounds = new AlarmSounds(sequence);
+        alarmSounds = new AlarmSounds(AlarmSounds.getIndexBySoundName(getNotificationSoundFileName()));
     }
 
     private static void callNotifier(String msg){
         notify.setAlarmMessage(msg + "\nBattery level is: " + batteryLevel);
         stn.setIsToShowPanel(false);
-        stn.CreateTrayIcon(notify, alarmSounds);
+        SystemTrayNotification.CreateTrayIcon(notify, alarmSounds, null, true,true, true);
     }
 
     private static void createAndShowGUI() {
@@ -277,8 +284,22 @@ public class Battorion {
         mainFrame.setResizable(false);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.getRootPane().putClientProperty("JRootPane.titleBarBackground", panelBackgroundColor);
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("Window is closing...");
+                if (isApplicationMode) {
+                    cleanup(false);
+                }
+                Runtime.getRuntime().halt(0);
+            }
+            @Override
+            public void windowClosed(WindowEvent e) {
+                System.out.println("Window was closed...");
+            }
+        });
     }
-
+    
     private static void initializePanels() {
         motherFrameContainer = new JPanel(new BorderLayout());
         motherFrameContainer = applyGradientBackground(motherFrameContainer, isDarkMode, false, 0, false);
@@ -287,7 +308,7 @@ public class Battorion {
                 motherPanelContainer, isDarkMode, false, 0, false
         );
         motherPanelContainer.setLayout(new BoxLayout(motherPanelContainer, BoxLayout.Y_AXIS));
-
+        
         motherPanel = new RoundedPanel(30, new BorderLayout());
         motherPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         DashboardPanel = new JPanel(new BorderLayout());
@@ -409,7 +430,7 @@ public class Battorion {
         label.setFont(new Font("Serif", fontStyle, fontSize));
         return label;
     }
-
+    
     private static int getSafeBatteryLevel() {
         try {
             return getBatteryLevel();
@@ -491,7 +512,7 @@ public class Battorion {
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
         setButtonBackgroundColor();
     }
-
+    
     private static void createMainButtons(){
         graphPainter = createGraphButton();
         westSideButton = createButton(WEST_SIDE_BUTTON_TEXT, "Disappear the west side",
@@ -707,57 +728,63 @@ public class Battorion {
     }
     
     private static void monitor() {
-        monitoringThread = new Thread(() -> {
-            try {
-                while (isMonitorRunning) {
-                    int maxValue = UserChoices.getMaximumLevel();
-                    int minValue = UserChoices.getMinimumLevel();
-                    Color batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
-                    
-                	checkAndReset(batteryColor);
-                    batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
-                    refreshTopAssistantPartialPanelsShadow(batteryColor);
-                    putNewItemInTheHistoryMap(status, batteryLevel);
-                    isFromCriticalAlert = false;
-                    operationIsEnd = false;
-
-                    if ((batteryLevel >= maxValue) && isCharging) {
-                        highLevelActions(batteryColor, "Battery is too high! Please unplug the charger...");
-                    } else if ((batteryLevel == (maxValue - 1)) && isCharging) {
-                        highLevelActions(batteryColor, "Battery is high! Please unplug the charger...");
-                    } else if ((batteryLevel <= minValue) && !isCharging) {
-                        lowLevelActions(batteryColor);
-                    } else if (
-                            (batteryLevel >= (maxValue - UserChoices.getAlertBeforeRiskPhaseBy()))
-                                    && (batteryLevel < maxValue) && isCharging
-                    ){
-                        handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
-                    } else if (
-                            (batteryLevel <= (minValue + UserChoices.getAlertBeforeRiskPhaseBy())) &&
-                                    (batteryLevel > minValue) && !isCharging
-                    ){
-                        handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
-                    } else {
-                        handleNormalBattery(batteryBar, alertLabel, batteryColor);
+        try {
+            monitoringThread = new Thread(() -> {
+                try {
+                    while (isMonitorRunning) {
+                        int maxValue = UserChoices.getMaximumLevel();
+                        int minValue = UserChoices.getMinimumLevel();
+                        Color batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
+                        
+                        checkAndReset(batteryColor);
+                        batteryColor = getBatteryColor(batteryLevel, minValue, maxValue);
+                        refreshTopAssistantPartialPanelsShadow(batteryColor);
+                        putNewItemInTheHistoryMap(status, batteryLevel);
+                        isFromCriticalAlert = false;
+                        operationIsEnd = false;
+                        
+                        if ((batteryLevel >= maxValue) && isCharging) {
+                            highLevelActions(batteryColor, "Battery is too high! Please unplug the charger...");
+                        } else if ((batteryLevel == (maxValue - 1)) && isCharging) {
+                            highLevelActions(batteryColor, "Battery is high! Please unplug the charger...");
+                        } else if ((batteryLevel <= minValue) && !isCharging) {
+                            lowLevelActions(batteryColor);
+                        } else if (
+                                (batteryLevel >= (maxValue - UserChoices.getAlertBeforeRiskPhaseBy()))
+                                        && (batteryLevel < maxValue) && isCharging
+                        ){
+                            handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
+                        } else if (
+                                (batteryLevel <= (minValue + UserChoices.getAlertBeforeRiskPhaseBy())) &&
+                                        (batteryLevel > minValue) && !isCharging
+                        ){
+                            handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
+                        } else {
+                            handleNormalBattery(batteryBar, alertLabel, batteryColor);
+                        }
+                        
+                        if(ComputerSettings.isActivateTheAwakeningFeature()){
+                            WakeUpPC.wakeUp();
+                        } if(interruptRequest) {
+                            isMonitorRunning = false;
+                            break;
+                        }
                     }
-
-                    if(ComputerSettings.isActivateTheAwakeningFeature()){
-                        WakeUpPC.wakeUp();
-                    } if(interruptRequest) {
-                        isMonitorRunning = false;
-                        break;
-                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.severe("[EXCEPTION]: " + e.getMessage());
+                    SwingUtilities.invokeLater(() ->
+                            alertLabel.setText(
+                                    TWO_SPACE + "Battery Monitoring was Stopped!"
+                            )
+                    );
                 }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                SwingUtilities.invokeLater(() ->
-                        alertLabel.setText(
-                                TWO_SPACE + "Battery Monitoring was Stopped!"
-                        )
-                );
-            }
-        });
-        monitoringThread.start();
+            });
+            monitoringThread.start();
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
+            logger.severe("[EXCEPTION]: " + e.getMessage());
+        }
     }
 
     private static void highLevelActions(Color batteryColor, String msg) {

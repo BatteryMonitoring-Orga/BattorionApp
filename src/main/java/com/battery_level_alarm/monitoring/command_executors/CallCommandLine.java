@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.command_executors;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
@@ -107,11 +108,17 @@ public class CallCommandLine {
             throw new UnsupportedOperationException("Unsupported OS: " + os);
         }
     }
-
+    
     private static int parseBatteryLevel(String line) {
         try {
-            return Integer.parseInt(line.replaceAll("[^0-9]", "").trim());
-        } catch (NumberFormatException ignored) {
+            if (line == null || line.trim().isEmpty()) return -1;
+            
+            String digits = line.replaceAll("[^0-9]", "").trim();
+            if (digits.isEmpty()) return -1;
+            
+            return Integer.parseInt(digits);
+        } catch (NumberFormatException ex) {
+            logger.severe("[EXCEPTION]: " + ex.getMessage() + " | line: " + line);
             return -1;
         }
     }
@@ -123,13 +130,17 @@ public class CallCommandLine {
         
         if (!isMac) {
             try {
-            	int status = Integer.parseInt(line.replaceAll("[^0-9]", "").trim());
+                String digits = line.replaceAll("[^0-9]", "").trim();
+                if (digits.isEmpty()) return false;
+                
+                int status = Integer.parseInt(digits);
                 return (status == 2);
             } catch (NumberFormatException e) {
+                logger.severe("[EXCEPTION]: " + e.getMessage() + " | line: " + line);
                 return false;
             }
         } else {
-            return line.contains("charging");
+            return line.toLowerCase().contains("charging");
         }
     }
     
@@ -150,21 +161,25 @@ public class CallCommandLine {
         throw new Exception("Unable to retrieve battery level");
     }
     
-    public static boolean getBatteryStatus() throws Exception {
+    public static boolean getBatteryStatus() {
         String os = getOS();
         ProcessBuilder processBatteryStatus = getProcessBuilderForBatteryStatus(os);
         boolean isCharging;
         
         boolean isMac = os.contains("mac");
-        Process statusProcess = processBatteryStatus.start();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(statusProcess.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                isCharging = parseBatteryStatus(line, isMac);
-                if (isCharging) {
-                    return true;
+        try {
+            Process statusProcess = processBatteryStatus.start();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(statusProcess.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    isCharging = parseBatteryStatus(line, isMac);
+                    if (isCharging) {
+                        return true;
+                    }
                 }
             }
+        } catch (Exception e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
         }
         return false;
     }

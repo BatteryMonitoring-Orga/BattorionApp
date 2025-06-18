@@ -41,7 +41,7 @@ public class AlertSound {
                 return;
             }
             
-            if(isFromCriticalAlert && soundControlPanel != null){
+            if(isFromCriticalAlert && soundControlPanel != null) {
                 soundControlPanel.setVisible(true);
             } if (filePath.toLowerCase().endsWith(".mp3")) {
                 playMP3(soundStream);
@@ -72,18 +72,17 @@ public class AlertSound {
 
         if (inputStream == null) {
             inputStream = ifInputStreamNull(filePath);
-        }
-        if (inputStream != null) {
+        } if (inputStream != null) {
             return ifInputStreamNotNull(inputStream);
         }
         return null;
     }
 
-    private static InputStream ifInputStreamNull(String filePath){
+    private static InputStream ifInputStreamNull(String filePath) {
         try {
             URI uri = new URI(filePath);
             URL url = uri.toURL();
-            try(InputStream in_st = url.openStream()){
+            try(InputStream in_st = url.openStream()) {
                 return in_st;
             } catch (Exception e) {
                 printErrorMessage(e);
@@ -95,8 +94,8 @@ public class AlertSound {
         }
     }
 
-    private static ByteArrayInputStream ifInputStreamNotNull(InputStream inputStream){
-        try{
+    private static ByteArrayInputStream ifInputStreamNotNull(InputStream inputStream) {
+        try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             byte[] data = new byte[1024];
             int bytesRead;
@@ -112,7 +111,7 @@ public class AlertSound {
     }
     
     private static void playWAV(InputStream soundStream) throws UnsupportedAudioFileException, IOException, LineUnavailableException, InterruptedException {
-        prepareBeforeStarting();
+        setupAudioSettingsBeforeAlert();
     	AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundStream);
         clip = AudioSystem.getClip();
         clip.open(audioStream);
@@ -124,18 +123,18 @@ public class AlertSound {
             Thread.sleep(UserChoices.getSoundDuration() * 1000L);
         }
         stopWAV();
-        prepareAfterEnding();
+        cleanupAudioSettingsAfterAlert();
     }
     
     public static void stopWAV() {
-        if (clip != null && clip.isRunning() && clip.isOpen() && clip.isActive()){
+        if (clip != null && clip.isRunning() && clip.isOpen() && clip.isActive()) {
             clip.stop();
             clip.close();
         }
     }
     
     private static void playMP3(InputStream soundStream) throws InterruptedException {
-        prepareBeforeStarting();
+        setupAudioSettingsBeforeAlert();
     	playThread = new Thread(() -> {
             try {
                 player = new Player(soundStream);
@@ -146,28 +145,27 @@ public class AlertSound {
         });
         
         playThread.start();
-        if(useDefaultDuration){
+        if(useDefaultDuration) {
             Thread.sleep(defaultSoundDuration * 1000L);
-        } else{
+        } else {
             Thread.sleep(UserChoices.getSoundDuration() * 1000L);
         }
         stopMP3();
-        prepareAfterEnding();
+        cleanupAudioSettingsAfterAlert();
     }
     
     public static void stopMP3() {
         if (player != null) {
             player.close();
-        }
-        if (playThread != null && playThread.isAlive()) {
+        } if (playThread != null && playThread.isAlive()) {
             playThread.interrupt();
         }
     }
-
-    private static void prepareBeforeStarting() {
+    
+    public static void setupAudioSettingsBeforeAlert() {
         isProcessesApplied = true;
-        try{
-            if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
+        try {
+            if (ComputerSettings.isRestoringSoundLevelAfterAlert()) {
                 volumeLevel = (int) SoundVolumeReader.getVolumeLevel();
                 Thread.sleep(100);
             }
@@ -177,7 +175,7 @@ public class AlertSound {
         
         try {
             String deviceName = getDefaultSpeakerOutputDeviceName();
-            if(ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert){
+            if (ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert) {
                 setAudioOutputDevice(deviceName);
                 activeAudioDeviceName.setText(deviceName);
                 audioOutputDeviceDashTextField.setText(deviceName);
@@ -187,29 +185,30 @@ public class AlertSound {
             printErrorMessage(e);
         }
         
-        if(ComputerSettings.isEnablingSoundLevelChange()){
+        if(ComputerSettings.isEnablingSoundLevelChange()) {
             CallCommandLine.setPCVolume(ComputerSettings.getVolumeLevel());
-        } if(ComputerSettings.isEnableUnmuteVolumeAutomatically()){
+        } if(ComputerSettings.isEnableUnmuteVolumeAutomatically()) {
             CallCommandLine.setSoundUnmute(0);
         }
     }
 
-    public static void prepareAfterEnding(){
-        try{
-            if(ComputerSettings.isRestoringSoundLevelAfterAlert()){
+    public static void cleanupAudioSettingsAfterAlert() {
+        try {
+            if(ComputerSettings.isRestoringSoundLevelAfterAlert()) {
                 CallCommandLine.setPCVolume(volumeLevel);
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             throw new RuntimeException(e);
         }
         
-        if(ComputerSettings.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert){
+        if(ComputerSettings.isEnableExchangeToAudioOutputUsed() && isFromCriticalAlert) {
             String deviceName = ComputerSettings.getCurrentAudioDevice();
             setAudioOutputDevice(deviceName);
             activeAudioDeviceName.setText(deviceName);
             audioOutputDeviceDashTextField.setText(deviceName);
-            if(soundControlPanel != null){
+            if(soundControlPanel != null) {
                 soundControlPanel.setVisible(false);
             }
         }

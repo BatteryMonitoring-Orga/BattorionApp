@@ -3,6 +3,7 @@ import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.visual_effects.DisplayMessages;
 import java.awt.*;
 
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 
 public class WakeUpPC {
@@ -28,6 +29,7 @@ public class WakeUpPC {
 		if(!checkThread()){
 			return;
 		}
+		
 	    try {
 	        java.awt.Robot robot = new java.awt.Robot();
 			wakeUpThread = Thread.ofVirtual().start(() -> {
@@ -38,6 +40,7 @@ public class WakeUpPC {
 						Thread.sleep(ComputerSettings.getWakeUpEvery() * 60000L);
 					} catch (InterruptedException ex) {
 						Thread.currentThread().interrupt();
+						logger.severe("[EXCEPTION]: " + ex.getMessage());
 						break;
 					}
                 }
@@ -52,7 +55,6 @@ public class WakeUpPC {
 			interruptRequest = true;
 			if (wakeUpThread != null && wakeUpThread.isAlive()) {
 				wakeUpThread.join(3000);
-				
 				if (wakeUpThread.isAlive()) {
 					wakeUpThread.interrupt();
 				}
@@ -64,7 +66,7 @@ public class WakeUpPC {
 
 	private static boolean checkThread(){
 		if(wakeUpThread == null){
-			return true;
+			return false;
 		}
 
 		if(wakeUpThread.isInterrupted() || !wakeUpThread.isAlive()){

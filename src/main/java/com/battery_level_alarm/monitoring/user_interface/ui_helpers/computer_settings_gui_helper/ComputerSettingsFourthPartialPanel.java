@@ -161,7 +161,7 @@ public class ComputerSettingsFourthPartialPanel {
         setDimension(0, 0);
         COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[1] = createThirdPanel(gbc, hierarchy);
         COMPUTER_SETTINGS_FOURTH_PARTIAL_PANELS_ARRAY[1].setVisible(!ComputerSettings.isAutomaticallyReduceAndRestoreBL());
-
+        
         JPanel labelPanelContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JPanel labelPanel = new JPanel(new GridBagLayout());
         addLabel(gbc, labelPanel, "In risk phase:", DEFAULT_FONT);
@@ -214,7 +214,7 @@ public class ComputerSettingsFourthPartialPanel {
                         };
                         setBrightnessControlOption(mode);
                         ConfigurationFilesManager.saveComputerSettings();
-
+                        
                         if(mode == 3){
                             for(JToggleButton entry : COMPUTER_SETTINGS_FOURTH_PARTIAL_TOGGLE_BUTTONS_ARRAY){
                                 if(entry.isSelected()){
@@ -237,7 +237,7 @@ public class ComputerSettingsFourthPartialPanel {
                 ComputerSettings.isAutomaticallyReduceAndRestoreBL() ? "On" : "Off",
                 new Dimension(60, 30)
         );
-
+        
         setColumn(1);
         addLabel(gbc, firstPanel, TWO_SPACE, LABELS_FONT);
         setColumn(2);
@@ -250,7 +250,7 @@ public class ComputerSettingsFourthPartialPanel {
     private static JPanel createSecondPanel(GridBagConstraints gbc, ComponentHierarchy hierarchy) {
         JPanel secondPanel = new JPanel(new GridBagLayout());
         addLabel(gbc, secondPanel, "Automatically restore brightness level (BL):", DEFAULT_FONT);
-
+        
         CompoundUpdaterRecord secondCompoundUpdaterRecord = getSecondCompoundUpdaterRecord(hierarchy);
         ToggleButtonRecord secondToggleButtonRecord = new ToggleButtonRecord(
                 ComputerSettings::setAutomaticallyRestoreBrightnessLevel,
@@ -318,7 +318,7 @@ public class ComputerSettingsFourthPartialPanel {
                 EffectDirection.FORWARD
         );
     }
-
+    
     private static @NotNull CompoundUpdaterRecord createCompoundUpdaterRecord(
             ComponentHierarchy hierarchy,
             int index,
@@ -338,8 +338,7 @@ public class ComputerSettingsFourthPartialPanel {
                 ComputerSettingsFourthPartialPanel::isThereIsInvisiblePartFlag,
                 ComputerSettingsFourthPartialPanel::setSpinnerVisibility,
                 progressBarUpdater, effectDirection,
-                hierarchy, null,
-                true, true
+                hierarchy, null, true, true
         );
     }
 

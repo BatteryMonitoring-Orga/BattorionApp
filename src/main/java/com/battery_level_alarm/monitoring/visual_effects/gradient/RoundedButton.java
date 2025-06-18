@@ -5,11 +5,13 @@ import java.awt.*;
 public class RoundedButton extends JButton {
 	private final int radius;
 	private final Dimension dimension;
+	private final float strokeWidth;
 	
-	public RoundedButton(String label, Dimension dimension, int radius) {
+	public RoundedButton(String label, Dimension dimension, float strokeWidth, int radius) {
 		super(label);
 		this.radius = radius;
 		this.dimension = dimension;
+		this.strokeWidth = strokeWidth;
 		setContentAreaFilled(false);
 		setFocusPainted(false);
 		setBorderPainted(false);
@@ -35,7 +37,7 @@ public class RoundedButton extends JButton {
 		Color darkerBorder = background.darker();
 //		Color darkerBorder = getDarkerColor(getBackground(), 0.8f);
 		g2.setColor(darkerBorder);
-		g2.setStroke(new BasicStroke(1.5f));
+		g2.setStroke(new BasicStroke(strokeWidth));
 		g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, radius, radius);
 		g2.dispose();
 	}

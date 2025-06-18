@@ -106,7 +106,8 @@ public class BattorionButtonsHelper {
         BatteryLevelGraph.initialize();
         return createButton(
                 GRAPH_PAINTER_TEXT, "Display a graph of battery level",
-                BUTTON_ICONS_PATH, "graph", _ -> BatteryLevelGraph.display());
+                BUTTON_ICONS_PATH, "graph", _ -> BatteryLevelGraph.display()
+        );
     }
 
     public static void setupWestSideButton() {

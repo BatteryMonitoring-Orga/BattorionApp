@@ -84,6 +84,15 @@
     -fx-outline-color: #aaaaaa;
 }
 
+.refresh-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+#refresh-button-id:hover {
+    -fx-background-color: #888888;
+}
+
 .slider {
     -fx-background-color: transparent;
     -fx-padding: 5 0 5 0;
@@ -104,6 +113,14 @@
     -fx-font-size: 14px;
     -fx-text-fill: #e0e0e0;
     -fx-font-weight: 500;
+}
+
+.toast-label {
+    -fx-background-color: #2e2e2e;
+    -fx-text-fill: black;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 14px;
 }
 
 .vbox {
@@ -146,6 +163,23 @@
     -fx-max-height: 0;
     -fx-min-height: 0;
     -fx-pref-height: 0;
+}
+
+.invisible-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+
+.invisible-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.invisible-scroll .scroll-bar:horizontal,
+.invisible-scroll .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
 }
 
 .separator {

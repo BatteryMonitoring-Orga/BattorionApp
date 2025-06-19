@@ -40,10 +40,12 @@ public class UITabs {
 		Button back = new Button("Back");
 		back.setPrefWidth(100);
 		back.setPrefHeight(30);
+		
 		Image backImage = new Image(Objects.requireNonNull(UITabs.class.getResourceAsStream(BACK_ICON_PATH)));
 		ImageView icon = new ImageView(backImage);
 		icon.setFitHeight(12);
 		icon.setFitWidth(12);
+		
 		back.setGraphic(icon);
 		back.setOnAction(_ -> {
 			if (!tabHistory.isEmpty()) {

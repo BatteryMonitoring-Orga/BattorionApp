@@ -7,6 +7,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,6 +25,7 @@ public class BattorionTrayUI extends Application {
 	public static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/light-theme.css";
 	public static Stage primaryStage;
 	public static TabPane primaryTabPane;
+	public static Insets insets;
 	
 	private static boolean isLaunched = false;
 	public enum DepartureModes {
@@ -83,8 +85,11 @@ public class BattorionTrayUI extends Application {
 	
 	static void createPopupWindow() {
 		primaryStage.setTitle("Battorion - In Background Process");
+		String position = prefs.get("tab_header_position", "Bottom");
+		setUpdateBoxPadding(position);
 		primaryTabPane = createTabsPanel();
-		primaryTabPane.setSide(Side.BOTTOM);
+		setUpdateTabHeaderPosition(position);
+		
 		Scene scene = new Scene(primaryTabPane, 350, 450);
 		scene.getStylesheets().add(Objects.requireNonNull(BattorionTrayUI.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
 		primaryTabPane.setStyle("-fx-tab-min-width: 100 !important; -fx-tab-max-height: 24 !important; -fx-font-size: 10px !important;");
@@ -111,9 +116,24 @@ public class BattorionTrayUI extends Application {
 		});
 	}
 	
+	public static void setUpdateTabHeaderPosition(String position) {
+		if(position.equals("Top")) {
+			primaryTabPane.setSide(Side.TOP);
+		} else {
+			primaryTabPane.setSide(Side.BOTTOM);
+		}
+	}
+	
+	public static void setUpdateBoxPadding(String position) {
+		if(position.equals("Top")) {
+			insets = new Insets(20);
+		} else {
+			insets = new Insets(10, 20, 25, 20);
+		}
+	}
+	
 	static void openSettingsWindow() {
 		if (primaryTabPane == null) return;
-		
 		for (Tab tab : primaryTabPane.getTabs()) {
 			if ("Settings".equals(tab.getText())) {
 				primaryStage.show();

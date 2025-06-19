@@ -1,6 +1,8 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createBackButton;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.insets;
+
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass;
@@ -44,7 +46,7 @@ public class StatisticsTab {
 		statsBox.setStyle("-fx-alignment: center;");
 		
 		VBox content = new VBox(20, backButton, statsBox);
-		content.setPadding(new Insets(10, 20, 25, 20));
+		content.setPadding(insets);
 		return createTab("Statistics", content);
 	}
 	

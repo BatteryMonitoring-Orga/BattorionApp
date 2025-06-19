@@ -4,8 +4,7 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.pauseThreads;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.stop;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTabHelper.createAutomationSection;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryTabPane;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.removeMainTrayIcon;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.applyTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createBackButton;
@@ -23,7 +22,6 @@ import com.notifications.system_tray_notifications.basics.AlarmSounds;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -58,8 +56,9 @@ public class SettingsTab {
 				createAudioSettingsSection(),
 				createAutomationSection(),
 				createNotificationSection(),
-				createThemeSection());
-		content.setPadding(new Insets(10, 20, 25, 20));
+				createThemeSection()
+		);
+		content.setPadding(insets);
 		
 		ScrollPane scrollPane = new ScrollPane(content);
 		scrollPane.setFitToWidth(true);
@@ -97,10 +96,31 @@ public class SettingsTab {
 			}
 		});
 		
-		VBox runModeBox = new VBox(20, labeledNode("Display App Interface  ", toggleRunModeButton));
+		VBox runModeBox = new VBox(20,
+				labeledNode("Display App Interface  ", toggleRunModeButton),
+				createTabHeaderMode()
+		);
 		runModeBox.setPadding(new Insets(10));
 		runModeBox.setStyle("-fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 8;");
 		return runModeBox;
+	}
+	
+	private static HBox createTabHeaderMode() {
+		ComboBox<String> headerBox = new ComboBox<>();
+		headerBox.getItems().addAll("Top", "Bottom");
+		headerBox.setValue(prefs.get("tab_header_position", "Bottom"));
+		headerBox.setCursor(Cursor.HAND);
+		headerBox.setMinWidth(112);
+		headerBox.setPrefWidth(112);
+		headerBox.setMaxWidth(112);
+		headerBox.setOnAction(_ -> {
+			String selected = headerBox.getValue();
+			prefs.put("tab_header_position", selected);
+			setUpdateTabHeaderPosition(selected);
+			setUpdateBoxPadding(selected);
+		});
+		
+		return new HBox(10, labeledNode("Tab Header Position\u2003", headerBox));
 	}
 	
 	public static VBox createAudioSettingsSection() {
@@ -204,11 +224,8 @@ public class SettingsTab {
 		notificationUI = JavaFXSoundComboBox.createNotificationSectionFX(soundItems);
 		
 		batteryMinLevel.getValueFactory().setValue(UserChoices.getMinimumLevel());
-		batteryMinLevel.valueProperty().addListener((_, _, newVal) ->{
-			
-			NotificationActions.updateMinimumLevel(newVal);
-			primaryTabPane.setSide(Side.TOP);
-				});
+		batteryMinLevel.valueProperty().addListener((_, _, newVal) ->
+				NotificationActions.updateMinimumLevel(newVal));
 		
 		batteryMaxLevel.getValueFactory().setValue(UserChoices.getMaximumLevel());
 		batteryMaxLevel.valueProperty().addListener((_, _, newVal) ->

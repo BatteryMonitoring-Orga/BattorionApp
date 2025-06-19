@@ -84,6 +84,15 @@
     -fx-outline-color: #00FFC8;
 }
 
+.refresh-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+#refresh-button-id:hover {
+    -fx-background-color: #14B8A6;
+}
+
 .slider {
     -fx-background-color: transparent;
     -fx-padding: 5 0 5 0;
@@ -146,6 +155,23 @@
     -fx-max-height: 0;
     -fx-min-height: 0;
     -fx-pref-height: 0;
+}
+
+.invisible-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+
+.invisible-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.invisible-scroll .scroll-bar:horizontal,
+.invisible-scroll .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
 }
 
 .separator {

@@ -1,11 +1,12 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
-import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.pauseThreads;
-import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.stop;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.valueOf;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.monitorSystemTheme;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingActions.AppInterface.displayAppInterface;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTabHelper.createAutomationSection;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.removeMainTrayIcon;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.applyTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createBackButton;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
@@ -16,7 +17,7 @@ import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.tray_manager.modern_component.JavaFXSoundComboBox;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor;
-import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SoundItem;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 
@@ -73,28 +74,7 @@ public class SettingsTab {
 		toggleRunModeButton.setPrefSize(110, 30);
 		toggleRunModeButton.setMinSize(110, 30);
 		toggleRunModeButton.setTooltip(new Tooltip("Restore the application window from background to foreground"));
-		toggleRunModeButton.setOnAction(_ -> {
-			try {
-				boolean isTrayIconRemoved = removeMainTrayIcon();
-				if (!isTrayIconRemoved) {
-					logger.severe("[TrayIconManager] ERROR: Unable to remove system tray icon.");
-				}
-				
-				primaryStage.hide();
-				pauseThreads();
-				stop();
-			} catch (Exception ex) {
-				logger.severe("[EXCEPTION]: " + ex.getMessage());
-			}
-			
-			try {
-				prefs.put("StartBattorionWith", String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
-				isApplicationMode = true;
-				build();
-			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
-			}
-		});
+		toggleRunModeButton.setOnAction(_ -> displayAppInterface());
 		
 		VBox runModeBox = new VBox(20,
 				labeledNode("Display App Interface  ", toggleRunModeButton),
@@ -245,13 +225,21 @@ public class SettingsTab {
 	
 	private static VBox createThemeSection() {
 		ComboBox<String> themeSelector = new ComboBox<>();
-		themeSelector.getItems().addAll("Light", "Dark", "Gray", "As System");
-		themeSelector.setValue(prefs.get("appTheme", "As System"));
+		List<String> themes = Arrays.stream(TrayTheme.SystemTheme.values()).map(Enum::name).toList();
+		themeSelector.getItems().addAll(themes);
+		
+		String modeRaw = prefs.get("appTheme", AS_SYSTEM.toString());
+		String mode = modeRaw.toUpperCase().replace(" ", "_");
+		themeSelector.setValue(mode);
+		
 		themeSelector.setCursor(Cursor.HAND);
 		themeSelector.setOnAction(_ -> {
 			String selected = themeSelector.getValue();
-			prefs.put("appTheme", selected);
-			applyTheme(selected);
+			prefs.put("appTheme", valueOf(selected).toString());
+			applyTheme(valueOf(selected));
+			if(selected.equalsIgnoreCase(AS_SYSTEM.toString())) {
+				monitorSystemTheme();
+			}
 		});
 		
 		VBox box = new VBox(10,

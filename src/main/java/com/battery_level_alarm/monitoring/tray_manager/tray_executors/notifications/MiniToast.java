@@ -38,19 +38,18 @@ public class MiniToast {
 		root.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		root.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		
-		String mode = prefs.get("appTheme", "As System");
+		String mode = prefs.get("appTheme", AS_SYSTEM.toString());
 		String cssFile;
-		if (mode != null && mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
+		if (mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
 			cssFile = STYLES_PATH + "/mini_toast_light.css";
-		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(DARK))) {
+		} else if (mode.equalsIgnoreCase(String.valueOf(DARK))) {
 			cssFile = STYLES_PATH + "/mini_toast_dark.css";
-		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(GRAY))) {
+		} else if (mode.equalsIgnoreCase(String.valueOf(GRAY))) {
 			cssFile = STYLES_PATH + "/mini_toast_gray.css";
 		} else {
 			var theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
 			cssFile = (theme == DARK) ? STYLES_PATH + "/mini_toast_dark.css" : STYLES_PATH + "/mini_toast_light.css";
 		}
-		
 		root.getStylesheets().add(Objects.requireNonNull(MiniToast.class.getResource(cssFile)).toExternalForm());
 		
 		popup.getContent().add(root);

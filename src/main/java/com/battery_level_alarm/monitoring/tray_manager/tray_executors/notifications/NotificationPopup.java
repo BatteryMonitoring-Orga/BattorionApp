@@ -67,7 +67,7 @@ public class NotificationPopup {
 		VBox root = new VBox(titleBox, new Label("  "), messageBox);
 		root.getStyleClass().add("notification-root");
 		
-		String mode = prefs.get("appTheme", "As System");
+		String mode = prefs.get("appTheme", AS_SYSTEM.toString());
 		String cssFile;
 		if (mode != null && mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
 			cssFile = NOTIFICATION_STYLES_PATH + "/notification_popup_light.css";

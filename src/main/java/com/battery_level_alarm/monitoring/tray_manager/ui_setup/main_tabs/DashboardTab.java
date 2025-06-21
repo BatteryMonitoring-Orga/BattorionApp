@@ -17,6 +17,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import java.util.Objects;
@@ -98,6 +99,7 @@ public class DashboardTab {
 		audioOutput.setAlignment(Pos.CENTER_LEFT);
 		
 		ScrollPane scrollableLabelPane = new ScrollPane(audioOutput);
+		scrollableLabelPane.getStyleClass().add("invisible-scroll");
 		scrollableLabelPane.setFitToHeight(true);
 		scrollableLabelPane.setFitToWidth(false);
 		scrollableLabelPane.setPrefViewportWidth(145);
@@ -105,8 +107,12 @@ public class DashboardTab {
 		scrollableLabelPane.setMaxHeight(25);
 		scrollableLabelPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		scrollableLabelPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		scrollableLabelPane.setPannable(true);
-		scrollableLabelPane.getStyleClass().add("invisible-scroll");
+		scrollableLabelPane.setPannable(false);
+		scrollableLabelPane.addEventFilter(ScrollEvent.SCROLL, event -> {
+			if (event.getDeltaY() != 0) {
+				event.consume();
+			}
+		});
 		
 		HBox audioOutputBox = new HBox(5);
 		audioOutputBox.setAlignment(Pos.CENTER_LEFT);

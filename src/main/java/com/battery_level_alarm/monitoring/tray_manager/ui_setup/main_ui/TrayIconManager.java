@@ -10,6 +10,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryTrayIcon;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingActions;
 import com.battery_level_alarm.monitoring.visual_effects.LoggedMessage;
 
 import javafx.application.Platform;
@@ -66,7 +67,7 @@ public class TrayIconManager {
 							stage.setAlwaysOnTop(true);
 							stage.setScene(scene);
 							stage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 400);
-							stage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 260);
+							stage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 280);
 							stage.show();
 							
 							contextMenu.show(fakePane, stage.getX(), stage.getY());
@@ -107,9 +108,16 @@ public class TrayIconManager {
 				"Pin to Tray",
 				"Show instructions to pin icon",
 				TrayAlerts::showTrayPinInstructionsFX);
+		
+		CustomMenuItem switchModeItem = createItem(
+				"Display App Interface",
+				"Restore the application window from background to foreground",
+				SettingActions.AppInterface::displayAppInterface);
+		switchModeItem.getContent().setStyle("-fx-padding: 0 26 0 26; -fx-font-family:\"Times New Roman\", Serif; -fx-text-fill: green; -fx-font-size: 14px;");
+		
 		CustomMenuItem exitItem = createItem("Exit (Stop Battorion)", "Exit the application", () -> {
 			SystemTray.getSystemTray().remove(trayIcon);
-			System.exit(0);
+			Runtime.getRuntime().halt(0);
 		});
 		exitItem.getContent().setStyle("-fx-padding: 0 26 0 26; -fx-font-family:\"Times New Roman\", Serif; -fx-text-fill: red; -fx-font-size: 14px;");
 		
@@ -172,6 +180,7 @@ public class TrayIconManager {
 				settingsItem,
 				aboutItem,
 				pinIconItem,
+				switchModeItem,
 				exitItem,
 				new SeparatorMenuItem(),
 				autoStartItem,

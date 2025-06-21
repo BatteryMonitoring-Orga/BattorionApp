@@ -1,10 +1,12 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.backgroundProcessMonitoring;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.createTrayIcon;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.applyTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTabsPanel;
 
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -16,6 +18,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+
 import java.util.Objects;
 
 public class BattorionTrayUI extends Application {
@@ -23,6 +26,8 @@ public class BattorionTrayUI extends Application {
 	public static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/dark-theme.css";
 	public static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/gray-theme.css";
 	public static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/light-theme.css";
+	private static String trayTheme;
+	
 	public static Stage primaryStage;
 	public static TabPane primaryTabPane;
 	public static Insets insets;
@@ -70,7 +75,7 @@ public class BattorionTrayUI extends Application {
 		createPopupWindow();
 		createTrayIcon();
 		if(isLaunched) {
-			backgroundProcessMonitoring();
+			backgroundProcessMonitoring(trayTheme);
 		}
 	}
 	
@@ -94,7 +99,9 @@ public class BattorionTrayUI extends Application {
 		scene.getStylesheets().add(Objects.requireNonNull(BattorionTrayUI.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
 		primaryTabPane.setStyle("-fx-tab-min-width: 100 !important; -fx-tab-max-height: 24 !important; -fx-font-size: 10px !important;");
 		primaryStage.setScene(scene);
-		applyTheme(prefs.get("appTheme", "As System"));
+		
+		trayTheme = prefs.get("appTheme", String.valueOf(AS_SYSTEM));
+		applyTheme(TrayTheme.SystemTheme.valueOf(trayTheme));
 		setupFocusAndCloseBehavior();
 	}
 	
@@ -103,6 +110,14 @@ public class BattorionTrayUI extends Application {
 			event.consume();
 			primaryStage.hide();
 		});
+		
+		primaryStage.iconifiedProperty().addListener((_, _, newVal) -> {
+			if (newVal) {
+				primaryStage.setIconified(false);
+				primaryStage.hide();
+			}
+		});
+		
 		primaryStage.focusedProperty().addListener((_, _, newFocus) -> {
 			if (!newFocus) {
 				PauseTransition pause = new PauseTransition(Duration.millis(300));

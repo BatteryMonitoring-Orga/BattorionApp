@@ -5,12 +5,18 @@ import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.setM
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.setMinimumLevel;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveComputerSettings;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveSettings;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.pauseThreads;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.stop;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.*;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.removeMainTrayIcon;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 
-class SettingActions {
+public class SettingActions {
 	static class NotificationActions {
 		static void updateNotificationSoundFileName(String device) {
 			setNotificationSoundFileName(device);
@@ -62,6 +68,31 @@ class SettingActions {
 			currentDeviceLabel.setText("Current Device:   " + customDeviceField.getText());
 			customDeviceField.setText(DEVICE_STATUS_MESSAGES_FOR_BACKGROUND_PROCESS[4]);
 			customDeviceField.setStyle("-fx-text-fill: #009600; -fx-font-size: 14px;");
+		}
+	}
+	
+	public static class AppInterface {
+		public static void displayAppInterface() {
+			try {
+				boolean isTrayIconRemoved = removeMainTrayIcon();
+				if (!isTrayIconRemoved) {
+					logger.severe("[TrayIconManager] ERROR: Unable to remove system tray icon.");
+				}
+				
+				primaryStage.hide();
+				pauseThreads();
+				stop();
+			} catch (Exception ex) {
+				logger.severe("[EXCEPTION]: " + ex.getMessage());
+			}
+			
+			try {
+				prefs.put("StartBattorionWith", String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
+				isApplicationMode = true;
+				build();
+			} catch (Exception e) {
+				logger.severe("[EXCEPTION]: " + e.getMessage());
+			}
 		}
 	}
 }

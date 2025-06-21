@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionMainProcessHelper.cleanup;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.backgroundProcessMonitoring;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.pcVolumeSpinner;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
@@ -127,26 +128,26 @@ public class BattorionProgressBarHelper {
         progressPanel.repaint();
     }
     
-    public static void setupSafeModePanel() {
-        safeModePanel = new JPanel();
-        safeModePanel = applyGradientBackground(safeModePanel, isDarkMode, true, 25, false);
-        safeModePanel.setPreferredSize(new Dimension(180, 140));
-        safeModePanel.setMaximumSize(new Dimension(180, 140));
-        safeModePanel.setLayout(new BoxLayout(safeModePanel, BoxLayout.Y_AXIS));
-        safeModePanel.setOpaque(false);
+    public static void setupSaverModePanel() {
+        saverModePanel = new JPanel();
+        saverModePanel = applyGradientBackground(saverModePanel, isDarkMode, true, 25, false);
+        saverModePanel.setPreferredSize(new Dimension(180, 140));
+        saverModePanel.setMaximumSize(new Dimension(180, 140));
+        saverModePanel.setLayout(new BoxLayout(saverModePanel, BoxLayout.Y_AXIS));
+        saverModePanel.setOpaque(false);
         
-        JLabel infoLabel = createSafeModePanelLabel();
-        JButton toggleButton = createSafeModePanelButton();
+        JLabel infoLabel = createSaverModePanelLabel();
+        JButton toggleButton = createSaverModePanelButton();
         infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         toggleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        safeModePanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        safeModePanel.add(infoLabel);
-        safeModePanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        safeModePanel.add(toggleButton);
+        saverModePanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        saverModePanel.add(infoLabel);
+        saverModePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        saverModePanel.add(toggleButton);
     }
     
-    private static JLabel createSafeModePanelLabel() {
+    private static JLabel createSaverModePanelLabel() {
         JLabel label = new JLabel("Power Saver Mode", SwingConstants.CENTER);
         label.setFont(new Font("Serif", Font.BOLD, 14));
         label.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -156,7 +157,6 @@ public class BattorionProgressBarHelper {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JTextArea textArea = getTextArea();
-                
                 JScrollPane scrollPane = new JScrollPane(textArea);
                 scrollPane.setPreferredSize(new Dimension(320, 160));
                 scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -164,7 +164,7 @@ public class BattorionProgressBarHelper {
                 scrollPane.setOpaque(false);
                 
                 JOptionPane.showMessageDialog(
-                        safeModePanel,
+                        saverModePanel,
                         scrollPane,
                         "Power Saver Mode Info",
                         JOptionPane.INFORMATION_MESSAGE
@@ -194,7 +194,7 @@ public class BattorionProgressBarHelper {
         return label;
     }
     
-    private static JButton createSafeModePanelButton() {
+    private static JButton createSaverModePanelButton() {
         Color backgroundColor;
         if(!customizationGradientBackground) {
             if(isDarkMode) {
@@ -219,13 +219,29 @@ public class BattorionProgressBarHelper {
         button.setPreferredSize(dimension);
         button.setMinimumSize(dimension);
         button.setMaximumSize(dimension);
+        
         button.addActionListener(_ -> {
+            boolean isFirstTime = Boolean.parseBoolean(prefs.get("IsFirstTimeRunningInBackground", String.valueOf(true)));
+            if (isFirstTime) {
+                final boolean[] result = {false};
+                try {
+                    java.util.concurrent.FutureTask<Boolean> future = new java.util.concurrent.FutureTask<>(BattorionMainProcessHelper::showTrayModeConfirmationDialog);
+                    Platform.runLater(future);
+                    result[0] = future.get();
+                } catch (Exception ex) {
+                    logger.severe("[EXCEPTION]: " + ex.getMessage());
+                    return;
+                } if (!result[0]) {
+                    return;
+                }
+            }
+            
             mainFrame.dispose();
             cleanup(true);
             Platform.setImplicitExit(false);
             Platform.runLater(() -> {
                 new BattorionTrayUI().start(new Stage());
-                backgroundProcessMonitoring();
+                backgroundProcessMonitoring(prefs.get("appTheme", String.valueOf(AS_SYSTEM)));
             });
         });
         return button;

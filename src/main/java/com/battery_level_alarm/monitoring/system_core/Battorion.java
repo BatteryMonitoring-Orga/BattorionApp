@@ -102,7 +102,7 @@ public class Battorion {
     
     public static JPanel soundControlPanel;
     static final JPanel progressPanel = new JPanel();
-    static JPanel safeModePanel = new JPanel();
+    static JPanel saverModePanel = new JPanel();
     static JProgressBar batteryBar;
     static JButton westSideButton;
     static JButton dashboardButton;
@@ -321,15 +321,15 @@ public class Battorion {
 
         batteryLevel = getSafeBatteryLevel();
         Color color = getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel());
-
+        
         createBatteryBar(color);
         ratioChargeLabel = createLabel("Battery Level: " + batteryLevel + "%", 15, Font.BOLD + Font.PLAIN);
         
-        setupSafeModePanel();
+        setupSaverModePanel();
         JPanel eastSidePanel = new JPanel(new GridLayout(3, 1));
         eastSidePanel.add(setupDashboardControlPanel());
         eastSidePanel.add(new JLabel(""));
-        eastSidePanel.add(safeModePanel);
+        eastSidePanel.add(saverModePanel);
         DashboardPanel.add(eastSidePanel, BorderLayout.EAST);
         
         setUpProgressPanel(progressBarInFirstMode);

@@ -1,0 +1,110 @@
+private void setupPrimaryStage() {
+    primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(BATTORION_ICON_PATH))));
+    primaryStage.setResizable(false);
+    primaryStage.setAlwaysOnTop(true);
+    primaryStage.initStyle(StageStyle.UNDECORATED);
+    primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 361);
+    primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 485);
+}
+
+static void createPopupWindow() {
+    primaryStage.setTitle("Battorion - In Background Process");
+    String position = prefs.get("tab_header_position", "Bottom");
+    setUpdateBoxPadding(position);
+    primaryTabPane = createTabsPanel();
+    setUpdateTabHeaderPosition(position);
+
+    HBox customHeader = createCustomHeader();
+    VBox root = new VBox();
+    root.setPadding(Insets.EMPTY);
+    root.setSpacing(0);
+    root.getChildren().addAll(customHeader, primaryTabPane);
+
+    Scene scene = new Scene(root, 350, 450);
+    scene.getStylesheets().add(Objects.requireNonNull(BattorionTrayUI.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
+    primaryTabPane.setStyle("-fx-tab-min-width: 100 !important; -fx-tab-max-height: 24 !important; -fx-font-size: 10px !important;");
+    primaryStage.setScene(scene);
+    applyTheme(prefs.get("appTheme", "As System"));
+    setupFocusAndCloseBehavior();
+}
+
+private static HBox createCustomHeader() {
+    Image iconImage = new Image(Objects.requireNonNull(
+            BattorionTrayUI.class.getResourceAsStream(BATTORION_ICON_PATH)));
+    ImageView iconView = new ImageView(iconImage);
+    iconView.setFitWidth(16);
+    iconView.setFitHeight(16);
+
+    Label titleLabel = new Label("Battorion - In Background Process");
+    titleLabel.setStyle("-fx-text-fill: black; -fx-font-size: 12px; -fx-font-weight: normal;");
+
+    HBox buttons = getRightControls();
+
+    Region spacer = new Region();
+    HBox.setHgrow(spacer, Priority.ALWAYS);
+
+    HBox header = new HBox(8, iconView, titleLabel, spacer, buttons);
+    header.setPadding(Insets.EMPTY);
+    header.setMinHeight(28);
+    header.setPrefHeight(28);
+    header.setMaxHeight(28);
+
+    header.setAlignment(Pos.CENTER_LEFT);
+    header.setStyle("""
+    -fx-background-color: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+    -fx-border-color: #b0b0b0;
+    -fx-border-width: 0 0 1 0;
+    """);
+
+    addDragSupport(header);
+    header.setOnMouseEntered(_ -> header.setCursor(Cursor.MOVE));
+    return header;
+}
+
+private static @NotNull HBox getRightControls() {
+    Button settingsButton = new Button("≡");
+    Button closeButton = new Button("✕");
+
+    settingsButton.setFocusTraversable(false);
+    closeButton.setFocusTraversable(false);
+
+    String baseStyle = """
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-size: 13px;
+    -fx-padding: 2 6 2 6;
+    """;
+
+    String hoverStyle = "-fx-background-color: #e0e0e0; -fx-background-radius: 3;";
+
+    settingsButton.setStyle(baseStyle);
+    closeButton.setStyle(baseStyle);
+
+    settingsButton.setOnMouseEntered(_ -> settingsButton.setStyle(baseStyle + hoverStyle));
+    settingsButton.setOnMouseExited(_ -> settingsButton.setStyle(baseStyle));
+
+    closeButton.setOnMouseEntered(_ -> closeButton.setStyle(baseStyle + "-fx-background-color: #ff5c5c;"));
+    closeButton.setOnMouseExited(_ -> closeButton.setStyle(baseStyle));
+
+    closeButton.setOnAction(_ -> primaryStage.close());
+
+    HBox rightControls = new HBox(5, settingsButton, closeButton);
+    rightControls.setAlignment(Pos.CENTER_RIGHT);
+    return rightControls;
+}
+
+private static void addDragSupport(Node dragArea) {
+    final Delta dragDelta = new Delta();
+    dragArea.setOnMousePressed(event -> {
+        dragDelta.x = primaryStage.getX() - event.getScreenX();
+        dragDelta.y = primaryStage.getY() - event.getScreenY();
+    });
+    dragArea.setOnMouseDragged(event -> {
+        primaryStage.setX(event.getScreenX() + dragDelta.x);
+        primaryStage.setY(event.getScreenY() + dragDelta.y);
+    });
+}
+
+private static class Delta {
+    double x, y;
+}

@@ -1,7 +1,11 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.getAlertBeforeRiskPhaseBy;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.monitorSystemTheme;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.stopSystemThemeMonitoring;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.currentDeviceLabel;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab.*;
@@ -13,6 +17,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
 
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationToast;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryTrayIcon;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationPopup;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
@@ -53,9 +58,14 @@ public class Monitor {
 	private static long lastDiskUpdateTime = 0;
 	private static int lastCharge = -1;
 	
-	public static void backgroundProcessMonitoring() {
+	public static void backgroundProcessMonitoring(String theme) {
 		if (!isAlive) {
+			msg = "👋 Welcome! Battery Monitor is running.";
+			NotificationToast.showNotification(msg, primaryStage);
 			start();
+			if(theme.equalsIgnoreCase(AS_SYSTEM.toString())) {
+				monitorSystemTheme();
+			}
 		}
 	}
 	
@@ -147,12 +157,26 @@ public class Monitor {
 		int minValue = UserChoices.getMinimumLevel();
 		
 		alert = true;
-		if ((chargeLevel >= maxValue) && isCharging) {
+		if((chargeLevel >= maxValue) && isCharging) {
 			msg = "Battery is too high! Please unplug the charger...";
-		} else if ((chargeLevel == (maxValue - 1)) && isCharging) {
+		} else if((chargeLevel == (maxValue - 1)) && isCharging) {
 			msg = "Battery is high! Please unplug the charger...";
-		} else if ((chargeLevel <= minValue) && !isCharging) {
+		} else if((chargeLevel <= minValue) && !isCharging) {
 			msg = "Battery is too low! Please plug the charger...";
+		} else if((chargeLevel >= maxValue - getAlertBeforeRiskPhaseBy()) && isCharging) {
+			msg = "Notice: Battery level is getting high (" + chargeLevel + "%)";
+			Platform.setImplicitExit(false);
+			Platform.runLater(() ->
+					NotificationToast.showNotification(msg, primaryStage)
+			);
+			alert = false;
+		} else if((chargeLevel <= minValue + getAlertBeforeRiskPhaseBy()) && !isCharging) {
+			msg = "Notice: Battery level is getting low (" + chargeLevel + "%)";
+			Platform.setImplicitExit(false);
+			Platform.runLater(() ->
+					NotificationToast.showNotification(msg, primaryStage)
+			);
+			alert = false;
 		} else {
 			alert = false;
 		}
@@ -186,8 +210,10 @@ public class Monitor {
 				batteryStatus.setText(isCharging ? "Charging" : "Discharging");
 				batteryLevel.setText(chargeLevel + "%");
 				assert audioDevice != null;
-				audioOutput.setText(audioDevice[1]);
-				currentDeviceLabel.setText("Current Device:   " + audioDevice[1]);
+				String device = audioDevice[1];
+				
+				audioOutput.setText(device);
+				currentDeviceLabel.setText("Current Device:   " + device);
 				batteryMonitoring.setText("active.");
 				shouldUpdateAudioOutput = false;
 			}
@@ -261,6 +287,7 @@ public class Monitor {
 		EXECUTOR_SERVICE.shutdownNow();
 		MAIN_EXECUTOR_SERVICE.shutdownNow();
 		VIRTUAL_EXECUTOR.shutdownNow();
+		stopSystemThemeMonitoring();
 	}
 	
 	public static String colorToHex(Color color) {
@@ -300,8 +327,7 @@ public class Monitor {
 		isAlertPopupShown = false;
 		
 		try {
-			Platform.setImplicitExit(false);
-			Platform.runLater(() -> triggerAudioAlert(primaryMsg));
+			triggerAudioAlert(primaryMsg);
 			EXECUTOR_SERVICE.schedule(() -> Platform.runLater(() -> {
 				if (!isAlertPopupShown) {
 					triggerAudioAlert(fallbackMsg);
@@ -315,12 +341,13 @@ public class Monitor {
 	
 	public static void triggerAudioAlert(String msg) {
 		isAlertPopupShown = true;
-		new NotificationPopup(
+		Platform.setImplicitExit(false);
+		Platform.runLater(() -> new NotificationPopup(
 				"Battorion Alert", msg,
 				"/com/battery_level_alarm/monitoring/Images/13228401.png",
 				"/com/battery_level_alarm/monitoring/Images/alert_stn.png",
 				5000
-		).show();
+		).show());
 		
 		if(isAlertInProgress) {
 			try {

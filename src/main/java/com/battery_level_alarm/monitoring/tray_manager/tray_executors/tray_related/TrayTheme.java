@@ -10,18 +10,54 @@ import javafx.scene.Scene;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class TrayTheme {
-	public enum SystemTheme {DARK, LIGHT, GRAY}
-	public static void applyTheme(String selectedTheme) {
+	public enum SystemTheme { DARK, LIGHT, GRAY, AS_SYSTEM }
+	private static SystemTheme currentTheme;
+	private static ScheduledExecutorService scheduler;
+	
+	public static void monitorSystemTheme() {
+		if (scheduler != null && !scheduler.isShutdown() && !scheduler.isTerminated()) {
+			return;
+		}
+		
+		currentTheme = getCurrentSystemTheme();
+		scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler.scheduleAtFixedRate(() -> {
+			SystemTheme newTheme = getCurrentSystemTheme();
+			if (newTheme != currentTheme) {
+				currentTheme = newTheme;
+				applyTheme(SystemTheme.AS_SYSTEM);
+			}
+		}, 0, 5, TimeUnit.SECONDS);
+	}
+	
+	public static void stopSystemThemeMonitoring() {
+		if (scheduler != null && !scheduler.isShutdown()) {
+			scheduler.shutdown();
+			try {
+				if (!scheduler.awaitTermination(1, TimeUnit.SECONDS)) {
+					scheduler.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				scheduler.shutdownNow();
+				Thread.currentThread().interrupt();
+			}
+		}
+	}
+	
+	public static void applyTheme(SystemTheme selectedTheme) {
 		Scene scene = primaryStage.getScene();
 		scene.getStylesheets().clear();
 		
 		String themePath = switch (selectedTheme) {
-			case "Dark" -> DARK_THEME_FILE_PATH;
-			case "Gray" -> GRAY_THEME_FILE_PATH;
-			case "As System" -> {
-				SystemTheme theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
+			case DARK -> DARK_THEME_FILE_PATH;
+			case GRAY -> GRAY_THEME_FILE_PATH;
+			case AS_SYSTEM -> {
+				SystemTheme theme = getCurrentSystemTheme();
 				yield theme == SystemTheme.DARK ? DARK_THEME_FILE_PATH : LIGHT_THEME_FILE_PATH;
 			}
 			default -> LIGHT_THEME_FILE_PATH;
@@ -32,6 +68,10 @@ public class TrayTheme {
 			notificationUI.getStylesheets().clear();
 			setVBoxThemeMode(notificationUI, selectedTheme);
 		}
+	}
+	
+	private static SystemTheme getCurrentSystemTheme() {
+		return System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
 	}
 	
 	public static SystemTheme getSystemTheme() {

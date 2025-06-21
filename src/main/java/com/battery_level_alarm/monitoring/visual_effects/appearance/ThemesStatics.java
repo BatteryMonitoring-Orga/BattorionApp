@@ -3,7 +3,7 @@ package com.battery_level_alarm.monitoring.visual_effects.appearance;
 public class ThemesStatics {
     public static class ThemeNames {
         public static final String LIGHT = "Light";
-        public static final String DARK ="Dark";
+        public static final String DARK = "Dark";
         public static final String TIME_BASED_FIRST_OPTION ="Time based 'first option'";
         public static final String TIME_BASED_SECOND_OPTION ="Time based 'second option'";
 

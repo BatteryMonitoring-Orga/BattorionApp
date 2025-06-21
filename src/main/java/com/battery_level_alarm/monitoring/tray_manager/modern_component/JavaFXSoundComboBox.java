@@ -1,7 +1,8 @@
 package com.battery_level_alarm.monitoring.tray_manager.modern_component;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
-import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
-import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.*;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
+
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import com.notifications.system_tray_notifications.influence.PlaySounds;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SoundItem;
@@ -64,19 +65,20 @@ public class JavaFXSoundComboBox {
 		section.setPadding(new Insets(15));
 		section.getStyleClass().add("try-notification-vbox");
 		
-		String mode = prefs.get("appTheme", "As System");
-		setVBoxThemeMode(section, mode);
+		String modeRaw = prefs.get("appTheme", AS_SYSTEM.toString());
+		String mode = modeRaw.toUpperCase().replace(" ", "_");
+		setVBoxThemeMode(section, SystemTheme.valueOf(mode));
 		return section;
 	}
 	
-	public static void setVBoxThemeMode(VBox section, String mode) {
+	public static void setVBoxThemeMode(VBox section, SystemTheme mode) {
 		switch (mode) {
-			case "Dark" -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(DARK_THEME_FILE_PATH)).toExternalForm());
-			case "Light" -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
-			case "Gray" -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(GRAY_THEME_FILE_PATH)).toExternalForm());
+			case DARK -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(DARK_THEME_FILE_PATH)).toExternalForm());
+			case LIGHT -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
+			case GRAY -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(GRAY_THEME_FILE_PATH)).toExternalForm());
 			default -> {
 				TrayTheme.SystemTheme theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
-				String systemMode = theme == TrayTheme.SystemTheme.DARK ? DARK_THEME_FILE_PATH : LIGHT_THEME_FILE_PATH;
+				String systemMode = theme == DARK ? DARK_THEME_FILE_PATH : LIGHT_THEME_FILE_PATH;
 				section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(systemMode)).toExternalForm());
 			}
 		}

@@ -2,7 +2,6 @@ Manifest-Version: 1.0
 Created-By: Maven JAR Plugin 3.4.1
 Build-Jdk-Spec: 22
 Main-Class: com.battery_level_alarm.monitoring.system_core.Battorion
-Custom-Property: Battery-Level-Threshold:80%
 Implementation-Title: Battery Monitoring App
 Implementation-Vendor: Hassoun Devs
 Implementation-Version: 2.0.1

@@ -1,8 +1,9 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.STATISTICS_QUESTIONNAIRE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
-import static com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire.aboutBatteryStatisticsPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GUI_ComponentConstraints.setTableConstraints;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.setButtonFontAndSize;
 
@@ -33,12 +34,13 @@ public class BatteryStatisticsGUI {
         table.getColumnModel().getColumn(1).setPreferredWidth(125);
         table.getColumnModel().getColumn(2).setPreferredWidth(125);
         JScrollPane scrollPane = new JScrollPane(table);
-
+        
         JButton aboutButton = new JButton("About This Panel");
         setButtonFontAndSize(
                 aboutButton, new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 14),
                 160, 30, SwingConstants.CENTER, SwingConstants.CENTER);
-        aboutButton.addActionListener(_ -> aboutBatteryStatisticsPanel());
+        aboutButton.addActionListener(_ -> Thread.ofVirtual().start(() ->
+                launchAndOpenTopic(STATISTICS_QUESTIONNAIRE, 0)));
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setPreferredSize(new Dimension(360, 40));

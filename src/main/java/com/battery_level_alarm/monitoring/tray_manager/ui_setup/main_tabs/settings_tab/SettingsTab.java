@@ -12,12 +12,13 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingActions.*;
 
-import com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.tray_manager.modern_component.JavaFXSoundComboBox;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor;
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SoundItem;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 
@@ -33,9 +34,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SettingsTab {
 	public static CheckBox enableSound = new CheckBox("Enable Notification Sound");
+	public static CheckBox enableToast = new CheckBox("Enable Toast Notification");
 	public static ComboBox<String> soundSelect = new ComboBox<>();
 	public static Spinner<Integer> batteryMinLevel = new Spinner<>(10, 25, 25);
 	public static Spinner<Integer> batteryMaxLevel = new Spinner<>(70, 95, 85);
@@ -62,6 +65,9 @@ public class SettingsTab {
 		content.setPadding(insets);
 		
 		ScrollPane scrollPane = new ScrollPane(content);
+		scrollPane.getStylesheets().add(Objects.requireNonNull(
+				DashboardTab.class.getResource(STYLES_FILES_DIR_PATH + "/hide-scroll.css")
+		).toExternalForm());
 		scrollPane.setFitToWidth(true);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -74,7 +80,12 @@ public class SettingsTab {
 		toggleRunModeButton.setPrefSize(110, 30);
 		toggleRunModeButton.setMinSize(110, 30);
 		toggleRunModeButton.setTooltip(new Tooltip("Restore the application window from background to foreground"));
-		toggleRunModeButton.setOnAction(_ -> displayAppInterface());
+		toggleRunModeButton.setOnAction(_ -> {
+			if(isApplicationMode) {
+				return;
+			}
+			displayAppInterface();
+		});
 		
 		VBox runModeBox = new VBox(20,
 				labeledNode("Display App Interface  ", toggleRunModeButton),
@@ -98,8 +109,8 @@ public class SettingsTab {
 			prefs.put("tab_header_position", selected);
 			setUpdateTabHeaderPosition(selected);
 			setUpdateBoxPadding(selected);
+			rebuildTabPanels();
 		});
-		
 		return new HBox(10, labeledNode("Tab Header Position\u2003", headerBox));
 	}
 	
@@ -134,7 +145,7 @@ public class SettingsTab {
 	
 	private static @NotNull VBox getBox() {
 		Hyperlink helpLink = new Hyperlink("How do I select the audio output?");
-		helpLink.setOnAction(_ -> StaticQuestionnaire.aboutSoundSettingsGuide());
+		helpLink.setOnAction(_ -> TrayAlerts.howDoISelectTheAudioOutput());
 		
 		HBox deviceSelector = labeledNode("Choose Device:", audioDeviceSelect);
 		HBox radioGroupBox = getRadioGroupBox();
@@ -195,6 +206,12 @@ public class SettingsTab {
 			Monitor.changeFlag = true;
 		});
 		
+		enableToast.setSelected(Boolean.parseBoolean(prefs.get("toastNotificationEnable", String.valueOf(true))));
+		enableToast.setOnAction(_ -> {
+			prefs.put("toastNotificationEnable", String.valueOf(enableToast.isSelected()));
+			Monitor.changeFlag = true;
+		});
+		
 		soundSelect.setCursor(Cursor.HAND);
 		soundSelect.setValue(getNotificationSoundFileName());
 		soundSelect.setOnAction(_ -> NotificationActions.updateNotificationSoundFileName(soundSelect.getValue()));
@@ -214,6 +231,7 @@ public class SettingsTab {
 		VBox section = new VBox(10,
 				new Label("\uD83D\uDD14 Notifications"),
 				enableSound,
+				enableToast,
 				notificationUI,
 				labeledNode("Select Sound:  \u2003\u2003", soundSelect),
 				labeledNode("Battery Min Level: ", batteryMinLevel),

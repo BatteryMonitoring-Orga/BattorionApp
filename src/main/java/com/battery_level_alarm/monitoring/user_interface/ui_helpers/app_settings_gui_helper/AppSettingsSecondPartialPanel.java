@@ -2,9 +2,9 @@ package com.battery_level_alarm.monitoring.user_interface.ui_helpers.app_setting
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setDimension;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.LABELS_FONT;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.AppSettingsGUI.APP_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.LABELS_FONT;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.AppSettingsGUI.APP_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.DropDownList.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.addToggleButton;
@@ -12,14 +12,12 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
-import com.battery_level_alarm.monitoring.core_utilities.DropDownListStaticQuestionnaires;
 import com.battery_level_alarm.monitoring.core_utilities.EffectDirection;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.*;
 import com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -84,10 +82,7 @@ public class AppSettingsSecondPartialPanel {
 
         decideTheSizeDimension();
         APP_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[1] = contentPanel;
-        JPanel partialPanelFooter = createPartialPanelFooter();
-        partialPanelFooter.setOpaque(false);
         mainPartialPanel.add(contentPanel, BorderLayout.CENTER);
-        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
         return mainPartialPanel;
     }
 
@@ -134,31 +129,11 @@ public class AppSettingsSecondPartialPanel {
         );
     }
 
-    private static JPanel createPartialPanelFooter(){
-        JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
-        about.setFont(ComputerSettingsGUI.TITLE_LISTS_FONT);
-        addMouseListenerToLabel(
-                about,
-                Color.LIGHT_GRAY,
-                () -> displayPopUpMenu(
-                        about,
-                        createFooterPopupMenu(DropDownListStaticQuestionnaires::getFirstPartialQuestionnaires)
-                )
-        );
-
-        JPanel aboutLabelPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        aboutLabelPackage.add(about);
-        JPanel aboutPanel = new JPanel(new BorderLayout());
-        //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
-        aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
-        return aboutPanel;
-    }
-
     private static void decideTheSizeDimension(){
         if(UserChoices.isEnablePrimarySound()){
-            partialPanelDimension = new Dimension(WIDTH, 140);
+            partialPanelDimension = new Dimension(WIDTH, 110);
         } else {
-            partialPanelDimension = new Dimension(WIDTH, 90);
+            partialPanelDimension = new Dimension(WIDTH, 60);
         }
     }
 }

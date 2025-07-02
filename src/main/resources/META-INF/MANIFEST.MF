@@ -1,3 +1,2 @@
 Manifest-Version: 1.0
 Main-Class: com.battery_level_alarm.monitoring.system_core.Battorion
-

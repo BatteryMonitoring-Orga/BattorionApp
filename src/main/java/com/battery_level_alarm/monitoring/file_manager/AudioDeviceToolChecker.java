@@ -12,10 +12,11 @@ import java.util.concurrent.TimeUnit;
 
 public class AudioDeviceToolChecker {
     private static Thread AudioDeviceToolThread;
+    
     public static void startCheckingThread() {
         AudioDeviceToolThread = Thread.ofVirtual().start(AudioDeviceToolChecker::startToolChecking);
     }
-
+    
     private static void startToolChecking() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -25,14 +26,14 @@ public class AudioDeviceToolChecker {
         } else if (os.contains("nix") || os.contains("nux") || os.contains("linux")) {
             handleLinux();
         }
-
+        
         try {
             AudioDeviceToolThread.interrupt();
         } catch (RuntimeException e) {
             printErrorMessage(e);
         }
     }
-
+    
     private static void handleWindows() {
         if (isModuleNotInstalled()) {
             installWindowsModule();
@@ -47,19 +48,23 @@ public class AudioDeviceToolChecker {
                 isAudioDeviceCmdletsInstalled = true;
                 saveGeneralConfigurations();
             }
+        } else {
+            isAudioDeviceCmdletsInstalled = true;
+            saveGeneralConfigurations();
         }
     }
-
+    
     private static boolean isModuleNotInstalled() {
         String command = "powershell -ExecutionPolicy Bypass -NoProfile -Command \"Try { Import-Module AudioDeviceCmdlets -ErrorAction Stop; Get-Module -ListAvailable | Where-Object { $_.Name -eq 'AudioDeviceCmdlets' } } Catch { Write-Host 'UNKNOWN_OUTPUT_DEVICE' }\"";
-        return executeCommand(command).trim().isEmpty();
+        String output = executeCommand(command).trim();
+        return output.contains("UNKNOWN_OUTPUT_DEVICE");
     }
-
+    
     private static void installWindowsModule() {
-        String command = "powershell -command \"Install-Module -Name AudioDeviceCmdlets -Scope CurrentUser -Force -ErrorAction Stop\"";
+        String command = "powershell -Command \"Install-Module -Name AudioDeviceCmdlets -Scope CurrentUser -Force -ErrorAction Stop\"";
         executeCommand(command);
     }
-
+    
     private static void handleMacOS() {
         String output = executeCommand("system_profiler SPAudioDataType");
         if (!output.contains("Output Source")) {
@@ -75,7 +80,7 @@ public class AudioDeviceToolChecker {
             }
         }
     }
-
+    
     private static void handleLinux() {
         if (executeCommand("which pactl").contains("pactl")) {
             executeCommand("pactl list short sinks");
@@ -89,7 +94,7 @@ public class AudioDeviceToolChecker {
             executeCommand("sudo apt install pulseaudio-utils -y");
         }
     }
-
+    
     private static String executeCommand(String command) {
         StringBuilder output = new StringBuilder();
         try {
@@ -103,7 +108,7 @@ public class AudioDeviceToolChecker {
             Process process = processBuilder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
+            
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
@@ -111,7 +116,7 @@ public class AudioDeviceToolChecker {
             while ((line = errorReader.readLine()) != null) {
                 System.err.println("Error: \n" + line);
             }
-
+            
             boolean finished = process.waitFor(15, TimeUnit.SECONDS);
             if (!finished) {
                 process.destroy();

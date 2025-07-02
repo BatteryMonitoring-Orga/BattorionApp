@@ -2,8 +2,9 @@ package com.battery_level_alarm.monitoring.user_interface.ui_setup;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI.createChargingHistoryPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.BatteryStatisticsGUI.createDisChargingHistoryPanel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.ICONS_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.ICONS_FOLDER_PATH;
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass;
 
 import javax.swing.*;
 import java.awt.*;

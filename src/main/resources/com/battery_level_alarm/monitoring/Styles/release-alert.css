@@ -1,0 +1,55 @@
+#releaseDialogPane {
+    -fx-background-color: linear-gradient(to bottom right, #f3eee8, #e7dcd2);
+    -fx-border-color: #a58f7f;
+    -fx-border-width: 2px;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(gaussian, rgba(165, 143, 127, 0.3), 12, 0.5, 0, 0);
+}
+
+#releaseDialogPane .header-panel {
+    -fx-background-color: linear-gradient(to right, #d8c4a6, #c1a78a);
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 10;
+}
+
+#releaseDialogPane .header-panel .label {
+    -fx-text-fill: #5c4438;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #d3c0ad, 3, 0.2, 0, 1);
+}
+
+#releaseDialogPane .content.label {
+    -fx-text-fill: #4a3f35;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.log-area {
+    -fx-control-inner-background: #f9f6f1;
+    -fx-text-fill: #3d3027;
+    -fx-font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", "Consolas", "Courier New", monospace;
+    -fx-font-size: 14px;
+    -fx-border-color: #cbb49a;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+}
+
+.button {
+    -fx-background-color: linear-gradient(to right, #d8c4a6, #c1a78a);
+    -fx-text-fill: #3d2b1f;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0.3, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to right, #bfa287, #a68c74);
+    -fx-text-fill: #ffffff;
+}

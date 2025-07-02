@@ -5,16 +5,14 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.mainFrame
 import static com.battery_level_alarm.monitoring.system_core.Battorion.motherPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setDimension;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.*;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.DropDownList.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.addToggleButton;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addMouseListenerToLabel;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.core_utilities.DropDownListStaticQuestionnaires;
 import com.battery_level_alarm.monitoring.core_utilities.EffectDirection;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ComponentHierarchy;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.CompoundUpdaterRecord;
@@ -41,7 +39,7 @@ public class ComputerSettingsThirdPartialPanel {
         ProgressBar = prepareProgressBar(COMPUTER_SETTINGS_THIRD_PARTIAL_TRUE_ARRAY, 6);
         return createPartialPanel(gbc);
     }
-
+    
     private static JPanel createPartialPanel(GridBagConstraints gbc) {
         JPanel mainPartialPanel = new JPanel(new BorderLayout());
         mainPartialPanel.setOpaque(false);
@@ -68,10 +66,7 @@ public class ComputerSettingsThirdPartialPanel {
 
         decideTheSizeDimension();
         COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[2] = partialPanelContent;
-        JPanel partialPanelFooter = createPartialPanelFooter();
-        partialPanelFooter.setOpaque(false);
         mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
-        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
         return mainPartialPanel;
     }
 
@@ -144,27 +139,10 @@ public class ComputerSettingsThirdPartialPanel {
         );
     }
 
-    private static JPanel createPartialPanelFooter(){
-        JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
-        about.setFont(TITLE_LISTS_FONT);
-        addMouseListenerToLabel(
-                about,
-                Color.LIGHT_GRAY,
-                () -> displayPopUpMenu(
-                        about,
-                        createFooterPopupMenu(DropDownListStaticQuestionnaires::getThirdPartialQuestionnaires)
-                )
-        );
-
-        JPanel aboutLabelPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        aboutLabelPackage.add(about);
-        JPanel aboutPanel = new JPanel(new BorderLayout());
-        //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
-        aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
-        return aboutPanel;
-    }
-
     private static void decideTheSizeDimension(){
-        partialPanelDimension = new Dimension(WIDTH, 140);
+        partialPanelDimension = new Dimension(WIDTH, getThirdPCHeight());
+    }
+    public static int getThirdPCHeight() {
+        return 110;
     }
 }

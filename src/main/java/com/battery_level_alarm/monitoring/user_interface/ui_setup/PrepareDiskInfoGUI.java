@@ -1,20 +1,16 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.mainFrame;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.STATISTICS_QUESTIONNAIRE;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GUI_ComponentConstraints.setTableConstraints;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.setButtonFontAndSize;
 
-import com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
-
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class PrepareDiskInfoGUI {
-	public static final Font textFont = new Font(Font.SERIF, Font.BOLD, 14);
 	public static boolean isUnderTracking = false;
-	private static Thread tracking;
-
 	private static JPanel DiskInfoPanel = new JPanel();
 	public static JPanel getDiskInfoPanel() {
 		return DiskInfoPanel;
@@ -45,20 +41,15 @@ public class PrepareDiskInfoGUI {
                 StatisticsContainerClass.refreshDiskInfoTab();
             }
         }));
-
+        
         JButton whatIsTempButton = new JButton("What Is Temp Files?");
         setButtonFontAndSize(
                 whatIsTempButton, new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 13),
                 150, 30,  SwingConstants.CENTER, SwingConstants.CENTER);
         whatIsTempButton.addActionListener(_ ->
-                JOptionPane.showMessageDialog(
-                        mainFrame,
-                        StaticQuestionnaire.Dispatch(
-                                textFont, StaticQuestionnaire.getTempFilesExplanation()
-                        ), "What Are Temp Files?", JOptionPane.INFORMATION_MESSAGE
-                )
+                Thread.ofVirtual().start(() -> launchAndOpenTopic(STATISTICS_QUESTIONNAIRE, 150))
         );
-
+        
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setPreferredSize(new Dimension(300, 40));
         buttonPanel.add(cleanTempButton);

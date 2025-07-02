@@ -1,11 +1,18 @@
 package com.battery_level_alarm.monitoring.file_manager;
+import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.*;
+import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.setSaveAfterNumOfRecords;
+import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.*;
+import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.setAutoRestartAfterUpdate;
+import static com.battery_level_alarm.monitoring.graphics.base.ChartType.LINE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setBrightnessControlOption;
 import static com.battery_level_alarm.monitoring.core_utilities.DropDownListStatus.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
+import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.isSilentMode;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
+
 import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
@@ -26,24 +33,37 @@ public class ConfigurationFilesManager {
     private static final String CONFIG_DROP_DOWN_LIST_FILE = "./_dropdown-list.cfg";
     private static final String CONFIG_SETTINGS_FILE_PATH = "./_settings.cfg";
     private static final String PC_SETTINGS_FILE_PATH = "./_pc-settings.cfg";
+    private static final String UPDATE_SETTINGS_FILE_PATH = "./_update-settings.cfg";
+    private static final String GRAPH_SETTINGS_FILE_PATH = "./_painter-settings.cfg";
+    
     private static final Logger logger = Logger.getLogger(ConfigurationFilesManager.class.getName());
     public static final String UNKNOWN_OUTPUT_DEVICE = "Unknown (S) E404";
     
-    private static File getMainFolderPath(String configFileName){
+    private static File getMainFolderPath(String configFileName) {
         File folderDir = new File(MAIN_FOLDER_PATH);
         if (!folderDir.exists()) {
-            folderDir.mkdir();
+            boolean isCreated = folderDir.mkdirs();
+            if (!isCreated) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Failed to create the main directory: " + folderDir.getAbsolutePath(),
+                        "Directory Creation Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                Runtime.getRuntime().halt(0);
+            }
         }
         return new File(folderDir, configFileName);
     }
 
-    public static void saveGeneralConfigurations(){
+    public static void saveGeneralConfigurations() {
         JSONObject json = createGeneralConfigurationsJson();
         try (FileWriter file = new FileWriter(
                 getMainFolderPath(CONFIG_PANEL_MODE_FILE).getAbsolutePath()
-        )){
+        )) {
             file.write(json.toString(4));
         } catch (IOException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save panel mode");
         }
     }
@@ -53,6 +73,7 @@ public class ConfigurationFilesManager {
         json.put("progress bar first mode", progressBarInVerticalMode);
         json.put("progress bar second mode", progressBarInFirstMode);
         json.put("west side mode", isWestSidePartAppear);
+        json.put("silent mode is active", isSilentMode);
         json.put("audio device cmdlets installed", isAudioDeviceCmdletsInstalled);
         json.put("battery simulator", simulatorMode);
         json.put("theme mode", Appearance.getThemeName());
@@ -63,17 +84,17 @@ public class ConfigurationFilesManager {
         Color startColor = getStartCustomColor();
         String colorStr = startColor.getRed() + "," + startColor.getGreen() + "," + startColor.getBlue();
         json.put("custom start color", colorStr);
-
+        
         Color endColor = getEndCustomColor();
         String colorEnd = endColor.getRed() + "," + endColor.getGreen() + "," + endColor.getBlue();
         json.put("custom end color", colorEnd);
         return json;
     }
 
-    public static void loadGeneralConfigurations(){
+    public static void loadGeneralConfigurations() {
         try (BufferedReader reader = new BufferedReader(
                 new FileReader(getMainFolderPath(CONFIG_PANEL_MODE_FILE).getAbsolutePath())
-        )){
+        )) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -81,7 +102,7 @@ public class ConfigurationFilesManager {
             }
             loadGeneralConfigurationsJson(jsonContent);
         } catch (IOException | JSONException e) {
-            printErrorMessage(e, "Failed to load panel mode");
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             loadDefaultGeneralConfigurations();
             setStartCustomColor(new Color(5, 56, 89));
             setEndCustomColor(new Color(0, 67, 8));
@@ -89,11 +110,12 @@ public class ConfigurationFilesManager {
         }
     }
 
-    private static void loadGeneralConfigurationsJson(StringBuilder jsonContent){
+    private static void loadGeneralConfigurationsJson(StringBuilder jsonContent) {
         JSONObject json = new JSONObject(jsonContent.toString());
         progressBarInVerticalMode = json.optBoolean("progress bar first mode", false);
         progressBarInFirstMode = json.optBoolean("progress bar second mode", true);
         isWestSidePartAppear = json.optBoolean("west side mode", true);
+        isSilentMode = json.optBoolean("silent mode is active", false);
         simulatorMode = json.optBoolean("battery simulator", false);
         isAudioDeviceCmdletsInstalled = json.optBoolean("audio device cmdlets installed", false);
         customizationGradientBackground = json.optBoolean("customization gradient background", false);
@@ -119,7 +141,7 @@ public class ConfigurationFilesManager {
                 saveGeneralConfigurations();
             }
         } catch (Exception e) {
-            printErrorMessage(e, "Failed to load custom start color");
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             setStartCustomColor(new Color(5, 56, 89));
             saveGeneralConfigurations();
         }
@@ -139,7 +161,7 @@ public class ConfigurationFilesManager {
                 saveGeneralConfigurations();
             }
         } catch (Exception e) {
-            printErrorMessage(e, "Failed to load custom end color");
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             setEndCustomColor(new Color(0, 67, 8));
             saveGeneralConfigurations();
         }
@@ -149,6 +171,7 @@ public class ConfigurationFilesManager {
         progressBarInVerticalMode = false;
         isWestSidePartAppear = true;
         simulatorMode = false;
+        isSilentMode = false;
         isAudioDeviceCmdletsInstalled = false;
         customizationGradientBackground = false;
         progressBarInFirstMode = true;
@@ -157,13 +180,14 @@ public class ConfigurationFilesManager {
         PanelStyler.setGradientBackgroundLightModeName("FrozenRose");
     }
 
-    public static void saveDropDownListConfigurations(){
+    public static void saveDropDownListConfigurations() {
         JSONObject json = createDropDownListConfigurationsJson();
         try (FileWriter file = new FileWriter(
                 getMainFolderPath(CONFIG_DROP_DOWN_LIST_FILE).getAbsolutePath()
-        )){
+        )) {
             file.write(json.toString(4));
         } catch (IOException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save drop down list states");
         }
     }
@@ -181,10 +205,10 @@ public class ConfigurationFilesManager {
         return json;
     }
 
-    public static void loadDropDownListConfigurations(){
+    public static void loadDropDownListConfigurations() {
         try (BufferedReader reader = new BufferedReader(
                 new FileReader(getMainFolderPath(CONFIG_DROP_DOWN_LIST_FILE).getAbsolutePath())
-        )){
+        )) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -192,13 +216,13 @@ public class ConfigurationFilesManager {
             }
             loadDropDownListConfigurationsJson(jsonContent);
         } catch (IOException | JSONException e) {
-            printErrorMessage(e, "Failed to load drop down list mode");
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             loadDefaultDropDownListConfigurations();
             saveDropDownListConfigurations();
         }
     }
 
-    private static void loadDropDownListConfigurationsJson(StringBuilder jsonContent){
+    private static void loadDropDownListConfigurationsJson(StringBuilder jsonContent) {
         JSONObject json = new JSONObject(jsonContent.toString());
         setCS_FirstDropDownListEnabled(json.optBoolean("first drop down list 'CS'", true));
         setCS_SecondDropDownListEnabled(json.optBoolean("second drop down list 'CS'", false));
@@ -225,9 +249,10 @@ public class ConfigurationFilesManager {
         JSONObject json = createSettingsJson();
         try (FileWriter file = new FileWriter(
                 getMainFolderPath(CONFIG_SETTINGS_FILE_PATH).getAbsolutePath()
-        )){
+        )) {
             file.write(json.toString(4));
         } catch (IOException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save settings");
         }
     }
@@ -252,7 +277,7 @@ public class ConfigurationFilesManager {
     public static void loadSettings() {
         try (BufferedReader reader = new BufferedReader(
                 new FileReader(getMainFolderPath(CONFIG_SETTINGS_FILE_PATH).getAbsolutePath())
-        )){
+        )) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -260,13 +285,13 @@ public class ConfigurationFilesManager {
             }
             loadSettingsFromJson(jsonContent);
         } catch (IOException | JSONException e) {
-            printErrorMessage(e, "Failed to load settings");
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             loadDefaultSettings();
             saveSettings();
         }
     }
 
-    private static void loadSettingsFromJson(StringBuilder jsonContent){
+    private static void loadSettingsFromJson(StringBuilder jsonContent) {
         JSONObject json = new JSONObject(jsonContent.toString());
         UserChoices.setPrimarySoundPath(json.optString("Primary Sound Path", "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav"));
         UserChoices.setSoundDuration(json.optInt("Primary Sound Duration", 5));
@@ -301,9 +326,10 @@ public class ConfigurationFilesManager {
         JSONObject json = createComputerSettingsJson();
         try (FileWriter file = new FileWriter(
                 getMainFolderPath(PC_SETTINGS_FILE_PATH).getAbsolutePath()
-        )){
+        )) {
             file.write(json.toString(4));
         } catch (IOException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save pc details");
         }
     }
@@ -331,10 +357,10 @@ public class ConfigurationFilesManager {
         return json;
     }
 
-    public static void loadComputerSettings(){
+    public static void loadComputerSettings() {
         try (BufferedReader reader = new BufferedReader(
                 new FileReader(getMainFolderPath(PC_SETTINGS_FILE_PATH).getAbsolutePath())
-        )){
+        )) {
             StringBuilder jsonContent = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -342,13 +368,13 @@ public class ConfigurationFilesManager {
             }
             loadComputerSettingsFromJson(jsonContent);
         } catch (IOException | JSONException e) {
-            printErrorMessage(e, "Failed to load pc details");
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             loadDefaultComputerSettings();
             saveComputerSettings();
         }
     }
 
-    private static void loadComputerSettingsFromJson(StringBuilder jsonContent){
+    private static void loadComputerSettingsFromJson(StringBuilder jsonContent) {
         JSONObject json = new JSONObject(jsonContent.toString());
         setActivateTheAwakeningFeature(json.optBoolean("Activate the awakening feature", false));
         setEnableSystemNotificationSound(json.optBoolean("Enable System Notification Sound", true));
@@ -370,7 +396,7 @@ public class ConfigurationFilesManager {
         setNotificationSoundFileName(json.optString("Notification Sound File Name", "Alarm01.wav"));
     }
 
-    private static void loadAudioDevicesList(JSONObject json){
+    private static void loadAudioDevicesList(JSONObject json) {
         JSONArray audioDevicesArray = json.optJSONArray("Audio devices");
         List<String> audioDevicesList = new ArrayList<>();
         if (audioDevicesArray != null) {
@@ -381,7 +407,7 @@ public class ConfigurationFilesManager {
         setAudioDevices(audioDevicesList);
     }
 
-    private static void loadDefaultComputerSettings(){
+    private static void loadDefaultComputerSettings() {
         setActivateTheAwakeningFeature(false);
         setEnableSystemNotificationSound(true);
         setEnableUnmuteVolumeAutomatically(true);
@@ -407,13 +433,170 @@ public class ConfigurationFilesManager {
             setDefaultSpeakerOutputDeviceName(defaultSpeakerOutputDeviceName);
             setCurrentAudioDevice(defaultSpeakerOutputDeviceName);
         } catch (Exception e) {
-            printErrorMessage(e, "Failed to get default speaker output device name");
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             setDefaultSpeakerOutputDeviceName(UNKNOWN_OUTPUT_DEVICE);
             setCurrentAudioDevice(UNKNOWN_OUTPUT_DEVICE);
         }
     }
-
-    private static void printErrorMessage(Throwable e, String loggerText){
+    
+    public static void saveUpdateVersionConfigurations() {
+        JSONObject json = createUpdateVersionConfigurationsJson();
+        try (FileWriter file = new FileWriter(
+                getMainFolderPath(UPDATE_SETTINGS_FILE_PATH).getAbsolutePath()
+        )) {
+            file.write(json.toString(4));
+        } catch (IOException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, "Failed to save update settings");
+        }
+    }
+    
+    private static JSONObject createUpdateVersionConfigurationsJson() {
+        JSONObject json = new JSONObject();
+        json.put("check for updates automatically", isCheckForUpdatesAutomatically());
+        json.put("download updates automatically", isDownloadUpdatesAutomatically());
+        json.put("notify before installing", isNotifyBeforeInstalling());
+        json.put("auto-restart after update", isAutoRestartAfterUpdate());
+        json.put("previous version", getPreviousVersion());
+        return json;
+    }
+    
+    public static void loadUpdateVersionConfigurations() {
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(getMainFolderPath(UPDATE_SETTINGS_FILE_PATH).getAbsolutePath())
+        )) {
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            loadUpdateVersionConfigurationsJson(jsonContent);
+        } catch (IOException | JSONException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
+            loadDefaultUpdateVersionConfigurations();
+            saveUpdateVersionConfigurations();
+        }
+    }
+    
+    private static void loadUpdateVersionConfigurationsJson(StringBuilder jsonContent) {
+        JSONObject json = new JSONObject(jsonContent.toString());
+        setCheckForUpdatesAutomatically(json.optBoolean("check for updates automatically", true));
+        setDownloadUpdatesAutomatically(json.optBoolean("download updates automatically", false));
+        setNotifyBeforeInstalling(json.optBoolean("notify before installing", false));
+        setAutoRestartAfterUpdate(json.optBoolean("auto-restart after update", true));
+        setPreviousVersion(json.optString("previous version", "5.0.0"));
+    }
+    
+    private static void loadDefaultUpdateVersionConfigurations() {
+        setCheckForUpdatesAutomatically(true);
+        setDownloadUpdatesAutomatically(false);
+        setNotifyBeforeInstalling(false);
+        setAutoRestartAfterUpdate(true);
+        setPreviousVersion("5.0.0");
+    }
+    
+    public static void saveGraphConfigurations() {
+        JSONObject json = createGraphConfigurationsJson();
+        try (FileWriter file = new FileWriter(
+                getMainFolderPath(GRAPH_SETTINGS_FILE_PATH).getAbsolutePath()
+        )) {
+            file.write(json.toString(4));
+        } catch (IOException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, "Failed to save graph settings");
+        }
+    }
+    
+    private static JSONObject createGraphConfigurationsJson() {
+        JSONObject json = new JSONObject();
+        json.put("graph theme", getPainterTheme());
+        json.put("sketch color", getSketchColor().toString());
+        json.put("background color", getBackgroundColor().toString());
+        json.put("axis color", getAxisColor().toString());
+        json.put("language", getLanguage());
+        json.put("chart type", getChartType());
+        json.put("show points on graph", isShowDataPoints());
+        json.put("show values on hover", isShowValuesOnHover());
+        json.put("show grid lines", isShowGridLines());
+        json.put("show x axis labels", isShowXAxisLabels());
+        json.put("show y axis labels", isShowYAxisLabels());
+        json.put("enable auto update", isAutoUpdate());
+        json.put("enable zoom", isZoomEnabled());
+        json.put("minimum zoom level", getZoomMin());
+        json.put("maximum zoom level", getZoomMax());
+        json.put("alert threshold percent", getAlertThreshold());
+        json.put("alert color", getAlertColor().toString());
+        json.put("default save format", getSaveFormat());
+        json.put("enable auto save", isAutoSave());
+        json.put("auto-save every (records)", getSaveAfterNumOfRecords());
+        return json;
+    }
+    
+    public static void loadGraphConfigurations() {
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(getMainFolderPath(GRAPH_SETTINGS_FILE_PATH).getAbsolutePath())
+        )) {
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            loadGraphConfigurationsJson(jsonContent);
+        } catch (IOException | JSONException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
+            loadDefaultGraphConfigurations();
+            saveGraphConfigurations();
+        }
+    }
+    
+    private static void loadGraphConfigurationsJson(StringBuilder jsonContent) {
+        JSONObject json = new JSONObject(jsonContent.toString());
+        setPainterTheme(json.optString("graph theme", GRAPH_THEME.FlatIntellijLightLaf.getDisplayName()));
+        setSketchColor(javafx.scene.paint.Color.web(json.optString("sketch color", "#f3622d")));
+        setBackgroundColor(javafx.scene.paint.Color.web(json.optString("background color", "WHITE")));
+        setAxisColor(javafx.scene.paint.Color.web(json.optString("axis color", "BLACK")));
+        setLanguage(json.optString("language", "English"));
+        setChartType(json.optString("chart type", LINE.name()));
+        setShowDataPoints(json.optBoolean("show points on graph", true));
+        setShowValuesOnHover(json.optBoolean("show values on hover", true));
+        setShowGridLines(json.optBoolean("show grid lines", false));
+        setShowXAxisLabels(json.optBoolean("show x axis labels", true));
+        setShowYAxisLabels(json.optBoolean("show y axis labels", true));
+        setAutoUpdate(json.optBoolean("enable auto update", true));
+        setZoomEnabled(json.optBoolean("enable zoom", true));
+        setZoomMin(json.optDouble("minimum zoom level", 0.5));
+        setZoomMax(json.optDouble("maximum zoom level", 2.0));
+        setAlertThreshold(json.optInt("alert threshold percent", 20));
+        setAlertColor(javafx.scene.paint.Color.web(json.optString("alert color", "RED")));
+        setSaveFormat(json.optString("default save format", "CSV"));
+        setAutoSave(json.optBoolean("enable auto save", false));
+        setSaveAfterNumOfRecords(json.optInt("auto-save every (records)", 250));
+    }
+    
+    private static void loadDefaultGraphConfigurations() {
+        setPainterTheme(GRAPH_THEME.FlatIntellijLightLaf.getDisplayName());
+        setSketchColor(javafx.scene.paint.Color.web("#f3622d"));
+        setBackgroundColor(javafx.scene.paint.Color.WHITE);
+        setAxisColor(javafx.scene.paint.Color.BLACK);
+        setLanguage("English");
+        setChartType(LINE.name());
+        setShowDataPoints(true);
+        setShowValuesOnHover(true);
+        setShowGridLines(false);
+        setShowXAxisLabels(true);
+        setShowYAxisLabels(true);
+        setAutoUpdate(true);
+        setZoomEnabled(true);
+        setZoomMin(0.5);
+        setZoomMax(2.0);
+        setAlertThreshold(20);
+        setAlertColor(javafx.scene.paint.Color.RED);
+        setSaveFormat("CSV");
+        setAutoSave(false);
+        setSaveAfterNumOfRecords(250);
+    }
+    
+    private static void printErrorMessage(Throwable e, String loggerText) {
         logger.severe(loggerText + ": " + e.getMessage());
         JOptionPane.showMessageDialog(
                 null,

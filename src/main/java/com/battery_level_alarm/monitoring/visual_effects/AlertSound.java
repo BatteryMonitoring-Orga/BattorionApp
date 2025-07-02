@@ -3,7 +3,7 @@ import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$C
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getDefaultSpeakerOutputDeviceName;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.activeAudioDeviceName;
 
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;

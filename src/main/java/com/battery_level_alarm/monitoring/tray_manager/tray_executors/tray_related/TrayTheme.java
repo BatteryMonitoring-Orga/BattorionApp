@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.isApplicationMode;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.tray_manager.modern_component.JavaFXSoundComboBox.setVBoxThemeMode;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
@@ -15,7 +16,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TrayTheme {
-	public enum SystemTheme { DARK, LIGHT, GRAY, AS_SYSTEM }
+	public enum SystemTheme { DARK, LIGHT, GRAY, CREAM, AS_SYSTEM }
 	private static SystemTheme currentTheme;
 	private static ScheduledExecutorService scheduler;
 	
@@ -32,7 +33,7 @@ public class TrayTheme {
 				currentTheme = newTheme;
 				applyTheme(SystemTheme.AS_SYSTEM);
 			}
-		}, 0, 5, TimeUnit.SECONDS);
+		}, 0, 5, TimeUnit.MINUTES);
 	}
 	
 	public static void stopSystemThemeMonitoring() {
@@ -51,11 +52,19 @@ public class TrayTheme {
 	
 	public static void applyTheme(SystemTheme selectedTheme) {
 		Scene scene = primaryStage.getScene();
-		scene.getStylesheets().clear();
+		if(scene == null) {
+			if(isApplicationMode) {
+				scene = primaryScene;
+			} else {
+				return;
+			}
+		}
 		
+		scene.getStylesheets().clear();
 		String themePath = switch (selectedTheme) {
 			case DARK -> DARK_THEME_FILE_PATH;
 			case GRAY -> GRAY_THEME_FILE_PATH;
+			case CREAM -> CREAM_THEME_FILE_PATH;
 			case AS_SYSTEM -> {
 				SystemTheme theme = getCurrentSystemTheme();
 				yield theme == SystemTheme.DARK ? DARK_THEME_FILE_PATH : LIGHT_THEME_FILE_PATH;

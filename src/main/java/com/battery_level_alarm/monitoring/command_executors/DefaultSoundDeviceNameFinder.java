@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 
 import java.io.*;
@@ -24,7 +25,6 @@ public class DefaultSoundDeviceNameFinder {
 	public static String findFirstValidRenderDevice() {
 		try {
 			runSoundVolumeProcess();
-			
 			try (BufferedReader reader = new BufferedReader(new FileReader(OUTPUT_FILE))) {
 				String line;
 				while ((line = reader.readLine()) != null) {
@@ -47,9 +47,15 @@ public class DefaultSoundDeviceNameFinder {
 				}
 			}
 		} catch (Exception e) {
-			printErrorMessage(e);
+			logger.severe("[EXCEPTION]: " + e.getMessage());
+		} finally {
+			try {
+				Thread.sleep(5000);
+				deleteOutputFile();
+			} catch (Exception ex) {
+				logger.severe("[EXCEPTION]: " + ex.getMessage());
+			}
 		}
-		deleteOutputFile();
 		return null;
 	}
 	
@@ -59,17 +65,37 @@ public class DefaultSoundDeviceNameFinder {
 				"/scomma",
 				OUTPUT_FILE
 		);
-		pb.start().waitFor();
+		Process process = pb.start();
+		process.waitFor();
 	}
 	
 	private static void deleteOutputFile() {
-		try {
-			File file = new File(OUTPUT_FILE);
-			if (file.exists()) {
-				file.delete();
+		File file = new File(OUTPUT_FILE);
+		for (int i = 0; i < 5; i++) {
+			if (!file.exists()) {
+				logger.info("[INFO]: output.csv not found, no need to delete");
+				return;
+			} if (file.delete()) {
+				logger.info("[INFO]: ✔ output.csv deleted");
+				return;
 			}
-		} catch (Exception e) {
-			printErrorMessage(e);
+			
+			File renamed = new File(file.getAbsolutePath() + ".tmp");
+			if (file.renameTo(renamed)) {
+				if (renamed.delete()) {
+					logger.info("[INFO]: ✔ Renamed and deleted output.csv.tmp");
+					return;
+				}
+			}
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 		}
+		
+		file.deleteOnExit();
+		logger.severe("[ERROR]: ❌ Failed to delete output.csv after retries, will try on JVM exit");
 	}
 }

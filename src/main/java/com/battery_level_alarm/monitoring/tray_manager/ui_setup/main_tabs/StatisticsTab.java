@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.insets;
 
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
-import com.battery_level_alarm.monitoring.core_utilities.StaticQuestionnaire;
+import com.battery_level_alarm.monitoring.questionnaires.StaticQuestionnaire;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass;
 
 import javafx.geometry.Insets;
@@ -68,7 +68,7 @@ public class StatisticsTab {
 		info.setTooltip(new Tooltip("Temporary files are created during program execution and can be safely deleted."));
 		info.setOnAction(_ -> {
 			WebView webView = new WebView();
-			webView.getEngine().loadContent(StaticQuestionnaire.getTempFilesExplanation());
+			webView.getEngine().loadContent(StaticQuestionnaire.getDiskInfoExplanation());
 			
 			Dialog<Void> dialog = new Dialog<>();
 			dialog.setTitle("What Are Temp Files?");

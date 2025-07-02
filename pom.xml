@@ -18,7 +18,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>batterymonitoring-orga</sonar.organization>
         <sonar.projectKey>batterymonitoring-orga</sonar.projectKey>
-        <app.version>2.15.3</app.version>
+        <app.version>5.0.0</app.version>
     </properties>
 
     <dependencyManagement>
@@ -50,6 +50,12 @@
             <groupId>org.swinglabs.swingx</groupId>
             <artifactId>swingx-core</artifactId>
             <version>1.6.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.64.8</version>
         </dependency>
 
         <dependency>
@@ -180,9 +186,8 @@
                             </manifest>
                             <manifestEntries>
                                 <Implementation-Title>Battery Monitoring App</Implementation-Title>
-                                <Implementation-Version>2.15.3</Implementation-Version>
+                                <Implementation-Version>${app.version}</Implementation-Version>
                                 <Implementation-Vendor>Hassoun Devs</Implementation-Vendor>
-                                <Custom-Property>Battery-Level-Threshold:80%</Custom-Property>
                             </manifestEntries>
                         </archive>
                     </configuration>
@@ -229,9 +234,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <echo file="${project.basedir}/execution_app/config.properties" append="false">app.version=${app.version}</echo>
-                                <echo file="${project.basedir}/execution_app/config.properties" append="true">battery.threshold=80%</echo>
-                                <echo file="${project.basedir}/execution_app/config.properties" append="true">notification.enabled=true</echo>
+                                <echo file="${project.basedir}/config.enc" append="false">app.version=${app.version}</echo>
                             </target>
                         </configuration>
                     </execution>

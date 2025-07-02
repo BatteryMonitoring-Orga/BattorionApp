@@ -1,0 +1,80 @@
+public static JScrollPane Dispatch(Font textFont, String message) {
+    JEditorPane editorPane = new JEditorPane("text/html", message);
+    editorPane.setFont(textFont);
+    editorPane.setEditable(false);
+    editorPane.setOpaque(false);
+    editorPane.setFocusable(false);
+    editorPane.setHighlighter(null);
+    editorPane.setCaretPosition(0);
+
+    JScrollPane scrollPane = new JScrollPane(editorPane);
+    scrollPane.setPreferredSize(new java.awt.Dimension(500, 300));
+    scrollPane.setBorder(null);
+    scrollPane.setOpaque(false);
+    return scrollPane;
+}
+
+public static void aboutEditorPanelDispatch(
+        String title, JEditorPane messageSupplier,
+        Map<String, Runnable> actionsMap, int... dimensions
+) {
+    messageSupplier.setEditable(false);
+    messageSupplier.setOpaque(false);
+    messageSupplier.setFocusable(false);
+    messageSupplier.setHighlighter(null);
+    messageSupplier.addHyperlinkListener(e -> {
+        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            Runnable action = actionsMap.get(e.getDescription());
+            if (action != null) {
+                action.run();
+            }
+        }
+    });
+
+    JScrollPane scrollPane = new JScrollPane(messageSupplier);
+    scrollPane.setPreferredSize(new Dimension(dimensions[0], dimensions[1]));
+    scrollPane.setBorder(null);
+    scrollPane.setOpaque(false);
+    SwingUtilities.invokeLater(() -> {
+        scrollPane.getVerticalScrollBar().setValue(0);
+        messageSupplier.setCaretPosition(0);
+    });
+    JOptionPane.showMessageDialog(mainFrame, scrollPane, title, JOptionPane.INFORMATION_MESSAGE);
+}
+
+
+// Static Questionnaire
+public static @NotNull Map<String, Runnable> getStringRunnableMap() {
+    Map<String, Runnable> actionsMap = new HashMap<>();
+    actionsMap.put("openTab-openComprehensiveBatteryGuideInArabic",
+            () -> HTMLOpener.open(System.getProperty("user.home") + MAIN_FOLDER_NAME + "/comprehensive_guide-main/Comprehensive Guide - Arabic.html")
+    );
+    actionsMap.put("openTab-openComprehensiveBatteryGuideInEnglish",
+            () -> HTMLOpener.open(System.getProperty("user.home") + MAIN_FOLDER_NAME + "/comprehensive_guide-main/Comprehensive Guide - English.html")
+    );
+    return actionsMap;
+}
+
+// Mini Doc Browser
+if (data.startsWith("action:")) {
+    Runnable action = getStringRunnableMap().get(data);
+    if (action != null) {
+        Platform.setImplicitExit(false);
+        Platform.runLater(action);
+    }
+} else if (data.startsWith("openTab-")) {
+    Platform.setImplicitExit(false);
+    Platform.runLater(() -> {
+        Tab newTab;
+        if(aboutActionTitle.containsKey(data)) {
+            String realPath = getStringRunnableMap().get(data);
+            String content = readHtmlAsText(realPath);
+            String fixedHtml = fixRelativePaths(content, realPath);
+            newTab = createTab(aboutActionTitle.get(data), fixedHtml);
+        } else {
+            newTab = createTab(appendicesActionTitle.get(data), getStringAppendicesMap().get(data));
+        }
+        tabPane.getTabs().add(newTab);
+        tabPane.getSelectionModel().select(newTab);
+    });
+}

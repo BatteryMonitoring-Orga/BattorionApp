@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core;
+import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.version;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import java.io.File;
 import javax.swing.*;
@@ -6,9 +7,9 @@ import java.awt.*;
 
 public class BattorionCoreConstants {
     public static class AppInfo {
-        public static final String APP_VERSION = Battorion.class.getPackage().getImplementationVersion();
+        public static final String APP_VERSION = version("config.enc");
         public static final String APP_NAME = "Battorion";
-        public static final String TRAY_NOTIFICATION_ICON = "Battorion - Tray Icon";
+        public static final String TRAY_NOTIFICATION_NAME = "Battorion - In Background Process";
         
         public static String getCurrentExeDirectory() {
             try {
@@ -28,7 +29,7 @@ public class BattorionCoreConstants {
     public static class UI {
         public static final Font TEXT_FONT = new Font(Font.SERIF, Font.PLAIN, 14);
         public static final Color DARK_BLUE = new Color(0, 90, 145);
-
+        
         static void setUIManagerPanelColor(Color panelBackgroundColor) {
             UIManager.put("Panel.background", panelBackgroundColor);
             UIManager.put("ScrollPane.background", panelBackgroundColor);
@@ -46,13 +47,16 @@ public class BattorionCoreConstants {
             UIManager.put("Label.background", panelBackgroundColor);
         }
     }
-
+    
     public static class Paths {
         public static final String MAIN_FOLDER_NAME = "/Battorion";
         public static final String IMAGES_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Images/";
+        public static final String CSS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Styles/";
+        public static final String ASSETS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Assets/";
         public static final String BUTTON_ICONS_PATH = "/com/battery_level_alarm/monitoring/mainButtonIcons/";
-        static final String CHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-start-2574.wav";
-        static final String DISCHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-back-2575.wav";
+        public static final String REFRESH_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/";
+        public static final String CHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-start-2574.wav";
+        public static final String DISCHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-back-2575.wav";
     }
 
     public static class ChargingStatus {
@@ -61,23 +65,24 @@ public class BattorionCoreConstants {
     }
 
     public static class PanelIdentifiers {
-        static final String isA_DashboardPanel = "DashboardPanel";
-        static final String isA_SettingsContainer = "SettingsContainerPanel";
-        static final String isA_StatisticsContainer = "StatisticsContainerPanel";
-        static final String isA_SimulatorPanel = "SimulatorPanel";
+        public static final String isA_DashboardPanel = "DashboardPanel";
+        public static final String isA_SettingsContainer = "SettingsContainerPanel";
+        public static final String isA_StatisticsContainer = "StatisticsContainerPanel";
+        public static final String isA_SimulatorPanel = "SimulatorPanel";
     }
 
     public static class ButtonTexts {
-        static final String WEST_SIDE_BUTTON_TEXT = " West Side";
-        static final String DASHBOARD_BUTTON_TEXT = " Dashboard";
-        static final String START_BUTTON_TEXT = " Start";
-        static final String STOP_BUTTON_TEXT = " Stop";
-        static final String SETTINGS_BUTTON_TEXT = " Settings";
-        static final String STATISTICS_BUTTON_TEXT = " Statistics";
-        static final String SIMULATOR_BUTTON_TEXT = " Simulator";
-        static final String REPORT_BUTTON_TEXT = " Life Report";
-        static final String ABOUT_BUTTON_TEXT = " About";
-        static final String GRAPH_PAINTER_TEXT = " Graph";
+        public static final String WEST_SIDE_BUTTON_TEXT = " West Side";
+        public static final String DASHBOARD_BUTTON_TEXT = " Dashboard";
+        public static final String START_BUTTON_TEXT = " Start";
+        public static final String STOP_BUTTON_TEXT = " Stop";
+        public static final String SETTINGS_BUTTON_TEXT = " Settings";
+        public static final String STATISTICS_BUTTON_TEXT = " Statistics";
+        public static final String SIMULATOR_BUTTON_TEXT = " Simulator";
+        public static final String GUIDE_BUTTON_TEXT = " Guide";
+        public static final String REPORT_BUTTON_TEXT = " Life Report";
+        public static final String ABOUT_BUTTON_TEXT = " About";
+        public static final String GRAPH_PAINTER_TEXT = " Graph";
     }
 
     public static class Dimensions {

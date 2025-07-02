@@ -1,0 +1,23 @@
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+#dash-scroll .scroll-bar:vertical,
+#dash-scroll .scroll-bar:horizontal {
+    -fx-pref-width: 0px;
+    -fx-pref-height: 0px;
+    -fx-opacity: 0;
+}
+
+#dash-scroll .scroll-bar .thumb {
+    -fx-background-color: transparent;
+}
+
+#dash-scroll .scroll-bar .track {
+    -fx-background-color: transparent;
+}

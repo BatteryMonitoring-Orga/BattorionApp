@@ -17,14 +17,17 @@ module monitoring {
 	requires jlayer;
 	requires org.json;
 	requires swingx.core;
+	requires flexmark;
+	requires flexmark.util.ast;
 	
+	exports com.battery_level_alarm.monitoring.mini_browser;
 	exports com.battery_level_alarm.monitoring.battery_emulator;
 	exports com.battery_level_alarm.monitoring.battery_report;
 	exports com.battery_level_alarm.monitoring.command_executors;
 	exports com.battery_level_alarm.monitoring.core_utilities;
 	exports com.battery_level_alarm.monitoring.download_tracker;
 	exports com.battery_level_alarm.monitoring.file_manager;
-	exports com.battery_level_alarm.monitoring.graphics;
+	exports com.battery_level_alarm.monitoring.graphics.base;
 	exports com.battery_level_alarm.monitoring.skeleton_constraints;
 	exports com.battery_level_alarm.monitoring.system_automation;
 	exports com.battery_level_alarm.monitoring.system_core;
@@ -45,9 +48,11 @@ module monitoring {
 	exports com.battery_level_alarm.monitoring.user_interface.ui_setup;
 	exports com.battery_level_alarm.monitoring.user_interface.ui_static_configs;
 	exports com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui to javafx.graphics;
+	exports com.battery_level_alarm.monitoring.system_core.handlers;
+	exports com.battery_level_alarm.monitoring.system_core.helpers;
 	
 	opens com.battery_level_alarm.monitoring.battery_report to javafx.graphics;
-	opens com.battery_level_alarm.monitoring.graphics to javafx.graphics;
+	opens com.battery_level_alarm.monitoring.graphics.base to javafx.graphics;
 	opens com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui to javafx.swing;
@@ -55,4 +60,12 @@ module monitoring {
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.actions to javafx.swing;
+	exports com.battery_level_alarm.monitoring.questionnaires;
+	exports com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
+	exports com.battery_level_alarm.monitoring.graphics.ui;
+	opens com.battery_level_alarm.monitoring.graphics.ui to javafx.graphics;
+	exports com.battery_level_alarm.monitoring.graphics.executor;
+	opens com.battery_level_alarm.monitoring.graphics.executor to javafx.graphics;
+	exports com.battery_level_alarm.monitoring.graphics.records;
+	opens com.battery_level_alarm.monitoring.graphics.records to javafx.graphics;
 }

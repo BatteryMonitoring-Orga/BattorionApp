@@ -23,92 +23,92 @@ public class ComputerSettings {
     private static int wakeUpEvery;
     private static int volumeLevel;
 
-    public static boolean isActivateTheAwakeningFeature(){
+    public static boolean isActivateTheAwakeningFeature() {
         return activateTheAwakeningFeature;
     }
-    public static void setActivateTheAwakeningFeature(boolean activateTheAwakeningFeature){
+    public static void setActivateTheAwakeningFeature(boolean activateTheAwakeningFeature) {
         ComputerSettings.activateTheAwakeningFeature = activateTheAwakeningFeature;
     }
 
-    public static boolean isEnableSystemNotificationSound(){
+    public static boolean isEnableSystemNotificationSound() {
         return enableSystemNotificationSound;
     }
-    public static void setEnableSystemNotificationSound(boolean enableSystemNotificationSound){
+    public static void setEnableSystemNotificationSound(boolean enableSystemNotificationSound) {
         ComputerSettings.enableSystemNotificationSound = enableSystemNotificationSound;
     }
 
-    public static boolean isEnableExchangeToSpeakerAudioOutput(){
+    public static boolean isEnableExchangeToSpeakerAudioOutput() {
         return enableExchangeToSpeakerAudioOutput;
     }
     public static void setEnableExchangeToSpeakerAudioOutput(boolean enableExchangeToSpeakerAudioOutput) {
         ComputerSettings.enableExchangeToSpeakerAudioOutput = enableExchangeToSpeakerAudioOutput;
     }
 
-    public static boolean isEnableExchangeToAudioOutputUsed(){
+    public static boolean isEnableExchangeToAudioOutputUsed() {
         return enableExchangeToAudioOutputUsed;
     }
     public static void setEnableExchangeToAudioOutputUsed(boolean enableExchangeToAudioOutputUsed) {
         ComputerSettings.enableExchangeToAudioOutputUsed = enableExchangeToAudioOutputUsed;
     }
 
-    public static boolean isEnablingSoundLevelChange(){
+    public static boolean isEnablingSoundLevelChange() {
         return enablingSoundLevelChange;
     }
     public static void setEnablingSoundLevelChange(boolean enablingSoundLevelChange) {
         ComputerSettings.enablingSoundLevelChange = enablingSoundLevelChange;
     }
 
-    public static boolean isRestoringSoundLevelAfterAlert(){
+    public static boolean isRestoringSoundLevelAfterAlert() {
         return restoringSoundLevelAfterAlert;
     }
     public static void setRestoringSoundLevelAfterAlert(boolean restoringSoundLevelAfterAlert) {
         ComputerSettings.restoringSoundLevelAfterAlert = restoringSoundLevelAfterAlert;
     }
 
-    public static boolean isEnableUnmuteVolumeAutomatically(){
+    public static boolean isEnableUnmuteVolumeAutomatically() {
         return enableUnmuteVolumeAutomatically;
     }
     public static void setEnableUnmuteVolumeAutomatically(boolean enableUnmuteVolumeAutomatically) {
         ComputerSettings.enableUnmuteVolumeAutomatically = enableUnmuteVolumeAutomatically;
     }
 
-    public static boolean isAutomaticallyReduceAndRestoreBL(){
+    public static boolean isAutomaticallyReduceAndRestoreBL() {
         return automaticallyReduceAndRestoreBL;
     }
-    public static void setAutomaticallyReduceAndRestoreBL(boolean automaticallyRestoreBrightnessLevel){
+    public static void setAutomaticallyReduceAndRestoreBL(boolean automaticallyRestoreBrightnessLevel) {
         ComputerSettings.automaticallyReduceAndRestoreBL = automaticallyRestoreBrightnessLevel;
     }
 
-    public static boolean isAutomaticallyReduceBrightnessLevel(){
+    public static boolean isAutomaticallyReduceBrightnessLevel() {
         return automaticallyReduceBrightnessLevel;
     }
     public static void setAutomaticallyReduceBrightnessLevel(boolean automaticallyReduceBrightnessLevel) {
         ComputerSettings.automaticallyReduceBrightnessLevel = automaticallyReduceBrightnessLevel;
     }
 
-    public static boolean isAutomaticallyRestoreBrightnessLevel(){
+    public static boolean isAutomaticallyRestoreBrightnessLevel() {
         return automaticallyRestoreBrightnessLevel;
     }
-    public static void setAutomaticallyRestoreBrightnessLevel(boolean automaticallyRestoreBrightnessLevel){
+    public static void setAutomaticallyRestoreBrightnessLevel(boolean automaticallyRestoreBrightnessLevel) {
         ComputerSettings.automaticallyRestoreBrightnessLevel = automaticallyRestoreBrightnessLevel;
     }
 
-    public static List<String> getAudioDevices(){
+    public static List<String> getAudioDevices() {
         return audioDevices;
     }
-    public static void setAudioDevices(List<String> audioDevices){
+    public static void setAudioDevices(List<String> audioDevices) {
         ComputerSettings.audioDevices = audioDevices;
     }
-    public static boolean addItemToAudioList(String device){
+    public static boolean addItemToAudioList(String device) {
         if(!audioDevices.contains(device)){
             audioDevices.add(device);
             return true;
         }
         return false;
     }
-    public static String getItemFromAudioList(String device){
-        if(audioDevices.contains(device)){
-            for(String item : audioDevices){
+    public static String getItemFromAudioList(String device) {
+        if(audioDevices.contains(device)) {
+            for(String item : audioDevices) {
                 if(item.equals(device)) return item;
             }
         }
@@ -120,7 +120,7 @@ public class ComputerSettings {
         }
         return null;
     }
-    public static boolean removeItemFromAudioList(String device){
+    public static boolean removeItemFromAudioList(String device) {
         return audioDevices.remove(device);
     }
     public static boolean removeItemFromAudioListAtIndex(int index) {
@@ -131,27 +131,27 @@ public class ComputerSettings {
         return false;
     }
     
-    public static String getDefaultSpeakerOutputDeviceName(){
+    public static String getDefaultSpeakerOutputDeviceName() {
         return defaultSpeakerOutputDeviceName;
     }
-    public static void setDefaultSpeakerOutputDeviceName(String defaultSpeakerOutputDeviceName){
+    public static void setDefaultSpeakerOutputDeviceName(String defaultSpeakerOutputDeviceName) {
         ComputerSettings.defaultSpeakerOutputDeviceName = defaultSpeakerOutputDeviceName;
-        if(currentAudioDevice == null){
+        if(currentAudioDevice == null) {
             currentAudioDevice = defaultSpeakerOutputDeviceName;
         }
     }
     
-    public static String getCurrentAudioDevice(){
+    public static String getCurrentAudioDevice() {
         return currentAudioDevice;
     }
-    public static void setCurrentAudioDevice(String currentAudioDevice){
+    public static void setCurrentAudioDevice(String currentAudioDevice) {
         ComputerSettings.currentAudioDevice = currentAudioDevice;
     }
 
-    public static String getNotificationSoundFileName(){
+    public static String getNotificationSoundFileName() {
         return notificationSoundFileName;
     }
-    public static void setNotificationSoundFileName(String notificationSoundFileName){
+    public static void setNotificationSoundFileName(String notificationSoundFileName) {
         ComputerSettings.notificationSoundFileName = notificationSoundFileName;
     }
 
@@ -176,7 +176,7 @@ public class ComputerSettings {
         ComputerSettings.volumeLevel = volumeLevel;
     }
 
-    public static int getWakeUpEvery(){
+    public static int getWakeUpEvery() {
         return wakeUpEvery;
     }
     public static void setWakeUpEvery(int wakeUpEvery) {

@@ -46,6 +46,8 @@ public class MiniToast {
 			cssFile = STYLES_PATH + "/mini_toast_dark.css";
 		} else if (mode.equalsIgnoreCase(String.valueOf(GRAY))) {
 			cssFile = STYLES_PATH + "/mini_toast_gray.css";
+		} else if (mode.equalsIgnoreCase(String.valueOf(CREAM))) {
+			cssFile = STYLES_PATH + "/mini_toast_cream.css";
 		} else {
 			var theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
 			cssFile = (theme == DARK) ? STYLES_PATH + "/mini_toast_dark.css" : STYLES_PATH + "/mini_toast_light.css";

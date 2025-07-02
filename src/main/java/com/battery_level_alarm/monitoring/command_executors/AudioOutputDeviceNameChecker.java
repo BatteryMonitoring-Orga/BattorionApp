@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings
 import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isMonitorRunning;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isAudioDeviceCmdletsInstalled;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.activeAudioDeviceName;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.activeAudioDeviceName;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 
 import java.io.BufferedReader;
@@ -20,7 +20,7 @@ public class AudioOutputDeviceNameChecker {
     public static Thread AudioDeviceThread;
     public static String lastOutputDevice = "";
     
-    public static void threadStart(){
+    public static void threadStart() {
         if(AudioDeviceThread != null){
             return;
         }
@@ -35,7 +35,7 @@ public class AudioOutputDeviceNameChecker {
         }, 0, 5, TimeUnit.SECONDS);
     }
 
-    public static void doExecutionSingleton(){
+    public static void doExecutionSingleton() {
         if (isAudioDeviceCmdletsInstalled) {
             String returnedOutput = getCurrentAudioOutputDevice();
             String currentDevice = checkDevicesList(returnedOutput);

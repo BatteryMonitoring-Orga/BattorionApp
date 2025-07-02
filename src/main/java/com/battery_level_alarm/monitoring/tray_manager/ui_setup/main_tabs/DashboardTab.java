@@ -1,6 +1,10 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker.getAudioOutputDevice;
+import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
+import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.REFRESH_ICON_PATH;
+import static com.battery_level_alarm.monitoring.system_core.handlers.BattorionMainProcessHandler.isWaitingForInternet;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.restartMonitorLoop;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.currentDeviceLabel;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
@@ -10,6 +14,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
 
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.MiniToast;
+import com.battery_level_alarm.monitoring.versions_manager.update_ui.TrayReleaseNotify;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,11 +24,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+
 import java.util.Objects;
 
 public class DashboardTab {
-	private static final String REFRESH_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/refresh.png";
 	public static ProgressBar progressBar;
 	public static Label batteryStatus;
 	public static Label batteryLevel;
@@ -31,7 +39,37 @@ public class DashboardTab {
 	public static Label batteryMonitoring;
 	
 	public static Tab createDashboardTab() {
+		VBox content = new VBox(20);
+		content.setPadding(insets);
+		content.setMaxWidth(Double.MAX_VALUE);
+		VBox.setVgrow(content, Priority.ALWAYS);
+		
 		Button backButton = createBackButton();
+		content.getChildren().add(backButton);
+		
+		VBox batteryBox = createBatteryInfoBox();
+		VBox infoBox = createInfoBox();
+		
+		Thread.ofVirtual().start(() -> {
+			if(!isWaitingForInternet && thereIsNewVersion) {
+				TrayReleaseNotify.latestVersionTray = latestVersion;
+				VBox notifyBox = TrayReleaseNotify.getNotifyBox();
+				content.getChildren().addAll(notifyBox, batteryBox, new Separator(), infoBox);
+			} else {
+				content.getChildren().addAll(batteryBox, new Separator(), infoBox);
+			}
+		});
+		
+		Pane viewport = new Pane(content);
+		Rectangle clip = new Rectangle();
+		clip.widthProperty().bind(viewport.widthProperty());
+		clip.heightProperty().bind(viewport.heightProperty());
+		viewport.setClip(clip);
+		viewport.setOnScroll(event -> handleScroll(event, content, viewport));
+		return createTab("Dashboard", viewport);
+	}
+	
+	private static VBox createBatteryInfoBox() {
 		batteryStatus = new Label("");
 		HBox batteryStatusBox = new HBox(new Label("Battery Status: "), batteryStatus);
 		batteryStatusBox.setStyle("-fx-padding: 0 5px 0 5px !important;");
@@ -47,7 +85,10 @@ public class DashboardTab {
 		);
 		batteryBox.setPadding(new Insets(10));
 		batteryBox.setStyle("-fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 8;");
-		
+		return batteryBox;
+	}
+	
+	private static VBox createInfoBox() {
 		batteryMonitoring = new Label("");
 		HBox batteryMonitoringBox = new HBox(new Label("Battery monitoring is "), batteryMonitoring);
 		
@@ -59,15 +100,7 @@ public class DashboardTab {
 		);
 		infoBox.setPadding(new Insets(10));
 		infoBox.setStyle("-fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 8;");
-		
-		VBox content = new VBox(20,
-				backButton,
-				batteryBox,
-				new Separator(),
-				infoBox
-		);
-		content.setPadding(insets);
-		return createTab("Dashboard", content);
+		return infoBox;
 	}
 	
 	private static HBox createAudioDeviceBox() {
@@ -87,7 +120,7 @@ public class DashboardTab {
 			primaryStage.requestFocus();
 		});
 		
-		Image refreshImage = new Image(Objects.requireNonNull(UITabs.class.getResourceAsStream(REFRESH_ICON_PATH)));
+		Image refreshImage = new Image(Objects.requireNonNull(UITabs.class.getResourceAsStream(REFRESH_ICON_PATH + "refresh.png")));
 		ImageView icon = new ImageView(refreshImage);
 		icon.setFitHeight(20);
 		icon.setFitWidth(20);
@@ -152,5 +185,14 @@ public class DashboardTab {
 		progressBar.getStyleClass().add("custom-progress-bar");
 		progressBar.setPrefWidth(250);
 		return progressBar;
+	}
+	
+	private static void handleScroll(ScrollEvent event, VBox content, Pane viewport) {
+		double deltaY = event.getDeltaY();
+		double newTranslate = content.getTranslateY() + deltaY;
+		
+		newTranslate = Math.min(newTranslate, 0);
+		newTranslate = Math.max(newTranslate, -1 * (content.getHeight() - viewport.getHeight()));
+		content.setTranslateY(newTranslate);
 	}
 }

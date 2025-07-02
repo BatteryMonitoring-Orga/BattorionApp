@@ -15,6 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class EssentialToolsDownloader {
+    public static boolean isInternetAvailableFlag;
     private static final String[][] REPOSITORIES = {
             {"NirCMD-main", "https://github.com/CMD-Helper-Battorion/NirCMD/archive/refs/heads/main.zip"},
             {"svcl-x64-main", "https://github.com/CMD-Helper-Battorion/svcl-x64/archive/refs/heads/main.zip"},
@@ -22,13 +23,8 @@ public class EssentialToolsDownloader {
     };
 
     public static void Downloader(BiConsumer<Long, Long> progressCallback, boolean isForceDownload) {
-        if (!isInternetAvailable()) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "❌ No internet connection! \n" +
-                            "The application requires an internet connection to download essential tools.",
-                    "Support Center", JOptionPane.ERROR_MESSAGE
-            );
+        isInternetAvailableFlag = isInternetAvailable();
+        if (!isInternetAvailableFlag) {
             return;
         }
 
@@ -55,7 +51,7 @@ public class EssentialToolsDownloader {
                 JOptionPane.showMessageDialog(null, "❌ Error downloading essential tool: " + repoName + ": " + e.getMessage(), "Support Center", JOptionPane.ERROR_MESSAGE);
             }
         }
-
+        
         if(!isForceDownload){
             if(isFileExist && !isAllFilesExist){
                 JOptionPane.showMessageDialog(null, "✔ Some files already exist. Not all tools were downloaded.", "Support Center", JOptionPane.INFORMATION_MESSAGE);
@@ -65,7 +61,7 @@ public class EssentialToolsDownloader {
         }
     }
 
-    private static boolean isInternetAvailable() {
+    public static boolean isInternetAvailable() {
         try {
             URI uri = new URI("http://www.google.com");
             HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
@@ -105,10 +101,9 @@ public class EssentialToolsDownloader {
         }
     }
 
-    private static void unzip(String zipFilePath){
+    static void unzip(String zipFilePath) {
         File dir = new File(com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH);
         if (!dir.exists()) dir.mkdirs();
-
         try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
             ZipEntry entry = zipIn.getNextEntry();
             while (entry != null) {

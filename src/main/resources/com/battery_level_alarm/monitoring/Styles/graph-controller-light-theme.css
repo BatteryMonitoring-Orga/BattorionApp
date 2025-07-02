@@ -1,0 +1,81 @@
+#graph-controller-root {
+    -fx-background-color: #ffffff;
+}
+
+.label {
+    -fx-text-fill: #222222;
+    -fx-font-size: 13px;
+}
+
+#link-label {
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+#link-label:hover {
+    -fx-text-fill: #86B3FF
+}
+
+.radio-button, .check-box {
+    -fx-text-fill: #222222;
+    -fx-font-size: 13px;
+}
+
+#appearance-section, #chart-section, #time-section, #alert-section, #save-section {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+#appearance-section-title,
+#chart-section-title,
+#time-section-title,
+#alert-section-title,
+#save-section-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00aaff;
+}
+
+#chart-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+#chart-scroll .viewport {
+    -fx-background-color: #ffffff;
+}
+
+#save-button {
+    -fx-background-color: #e0f7fa;
+    -fx-text-fill: #00695c;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 2 4;
+    -fx-border-color: #b2ebf2;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+}
+
+.slider .axis .tick-mark > .text {
+    -fx-fill: #00aaff !important;
+}
+
+.slider .axis .tick-mark .text {
+    -fx-fill: #00aaff !important;
+}
+
+.slider .axis {
+    -fx-tick-label-fill: #00aaff;
+    -fx-tick-mark-stroke: #00aaff;
+}
+
+.color-picker .color-picker-label {
+    -fx-text-fill: #00aaff;
+    -fx-font-size: 13px;
+}

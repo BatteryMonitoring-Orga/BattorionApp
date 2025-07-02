@@ -44,11 +44,15 @@ public class Monitor {
 	private static volatile boolean alert = false;
 	private static volatile boolean lastVisibility = false;
 	private static volatile boolean forceDiskUpdate = false;
+	private static volatile boolean isApplicationStarted = true;
 	public static volatile boolean shouldUpdateAudioOutput = true;
+	public static volatile boolean isToastNotifyEnabled = true;
 	public static volatile int chargeLevel;
 	
 	private static boolean isEnableDevelopedSystemNotificationSound;
 	private static boolean isBatteryTrayNestedIconAllowToAdd;
+	private static boolean isEnableToastNotification;
+	private static boolean isBatteryStatusChanged = false;
 	private static boolean callFlag = false;
 	private static boolean isAlertInProgress = true;
 	public static boolean isAlertPopupShown = false;
@@ -60,8 +64,10 @@ public class Monitor {
 	
 	public static void backgroundProcessMonitoring(String theme) {
 		if (!isAlive) {
-			msg = "👋 Welcome! Battery Monitor is running.";
-			NotificationToast.showNotification(msg, primaryStage);
+			if(Boolean.parseBoolean(prefs.get("toastNotificationEnable", String.valueOf(true)))) {
+				msg = "👋 Welcome! Battery Monitor is running.";
+				NotificationToast.showNotification(msg, primaryStage, true);
+			}
 			start();
 			if(theme.equalsIgnoreCase(AS_SYSTEM.toString())) {
 				monitorSystemTheme();
@@ -93,7 +99,7 @@ public class Monitor {
 	private static void startMonitorLoop(boolean isVisible) {
 		String speedMode = prefs.get("UpdateFrequency", BattorionTrayUI.UpdateSpeed.MEDIUM.name());
 		long durationMs = BattorionTrayUI.UpdateSpeed.valueOf(speedMode).getIntervalMs();
-		long interval = isVisible ? 500 : durationMs;
+		long interval = isVisible || isApplicationStarted ? 500 : durationMs;
 		forceDiskUpdate = interval <= 1000;
 		
 		monitorTask = MAIN_EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
@@ -105,13 +111,14 @@ public class Monitor {
 			}
 			
 			try {
-				updateBatteryStatus();
+				isBatteryStatusChanged = updateBatteryStatus();
 				evaluateAlertConditions();
 				handleNotifications();
 				updateUI();
 				if (isBatteryTrayNestedIconAllowToAdd) {
 					updateTrayIcon();
 				}
+				isApplicationStarted = false;
 			} catch (Exception e) {
 				logger.severe("[EXCEPTION]: " + e.getMessage());
 			}
@@ -133,28 +140,40 @@ public class Monitor {
 		isEnableDevelopedSystemNotificationSound = Boolean.parseBoolean(
 				prefs.get("trayNotificationEnable", String.valueOf(true))
 		);
+		isEnableToastNotification = Boolean.parseBoolean(
+				prefs.get("toastNotificationEnable", String.valueOf(true))
+		);
 		isBatteryTrayNestedIconAllowToAdd = Boolean.parseBoolean(
 				prefs.get("showBatteryIcon", String.valueOf(false))
 		);
 	}
 	
-	private static void updateBatteryStatus() {
+	private static boolean updateBatteryStatus() {
 		try {
 			isCharging = getBatteryStatus();
 			chargeLevel = getBatteryLevel();
 			int maxValue = UserChoices.getMaximumLevel();
 			int minValue = UserChoices.getMinimumLevel();
 			batteryLevelColor = getBatteryColor(chargeLevel, minValue, maxValue);
+			
+			if(isCharging == isBatteryStatusChanged) {
+				return false;
+			} else {
+				isToastNotifyEnabled = true;
+				return true;
+			}
 		} catch (Exception e) {
 			logger.severe("[EXCEPTION]: " + e.getMessage());
 			isCharging = false;
 			chargeLevel = 0;
 		}
+		return isCharging;
 	}
 	
 	private static void evaluateAlertConditions() {
 		int maxValue = UserChoices.getMaximumLevel();
 		int minValue = UserChoices.getMinimumLevel();
+		int phase = getAlertBeforeRiskPhaseBy();
 		
 		alert = true;
 		if((chargeLevel >= maxValue) && isCharging) {
@@ -163,19 +182,15 @@ public class Monitor {
 			msg = "Battery is high! Please unplug the charger...";
 		} else if((chargeLevel <= minValue) && !isCharging) {
 			msg = "Battery is too low! Please plug the charger...";
-		} else if((chargeLevel >= maxValue - getAlertBeforeRiskPhaseBy()) && isCharging) {
+		} else if(isEnableToastNotification && (chargeLevel >= maxValue - phase) && isCharging && isToastNotifyEnabled) {
 			msg = "Notice: Battery level is getting high (" + chargeLevel + "%)";
 			Platform.setImplicitExit(false);
-			Platform.runLater(() ->
-					NotificationToast.showNotification(msg, primaryStage)
-			);
+			Platform.runLater(() -> NotificationToast.showNotification(msg, primaryStage, false));
 			alert = false;
-		} else if((chargeLevel <= minValue + getAlertBeforeRiskPhaseBy()) && !isCharging) {
+		} else if(isEnableToastNotification && (chargeLevel <= minValue + phase) && !isCharging && isToastNotifyEnabled) {
 			msg = "Notice: Battery level is getting low (" + chargeLevel + "%)";
 			Platform.setImplicitExit(false);
-			Platform.runLater(() ->
-					NotificationToast.showNotification(msg, primaryStage)
-			);
+			Platform.runLater(() -> NotificationToast.showNotification(msg, primaryStage, false));
 			alert = false;
 		} else {
 			alert = false;
@@ -219,7 +234,7 @@ public class Monitor {
 			}
 			
 			long now = System.currentTimeMillis();
-			if (!forceDiskUpdate || (now - lastDiskUpdateTime >= 2000)) {
+			if (!forceDiskUpdate || (now - lastDiskUpdateTime >= 300000) || isApplicationStarted) {
 				lastDiskUpdateTime = now;
 				Thread.ofVirtual().start(() -> {
 					DiskSpaceInfo.DiskSpace();

@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.visual_effects.gradient;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.UIThemesGUI.customizationGradientBackground;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.getEndPreviewColor;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.getStartPreviewColor;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientThemes.DARK_GRADIENTS;

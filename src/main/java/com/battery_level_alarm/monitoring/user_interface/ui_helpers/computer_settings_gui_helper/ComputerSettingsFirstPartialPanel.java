@@ -2,26 +2,23 @@ package com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_se
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.mainFrame;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.motherPanel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.LABELS_FONT;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.LABELS_FONT;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setDimension;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.DropDownList.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.addToggleButton;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addMouseListenerToLabel;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.core_utilities.DropDownListStaticQuestionnaires;
 import com.battery_level_alarm.monitoring.core_utilities.EffectDirection;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ComponentHierarchy;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.CompoundUpdaterRecord;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ProgressBarValueUpdater;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ToggleButtonRecord;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -77,10 +74,7 @@ public class ComputerSettingsFirstPartialPanel {
 
         decideTheSizeDimension();
         COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[0] = partialPanelContent;
-        JPanel partialPanelFooter = createPartialPanelFooter();
-        partialPanelFooter.setOpaque(false);
         mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
-        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
         return mainPartialPanel;
     }
 
@@ -162,28 +156,11 @@ public class ComputerSettingsFirstPartialPanel {
                 false
         );
     }
-
-    private static JPanel createPartialPanelFooter(){
-        JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
-        about.setFont(ComputerSettingsGUI.TITLE_LISTS_FONT);
-        addMouseListenerToLabel(
-                about,
-                Color.LIGHT_GRAY,
-                () -> displayPopUpMenu(
-                        about,
-                        createFooterPopupMenu(DropDownListStaticQuestionnaires::getFirstPartialQuestionnaires)
-                )
-        );
-
-        JPanel aboutLabelPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        aboutLabelPackage.add(about);
-        JPanel aboutPanel = new JPanel(new BorderLayout());
-        //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
-        aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
-        return aboutPanel;
-    }
-
+    
     private static void decideTheSizeDimension(){
-        partialPanelDimension = new Dimension(WIDTH, 190);
+        partialPanelDimension = new Dimension(WIDTH, getFirstPCHeight());
+    }
+    public static int getFirstPCHeight() {
+        return 160;
     }
 }

@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.STYLES_FILES_DIR_PATH;
 
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import javafx.animation.KeyFrame;
@@ -25,7 +26,6 @@ import javafx.util.Duration;
 import java.util.Objects;
 
 public class NotificationPopup {
-	public static final String NOTIFICATION_STYLES_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles";
 	private final Stage stage;
 	private static final int width = 350;
 	private static final int height = 150;
@@ -70,14 +70,16 @@ public class NotificationPopup {
 		String mode = prefs.get("appTheme", AS_SYSTEM.toString());
 		String cssFile;
 		if (mode != null && mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
-			cssFile = NOTIFICATION_STYLES_PATH + "/notification_popup_light.css";
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_light.css";
 		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(DARK))) {
-			cssFile = NOTIFICATION_STYLES_PATH + "/notification_popup_dark.css";
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_dark.css";
 		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(GRAY))) {
-			cssFile = NOTIFICATION_STYLES_PATH + "/notification_popup_gray.css";
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_gray.css";
+		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(CREAM))) {
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_cream.css";
 		} else {
 			TrayTheme.SystemTheme theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
-			cssFile = (theme == DARK) ? NOTIFICATION_STYLES_PATH + "/notification_popup_dark.css" : NOTIFICATION_STYLES_PATH + "/notification_popup_light.css";
+			cssFile = (theme == DARK) ? STYLES_FILES_DIR_PATH + "/notification_popup_dark.css" : STYLES_FILES_DIR_PATH + "/notification_popup_light.css";
 		}
 		
 		Scene scene = new Scene(root, width, height);

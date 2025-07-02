@@ -23,12 +23,15 @@ public class JavaFXSoundComboBox {
 	private static final Font STYLE = Font.font("Serif", 14);
 	private static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-dark-style.css";
 	private static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-gray-style.css";
+	private static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-cream-style.css";
 	private static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-light-style.css";
 	
 	public static HBox createSoundSelector(List<SoundItem> soundItems) {
 		ComboBox<SoundItem> comboBox = new ComboBox<>(FXCollections.observableArrayList(soundItems));
 		comboBox.getStyleClass().add("try-notification-combo");
-		comboBox.setPrefWidth(200);
+		comboBox.setMinWidth(150);
+		comboBox.setPrefWidth(150);
+		comboBox.setMaxWidth(150);
 		comboBox.setPromptText("Select Sound");
 		comboBox.setCursor(Cursor.HAND);
 		
@@ -76,6 +79,7 @@ public class JavaFXSoundComboBox {
 			case DARK -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(DARK_THEME_FILE_PATH)).toExternalForm());
 			case LIGHT -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
 			case GRAY -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(GRAY_THEME_FILE_PATH)).toExternalForm());
+			case CREAM -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(CREAM_THEME_FILE_PATH)).toExternalForm());
 			default -> {
 				TrayTheme.SystemTheme theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
 				String systemMode = theme == DARK ? DARK_THEME_FILE_PATH : LIGHT_THEME_FILE_PATH;

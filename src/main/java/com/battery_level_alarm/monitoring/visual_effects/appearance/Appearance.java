@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.visual_effects.appearance;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.StyleFiles.*;
-import static com.battery_level_alarm.monitoring.graphics.GraphsDefinitions.CSS_FILE_NAME;
+import static com.battery_level_alarm.monitoring.graphics.base.GraphsDefinitions.CSS_FILE_NAME;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeNames.*;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.*;
 
@@ -213,7 +213,7 @@ public class Appearance {
         isBeforeNoon = false;
     }
 
-    private static boolean isAfterNoon(boolean justAskAboutTime, LocalTime type){
+    public static boolean isAfterNoon(boolean justAskAboutTime, LocalTime type){
         LocalTime currentTime = LocalTime.now();
         if(!justAskAboutTime){
             delay = (int) (Duration.between(currentTime, type).toSeconds() * 1000);

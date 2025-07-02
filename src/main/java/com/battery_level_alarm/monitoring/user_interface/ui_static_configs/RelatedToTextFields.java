@@ -22,7 +22,7 @@ public class RelatedToTextFields {
     public static JTextField addTextField(
             GridBagConstraints gbc, JPanel panel, String text,
             int width, int height, Border border, boolean isOpaque
-    ){
+    ) {
         JTextField textField = new JTextField(text);
         textField.setPreferredSize(new Dimension(width, height));
         textField.setFont(textFieldFont);
@@ -35,7 +35,7 @@ public class RelatedToTextFields {
         return textField;
     }
 
-    public static void setPromptFeature(JTextField textField, String promptText, String[] DEVICE_STATUS_MESSAGES){
+    public static void setPromptFeature(JTextField textField, String promptText, String[] DEVICE_STATUS_MESSAGES) {
         textField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -63,7 +63,7 @@ public class RelatedToTextFields {
     public static void setActionListener(
             JTextField textField, String DefaultValue, boolean isMouseMovementEnabled,
             Runnable[] action, Consumer<Boolean> setRequestFocusInWindowConsumer
-    ){
+    ) {
         final Point[] mousePosition = new Point[1];
         textField.setAction(new AbstractAction() {
             @Override
@@ -93,7 +93,7 @@ public class RelatedToTextFields {
             JTextField textField, Runnable action,
             Color originalColor, Color mouseEnteredColor,
             boolean isFocusable, boolean isEditable, boolean isEnabled
-    ){
+    ) {
         textField.setFocusable(isFocusable);
         textField.setEditable(isEditable);
         textField.setEnabled(isEnabled);
@@ -121,7 +121,7 @@ public class RelatedToTextFields {
             Font font, boolean isLightWeightPopupEnabled,
             Consumer<Boolean> setRequestFocusInWindowConsumer,
             Supplier<Boolean> isRequestFocusInWindowConsumer
-    ){
+    ) {
         JPopupMenu popupMenu = new JPopupMenu();
         for (JComponent component : components) {
             if (component instanceof JLabel label) {
@@ -159,7 +159,7 @@ public class RelatedToTextFields {
     public static void setDocumentListener(
             JTextField textField, JComboBox<String> comboBox,
             String promptText, String[] DEVICE_STATUS_MESSAGES
-    ){
+    ) {
         JPopupMenu popupMenu = new JPopupMenu();
         textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -189,7 +189,7 @@ public class RelatedToTextFields {
     public static void expectedText(
             JPopupMenu popupMenu, JTextField textField, JComboBox<String> comboBox,
             String promptText, String[] DEVICE_STATUS_MESSAGES
-    ){
+    ) {
         popupMenu.setVisible(false);
         boolean hasMatches = false;
 
@@ -225,12 +225,13 @@ public class RelatedToTextFields {
     public static JScrollPane addTextInScroll(
             JTextField field, String label, Font font,
             boolean isEditable, boolean isEnabled, ScrollConfiguration configuration
-    ){
+    ) {
         field.setText(label);
         field.setFont(font);
         field.setEditable(isEditable);
         field.setEnabled(isEnabled);
-
+        field.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         JScrollPane scroll = new JScrollPane(field);
         applyScrollConfigurationDetails(scroll, configuration);
         return scroll;

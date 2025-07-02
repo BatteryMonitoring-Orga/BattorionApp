@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.TRAY_NOTIFICATION_NAME;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.backgroundProcessMonitoring;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.createTrayIcon;
@@ -22,13 +23,16 @@ import javafx.util.Duration;
 import java.util.Objects;
 
 public class BattorionTrayUI extends Application {
-	static final String BATTORION_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/battorion_background.png";
+	public static final String BATTORION_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/battorion_background.png";
+	public static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles";
 	public static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/dark-theme.css";
 	public static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/gray-theme.css";
+	public static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/cream-theme.css";
 	public static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/light-theme.css";
 	private static String trayTheme;
 	
 	public static Stage primaryStage;
+	public static Scene primaryScene;
 	public static TabPane primaryTabPane;
 	public static Insets insets;
 	
@@ -63,7 +67,7 @@ public class BattorionTrayUI extends Application {
 		}
 	}
 	
-	public static void main_fx( String[] args) {
+	public static void main_fx(String[] args) {
 		isLaunched = true;
 		launch(args);
 	}
@@ -79,8 +83,15 @@ public class BattorionTrayUI extends Application {
 		}
 	}
 	
-	private void setupPrimaryStage() {
-		primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(BATTORION_ICON_PATH))));
+	public static Scene getTrayUI() {
+		primaryStage = new Stage();
+		setupPrimaryStage();
+		createPopupWindow();
+		return primaryScene;
+	}
+	
+	private static void setupPrimaryStage() {
+		primaryStage.getIcons().add(new Image(Objects.requireNonNull(BattorionTrayUI.class.getResourceAsStream(BATTORION_ICON_PATH))));
 		primaryStage.setResizable(false);
 		primaryStage.setAlwaysOnTop(true);
 		primaryStage.initStyle(StageStyle.DECORATED);
@@ -89,20 +100,27 @@ public class BattorionTrayUI extends Application {
 	}
 	
 	static void createPopupWindow() {
-		primaryStage.setTitle("Battorion - In Background Process");
+		primaryStage.setTitle(TRAY_NOTIFICATION_NAME);
 		String position = prefs.get("tab_header_position", "Bottom");
 		setUpdateBoxPadding(position);
 		primaryTabPane = createTabsPanel();
 		setUpdateTabHeaderPosition(position);
 		
-		Scene scene = new Scene(primaryTabPane, 350, 450);
-		scene.getStylesheets().add(Objects.requireNonNull(BattorionTrayUI.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
+		primaryScene = new Scene(primaryTabPane, 350, 450);
+		primaryScene.getStylesheets().add(Objects.requireNonNull(BattorionTrayUI.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
 		primaryTabPane.setStyle("-fx-tab-min-width: 100 !important; -fx-tab-max-height: 24 !important; -fx-font-size: 10px !important;");
-		primaryStage.setScene(scene);
+		primaryStage.setScene(primaryScene);
 		
 		trayTheme = prefs.get("appTheme", String.valueOf(AS_SYSTEM));
 		applyTheme(TrayTheme.SystemTheme.valueOf(trayTheme));
 		setupFocusAndCloseBehavior();
+	}
+	
+	public static void rebuildTabPanels() {
+		if (primaryTabPane != null) {
+			primaryTabPane.getTabs().clear();
+			primaryTabPane.getTabs().addAll(createTabsPanel().getTabs());
+		}
 	}
 	
 	private static void setupFocusAndCloseBehavior() {
@@ -143,7 +161,7 @@ public class BattorionTrayUI extends Application {
 		if(position.equals("Top")) {
 			insets = new Insets(20);
 		} else {
-			insets = new Insets(10, 20, 25, 20);
+			insets = new Insets(0, 20, 35, 20);
 		}
 	}
 	

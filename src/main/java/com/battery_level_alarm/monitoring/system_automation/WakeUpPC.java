@@ -1,13 +1,13 @@
 package com.battery_level_alarm.monitoring.system_automation;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.visual_effects.DisplayMessages;
-import java.awt.*;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
-import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+import java.awt.*;
+import java.util.concurrent.*;
 
 public class WakeUpPC {
-	public static Thread wakeUpThread;
+	private static ScheduledExecutorService keepAwakeExecutor;
 	private static int shiftInY_axis = 0;
 	private static int shiftInX_axis = 0;
 	private static volatile boolean interruptRequest = false;
@@ -15,77 +15,73 @@ public class WakeUpPC {
 	public static int getShiftInY_axis() {
 		return shiftInY_axis;
 	}
+	
 	public static void setShiftInY_axis(int shiftInY_axis) {
 		WakeUpPC.shiftInY_axis = shiftInY_axis;
 	}
+	
 	public static int getShiftInX_axis() {
 		return shiftInX_axis;
 	}
+	
 	public static void setShiftInX_axis(int shiftInX_axis) {
 		WakeUpPC.shiftInX_axis = shiftInX_axis;
 	}
-
-	public static void wakeUp() {
-		if(!checkThread()){
+	
+	public static void wakeUp(long wakeUpEverySeconds) {
+		if (keepAwakeExecutor != null && !keepAwakeExecutor.isShutdown()) {
 			return;
 		}
 		
-	    try {
-	        java.awt.Robot robot = new java.awt.Robot();
-			wakeUpThread = Thread.ofVirtual().start(() -> {
-                while (ComputerSettings.isActivateTheAwakeningFeature() && !interruptRequest) {
-					Point position = getMousePosition();
-					doRobotAction(robot, position, false, 0, 0);
-					try{
-						Thread.sleep(ComputerSettings.getWakeUpEvery() * 60000L);
-					} catch (InterruptedException ex) {
-						Thread.currentThread().interrupt();
-						logger.severe("[EXCEPTION]: " + ex.getMessage());
-						break;
+		interruptRequest = false;
+		try {
+			Robot robot = new Robot();
+			keepAwakeExecutor = Executors.newSingleThreadScheduledExecutor();
+			keepAwakeExecutor.scheduleAtFixedRate(() -> {
+				if (ComputerSettings.isActivateTheAwakeningFeature() && !interruptRequest) {
+					try {
+						Point position = getMousePosition();
+						doRobotAction(robot, position, false, 0, 0);
+					} catch (Exception e) {
+						logger.severe("[EXCEPTION]: " + e.getMessage());
 					}
-                }
-            });
-	    } catch (Exception e) {
+				} else {
+					shutdownScheduler();
+				}
+			}, 0, wakeUpEverySeconds, TimeUnit.SECONDS);
+		} catch (AWTException e) {
 			DisplayMessages.printErrorMessage(e);
-	    }
+		}
 	}
 	
 	public static void wakeUpThreadInterruptRequest() {
-		try {
-			interruptRequest = true;
-			if (wakeUpThread != null && wakeUpThread.isAlive()) {
-				wakeUpThread.join(3000);
-				if (wakeUpThread.isAlive()) {
-					wakeUpThread.interrupt();
+		interruptRequest = true;
+		shutdownScheduler();
+	}
+	
+	private static void shutdownScheduler() {
+		if (keepAwakeExecutor != null && !keepAwakeExecutor.isShutdown()) {
+			keepAwakeExecutor.shutdownNow();
+			try {
+				if (!keepAwakeExecutor.awaitTermination(3, TimeUnit.SECONDS)) {
+					logger.warning("Scheduler did not terminate in time.");
 				}
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				logger.severe("[EXCEPTION]: " + e.getMessage());
 			}
-		} catch (Exception ex) {
-			printErrorMessage(ex);
+			keepAwakeExecutor = null;
 		}
 	}
-
-	private static boolean checkThread(){
-		if(wakeUpThread == null){
-			return false;
-		}
-
-		if(wakeUpThread.isInterrupted() || !wakeUpThread.isAlive()){
-			wakeUpThread.start();
-			return true;
-		}
-		return false;
-	}
-
-	public static Point getMousePosition(){
+	
+	public static Point getMousePosition() {
 		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
 		Point currentMousePosition = pointerInfo.getLocation();
-		int xLocal = currentMousePosition.x;
-		int yLocal = currentMousePosition.y;
-		return new Point(xLocal, yLocal);
+		return new Point(currentMousePosition.x, currentMousePosition.y);
 	}
-
-	public static void doRobotAction(Robot robot, Point position, boolean shift, int shiftInY_axis, int shiftInX_axis){
-		if(shift){
+	
+	public static void doRobotAction(Robot robot, Point position, boolean shift, int shiftInY_axis, int shiftInX_axis) {
+		if (shift) {
 			robot.mouseMove(position.x + shiftInX_axis, position.y + shiftInY_axis);
 		} else {
 			robot.mouseMove(position.x, position.y);

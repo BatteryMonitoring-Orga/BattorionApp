@@ -20,7 +20,7 @@ import com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_set
 import com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsFourthPartialPanel;
 import com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsSecondPartialPanel;
 import com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsThirdPartialPanel;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.DropDownList;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 import javax.swing.*;

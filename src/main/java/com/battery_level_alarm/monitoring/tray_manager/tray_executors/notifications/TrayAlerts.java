@@ -3,7 +3,9 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.MAIN_FOLDER_NAME;
 import com.battery_level_alarm.monitoring.battery_report.HTMLOpener;
 
+import com.battery_level_alarm.monitoring.questionnaires.AppendixesQuestionnaire;
 import javafx.scene.layout.Priority;
+import javafx.scene.web.WebView;
 import org.jetbrains.annotations.NotNull;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -37,9 +39,7 @@ public class TrayAlerts {
 			Label version = new Label("Version: " + APP_VERSION);
 			Label author = new Label("Author: Muath Hassoun");
 			
-			Label description = getDescription();
-			description.setPadding(new Insets(5));
-			description.setWrapText(true);
+			WebView description = getDescription();
 			description.setMaxWidth(Double.MAX_VALUE);
 			description.setStyle("""
 				-fx-background-color: #f9f9f9;
@@ -48,7 +48,7 @@ public class TrayAlerts {
 				-fx-background-radius: 4px;
 			""");
 			
-			ScrollPane scrollPane = getScrollPane(description);
+			ScrollPane scrollPane = getScrollPane(description, 580, 200);
 			VBox.setVgrow(scrollPane, Priority.ALWAYS);
 			
 			Hyperlink arabicGuide = new Hyperlink("📘 Comprehensive guide in Arabic");
@@ -61,53 +61,66 @@ public class TrayAlerts {
 		});
 	}
 	
-	private static @NotNull ScrollPane getScrollPane(Label description) {
+	private static @NotNull WebView getDescription() {
+		WebView description = new WebView();
+		description.setPrefHeight(300);
+		description.setContextMenuEnabled(false);
+		description.getEngine().loadContent(getTrayIntegrationText());
+		return description;
+	}
+	
+	private static @NotNull ScrollPane getScrollPane(WebView description, int viewPortWidth, int viewPortHeight) {
 		VBox wrapper = new VBox(description);
 		wrapper.setPadding(new Insets(5));
 		wrapper.setFillWidth(true);
-		wrapper.setPrefWidth(600);
+		wrapper.setPrefWidth(viewPortWidth);
 		
 		ScrollPane scrollPane = new ScrollPane(wrapper);
 		scrollPane.setFitToWidth(true);
-		scrollPane.setPrefViewportHeight(200);
-		scrollPane.setPrefViewportWidth(600);
+		scrollPane.setPrefViewportHeight(viewPortHeight);
+		scrollPane.setPrefViewportWidth(viewPortWidth);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		scrollPane.setStyle("""
-			-fx-background-color: transparent;
-			-fx-border-color: #cccccc;
-			-fx-border-radius: 6px;
-			-fx-background-radius: 6px;
-			-fx-padding: 4px;
+		    -fx-background-color: transparent;
+		    -fx-border-color: #cccccc;
+		    -fx-border-radius: 6px;
+		    -fx-background-radius: 6px;
+		    -fx-padding: 4px;
 		""");
-		
 		return scrollPane;
 	}
 	
-	private static @NotNull Label getDescription() {
-		Label description = new Label("""
-			Battorion Tray is a lightweight background utility that keeps you informed about
-			your battery status directly from the system tray.
-		\t
-			It operates silently without opening any main window and provides quick access to
-			essential functions like:
-			- Enabling or disabling battery alerts.
-			- Viewing battery level and charging status.
-			- Accessing comprehensive battery guides.
-		\t
-			Features:
-			- High Battery Alert at 85% or above.
-			- Low Battery Alert at 25% or below.
-			- Works silently from the tray on Windows, Linux, and macOS.
-		\t
-			To access tray features:
-			- Right-click the Battorion icon in the system tray.
-			- Choose from the available menu options.
-		\t
-			Thank you for using Battorion Tray!
-		\t""");
-		description.setWrapText(true);
-		return description;
+	public static String getTrayIntegrationText() {
+		return """
+				<html>
+						<body style="font-family: Serif, sans-serif; padding: 10px;">
+								<p><b>Battorion Tray</b> is a lightweight background utility that keeps you informed about your battery status directly from the system tray.</p>
+							\s
+								<p>It operates silently without opening any main window and provides quick access to essential functions like:</p>
+								<ul>
+										<li>Enabling or disabling battery alerts.</li>
+										<li>Viewing battery level and charging status.</li>
+										<li>Accessing comprehensive battery guides.</li>
+								</ul>
+							\s
+								<p><b>Features:</b></p>
+								<ul>
+										<li>High Battery Alert at 85% or above.</li>
+										<li>Low Battery Alert at 25% or below.</li>
+										<li>Works silently from the tray on Windows, Linux, and macOS.</li>
+								</ul>
+							\s
+								<p>To access tray features:</p>
+								<ul>
+										<li>Right-click the Battorion icon in the system tray.</li>
+										<li>Choose from the available menu options.</li>
+								</ul>
+							\s
+								<p>Thank you for using <b>Battorion Tray</b>!</p>
+						</body>
+				</html>
+				\t""";
 	}
 	
 	private static @NotNull Map<String, Runnable> getStringRunnableMap() {
@@ -129,6 +142,33 @@ public class TrayAlerts {
 			String fallbackText = getFallbackText(os);
 			createInstructionAlert("Tray Icon Pinning Guide", "How to Pin Battorion to System Tray", content, fallbackText);
 		});
+	}
+	
+	public static void howDoISelectTheAudioOutput() {
+		VBox content = new VBox(10);
+		content.setPadding(new Insets(10));
+		content.setPrefWidth(600);
+		content.setFillWidth(true);
+		
+		Label title = new Label("How do i select the audio output?");
+		title.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+		
+		WebView description = new WebView();
+		description.setPrefHeight(300);
+		description.setContextMenuEnabled(false);
+		description.getEngine().loadContent(AppendixesQuestionnaire.aboutSelectAudioDevice());
+		description.setMaxWidth(Double.MAX_VALUE);
+		description.setStyle("""
+				-fx-background-color: #f9f9f9;
+				-fx-border-color: #ddd;
+				-fx-border-radius: 4px;
+				-fx-background-radius: 4px;
+			""");
+		
+		ScrollPane scrollPane = getScrollPane(description, 700, 320);
+		VBox.setVgrow(scrollPane, Priority.ALWAYS);
+		content.getChildren().addAll(title, scrollPane);
+		createInstructionAlert("Select Audio Output Device", "Select Audio Output Device", content, null);
 	}
 	
 	private static void createInstructionAlert(String title, String header, VBox content, String fallbackText) {

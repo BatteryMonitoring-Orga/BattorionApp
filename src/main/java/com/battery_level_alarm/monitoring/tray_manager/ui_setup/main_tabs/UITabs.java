@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.isApplicationMode;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab.createDashboardTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.createSettingsTab;
@@ -48,7 +49,9 @@ public class UITabs {
 		
 		back.setGraphic(icon);
 		back.setOnAction(_ -> {
-			if (!tabHistory.isEmpty()) {
+			if(isApplicationMode) {
+				return;
+			} if (!tabHistory.isEmpty()) {
 				isNavigatingBack = true;
 				((TabPane) primaryStage.getScene().getRoot()).getSelectionModel().select(tabHistory.pop());
 				isNavigatingBack = false;

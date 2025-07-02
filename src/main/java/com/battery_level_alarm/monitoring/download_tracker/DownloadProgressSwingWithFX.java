@@ -41,7 +41,7 @@ public class DownloadProgressSwingWithFX {
         }
         fxPanel.setScene(newScene);
     }
-
+    
     public JPanel getDownloadProgressPanel() {
         return downloadProgressPanel;
     }

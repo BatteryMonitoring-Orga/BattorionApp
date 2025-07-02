@@ -5,26 +5,24 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setColumn;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setDimension;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.ComputerSettingsGUI.*;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.DropDownList.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.DropDownList.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.addToggleButton;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addMouseListenerToLabel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner.addLabeledSpinner;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner.getSpinnerValue;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.*;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass.pcSettingPanel;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.pcSettingPanel;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.core_utilities.DropDownListStaticQuestionnaires;
 import com.battery_level_alarm.monitoring.core_utilities.EffectDirection;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.*;
 import com.battery_level_alarm.monitoring.visual_effects.Brightness;
 import com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.SettingsContainerClass;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -73,16 +71,13 @@ public class ComputerSettingsFourthPartialPanel {
         setDimension(0, 0);
         JPanel northPartialPanelContent = createNorthPartialPanelContent(gbc);
         JPanel partialPanelContent = createPartialPanelContent(gbc);
-        JPanel partialPanelFooter = createPartialPanelFooter();
         decideTheSizeDimension();
 
         northPartialPanelContent.setOpaque(false);
         partialPanelContent.setOpaque(false);
-        partialPanelFooter.setOpaque(false);
 
         mainPartialPanel.add(northPartialPanelContent, BorderLayout.NORTH);
         mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
-        mainPartialPanel.add(partialPanelFooter, BorderLayout.SOUTH);
         return mainPartialPanel;
     }
 
@@ -368,26 +363,6 @@ public class ComputerSettingsFourthPartialPanel {
         );
     }
 
-    private static JPanel createPartialPanelFooter(){
-        JLabel about = new JLabel("▶ What do these options mean?" + ONE_SPACE);
-        about.setFont(TITLE_LISTS_FONT);
-        addMouseListenerToLabel(
-                about,
-                Color.LIGHT_GRAY,
-                () -> displayPopUpMenu(
-                        about,
-                        createFooterPopupMenu(DropDownListStaticQuestionnaires::getFirstPartialQuestionnaires)
-                )
-        );
-
-        JPanel aboutLabelPackage = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        aboutLabelPackage.add(about);
-        JPanel aboutPanel = new JPanel(new BorderLayout());
-        //aboutPanel.add(new JLabel(TWO_SPACE), BorderLayout.NORTH);
-        aboutPanel.add(aboutLabelPackage, BorderLayout.CENTER);
-        return aboutPanel;
-    }
-
     private static void setEnableRequestFocusInWindow(boolean isEnableRequestFocusInWindow){
         ComputerSettingsFourthPartialPanel.isEnableRequestFocusInWindow = isEnableRequestFocusInWindow;
     }
@@ -407,13 +382,17 @@ public class ComputerSettingsFourthPartialPanel {
     }
 
     private static void decideTheSizeDimension(){
+        partialPanelDimension = new Dimension(WIDTH, getFourthPCHeight());
+    }
+    
+    public static int getFourthPCHeight() {
         if(ComputerSettings.isAutomaticallyReduceAndRestoreBL()){
-            partialPanelDimension = new Dimension(WIDTH, 310);
+            return 280;
         } else {
             if(thereIsInvisiblePartFlag){
-                partialPanelDimension = new Dimension(WIDTH, 360);
+                return 330;
             } else {
-                partialPanelDimension = new Dimension(WIDTH, 400);
+                return 370;
             }
         }
     }

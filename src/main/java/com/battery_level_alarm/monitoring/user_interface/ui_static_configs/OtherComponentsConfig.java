@@ -92,6 +92,7 @@ public class OtherComponentsConfig {
     ){
         JCheckBox checkBox = new JCheckBox(label);
         checkBox.setFont(DEFAULT_FONT);
+        checkBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         checkBox.setSelected(isSelected);
         checkBox.addActionListener(listener);
         gbc.gridx = getColumn();

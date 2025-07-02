@@ -2,6 +2,7 @@ package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
 import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.scheduler;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.main_browser;
 import static com.battery_level_alarm.monitoring.system_core.handlers.BatteryModeHandler.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
@@ -29,6 +30,7 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.*;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
+import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.cleanupAfterInstallation;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.isReleaseInstallProcessRunning;
 import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
@@ -120,6 +122,13 @@ public class Battorion {
             logger.log(SEVERE, "🚨 Uncaught exception in thread: " + thread.getName(), throwable)
         );
         
+        if(Boolean.parseBoolean(prefs.get("new-release", String.valueOf(false)))) {
+            Thread.ofVirtual().start(() -> {
+                prefs.put("new-release", String.valueOf(false));
+                main_browser(new String[]{});
+                cleanupAfterInstallation();
+            });
+        }
         loadGeneralConfigurations();
 	    loadUpdateVersionConfigurations();
         Appearance.theme_setup();

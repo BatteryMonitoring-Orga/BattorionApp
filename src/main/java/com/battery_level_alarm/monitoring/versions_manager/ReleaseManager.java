@@ -16,6 +16,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.ve
 import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UpdateSettingsGUI.downloadButtonName;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UpdateSettingsGUI.downloadUpdateButton;
 import static com.battery_level_alarm.monitoring.versions_manager.InitializationProcess.initializationProcess;
@@ -83,7 +84,6 @@ public class ReleaseManager {
 					return;
 				}
 				
-				cleanupAfterInstallation();
 				if(isAutoRestartAfterUpdate()) {
 					restartApplication();
 				} else {
@@ -101,7 +101,7 @@ public class ReleaseManager {
 		});
 	}
 	
-	private static void cleanupAfterInstallation() {
+	public static void cleanupAfterInstallation() {
 		releaseLog("🧹 Starting cleanup after installation...");
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(MAIN_FOLDER_PATH),
 				entry -> Files.isDirectory(entry) && entry.getFileName().toString().startsWith(RELEASE_FOLDER))) {
@@ -120,6 +120,7 @@ public class ReleaseManager {
 	
 	public static void restartApplication() {
 		try {
+			prefs.put("new-release", String.valueOf(true));
 			releaseLog("✅ Initialization done. Restarting app...");
 			String pf64 = System.getenv("ProgramW6432");
 			Path rootFolder = Paths.get(pf64, "Battorion");

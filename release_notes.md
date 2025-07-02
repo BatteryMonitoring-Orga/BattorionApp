@@ -82,4 +82,21 @@ A built-in advanced documentation browser has been introduced.
 
 ---
 
+## 🐞 Bug Fixes
+
+Several issues have been resolved to improve stability and reliability:
+
+- **Windows Installer Freeze Fix:**  
+  Resolved an issue where the silent installer would hang due to the application still running in the background. The setup process now forcefully closes the running instance before installation to ensure a smooth update.
+
+- **Markdown Loading Issue:**  
+  Fixed a problem where release notes (release_notes.md) failed to load if the app was executed from a compiled `.exe` file. The loader now dynamically determines the executable's path to correctly locate and read the markdown file.
+
+- **Improved Java Process Termination (Windows):**  
+  Replaced static taskkill approach with a PowerShell-based process lookup that accurately identifies and terminates only the Battorion-related Java process, avoiding unintended closures of unrelated Java applications.
+
+- **Wine Installer Support (Linux/macOS):**  
+  Added logic to detect and close Battorion processes launched under Wine before executing the silent installer, resolving update conflicts on non-Windows platforms.
+
+---
 Stay tuned for more enhancements in the next updates!

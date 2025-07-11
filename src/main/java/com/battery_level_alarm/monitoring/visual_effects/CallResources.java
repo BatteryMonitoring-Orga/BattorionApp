@@ -5,24 +5,44 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 import com.battery_level_alarm.monitoring.system_core.Battorion;
+import org.apache.batik.transcoder.SVGAbstractTranscoder;
+import org.apache.batik.transcoder.TranscoderInput;
+
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 
 public class CallResources {
+    private static final String DEFAULT_EXTEND = ".png";
 	public static ImageIcon getImage(
             String parentFolder, String imageName,
             Dimension dimension, int hints
-    ){
+    ) {
         String iconName = imageName;
-        if(!(imageName.contains(".png") && imageName.contains(".jpg"))){
-            iconName = imageName + ".png";
+        if (!imageName.contains(".")) {
+            iconName = imageName + DEFAULT_EXTEND;
         }
+        
 		URL resource = CallResources.class.getResource( parentFolder + iconName);
         if (resource == null) {
             throw new IllegalArgumentException("File not found: " + parentFolder + imageName + ".png");
+        } if (iconName.endsWith(".svg")) {
+            try {
+                TranscoderInput input = new TranscoderInput(resource.toString());
+                BufferedImageTranscoder t = new BufferedImageTranscoder();
+                t.addTranscodingHint(SVGAbstractTranscoder.KEY_WIDTH, (float) dimension.getWidth());
+                t.addTranscodingHint(SVGAbstractTranscoder.KEY_HEIGHT, (float) dimension.getHeight());
+                t.transcode(input, null);
+                BufferedImage rawImg = t.getBufferedImage();
+                
+                Image finalImage = getScaledImage(rawImg, (int) dimension.getWidth(), (int) dimension.getHeight());
+                return new ImageIcon(finalImage);
+            } catch (Exception e) {
+                logger.severe("[EXCEPTION]: " + e.getMessage());
+            }
         }
-
+        
         ImageIcon icon = new ImageIcon(resource);
         return new ImageIcon(icon.getImage().getScaledInstance(
-                (int)dimension.getWidth(), (int)dimension.getHeight(), hints));
+                (int) dimension.getWidth(), (int) dimension.getHeight(), hints));
 	}
 
     public static Image getScaledImage(Image srcImg, int w, int h) {

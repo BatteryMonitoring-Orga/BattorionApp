@@ -2,7 +2,7 @@ package com.battery_level_alarm.monitoring.system_core.helpers;
 import com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker;
 import com.battery_level_alarm.monitoring.download_tracker.DownloadProgressSwingWithFX;
 import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass;
 import com.battery_level_alarm.monitoring.visual_effects.Brightness;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
@@ -24,7 +24,7 @@ import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionCheck
 import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.system_core.handlers.BattorionMainProcessHandler.isWaitingForInternet;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.BordersConfiguration.*;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.isA_DashboardPanel;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.IS_A_DASHBOARD_PANEL;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.IMAGES_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.progressBarInFirstMode;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.progressBarInVerticalMode;
@@ -35,6 +35,7 @@ import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionPr
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.dashboardButton;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance.getPopupMenu;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.THEME_ICON_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.website.Website.websiteCaller;
 
 public class TopAssistPanel {
 	public static JPanel topAssistantPartialPanelsContainer;
@@ -49,10 +50,11 @@ public class TopAssistPanel {
 	public static JPanel createTopAssistPanel(Color color) {
 		createDownloaderPanel();
 		JButton updateButton = createUpdateButton();
-		JButton resetButton = createResetButton(color);
+		JButton websiteButton = createWebsiteButton();
+		JButton progressBarModeButton = createProgressBarModeButton();
 		JButton themeButton = createThemeButton();
 		JButton brightnessButton = createBrightnessButton();
-		JButton progressBarModeButton = createProgressBarModeButton();
+		JButton resetButton = createResetButton(color);
 		JButton notificationModeButton = createNotificationModeButton();
 		JButton notificationButton = createNotificationButton();
 		
@@ -63,10 +65,11 @@ public class TopAssistPanel {
 		
 		firstTopAssistantPartialPanel.add(updateButton);
 		firstTopAssistantPartialPanel.add(downloaderPanel);
-		firstTopAssistantPartialPanel.add(resetButton);
+		firstTopAssistantPartialPanel.add(websiteButton);
+		secondTopAssistantPartialPanel.add(progressBarModeButton);
 		secondTopAssistantPartialPanel.add(themeButton);
 		secondTopAssistantPartialPanel.add(brightnessButton);
-		thirdTopAssistantPartialPanel.add(progressBarModeButton);
+		thirdTopAssistantPartialPanel.add(resetButton);
 		thirdTopAssistantPartialPanel.add(notificationModeButton);
 		thirdTopAssistantPartialPanel.add(notificationButton);
 		
@@ -124,6 +127,14 @@ public class TopAssistPanel {
 		);
 	}
 	
+	private static JButton createWebsiteButton() {
+		return BattorionButtonHelper.createButton(
+				"Visit Battorion Website",
+				IMAGES_FOLDER_PATH, "website.svg",
+				_ -> websiteCaller()
+		);
+	}
+	
 	private static JButton createThemeButton() {
 		JButton button = BattorionButtonHelper.createButton(
 				"Switch the theme, right-click to open the context menu",
@@ -171,7 +182,7 @@ public class TopAssistPanel {
 					setUpProgressPanel(progressBarInFirstMode);
 					setVisibleFalse();
 					motherPanel.add(DashboardPanel, BorderLayout.CENTER);
-					setVisibleTrue(isA_DashboardPanel);
+					setVisibleTrue(IS_A_DASHBOARD_PANEL);
 					motherPanel.repaint();
 					motherPanel.revalidate();
 					saveGeneralConfigurations();

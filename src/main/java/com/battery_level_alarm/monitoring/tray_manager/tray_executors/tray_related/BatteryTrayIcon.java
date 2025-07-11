@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.SHOW_BATTERY_ICON;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -17,7 +18,7 @@ public class BatteryTrayIcon {
 			trayIcon.setImageAutoSize(true);
 			try {
 				boolean isAllowToAdd = Boolean.parseBoolean(
-						prefs.get("showBatteryIcon", String.valueOf(false))
+						prefs.get(SHOW_BATTERY_ICON, String.valueOf(false))
 				);
 				if(isAllowToAdd) {
 					SystemTray.getSystemTray().add(trayIcon);

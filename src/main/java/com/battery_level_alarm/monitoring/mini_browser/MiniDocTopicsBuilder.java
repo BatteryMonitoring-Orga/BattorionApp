@@ -26,18 +26,36 @@ import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.TRAY
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.MAIN_FOLDER_NAME;
 
 public class MiniDocTopicsBuilder {
-	static final Map<String, Supplier<String>> TOPICS = new LinkedHashMap<>();
+	public static final Map<String, Supplier<String>> TOPICS = new LinkedHashMap<>();
+	public static final String RELEASE_NOTES_MD = "release_notes.md";
+	public static final String LATEST_RELEASE_NOTES_MD = "latest_release_notes.md";
 	
-	static void buildTopicsMap() {
+	private static String currentReleaseNote;
+	public static String latestReleaseNote;
+	
+	private static String getCurrentReleaseMarkdownText() {
+		return currentReleaseNote;
+	}
+	
+	public static String getLatestReleaseMarkdownText() {
+		return latestReleaseNote;
+	}
+	
+	public static void buildTopicsMap() {
 		TOPICS.put(GENERAL_HEADER, () -> "<h3>General</h3>");
 		TOPICS.put(ABOUT_APP, StaticQuestionnaire::getAboutDispatchText);
-		TOPICS.put(WHATS_NEW, () -> loadMarkdownAsHtml("release_notes.md"));
+		
+		if(getCurrentReleaseMarkdownText() == null || getCurrentReleaseMarkdownText().isEmpty()) {
+			currentReleaseNote = loadMarkdownAsHtml(RELEASE_NOTES_MD);
+		}
+		TOPICS.put(WHATS_NEW, MiniDocTopicsBuilder::getCurrentReleaseMarkdownText);
 		
 		TOPICS.put(GUIDES_HEADER, () -> "<h3>Guides</h3>");
 		TOPICS.put(SETTINGS_QUESTIONNAIRE, SettingsQuestionnaire::getComprehensiveUserGuideHtml);
 		TOPICS.put(SYSTEM_SETTINGS_QUESTIONNAIRE, ComputerSettingsQuestionnaire::getComputerSettingsGuide);
 		TOPICS.put(STATISTICS_QUESTIONNAIRE, StaticQuestionnaire::getStatisticsContainerExplanation);
 		TOPICS.put(GRAPH_QUESTIONNAIRE, GraphSettingsQuestionnaire::getGraphSettingsQuestionnaire);
+		TOPICS.put(LIFE_REPORT_QUESTIONNAIRE, LifeReportQuestionnaire::getLifeReportQuestionnaire);
 		
 		TOPICS.put(NOTIFICATIONS_HEADER, () -> "<h3>Notifications</h3>");
 		TOPICS.put(TRAY_INTEGRATION, TrayAlerts::getTrayIntegrationText);
@@ -52,5 +70,6 @@ public class MiniDocTopicsBuilder {
 		TOPICS.put(COMPREHENSIVE_BATTERY_GUIDE_EN, () -> "external::" + basePath + "Comprehensive Guide - English.html");
 		TOPICS.put(BATTERY_CALIBRATION_AR, () -> "external::" + basePath + "BatteryCalibrationAndPerformanceAnalysisInArabic.html");
 		TOPICS.put(BATTERY_CALIBRATION_EN, () -> "external::" + basePath + "BatteryCalibrationAndPerformanceAnalysisInEnglish.html");
+		TOPICS.put(END_OF_TITLES, () -> "<h3>End of Internal Sections</h3>");
 	}
 }

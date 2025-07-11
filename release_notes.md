@@ -1,102 +1,53 @@
-# 🆕 What's New in the Latest Version
+# What's New in the Latest Version
 
 The latest version brings a rich set of enhancements and new components that improve user control, flexibility, and overall experience.
 
 ---
 
-## 🎨 New: Battery Graph Settings Panel
+## New: Battery Report Assistant Panel
 
-A full-featured interface has been added for customizing how battery data is visualized and managed.
+A brand-new interactive panel has been introduced to provide a clear,
+intuitive guide for battery report management and interpretation.
 
-- **Appearance Settings**
-    - Select visual themes, line color, background, and axis color.
-    - Language support for English and العربية.
+- **Step-by-Step User Guidance:**  
+  The panel visually explains each available action (open, generate, reanalyze)
+  so users can confidently manage battery reports—even without a technical background.
 
-- **Chart Settings**
-    - Choose between Line Chart and Area Chart.
-    - Enable or disable data points, tooltips, and grid lines.
-    - Control visibility of X/Y axis labels.
+- **Built-In Glossary of Battery Terms:**  
+  A detailed breakdown of technical metrics is now available,
+  helping users understand terms like *Designed Capacity*,
+  *Battery Wear*, *Cycle Count*, *Charge Level*, *Amperage*, and more.
 
-- **Time & Zoom Settings**
-    - Auto-update graph in real time.
-    - Zoom dynamically into specific regions.
-    - Set minimum and maximum zoom levels.
+- **Contextual Explanations for Every Label:**  
+  Each label and data field in the battery section now includes a corresponding explanation in this panel,
+  bridging the gap between raw numbers and real-world meaning.
 
-- **Battery Alerts**
-    - Define alert threshold by percentage.
-    - Choose custom color for alert indicators.
+- **Always Accessible:**  
+  The assistant panel is embedded within the main interface
+  and can be expanded or collapsed as needed—acting as an on-demand help center for battery analysis.
 
-- **Save & Load Options**
-    - Choose save format (CSV or JSON).
-    - Auto-save based on number of records.
-
----
-
-## 🔔 New: Notification Settings
-
-Improved notification flexibility through customizable visual and text alerts.
-
-- **Enable Text Alerts:** Show pop-up notifications for battery events.
-- **Customize Alert Text:** Modify alert content for clarity and personalization.
+- **User-Friendly Language:**  
+  Wording has been carefully crafted to suit both tech-savvy users and beginners alike,
+  making the battery health system easier to understand and trust.
 
 ---
 
-## 🧲 New: Tray Icon Settings
+## New: Built-In Feedback System
 
-Enhanced integration with the system tray for a seamless user experience.
+A new integrated **Feedback System** has been added to empower users to share their experiences,
+report issues, and suggest improvements directly from within the app.
 
-- **Start with Tray Window:** Option to launch app minimized to tray.
-- **Tray Icon Preview:** Real-time visual preview based on current theme.
-- **About Sections:** Quick access to "About Tray Panel" and "About Tray Integration".
+- **One-Click Feedback Submission:**  
+  Users can now quickly submit feedback
+  without leaving the application—just one click to open the form and share thoughts.
 
----
+- **Optional Contact Information:**  
+  Users can choose
+  to leave their email if they'd like follow-up or updates related to their input—fully optional and privacy-friendly.
 
-## 🔄 New: Update Settings Interface
-
-A centralized section for managing app updates and version control.
-
-- **Auto Update Options**
-    - Check for updates automatically.
-    - Download and install updates in the background.
-    - Optional prompt before applying updates.
-    - Auto-restart after successful update.
-
-- **Version Info & Manual Control**
-    - View current and latest version numbers.
-    - Manually check for updates.
-    - View detailed release notes.
-    - Download updates manually.
-    - Rollback to a previous version (if needed).
-
----
-
-## 📖 New: Internal Mini Documentation Browser
-
-A built-in advanced documentation browser has been introduced.
-
-- Allows browsing internal help topics in tabbed format.
-- Topics are listed in a sidebar and opened in dynamic tabs.
-- Supports HTML-based internal and external documents.
-- Includes scroll-to-section functionality and dark/light themes.
-- Full isolation from main UI for focused reading and help access.
-
----
-
-## 🐞 Bug Fixes
-
-Several issues have been resolved to improve stability and reliability:
-
-- **Windows Installer Freeze Fix:**  
-  Resolved an issue where the silent installer would hang due to the application still running in the background. The setup process now forcefully closes the running instance before installation to ensure a smooth update.
-
-- **Markdown Loading Issue:**  
-  Fixed a problem where release notes (release_notes.md) failed to load if the app was executed from a compiled `.exe` file. The loader now dynamically determines the executable's path to correctly locate and read the markdown file.
-
-- **Improved Java Process Termination (Windows):**  
-  Replaced static taskkill approach with a PowerShell-based process lookup that accurately identifies and terminates only the Battorion-related Java process, avoiding unintended closures of unrelated Java applications.
-
-- **Wine Installer Support (Linux/macOS):**  
-  Added logic to detect and close Battorion processes launched under Wine before executing the silent installer, resolving update conflicts on non-Windows platforms.
+- **Improves Future Updates:**  
+  Feedback collected directly helps shape the future of the application,
+  ensuring user needs and expectations are continuously met.
 
 ---
 Stay tuned for more enhancements in the next updates!

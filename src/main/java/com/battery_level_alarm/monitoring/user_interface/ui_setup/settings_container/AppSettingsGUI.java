@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.SETTINGS_QUESTIONNAIRE;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.HYPERLINK_HOVER_COLOR;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabelWithMouseListener;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.*;
@@ -67,7 +68,7 @@ public class AppSettingsGUI {
         setButtonDefaultSize();
         setDimension(0, 0);
         addLabelWithMouseListener(
-                gbc, aboutPanel, "About App Settings Panel ", new Color(0, 134, 179),
+                gbc, aboutPanel, "About App Settings Panel ", HYPERLINK_HOVER_COLOR,
                 () -> Thread.ofVirtual().start(() -> launchAndOpenTopic(SETTINGS_QUESTIONNAIRE, 0)), DEFAULT_FONT
         );
         

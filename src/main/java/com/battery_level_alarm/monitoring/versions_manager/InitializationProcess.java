@@ -1,14 +1,20 @@
 package com.battery_level_alarm.monitoring.versions_manager;
 import java.io.File;
 import java.io.IOException;
+
+import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.NEW_RELEASE;
+import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.restartApplication;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.releaseLog;
 
 public class InitializationProcess {
+	private static final String SILENT_SETUP_RUN_FILE = "silent-setup-run.bat";
 	static boolean initializationProcess(java.nio.file.Path releaseFolderPath) {
 		String os = System.getProperty("os.name").toLowerCase();
 		releaseLog("🚀 Starting initialization process...");
 		if (os.contains("win")) {
-			File setupFile = releaseFolderPath.resolve("silent-setup-run.bat").toFile();
+			File setupFile = releaseFolderPath.resolve(SILENT_SETUP_RUN_FILE).toFile();
 			if (!setupFile.exists()) {
 				releaseLog("❌ File not found: " + setupFile.getAbsolutePath());
 				return false;
@@ -18,24 +24,19 @@ public class InitializationProcess {
 			releaseLog("\u200B");
 			
 			try {
+				prefs.put(NEW_RELEASE, String.valueOf(true));
 				Process process = new ProcessBuilder("cmd", "/c", setupFile.getAbsolutePath())
 						.directory(releaseFolderPath.toFile())
 						.start();
-				int exitCode = process.waitFor();
-				if (exitCode == 0) {
-					releaseLog("✅ Windows installation completed successfully.");
-					return true;
-				} else {
-					releaseLog("❌ Windows setup exited with code: " + exitCode);
-					return false;
-				}
+				process.waitFor();
+				restartApplication();
 			} catch (IOException | InterruptedException e) {
 				releaseLog("❌ Exception during Windows setup: " + e.getMessage());
 				Thread.currentThread().interrupt();
 				return false;
 			}
 		} else {
-			File exeFile = releaseFolderPath.resolve("battorion-4.0.0-silent-setup.exe").toFile();
+			File exeFile = releaseFolderPath.resolve("battorion-" + latestVersion + "-silent-setup.exe").toFile();
 			if (!exeFile.exists()) {
 				releaseLog("❌ File not found: " + exeFile.getAbsolutePath());
 				return false;
@@ -65,5 +66,6 @@ public class InitializationProcess {
 				return false;
 			}
 		}
+		return false;
 	}
 }

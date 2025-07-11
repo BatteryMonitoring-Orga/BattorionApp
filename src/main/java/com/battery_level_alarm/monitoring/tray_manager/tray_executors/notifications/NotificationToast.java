@@ -14,9 +14,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import javafx.util.Duration;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.APP_THEME;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
@@ -82,21 +85,7 @@ public class NotificationToast {
 		slide.setInterpolator(Interpolator.EASE_OUT);
 		slide.play();
 		
-		PauseTransition wait = new PauseTransition(Duration.seconds(5));
-		wait.setOnFinished(_ -> {
-			FadeTransition fadeOut = new FadeTransition(Duration.millis(200), pane);
-			fadeOut.setFromValue(1.0);
-			fadeOut.setToValue(0.0);
-			fadeOut.setOnFinished(_ -> {
-				if(toastStage.isShowing()) {
-					toastStage.close();
-				}
-				isShowingToast = false;
-			});
-			fadeOut.play();
-		});
-		wait.play();
-		
+		PauseTransition wait = getPauseTransition(pane, toastStage);
 		closeButton.setOnAction(_ -> {
 			wait.stop();
 			toastStage.close();
@@ -107,8 +96,28 @@ public class NotificationToast {
 		});
 	}
 	
+	private static @NotNull PauseTransition getPauseTransition(StackPane pane, Stage toastStage) {
+		PauseTransition wait = new PauseTransition(Duration.seconds(5));
+		wait.setOnFinished(_ -> {
+			FadeTransition fadeOut = new FadeTransition(Duration.millis(200), pane);
+			fadeOut.setFromValue(1.0);
+			fadeOut.setToValue(0.0);
+			fadeOut.setOnFinished(_ -> {
+				if (toastStage.isShowing()) {
+					toastStage.close();
+				}
+				PauseTransition delayAfterClose = new PauseTransition(Duration.seconds(5));
+				delayAfterClose.setOnFinished(_ -> isShowingToast = false);
+				delayAfterClose.play();
+			});
+			fadeOut.play();
+		});
+		wait.play();
+		return wait;
+	}
+	
 	private static String getCssFile() {
-		String mode = prefs.get("appTheme", AS_SYSTEM.toString());
+		String mode = prefs.get(APP_THEME, AS_SYSTEM.toString());
 		String cssFile;
 		if (mode != null && mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
 			cssFile = STYLES_FILES_DIR_PATH + "/notification_toast_light.css";

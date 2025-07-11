@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.valueOf;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.monitorSystemTheme;
@@ -8,7 +9,6 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTabHelper.createAutomationSection;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.applyTheme;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createBackButton;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingActions.*;
 
@@ -55,7 +55,6 @@ public class SettingsTab {
 	
 	public static Tab createSettingsTab() {
 		VBox content = new VBox(20,
-				createBackButton(),
 				createToggleRunModeButton(),
 				createAudioSettingsSection(),
 				createAutomationSection(),
@@ -99,17 +98,18 @@ public class SettingsTab {
 	private static HBox createTabHeaderMode() {
 		ComboBox<String> headerBox = new ComboBox<>();
 		headerBox.getItems().addAll("Top", "Bottom");
-		headerBox.setValue(prefs.get("tab_header_position", "Bottom"));
+		headerBox.setValue(prefs.get(TAB_HEADER_POSITION, "Bottom"));
 		headerBox.setCursor(Cursor.HAND);
 		headerBox.setMinWidth(112);
 		headerBox.setPrefWidth(112);
 		headerBox.setMaxWidth(112);
 		headerBox.setOnAction(_ -> {
 			String selected = headerBox.getValue();
-			prefs.put("tab_header_position", selected);
+			prefs.put(TAB_HEADER_POSITION, selected);
 			setUpdateTabHeaderPosition(selected);
 			setUpdateBoxPadding(selected);
 			rebuildTabPanels();
+			Monitor.isShouldUpdateTrayDashboard = true;
 		});
 		return new HBox(10, labeledNode("Tab Header Position\u2003", headerBox));
 	}
@@ -145,6 +145,7 @@ public class SettingsTab {
 	
 	private static @NotNull VBox getBox() {
 		Hyperlink helpLink = new Hyperlink("How do I select the audio output?");
+		helpLink.setStyle("-fx-font-size: 14px;");
 		helpLink.setOnAction(_ -> TrayAlerts.howDoISelectTheAudioOutput());
 		
 		HBox deviceSelector = labeledNode("Choose Device:", audioDeviceSelect);
@@ -188,7 +189,7 @@ public class SettingsTab {
 		deleteAudioDevice.setOnAction(_ -> RadioButtonsActions.deleteAudioDeviceAction());
 		setAsDefaultAO.setOnAction(_ -> {
 			RadioButtonsActions.setAsDefaultAOAction();
-			Monitor.shouldUpdateAudioOutput = true;
+			Monitor.isShouldUpdateTrayDashboard = true;
 		});
 		return new HBox(10, useSelectedAO, addAudioDevice, deleteAudioDevice, setAsDefaultAO);
 	}
@@ -199,22 +200,25 @@ public class SettingsTab {
 	}
 	
 	public static VBox createNotificationSection() {
-		soundSelect.getItems().addAll(AlarmSounds.getFullSoundSequence());
-		enableSound.setSelected(Boolean.parseBoolean(prefs.get("trayNotificationEnable", String.valueOf(true))));
+		enableSound.setSelected(Boolean.parseBoolean(prefs.get(TRAY_NOTIFICATION_ENABLE, String.valueOf(true))));
 		enableSound.setOnAction(_ -> {
-			prefs.put("trayNotificationEnable", String.valueOf(enableSound.isSelected()));
+			prefs.put(TRAY_NOTIFICATION_ENABLE, String.valueOf(enableSound.isSelected()));
 			Monitor.changeFlag = true;
 		});
 		
-		enableToast.setSelected(Boolean.parseBoolean(prefs.get("toastNotificationEnable", String.valueOf(true))));
+		enableToast.setSelected(Boolean.parseBoolean(prefs.get(TOAST_NOTIFICATION_ENABLE, String.valueOf(true))));
 		enableToast.setOnAction(_ -> {
-			prefs.put("toastNotificationEnable", String.valueOf(enableToast.isSelected()));
+			prefs.put(TOAST_NOTIFICATION_ENABLE, String.valueOf(enableToast.isSelected()));
 			Monitor.changeFlag = true;
 		});
 		
 		soundSelect.setCursor(Cursor.HAND);
+		soundSelect.setVisibleRowCount(6);
 		soundSelect.setValue(getNotificationSoundFileName());
 		soundSelect.setOnAction(_ -> NotificationActions.updateNotificationSoundFileName(soundSelect.getValue()));
+		if(soundSelect.getItems().isEmpty()) {
+			soundSelect.getItems().addAll(AlarmSounds.getFullSoundSequence());
+		}
 		
 		String[] soundNames = AlarmSounds.getFullSoundSequence();
 		List<SoundItem> soundItems = Arrays.stream(soundNames).map(SoundItem::new).toList();
@@ -246,14 +250,14 @@ public class SettingsTab {
 		List<String> themes = Arrays.stream(TrayTheme.SystemTheme.values()).map(Enum::name).toList();
 		themeSelector.getItems().addAll(themes);
 		
-		String modeRaw = prefs.get("appTheme", AS_SYSTEM.toString());
+		String modeRaw = prefs.get(APP_THEME, AS_SYSTEM.toString());
 		String mode = modeRaw.toUpperCase().replace(" ", "_");
 		themeSelector.setValue(mode);
 		
 		themeSelector.setCursor(Cursor.HAND);
 		themeSelector.setOnAction(_ -> {
 			String selected = themeSelector.getValue();
-			prefs.put("appTheme", valueOf(selected).toString());
+			prefs.put(APP_THEME, valueOf(selected).toString());
 			applyTheme(valueOf(selected));
 			if(selected.equalsIgnoreCase(AS_SYSTEM.toString())) {
 				monitorSystemTheme();

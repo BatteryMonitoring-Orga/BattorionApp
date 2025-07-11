@@ -10,13 +10,13 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.isAutoRestartAfterUpdate;
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.isNotifyBeforeInstalling;
 import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.version;
 import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.NEW_RELEASE;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UpdateSettingsGUI.downloadButtonName;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UpdateSettingsGUI.downloadUpdateButton;
 import static com.battery_level_alarm.monitoring.versions_manager.InitializationProcess.initializationProcess;
@@ -81,16 +81,6 @@ public class ReleaseManager {
 					isReleaseInstallProcessRunning = false;
 					releaseLog("⚠️ Initialization process was not successful. Displaying logs...");
 					showAllLogs("Release Tracker Log");
-					return;
-				}
-				
-				if(isAutoRestartAfterUpdate()) {
-					restartApplication();
-				} else {
-					if(downloadUpdateButton != null) {
-						downloadUpdateButton.setText(downloadButtonName);
-						downloadUpdateButton.setEnabled(true);
-					}
 				}
 			} catch (Exception ex) {
 				Thread.currentThread().interrupt();
@@ -120,7 +110,7 @@ public class ReleaseManager {
 	
 	public static void restartApplication() {
 		try {
-			prefs.put("new-release", String.valueOf(true));
+			prefs.put(NEW_RELEASE, String.valueOf(true));
 			releaseLog("✅ Initialization done. Restarting app...");
 			String pf64 = System.getenv("ProgramW6432");
 			Path rootFolder = Paths.get(pf64, "Battorion");

@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.visual_effects;
-import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import javax.swing.*;
 import java.awt.*;

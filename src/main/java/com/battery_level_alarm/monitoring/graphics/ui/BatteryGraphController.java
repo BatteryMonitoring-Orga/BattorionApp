@@ -1,11 +1,13 @@
 package com.battery_level_alarm.monitoring.graphics.ui;
 import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.*;
+import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.loadDefaultGraphConfigurations;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveGraphConfigurations;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.reloadGraphUI;
 import static com.battery_level_alarm.monitoring.graphics.base.ChartType.*;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.GRAPH_QUESTIONNAIRE;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.DashboardPanel;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.refreshGraphSettingsTab;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.showFXAlert;
 
 import com.battery_level_alarm.monitoring.core_utilities.GraphSettings;
@@ -36,10 +38,9 @@ public class BatteryGraphController {
 						Arrays.stream(GRAPH_THEME.values()).map(GRAPH_THEME::getDisplayName).toArray(String[]::new)),
 				createColorSection("line-color", "Sketch Color:", getSketchColor(), GraphSettings::setSketchColor),
 				createColorSection("bg-color", "Background Color:", getBackgroundColor(), GraphSettings::setBackgroundColor),
-				createColorSection("axis-color", "Axis Color:", getAxisColor(), GraphSettings::setAxisColor),
-				createLabeledCombo("lang-combo", "Language:", getLanguage(), GraphSettings::setLanguage, "English", "العربية")
+				createColorSection("axis-color", "Axis Color:", getAxisColor(), GraphSettings::setAxisColor)
 		));
-		apparencyContentSetup(appearanceContent, backgroundStyle);
+		apparentContentSetup(appearanceContent, backgroundStyle);
 		
 		ScrollPane chartContent = getChartContent(backgroundStyle);
 		VBox timeContent = getTimeContent(backgroundStyle);
@@ -59,7 +60,7 @@ public class BatteryGraphController {
 		return container;
 	}
 	
-	private static void apparencyContentSetup(ScrollPane appearanceContent, String backgroundStyle) {
+	private static void apparentContentSetup(ScrollPane appearanceContent, String backgroundStyle) {
 		appearanceContent.setFitToWidth(true);
 		appearanceContent.setFitToHeight(true);
 		appearanceContent.setStyle(backgroundStyle);
@@ -203,6 +204,19 @@ public class BatteryGraphController {
 	}
 	
 	private static HBox buildBottomBox(String backgroundStyle) {
+		Button resetToDefault = new Button("Restore Defaults");
+		resetToDefault.setId("reset-button");
+		resetToDefault.setCursor(Cursor.HAND);
+		resetToDefault.setMinSize(150, 30);
+		resetToDefault.setPrefSize(150, 30);
+		resetToDefault.setMaxSize(150, 30);
+		resetToDefault.setOnAction(_ -> {
+			loadDefaultGraphConfigurations();
+			saveGraphConfigurations();
+			reloadGraphUI(true);
+			refreshGraphSettingsTab();
+		});
+		
 		Button saveChanges = new Button("Save Changes");
 		saveChanges.setId("save-button");
 		saveChanges.setCursor(Cursor.HAND);
@@ -217,9 +231,10 @@ public class BatteryGraphController {
 			reloadGraphUI(true);
 		});
 		
-		HBox bottomBox = new HBox(saveChanges);
+		HBox bottomBox = new HBox(resetToDefault, saveChanges);
 		bottomBox.setAlignment(Pos.CENTER_RIGHT);
 		bottomBox.setPadding(new Insets(5));
+		bottomBox.setSpacing(8);
 		bottomBox.setStyle(backgroundStyle);
 		return bottomBox;
 	}

@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isDarkMode;
+import static com.battery_level_alarm.monitoring.website.Website.createFXWebsiteCaller;
 
 public class MiniDocEmptyMessage {
 	static VBox emptyMessagePane = new VBox();
@@ -21,11 +22,10 @@ public class MiniDocEmptyMessage {
 		Label subtitle = new Label("Please select a topic from the list on the left.");
 		subtitle.setStyle("-fx-font-size: 14px; -fx-text-fill: " + subtitleColor + ";");
 		
-		emptyMessagePane = new VBox(10, icon, title, subtitle);
+		emptyMessagePane = new VBox(10, icon, title, subtitle, createFXWebsiteCaller(Pos.CENTER));
 		emptyMessagePane.setPadding(new Insets(30));
 		emptyMessagePane.setStyle("-fx-alignment: center;");
 		emptyMessagePane.setVisible(false);
 		emptyMessagePane.setAlignment(Pos.CENTER);
-		emptyMessagePane.setMouseTransparent(true);
 	}
 }

@@ -4,12 +4,14 @@ public class MiniDocTopics {
 	public static final String GENERAL_HEADER = "─ General ─";
 	public static final String ABOUT_APP = "About App";
 	public static final String WHATS_NEW = "What's New";
+	public static final String LATEST_RELEASE_NEW = "Latest release, What's New?";
 	
 	public static final String GUIDES_HEADER = "─ Guides ─";
 	public static final String SETTINGS_QUESTIONNAIRE = "Settings Questionnaire";
 	public static final String SYSTEM_SETTINGS_QUESTIONNAIRE = "System Settings Questionnaire";
 	public static final String STATISTICS_QUESTIONNAIRE = "Statistics Questionnaire";
 	public static final String GRAPH_QUESTIONNAIRE = "Graph Questionnaire";
+	public static final String LIFE_REPORT_QUESTIONNAIRE = "Life Report Questionnaire";
 	
 	public static final String NOTIFICATIONS_HEADER = "─ Notifications ─";
 	public static final String TRAY_INTEGRATION = "Tray Integration";
@@ -23,4 +25,5 @@ public class MiniDocTopics {
 	public static final String COMPREHENSIVE_BATTERY_GUIDE_EN = "Comprehensive Battery Guide (EN)";
 	public static final String BATTERY_CALIBRATION_AR = "Battery Calibration and Performance Analysis (AR)";
 	public static final String BATTERY_CALIBRATION_EN = "Battery Calibration and Performance Analysis (EN)";
+	public static final String END_OF_TITLES = "─ End of Internal Sections ─";
 }

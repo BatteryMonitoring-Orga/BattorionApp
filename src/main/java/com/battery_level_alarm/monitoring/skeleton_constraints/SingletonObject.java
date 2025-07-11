@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.skeleton_constraints;
-import com.battery_level_alarm.monitoring.visual_effects.DisplayMessages;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.departure;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.ClientServerActions.clintToServerAction;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 
 import javax.swing.*;
@@ -9,14 +9,11 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 public class SingletonObject {
     private static final String LOCK_FILE_NAME = "bat_locker.lock";
-    public static final String MAIN_FOLDER_PATH =
-            System.getProperty("user.home") + MAIN_FOLDER_NAME;
-    
+    public static final String MAIN_FOLDER_PATH = System.getProperty("user.home") + MAIN_FOLDER_NAME;
     private static FileLock lock = null;
     private static FileChannel channel = null;
     private static File lockFile;
@@ -60,6 +57,7 @@ public class SingletonObject {
                 }
             }));
             
+            clintToServerAction();
             departure(modeToUse, args);
         } catch (IOException e) {
             logger.severe("Unexpected error in SingletonObject: " + e.getMessage());

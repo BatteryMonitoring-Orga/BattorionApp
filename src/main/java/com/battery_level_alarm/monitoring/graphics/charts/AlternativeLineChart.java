@@ -20,20 +20,20 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 
 public class AlternativeLineChart {
 	public static LineChart<Number, Number> createAlternativeLevelGraph(XYChart.Series<Number, Number> series, int index) {
-		series.setName(isLanguageArabic() ? "نسبة البطارية" : "Battery Percentage");
+		series.setName("Battery Percentage");
 		NumberAxis xAxis = new NumberAxis();
 		xAxis.setTickLabelsVisible(isShowXAxisLabels());
 		xAxis.setAutoRanging(false);
 		xAxis.setLowerBound(0);
 		xAxis.setUpperBound(15);
 		xAxis.setTickUnit(1);
-		xAxis.setLabel(isLanguageArabic() ? "الوقت (دقائق)" : "Time (Minutes)");
+		xAxis.setLabel("Time (Minutes)");
 		
 		NumberAxis yAxis = new NumberAxis();
 		yAxis.setTickLabelsVisible(isShowYAxisLabels());
 		yAxis.setLowerBound(0);
 		yAxis.setUpperBound(100);
-		yAxis.setLabel(isLanguageArabic() ? "مستوى البطارية (%)" : "Battery Level (%)");
+		yAxis.setLabel("Battery Level (%)");
 		
 		LineChart<Number, Number> localLineChart = new LineChart<>(xAxis, yAxis);
 		localLineChart.setMinWidth(FRAME_WIDTH);

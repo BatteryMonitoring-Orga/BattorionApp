@@ -1,8 +1,8 @@
 package com.battery_level_alarm.monitoring.system_core.helpers;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.pcVolumeSpinner;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
 
 import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
@@ -77,7 +77,6 @@ public class BattorionProgressBarHelper {
             gbc.gridx++;
             progressPanel.add(labelContainer, gbc);
         }
-
         progressPanel.revalidate();
         progressPanel.repaint();
     }
@@ -172,7 +171,6 @@ public class BattorionProgressBarHelper {
         JSlider soundSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, soundLevel);
         JLabel soundLabel = new JLabel(soundLevel + " %");
         soundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
         soundSlider.addChangeListener(e -> {
             JSlider source = (JSlider)e.getSource();
             int newValue = source.getValue();

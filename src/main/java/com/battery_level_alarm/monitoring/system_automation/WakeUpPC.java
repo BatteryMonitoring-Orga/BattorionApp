@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.system_automation;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.visual_effects.DisplayMessages;
+import com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages;
 
 import java.awt.*;
 import java.util.concurrent.*;

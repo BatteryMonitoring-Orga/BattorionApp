@@ -5,7 +5,7 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutp
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isMonitorRunning;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isAudioDeviceCmdletsInstalled;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.activeAudioDeviceName;
-import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;

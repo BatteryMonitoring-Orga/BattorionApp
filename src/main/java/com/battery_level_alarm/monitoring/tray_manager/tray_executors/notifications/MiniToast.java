@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.APP_THEME;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
@@ -9,6 +10,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -20,7 +22,10 @@ import java.util.Objects;
 public class MiniToast {
 	private static final String STYLES_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles";
 	
-	public static void show(Point2D screenCoordinates, String msg, double durationSeconds) {
+	public static void show(
+			Point2D screenCoordinates, String msg, double durationSeconds,
+			boolean clickable, Runnable onClickAction
+	) {
 		Popup popup = new Popup();
 		popup.setAutoFix(true);
 		popup.setAutoHide(true);
@@ -31,6 +36,10 @@ public class MiniToast {
 		label.setFont(Font.font("Arial", 13));
 		label.getStyleClass().add("mini-toast-label");
 		label.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+		if(clickable) {
+			label.setCursor(Cursor.HAND);
+			label.setOnMouseClicked(_ -> onClickAction.run());
+		}
 		
 		StackPane root = new StackPane(label);
 		root.setPadding(new Insets(6, 12, 6, 12));
@@ -38,7 +47,7 @@ public class MiniToast {
 		root.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		root.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		
-		String mode = prefs.get("appTheme", AS_SYSTEM.toString());
+		String mode = prefs.get(APP_THEME, AS_SYSTEM.toString());
 		String cssFile;
 		if (mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
 			cssFile = STYLES_PATH + "/mini_toast_light.css";

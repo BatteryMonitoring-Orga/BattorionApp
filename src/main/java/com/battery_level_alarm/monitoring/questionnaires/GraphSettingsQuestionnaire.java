@@ -19,8 +19,6 @@ public class GraphSettingsQuestionnaire {
 											Set the background color of the graph area.</li>
 							<li><b>Axis Color:</b><br>
 											Select a custom color for the X and Y axis lines.</li>
-							<li><b>Language:</b><br>
-											Change the interface language (English or العربية).</li>
 						</ul>
 					</li>
 					<br>

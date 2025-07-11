@@ -7,7 +7,7 @@ import static com.battery_level_alarm.monitoring.graphics.executor.LocalSchedule
 import static com.battery_level_alarm.monitoring.system_core.Battorion.batteryLevel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.ICONS_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.ColorUtils.*;
 import static com.battery_level_alarm.monitoring.visual_effects.ColorUtils.ColorType.*;
 
@@ -51,8 +51,19 @@ public class BatteryLevelGraph extends Application {
     public static int batteryLevelForGraphics;
     public static int previousLevel = 0;
     
-    public static boolean isLanguageArabic() {
-        return getLanguage().equalsIgnoreCase("العربية");
+    static {
+        try {
+            Platform.startup(() -> {
+                mainGraphScrolls[0] = new ScrollPane();
+                mainGraphScrolls[1] = new ScrollPane();
+            });
+        } catch (Exception e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
+            Platform.runLater(() -> {
+                mainGraphScrolls[0] = new ScrollPane();
+                mainGraphScrolls[1] = new ScrollPane();
+            });
+        }
     }
     
     public static void initialize() {
@@ -104,21 +115,6 @@ public class BatteryLevelGraph extends Application {
         activeChart = batteryChartImpl.createChart();
     }
     
-    static {
-        try {
-            Platform.startup(() -> {
-                mainGraphScrolls[0] = new ScrollPane();
-                mainGraphScrolls[1] = new ScrollPane();
-            });
-        } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
-            Platform.runLater(() -> {
-                mainGraphScrolls[0] = new ScrollPane();
-                mainGraphScrolls[1] = new ScrollPane();
-            });
-        }
-    }
-    
     @Override
     public void start(Stage primaryStage) {
         chartWidth = FRAME_WIDTH;
@@ -142,11 +138,7 @@ public class BatteryLevelGraph extends Application {
     }
     
     public static @NotNull Tooltip getTooltip(double totalTime, double elapsedTime, int batteryLevel) {
-        String content = isLanguageArabic()
-                ? "✔ مستوى البطارية: " + batteryLevel + "%\n" +
-                "✔ الوقت المنقضي: " + String.format("%.2f", (elapsedTime / 60)) + " دقيقة\n" +
-                "✔ الوقت الكلي: " + String.format("%.2f", totalTime) + " دقيقة"
-                : "✔ Battery Level: " + batteryLevel + "%\n" +
+        String content = "✔ Battery Level: " + batteryLevel + "%\n" +
                 "✔ Elapsed Time: " + String.format("%.2f", (elapsedTime / 60)) + " min\n" +
                 "✔ Total Time: " + String.format("%.2f", totalTime) + " min";
         return new Tooltip(content);

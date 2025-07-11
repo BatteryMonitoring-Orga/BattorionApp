@@ -3,8 +3,9 @@ import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.OUTPUT_AUDIO_DEVICE;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.SYSTEM_SETTINGS_QUESTIONNAIRE;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.HYPERLINK_HOVER_COLOR;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionProgressBarHelper.createSoundMenu;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$CMD.setAudioOutputDevice;
@@ -77,7 +78,7 @@ public class ComputerSettingsGUI {
         setDimension(0, 0);
         
         addLabelWithMouseListener(
-                gbc, firstPanel, "About System Settings Panel ", new Color(0, 134, 179),
+                gbc, firstPanel, "About System Settings Panel ", HYPERLINK_HOVER_COLOR,
                 () -> Thread.ofVirtual().start(() -> launchAndOpenTopic(SYSTEM_SETTINGS_QUESTIONNAIRE, 0)), DEFAULT_FONT
         );
         

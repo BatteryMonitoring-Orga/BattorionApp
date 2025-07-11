@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.system_core.helpers;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.NULL_VALUE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ButtonTexts.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
@@ -10,11 +11,12 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelper.*;
 import static com.battery_level_alarm.monitoring.battery_emulator.BatteryIcon.BatterySimulationStart;
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.LifeReportPanelUI.lifeReportPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.setButtonFontAndSize;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.createSettingsContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.mainTabbedPanel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass.createStatisticsContainer;
-import static com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass.statisticsMainTabbedPanel;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass.createStatisticsContainer;
+import static com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass.statisticsMainTabbedPanel;
 import com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
 
@@ -26,17 +28,26 @@ import java.awt.event.MouseEvent;
 
 public class BattorionButtonHelper {
     public static JButton createButton(
-            String title, String toolTip,
-            String imageIconPath, String iconName,
-            ActionListener actionListener
+            String title, String toolTip, String imageIconPath,
+            String iconName, ActionListener actionListener
     ) {
         ImageIcon icon = null;
-        if(iconName != null){
-            icon = CallResources.getImage(
-                    imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
+        try {
+            if (iconName != null && !iconName.equalsIgnoreCase(NULL_VALUE)) {
+                icon = CallResources.getImage(
+                        imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
+            }
+        } catch (Exception e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
         }
         
-        JButton button = new JButton(title, icon);
+        JButton button;
+        if (icon != null) {
+            button = new JButton(title, icon);
+        } else {
+            button = new JButton(title);
+        }
+        
         setButtonFontAndSize(
                 button, new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 14),
                 WEST_PANEL_OPEN_WIDTH - 10, 70, SwingConstants.LEFT, SwingConstants.RIGHT);
@@ -82,7 +93,6 @@ public class BattorionButtonHelper {
     }
     
     private static void addHandMouseListener(JButton button, boolean isColoredAble, boolean isBorderPainted) {
-        boolean isWestSideButton = button.getText().equalsIgnoreCase(WEST_SIDE_BUTTON_TEXT);
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -96,7 +106,7 @@ public class BattorionButtonHelper {
             }
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(isColoredAble && !isWestSideButton ){
+                if(isColoredAble) {
                     setButtonBackgroundColor();
                     button.setBackground(DARK_BLUE);
                 }
@@ -114,7 +124,7 @@ public class BattorionButtonHelper {
 
     public static void setupWestSideButton() {
         int width = WEST_PANEL_OPEN_WIDTH;
-        if(westSideButton.getText().equals(WEST_SIDE_BUTTON_TEXT)){
+        if(westSideButton.getText().equals(WEST_SIDE_BUTTON_TEXT)) {
             setButtonNamesEmpty();
             isWestSidePartAppear = false;
             width = WEST_PANEL_CLOSED_WIDTH;
@@ -135,7 +145,6 @@ public class BattorionButtonHelper {
     private static void setButtonNamesEmpty() {
         westSideButton.setText("");
         dashboardButton.setText("");
-        actionButton.setText("");
         settingsButton.setText("");
         statisticsButton.setText("");
         graphPainter.setText("");
@@ -143,67 +152,27 @@ public class BattorionButtonHelper {
         simulatorButton.setText("");
         reportButton.setText("");
         aboutButton.setText("");
+        feedbackButton.setText("");
     }
 
     private static void returnButtonNames() {
         westSideButton.setText(WEST_SIDE_BUTTON_TEXT);
         dashboardButton.setText(DASHBOARD_BUTTON_TEXT);
         settingsButton.setText(SETTINGS_BUTTON_TEXT);
+        feedbackButton.setText(FEEDBACK_BUTTON_TEXT);
         statisticsButton.setText(STATISTICS_BUTTON_TEXT);
         graphPainter.setText(GRAPH_PAINTER_TEXT);
         guideButton.setText(GUIDE_BUTTON_TEXT);
         simulatorButton.setText(SIMULATOR_BUTTON_TEXT);
         reportButton.setText(REPORT_BUTTON_TEXT);
         aboutButton.setText(ABOUT_BUTTON_TEXT);
-
-        if(isMonitorRunning){
-            actionButton.setText(STOP_BUTTON_TEXT);
-        } else {
-            actionButton.setText(START_BUTTON_TEXT);
-        }
     }
-
-    public static void setupDashboardPanel() {
-        setVisibleFalse();
-        DashboardPanel.setVisible(true);
-        motherPanel.add(DashboardPanel, BorderLayout.CENTER);
-    }
-
-    public static void setupSettingPanel() {
-        ifPanelsNullCreate();
-        setVisibleFalse();
-        
-        createSettingsContainer();
-        SettingsContainer = mainTabbedPanel;
-        SettingsContainer.setVisible(true);
-        motherPanel.add(SettingsContainer, BorderLayout.CENTER);
-    }
-
-    public static void setupStatisticsPanel() {
-        createStatisticsContainer();
-        StatisticsContainer = statisticsMainTabbedPanel;
-
-        ifPanelsNullCreate();
-        setVisibleFalse();
-        StatisticsContainer.setVisible(true);
-        motherPanel.add(StatisticsContainer, BorderLayout.CENTER);
-    }
-
-    public static void setupSimulatorPanel() {
-        BatterySimulationStart();
-        SimulatorMainPanel = new JPanel(new BorderLayout());
-        SimulatorMainPanel.add(new JScrollPane(mainSimulatorPanel), BorderLayout.CENTER);
-
-        ifPanelsNullCreate();
-        setVisibleFalse();
-        SimulatorMainPanel.setVisible(true);
-        motherPanel.add(SimulatorMainPanel, BorderLayout.CENTER);
-    }
-
+    
     public static void setButtonBackgroundColor() {
         westSideButton.setBackground(panelBackgroundColor);
         dashboardButton.setBackground(panelBackgroundColor);
         statisticsButton.setBackground(panelBackgroundColor);
+        feedbackButton.setBackground(panelBackgroundColor);
         reportButton.setBackground(panelBackgroundColor);
         graphPainter.setBackground(panelBackgroundColor);
         guideButton.setBackground(panelBackgroundColor);
@@ -218,8 +187,51 @@ public class BattorionButtonHelper {
         JLabel label = new JLabel(msg);
         label.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
         popup.add(label);
-        
         popup.show(parent, 0, parent.getHeight());
         new Timer(2000, _ -> popup.setVisible(false)).start();
+    }
+    
+    public static void setupDashboardPanel() {
+        setVisibleFalse();
+        DashboardPanel.setVisible(true);
+        motherPanel.add(DashboardPanel, BorderLayout.CENTER);
+    }
+    
+    public static void setupLifeReportPanel() {
+        ifPanelsNullCreate();
+        setVisibleFalse();
+        LifeReportPanel = lifeReportPanel();
+        LifeReportPanel.setVisible(true);
+        motherPanel.add(LifeReportPanel, BorderLayout.CENTER);
+    }
+    
+    public static void setupSettingPanel() {
+        ifPanelsNullCreate();
+        setVisibleFalse();
+        createSettingsContainer();
+        SettingsContainer = mainTabbedPanel;
+        SettingsContainer.setVisible(true);
+        motherPanel.add(SettingsContainer, BorderLayout.CENTER);
+    }
+    
+    public static void setupStatisticsPanel() {
+        createStatisticsContainer();
+        StatisticsContainer = statisticsMainTabbedPanel;
+        
+        ifPanelsNullCreate();
+        setVisibleFalse();
+        StatisticsContainer.setVisible(true);
+        motherPanel.add(StatisticsContainer, BorderLayout.CENTER);
+    }
+    
+    public static void setupSimulatorPanel() {
+        BatterySimulationStart();
+        SimulatorMainPanel = new JPanel(new BorderLayout());
+        SimulatorMainPanel.add(new JScrollPane(mainSimulatorPanel), BorderLayout.CENTER);
+        
+        ifPanelsNullCreate();
+        setVisibleFalse();
+        SimulatorMainPanel.setVisible(true);
+        motherPanel.add(SimulatorMainPanel, BorderLayout.CENTER);
     }
 }

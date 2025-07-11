@@ -50,6 +50,7 @@
     -fx-background-color: #ffffff;
 }
 
+#reset-button,
 #save-button {
     -fx-background-color: #e0f7fa;
     -fx-text-fill: #00695c;
@@ -60,6 +61,7 @@
     -fx-border-color: #b2ebf2;
     -fx-border-width: 1;
     -fx-border-radius: 6;
+    -fx-margin: 0 5;
 }
 
 .slider .axis .tick-mark > .text {

@@ -1,10 +1,13 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isApplicationMode;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.FeedbackTab.createFeedbackTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab.createDashboardTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.createSettingsTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.StatisticsTab.createStatisticsTab;
 
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.MiniToast;
+import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -18,7 +21,10 @@ public class UITabs {
 	private static boolean isNavigatingBack = false;
 	
 	public static TabPane createTabsPanel() {
-		TabPane tabPane = new TabPane(createDashboardTab(), createSettingsTab(), createStatisticsTab());
+		TabPane tabPane = new TabPane(
+				createDashboardTab(), createSettingsTab(),
+				createStatisticsTab(), createFeedbackTab()
+		);
 		setupTabNavigation(tabPane);
 		return tabPane;
 	}

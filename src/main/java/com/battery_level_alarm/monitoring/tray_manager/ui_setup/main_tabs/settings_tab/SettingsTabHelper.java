@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.START_BATTORION_WITH;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.labeledNode;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.styleSection;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_APPLICATION;
@@ -21,15 +22,16 @@ class SettingsTabHelper {
 	private static double brightnessLevelValue;
 	
 	static VBox createAutomationSection() {
-		String mode = prefs.get("StartBattorionWith", String.valueOf(START_WITH_APPLICATION));
+		String mode = prefs.get(START_BATTORION_WITH, String.valueOf(START_WITH_APPLICATION));
 		CheckBox startWithTray = new CheckBox("Start with Tray window");
 		startWithTray.setSelected(mode.equals(String.valueOf(START_WITH_TRAY)));
 		startWithTray.setTooltip(new Tooltip("""
 			Tray Window: the small icon near the clock where the app runs in background.
 			If enabled, the app will start hidden in the system tray.
 			"""));
+		
 		startWithTray.selectedProperty().addListener((_, _, newValue) ->
-			prefs.put("StartBattorionWith", newValue ? String.valueOf(START_WITH_TRAY) : String.valueOf(START_WITH_APPLICATION)));
+			prefs.put(START_BATTORION_WITH, newValue ? String.valueOf(START_WITH_TRAY) : String.valueOf(START_WITH_APPLICATION)));
 		
 		VBox box = new VBox(10,
 				new Label("\uD83D\uDEE0 Automation"),
@@ -94,9 +96,7 @@ class SettingsTabHelper {
 			Brightness.BrightnessProcess(0, true);
 			Platform.setImplicitExit(false);
 			brightnessLevelValue = Brightness.getCurrentBrightness();
-			Platform.runLater(() -> {
-				brightnessLevelField.setText(brightnessLevelValue + "");
-			});
+			Platform.runLater(() -> brightnessLevelField.setText(brightnessLevelValue + ""));
 		});
 		
 		return new HBox(10, labeledNode("PC - Brightness Level: ", brightnessLevelField));

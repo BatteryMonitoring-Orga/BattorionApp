@@ -4,6 +4,7 @@ import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.lau
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.SETTINGS_QUESTIONNAIRE;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.rebuild;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.HYPERLINK_HOVER_COLOR;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setDimension;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.*;
@@ -82,7 +83,7 @@ public class UIThemesGUI {
         setButtonDefaultSize();
         setDimension(0, 0);
         addLabelWithMouseListener(
-                gbc, aboutPanel, "About Theme Panel ", new Color(0, 134, 179),
+                gbc, aboutPanel, "About Theme Panel ", HYPERLINK_HOVER_COLOR,
                 () -> Thread.ofVirtual().start(() -> launchAndOpenTopic(SETTINGS_QUESTIONNAIRE, 1150)), DEFAULT_FONT
         );
         

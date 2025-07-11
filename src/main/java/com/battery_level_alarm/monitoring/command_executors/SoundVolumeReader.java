@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.visual_effects.DisplayMessages;
+import com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 
 import java.io.BufferedReader;

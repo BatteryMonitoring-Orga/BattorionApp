@@ -1,11 +1,10 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createBackButton;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.insets;
 
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.questionnaires.StaticQuestionnaire;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.StatisticsContainerClass;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -24,7 +23,6 @@ public class StatisticsTab {
 	public static Label diskSpace;
 	
 	public static Tab createStatisticsTab() {
-		Button backButton = createBackButton();
 		GridPane grid = new GridPane();
 		grid.setVgap(10);
 		grid.setHgap(20);
@@ -45,7 +43,7 @@ public class StatisticsTab {
 		statsBox.setPadding(new Insets(10));
 		statsBox.setStyle("-fx-alignment: center;");
 		
-		VBox content = new VBox(20, backButton, statsBox);
+		VBox content = new VBox(20, statsBox);
 		content.setPadding(insets);
 		return createTab("Statistics", content);
 	}

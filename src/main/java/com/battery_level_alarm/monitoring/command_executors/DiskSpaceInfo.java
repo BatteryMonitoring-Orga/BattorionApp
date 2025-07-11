@@ -1,8 +1,8 @@
 package com.battery_level_alarm.monitoring.command_executors;
-import com.battery_level_alarm.monitoring.user_interface.ui_setup.PrepareDiskInfoGUI;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.PrepareDiskInfoGUI;
 
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
-import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

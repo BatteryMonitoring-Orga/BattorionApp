@@ -3,6 +3,8 @@ import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.getAlertBeforeRiskPhaseBy;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.BATTERY_REPORT_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.monitorSystemTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.stopSystemThemeMonitoring;
@@ -15,7 +17,10 @@ import static com.battery_level_alarm.monitoring.command_executors.CallCommandLi
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.getBatteryStatus;
 import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
 
+import com.battery_level_alarm.monitoring.battery_report.BatteryLiveInfoReader;
+import com.battery_level_alarm.monitoring.battery_report.BatteryReportAnalyzer;
 import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
+import com.battery_level_alarm.monitoring.core_utilities.BatteryInfo;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationToast;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryTrayIcon;
@@ -45,14 +50,14 @@ public class Monitor {
 	private static volatile boolean lastVisibility = false;
 	private static volatile boolean forceDiskUpdate = false;
 	private static volatile boolean isApplicationStarted = true;
-	public static volatile boolean shouldUpdateAudioOutput = true;
+	private static volatile boolean isBatterEstimatedTimeThreadLive = false;
+	public static volatile boolean isShouldUpdateTrayDashboard = true;
 	public static volatile boolean isToastNotifyEnabled = true;
 	public static volatile int chargeLevel;
 	
 	private static boolean isEnableDevelopedSystemNotificationSound;
 	private static boolean isBatteryTrayNestedIconAllowToAdd;
 	private static boolean isEnableToastNotification;
-	private static boolean isBatteryStatusChanged = false;
 	private static boolean callFlag = false;
 	private static boolean isAlertInProgress = true;
 	public static boolean isAlertPopupShown = false;
@@ -64,12 +69,11 @@ public class Monitor {
 	
 	public static void backgroundProcessMonitoring(String theme) {
 		if (!isAlive) {
-			if(Boolean.parseBoolean(prefs.get("toastNotificationEnable", String.valueOf(true)))) {
+			start();
+			if(Boolean.parseBoolean(prefs.get(TOAST_NOTIFICATION_ENABLE, String.valueOf(true)))) {
 				msg = "👋 Welcome! Battery Monitor is running.";
 				NotificationToast.showNotification(msg, primaryStage, true);
-			}
-			start();
-			if(theme.equalsIgnoreCase(AS_SYSTEM.toString())) {
+			} if(theme.equalsIgnoreCase(AS_SYSTEM.toString())) {
 				monitorSystemTheme();
 			}
 		}
@@ -97,7 +101,7 @@ public class Monitor {
 	}
 	
 	private static void startMonitorLoop(boolean isVisible) {
-		String speedMode = prefs.get("UpdateFrequency", BattorionTrayUI.UpdateSpeed.MEDIUM.name());
+		String speedMode = prefs.get(UPDATE_FREQUENCY, BattorionTrayUI.UpdateSpeed.MEDIUM.name());
 		long durationMs = BattorionTrayUI.UpdateSpeed.valueOf(speedMode).getIntervalMs();
 		long interval = isVisible || isApplicationStarted ? 500 : durationMs;
 		forceDiskUpdate = interval <= 1000;
@@ -111,7 +115,7 @@ public class Monitor {
 			}
 			
 			try {
-				isBatteryStatusChanged = updateBatteryStatus();
+				updateBatteryStatus();
 				evaluateAlertConditions();
 				handleNotifications();
 				updateUI();
@@ -138,36 +142,33 @@ public class Monitor {
 	
 	private static void fetchUserPreferences() {
 		isEnableDevelopedSystemNotificationSound = Boolean.parseBoolean(
-				prefs.get("trayNotificationEnable", String.valueOf(true))
+				prefs.get(TRAY_NOTIFICATION_ENABLE, String.valueOf(true))
 		);
 		isEnableToastNotification = Boolean.parseBoolean(
-				prefs.get("toastNotificationEnable", String.valueOf(true))
+				prefs.get(TOAST_NOTIFICATION_ENABLE, String.valueOf(true))
 		);
 		isBatteryTrayNestedIconAllowToAdd = Boolean.parseBoolean(
-				prefs.get("showBatteryIcon", String.valueOf(false))
+				prefs.get(SHOW_BATTERY_ICON, String.valueOf(false))
 		);
 	}
 	
-	private static boolean updateBatteryStatus() {
+	private static void updateBatteryStatus() {
 		try {
+			boolean previousCharging = isCharging;
 			isCharging = getBatteryStatus();
-			chargeLevel = getBatteryLevel();
+			chargeLevel = (int) getBatteryLevel();
 			int maxValue = UserChoices.getMaximumLevel();
 			int minValue = UserChoices.getMinimumLevel();
 			batteryLevelColor = getBatteryColor(chargeLevel, minValue, maxValue);
 			
-			if(isCharging == isBatteryStatusChanged) {
-				return false;
-			} else {
+			if(isCharging != previousCharging) {
 				isToastNotifyEnabled = true;
-				return true;
 			}
 		} catch (Exception e) {
 			logger.severe("[EXCEPTION]: " + e.getMessage());
 			isCharging = false;
 			chargeLevel = 0;
 		}
-		return isCharging;
 	}
 	
 	private static void evaluateAlertConditions() {
@@ -178,8 +179,6 @@ public class Monitor {
 		alert = true;
 		if((chargeLevel >= maxValue) && isCharging) {
 			msg = "Battery is too high! Please unplug the charger...";
-		} else if((chargeLevel == (maxValue - 1)) && isCharging) {
-			msg = "Battery is high! Please unplug the charger...";
 		} else if((chargeLevel <= minValue) && !isCharging) {
 			msg = "Battery is too low! Please plug the charger...";
 		} else if(isEnableToastNotification && (chargeLevel >= maxValue - phase) && isCharging && isToastNotifyEnabled) {
@@ -210,7 +209,7 @@ public class Monitor {
 	private static void updateUI() {
 		String[] audioDevice;
 		boolean shouldUpdateBatteryUI = chargeLevel != lastCharge || isCharging != lastCharging;
-		if (shouldUpdateBatteryUI || shouldUpdateAudioOutput) {
+		if (shouldUpdateBatteryUI || isShouldUpdateTrayDashboard || isApplicationStarted) {
 			lastCharge = chargeLevel;
 			lastCharging = isCharging;
 			audioDevice = getAudioOutputDevice();
@@ -219,18 +218,27 @@ public class Monitor {
 		}
 		
 		Platform.runLater(() -> {
-			if (shouldUpdateBatteryUI || shouldUpdateAudioOutput) {
+			if (shouldUpdateBatteryUI || isShouldUpdateTrayDashboard || isApplicationStarted) {
 				progressBar.setProgress(chargeLevel / 100.0);
 				progressBar.setStyle("-fx-accent: #" + colorToHex(batteryLevelColor) + ";");
 				batteryStatus.setText(isCharging ? "Charging" : "Discharging");
 				batteryLevel.setText(chargeLevel + "%");
-				assert audioDevice != null;
-				String device = audioDevice[1];
+				String device = (audioDevice == null) ? audioOutput.getText() : audioDevice[1];
 				
 				audioOutput.setText(device);
 				currentDeviceLabel.setText("Current Device:   " + device);
 				batteryMonitoring.setText("active.");
-				shouldUpdateAudioOutput = false;
+				isShouldUpdateTrayDashboard = false;
+				
+				if(!isBatterEstimatedTimeThreadLive) {
+					isBatterEstimatedTimeThreadLive = true;
+					Thread.ofVirtual().start(() -> {
+						BatteryReportAnalyzer.analyze(BATTERY_REPORT_PATH);
+						BatteryLiveInfoReader.getBatteryInfoAsMap();
+						Platform.runLater(() -> batteryEstimatedTime.setText(BatteryInfo.getEstimatedTimeRemaining()));
+						isBatterEstimatedTimeThreadLive = false;
+					});
+				}
 			}
 			
 			long now = System.currentTimeMillis();

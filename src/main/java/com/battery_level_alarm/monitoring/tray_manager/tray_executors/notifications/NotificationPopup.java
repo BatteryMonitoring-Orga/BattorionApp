@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.APP_THEME;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
@@ -67,7 +68,7 @@ public class NotificationPopup {
 		VBox root = new VBox(titleBox, new Label("  "), messageBox);
 		root.getStyleClass().add("notification-root");
 		
-		String mode = prefs.get("appTheme", AS_SYSTEM.toString());
+		String mode = prefs.get(APP_THEME, AS_SYSTEM.toString());
 		String cssFile;
 		if (mode != null && mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
 			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_light.css";

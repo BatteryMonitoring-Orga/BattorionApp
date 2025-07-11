@@ -17,7 +17,7 @@ public class OtherComponentsConfig {
             int minValue, int maxValue, int initialValue,
             int majorTickSpacing, int minorTickSpacing,
             int orientation, ChangeListener listener
-    ){
+    ) {
         JLabel jLabel = new JLabel(label);
         jLabel.setFont(DEFAULT_FONT);
         gbc.gridy = getRow();
@@ -40,7 +40,7 @@ public class OtherComponentsConfig {
             GridBagConstraints gbc, JPanel panel, String text,
             String[] dataArray, String selectedItem, int maximumRowCount,
             ItemListener listener, int width, int height
-    ){
+    ) {
         JLabel label = new JLabel(text);
         label.setFont(DEFAULT_FONT);
         gbc.gridx = getColumn();
@@ -89,7 +89,7 @@ public class OtherComponentsConfig {
     public static JCheckBox addCheckbox(
             GridBagConstraints gbc, JPanel panel, String label,
             boolean isSelected, ActionListener listener
-    ){
+    ) {
         JCheckBox checkBox = new JCheckBox(label);
         checkBox.setFont(DEFAULT_FONT);
         checkBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -101,7 +101,7 @@ public class OtherComponentsConfig {
         return checkBox;
     }
 
-    public static void addSeparator(GridBagConstraints gbc, JPanel panel, int height){
+    public static void addSeparator(GridBagConstraints gbc, JPanel panel, int height) {
         JSeparator horizontalLine = new JSeparator();
         horizontalLine.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
         horizontalLine.setForeground(Appearance.getBorderColor());
@@ -112,7 +112,7 @@ public class OtherComponentsConfig {
         panel.add(horizontalLine, gbc);
     }
 
-    public static void applyScrollConfigurationDetails(JScrollPane scroll, ScrollConfiguration configuration){
+    public static void applyScrollConfigurationDetails(JScrollPane scroll, ScrollConfiguration configuration) {
         scroll.setBorder(configuration.scrollBorder());
         scroll.setFocusable(configuration.isFocusable());
         scroll.setOpaque(configuration.isOpaque());

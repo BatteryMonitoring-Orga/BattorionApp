@@ -5,10 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -18,6 +15,7 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Supplier;
 
+import static com.battery_level_alarm.monitoring.system_core.Battorion.isMiniBrowserLaunched;
 import static com.battery_level_alarm.monitoring.battery_report.HTMLOpener.readHtmlAsText;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocEmptyMessage.createEmptyMessagePane;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocEmptyMessage.emptyMessagePane;
@@ -35,14 +33,21 @@ public class MiniDocBrowser extends Application {
 	private static Stage primaryStage;
 	
 	private static boolean isDisplayed = false;
-	private static boolean isLaunched = false;
 	private static boolean isDarkTheme = false;
 	private static boolean waitingForStart = true;
+	private static boolean isStageCreated = false;
 	
 	@Override
 	public void start(Stage stage) {
-		isLaunched = true;
+		createPrimaryStage(stage);
+	}
+	
+	private static void createPrimaryStage(Stage stage) {
+		isMiniBrowserLaunched = true;
 		isDisplayed = true;
+		waitingForStart = false;
+		isStageCreated = true;
+		
 		createEmptyMessagePane();
 		configureTabPane();
 		ListView<String> topicList = createTopicList();
@@ -55,18 +60,17 @@ public class MiniDocBrowser extends Application {
 		
 		primaryStage = stage;
 		stage.show();
-		waitingForStart = false;
 		latch.countDown();
 	}
 	
-	private void configureTabPane() {
+	private static void configureTabPane() {
 		tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
 		tabPane.getTabs().addListener((javafx.collections.ListChangeListener<Tab>) _ ->
 				emptyMessagePane.setVisible(tabPane.getTabs().isEmpty()));
 		tabPane.setId("tab-pane");
 	}
 	
-	private ListView<String> createTopicList() {
+	private static ListView<String> createTopicList() {
 		ListView<String> topicList = new ListView<>();
 		topicList.setId("topic-list");
 		topicList.getItems().addAll(TOPICS.keySet());
@@ -91,7 +95,7 @@ public class MiniDocBrowser extends Application {
 		return topicList;
 	}
 	
-	private void handleTopicSelection(ListView<String> topicList) {
+	private static void handleTopicSelection(ListView<String> topicList) {
 		String selected = topicList.getSelectionModel().getSelectedItem();
 		if (selected == null || selected.startsWith("─")) return;
 		for (Tab tab : tabPane.getTabs()) {
@@ -101,9 +105,12 @@ public class MiniDocBrowser extends Application {
 			}
 		}
 		
-		String content = TOPICS.get(selected).get();
 		Tab newTab;
-		if (content.startsWith("external::")) {
+		String content = TOPICS.get(selected).get();
+		if(content == null) {
+			buildTopicsMap();
+			content = TOPICS.get(selected).get();
+		} if (content.startsWith("external::")) {
 			String realPath = content.substring("external::".length());
 			String htmlContent = readHtmlAsText(realPath);
 			String fixedHtml = fixRelativePaths(htmlContent, realPath);
@@ -115,7 +122,7 @@ public class MiniDocBrowser extends Application {
 		tabPane.getSelectionModel().select(newTab);
 	}
 	
-	private VBox createSideBar(ListView<String> topicList) {
+	private static VBox createSideBar(ListView<String> topicList) {
 		Label titleLabel = new Label("\uD83D\uDCD6 Topics");
 		titleLabel.setId("topic-title");
 		
@@ -128,13 +135,13 @@ public class MiniDocBrowser extends Application {
 		return sideBar;
 	}
 	
-	private StackPane createContentWrapper() {
+	private static StackPane createContentWrapper() {
 		StackPane contentWrapper = new StackPane(tabPane, emptyMessagePane);
 		emptyMessagePane.setVisible(tabPane.getTabs().isEmpty());
 		return contentWrapper;
 	}
 	
-	private SplitPane createMainContent(Stage stage, VBox sideBar, StackPane contentWrapper) {
+	private static SplitPane createMainContent(Stage stage, VBox sideBar, StackPane contentWrapper) {
 		SplitPane mainContent = new SplitPane();
 		mainContent.setId("main-split-pane");
 		mainContent.getItems().addAll(sideBar, contentWrapper);
@@ -148,21 +155,21 @@ public class MiniDocBrowser extends Application {
 		return mainContent;
 	}
 	
-	private Scene createScene(SplitPane mainContent) {
+	private static Scene createScene(SplitPane mainContent) {
 		Scene scene = new Scene(mainContent, 1050, 650);
 		isDarkTheme = isDarkMode;
 		String cssFile = isDarkMode ? "browser-dark.css" : "browser-light.css";
-		scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(CSS_FOLDER_PATH + cssFile)).toExternalForm());
+		scene.getStylesheets().add(Objects.requireNonNull(MiniDocBrowser.class.getResource(CSS_FOLDER_PATH + cssFile)).toExternalForm());
 		return scene;
 	}
 	
-	private void configureStage(Stage stage, Scene scene) {
+	private static void configureStage(Stage stage, Scene scene) {
 		stage.setScene(scene);
 		stage.setResizable(false);
 		stage.setOnCloseRequest(_ -> isDisplayed = false);
 		stage.setTitle("Battorion Internal Browser");
 		stage.getIcons().add(
-				new Image(Objects.requireNonNull(getClass().getResource(
+				new Image(Objects.requireNonNull(MiniDocBrowser.class.getResource(
 						ASSETS_FOLDER_PATH + "guide.png"
 				)).toExternalForm())
 		);
@@ -171,11 +178,9 @@ public class MiniDocBrowser extends Application {
 	public static void main_browser(String[] args) {
 		if (isDisplayed) {
 			return;
-		}
-		if (TOPICS.isEmpty()) {
+		} if (TOPICS.isEmpty()) {
 			buildTopicsMap();
-		}
-		if (!isLaunched) {
+		} if (!isMiniBrowserLaunched) {
 			launch(args);
 		} else {
 			if (isDarkTheme == isDarkMode) {
@@ -184,6 +189,8 @@ public class MiniDocBrowser extends Application {
 						primaryStage.show();
 					}
 				});
+			} else if(!isStageCreated) {
+				Platform.runLater(() -> createPrimaryStage(new Stage()));
 			} else {
 				reloadUI();
 			}
@@ -207,11 +214,11 @@ public class MiniDocBrowser extends Application {
 	public static void launchAndOpenTopic(@NotNull String topicTitle, int scroll) {
 		if (isDisplayed) {
 			return;
-		}
-		if (TOPICS.isEmpty()) {
+		} if (TOPICS.isEmpty()) {
 			buildTopicsMap();
-		}
-		if (!isLaunched) {
+		} if(!isStageCreated && isMiniBrowserLaunched) {
+			Platform.runLater(() -> createPrimaryStage(new Stage()));
+		} if (!isMiniBrowserLaunched) {
 			new Thread(() -> Application.launch(MiniDocBrowser.class)).start();
 			while (waitingForStart) {
 				try {
@@ -230,7 +237,7 @@ public class MiniDocBrowser extends Application {
 			tabPane.getTabs().clear();
 			Supplier<String> supplier = TOPICS.get(topicTitle);
 			if (supplier == null) {
-				System.err.println("Topic not found: " + topicTitle);
+				logger.severe("[EXCEPTION]: Topic not found: " + topicTitle);
 				return;
 			}
 			
@@ -244,7 +251,6 @@ public class MiniDocBrowser extends Application {
 			} else {
 				newTab = createTab(topicTitle, content);
 			}
-			
 			tabPane.getTabs().add(newTab);
 			tabPane.getSelectionModel().select(newTab);
 			

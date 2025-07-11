@@ -19,6 +19,12 @@ module monitoring {
 	requires swingx.core;
 	requires flexmark;
 	requires flexmark.util.ast;
+	requires batik.transcoder;
+	requires com.github.oshi;
+	requires javafx.media;
+	requires org.jsoup;
+	requires dropbox.core.sdk;
+	requires com.fasterxml.jackson.databind;
 	
 	exports com.battery_level_alarm.monitoring.mini_browser;
 	exports com.battery_level_alarm.monitoring.battery_emulator;
@@ -68,4 +74,7 @@ module monitoring {
 	opens com.battery_level_alarm.monitoring.graphics.executor to javafx.graphics;
 	exports com.battery_level_alarm.monitoring.graphics.records;
 	opens com.battery_level_alarm.monitoring.graphics.records to javafx.graphics;
+	exports com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container;
+	exports com.battery_level_alarm.monitoring.visual_effects.messages;
+	exports com.battery_level_alarm.monitoring.flow_chat;
 }

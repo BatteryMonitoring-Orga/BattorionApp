@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.wake
 import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.wakeUpThreadInterruptRequest;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.actions.AutoStartManager.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
@@ -12,7 +13,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tra
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.isReleaseInstallProcessRunning;
-import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationToast;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryTrayIcon;
@@ -20,7 +21,7 @@ import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_execu
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingActions;
-import com.battery_level_alarm.monitoring.visual_effects.LoggedMessage;
+import com.battery_level_alarm.monitoring.visual_effects.messages.LoggedMessage;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -121,7 +122,7 @@ public class TrayIconManager {
 	
 	private static List<MenuItem> createStandardItems(TrayIcon trayIcon) {
 		return List.of(
-				createItem("Open", "Open the application window", TrayIconManager::showApp, "item-open"),
+				createItem("Open", "Open the application window", BattorionTrayUI::showApp, "item-open"),
 				createItem("Pause", "Pause the application threads", Monitor::pushAndResume, "item-pause"),
 				createItem("Settings", "Open the settings window", BattorionTrayUI::openSettingsWindow, "item-settings"),
 				createItem("About", "About this application", TrayAlerts::showAboutDialog, "item-about"),
@@ -154,14 +155,14 @@ public class TrayIconManager {
 	}
 	
 	private static CustomMenuItem createBatteryIconItem() {
-		boolean isAllowToAdd = Boolean.parseBoolean(prefs.get("showBatteryIcon", "false"));
+		boolean isAllowToAdd = Boolean.parseBoolean(prefs.get(SHOW_BATTERY_ICON, "false"));
 		CheckBox showBatteryIcon = new CheckBox("Show Battery Icon");
 		showBatteryIcon.setId("checkbox-battery-icon");
 		showBatteryIcon.setSelected(isAllowToAdd);
 		Tooltip.install(showBatteryIcon, new Tooltip("Enable or disable displaying the battery icon"));
 		showBatteryIcon.setOnAction(_ -> {
 			boolean selected = showBatteryIcon.isSelected();
-			prefs.put("showBatteryIcon", String.valueOf(selected));
+			prefs.put(SHOW_BATTERY_ICON, String.valueOf(selected));
 			try {
 				if (selected) {
 					if (BatteryTrayIcon.trayIcon != null) {
@@ -188,7 +189,7 @@ public class TrayIconManager {
 	}
 	
 	private static CustomMenuItem createWakeUpItem() {
-		boolean isWakeUpAuto = Boolean.parseBoolean(prefs.get("wakeUpPCAuto", "false"));
+		boolean isWakeUpAuto = Boolean.parseBoolean(prefs.get(WAKE_UP_PC_AUTO, "false"));
 		long wakeUpIntervalSeconds = 90L;
 		if (isWakeUpAuto) {
 			wakeUp(wakeUpIntervalSeconds);
@@ -200,7 +201,7 @@ public class TrayIconManager {
 		Tooltip.install(wakeUpPC, new Tooltip("Keep the PC awake automatically"));
 		wakeUpPC.setOnAction(_ -> {
 			boolean enabled = wakeUpPC.isSelected();
-			prefs.put("wakeUpPCAuto", String.valueOf(enabled));
+			prefs.put(WAKE_UP_PC_AUTO, String.valueOf(enabled));
 			if (enabled) {
 				wakeUp(wakeUpIntervalSeconds);
 			} else {
@@ -223,31 +224,8 @@ public class TrayIconManager {
 		return item;
 	}
 	
-	private static void showApp() {
-		Platform.setImplicitExit(false);
-		Platform.runLater(() -> {
-			if (primaryStage == null) createPopupWindow();
-			if (!primaryStage.isShowing()) {
-				if (primaryTabPane == null) return;
-				for (Tab tab : primaryTabPane.getTabs()) {
-					if ("Dashboard".equals(tab.getText())) {
-						primaryStage.show();
-						primaryStage.setAlwaysOnTop(true);
-						primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 361);
-						primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 485);
-						primaryTabPane.getSelectionModel().select(tab);
-						break;
-					}
-				}
-				primaryStage.setAlwaysOnTop(true);
-			} else {
-				primaryStage.toFront();
-			}
-		});
-	}
-	
 	private static String getCssFile() {
-		String mode = prefs.get("appTheme", AS_SYSTEM.toString());
+		String mode = prefs.get(APP_THEME, AS_SYSTEM.toString());
 		String cssFile;
 		if (mode != null && mode.equalsIgnoreCase(String.valueOf(LIGHT))) {
 			cssFile = STYLES_FILES_DIR_PATH + "/tray-light.css";

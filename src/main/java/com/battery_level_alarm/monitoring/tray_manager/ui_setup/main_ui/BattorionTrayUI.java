@@ -1,16 +1,21 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.TRAY_NOTIFICATION_NAME;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.backgroundProcessMonitoring;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayUsageTutorial.showTrayUsageTutorial;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.createTrayIcon;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.applyTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTabsPanel;
 
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.MiniToast;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -80,6 +85,10 @@ public class BattorionTrayUI extends Application {
 		createTrayIcon();
 		if(isLaunched) {
 			backgroundProcessMonitoring(trayTheme);
+		} if(Boolean.parseBoolean(prefs.get(TIME_RUNNING_IN_BACKGROUND, "true"))) {
+			showTrayUsageTutorial(new Stage());
+			showApp();
+			prefs.put(TIME_RUNNING_IN_BACKGROUND, "false");
 		}
 	}
 	
@@ -101,7 +110,7 @@ public class BattorionTrayUI extends Application {
 	
 	static void createPopupWindow() {
 		primaryStage.setTitle(TRAY_NOTIFICATION_NAME);
-		String position = prefs.get("tab_header_position", "Bottom");
+		String position = prefs.get(TAB_HEADER_POSITION, "Bottom");
 		setUpdateBoxPadding(position);
 		primaryTabPane = createTabsPanel();
 		setUpdateTabHeaderPosition(position);
@@ -111,7 +120,7 @@ public class BattorionTrayUI extends Application {
 		primaryTabPane.setStyle("-fx-tab-min-width: 100 !important; -fx-tab-max-height: 24 !important; -fx-font-size: 10px !important;");
 		primaryStage.setScene(primaryScene);
 		
-		trayTheme = prefs.get("appTheme", String.valueOf(AS_SYSTEM));
+		trayTheme = prefs.get(APP_THEME, String.valueOf(AS_SYSTEM));
 		applyTheme(TrayTheme.SystemTheme.valueOf(trayTheme));
 		setupFocusAndCloseBehavior();
 	}
@@ -149,6 +158,35 @@ public class BattorionTrayUI extends Application {
 		});
 	}
 	
+	public static void showNewTabHint(String newTabTitle) {
+		String mode = prefs.get(TAB_HEADER_POSITION, "Bottom");
+		Point2D stagePos = new Point2D(primaryStage.getX(), primaryStage.getY());
+		double stageWidth = primaryStage.getWidth();
+		double stageHeight = primaryStage.getHeight();
+		
+		double x = stagePos.getX() + (stageWidth / 2) + 100;
+		double y = mode.equals("Top")
+				? stagePos.getY() + 90
+				: stagePos.getY() + stageHeight - 60;
+		
+		MiniToast.show(
+				new Point2D(x, y),
+				"🎉 We've added a new tab: '" + newTabTitle + "' – take a look!",
+				5,
+				true,
+				() -> {
+					if (primaryTabPane == null) return;
+					for (Tab tab : primaryTabPane.getTabs()) {
+						if (newTabTitle.equals(tab.getText())) {
+							primaryTabPane.getSelectionModel().select(tab);
+							prefs.putBoolean(NEW_TRAY_TAB, true);
+							break;
+						}
+					}
+				}
+		);
+	}
+	
 	public static void setUpdateTabHeaderPosition(String position) {
 		if(position.equals("Top")) {
 			primaryTabPane.setSide(Side.TOP);
@@ -174,5 +212,31 @@ public class BattorionTrayUI extends Application {
 				break;
 			}
 		}
+	}
+	
+	static void showApp() {
+		Platform.setImplicitExit(false);
+		Platform.runLater(() -> {
+			if (primaryStage == null) createPopupWindow();
+			if (!primaryStage.isShowing()) {
+				if (primaryTabPane == null) return;
+				for (Tab tab : primaryTabPane.getTabs()) {
+					if ("Dashboard".equals(tab.getText())) {
+						primaryStage.show();
+						primaryStage.setAlwaysOnTop(true);
+						primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 361);
+						primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 485);
+						primaryTabPane.getSelectionModel().select(tab);
+						if(!prefs.getBoolean(NEW_TRAY_TAB, false)) {
+							showNewTabHint("Feedback");
+						}
+						break;
+					}
+				}
+				primaryStage.setAlwaysOnTop(true);
+			} else {
+				primaryStage.toFront();
+			}
+		});
 	}
 }

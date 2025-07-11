@@ -348,3 +348,28 @@
     -fx-border-width: 0 0 2px 0;
     -fx-effect: dropshadow(gaussian, rgba(0, 122, 204, 0.4), 4, 0, 0, 1);
 }
+
+#feedback-text {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #444 transparent;
+    -fx-border-width: 0 0 1.5px 0;
+    -fx-text-fill: #222;
+    -fx-font-size: 13px;
+    -fx-padding: 6 0 6 0;
+    -fx-background-insets: 0;
+    -fx-control-inner-background: transparent;
+    -fx-highlight-fill: #00968822;
+    -fx-highlight-text-fill: #000;
+}
+
+#feedback-text:focused {
+    -fx-border-color: transparent transparent #007ACC transparent;
+    -fx-border-width: 0 0 2px 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 122, 204, 0.4), 4, 0, 0, 1);
+}
+
+#feedback-text .text-area .prompt-text {
+    -fx-text-fill: #5a5a5a;
+    -fx-font-size: 13px;
+    -fx-opacity: 1.0;
+}

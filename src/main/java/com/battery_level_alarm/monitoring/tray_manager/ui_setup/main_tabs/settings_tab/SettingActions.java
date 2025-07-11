@@ -6,6 +6,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.setM
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveComputerSettings;
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveSettings;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.START_BATTORION_WITH;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.pauseThreads;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.stop;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.*;
@@ -87,7 +88,7 @@ public class SettingActions {
 			}
 			
 			try {
-				prefs.put("StartBattorionWith", String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
+				prefs.put(START_BATTORION_WITH, String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
 				isApplicationMode = true;
 				build();
 			} catch (Exception e) {

@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
-import static com.battery_level_alarm.monitoring.visual_effects.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.BATTERY_REPORT_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 
 import java.io.BufferedReader;
@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 
 public class CallCommandLine {
     public static final String NIR_CMD_PATH = MAIN_FOLDER_PATH + "/NirCMD-main/nircmd";
-    public static final String RESOURCES_PATH = System.getProperty("user.home") + MAIN_FOLDER_NAME + "\\battery-report.html";
     public static String getOS() {
         return System.getProperty("os.name").toLowerCase();
     }
@@ -41,7 +40,7 @@ public class CallCommandLine {
 
     private static ProcessBuilder getProcessBuilderForBatteryReport(String os) throws UnsupportedOperationException {
         if (os.contains("win")) {
-            return new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "powercfg", "/batteryreport", "/output", RESOURCES_PATH);
+            return new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "powercfg", "/batteryreport", "/output", BATTERY_REPORT_PATH);
         } else if (os.contains("nix") || os.contains("nux")) {
             return new ProcessBuilder("/bin/cat", "/sys/class/power_supply/BAT0/status");
         } else if (os.contains("mac")) {
@@ -109,42 +108,7 @@ public class CallCommandLine {
         }
     }
     
-    private static int parseBatteryLevel(String line) {
-        try {
-            if (line == null || line.trim().isEmpty()) return -1;
-            
-            String digits = line.replaceAll("[^0-9]", "").trim();
-            if (digits.isEmpty()) return -1;
-            
-            return Integer.parseInt(digits);
-        } catch (NumberFormatException ex) {
-            logger.severe("[EXCEPTION]: " + ex.getMessage() + " | line: " + line);
-            return -1;
-        }
-    }
-    
-    private static boolean parseBatteryStatus(String line, boolean isMac) {
-        if (line == null || line.trim().isEmpty()) {
-            return false;
-        }
-        
-        if (!isMac) {
-            try {
-                String digits = line.replaceAll("[^0-9]", "").trim();
-                if (digits.isEmpty()) return false;
-                
-                int status = Integer.parseInt(digits);
-                return (status == 2);
-            } catch (NumberFormatException e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage() + " | line: " + line);
-                return false;
-            }
-        } else {
-            return line.toLowerCase().contains("charging");
-        }
-    }
-    
-    public static int getBatteryLevel() throws Exception {
+    public static double getBatteryLevel() throws Exception {
         String os = getOS();
         ProcessBuilder processBuilder = getProcessBuilderForBatteryLevel(os);
         
@@ -152,13 +116,27 @@ public class CallCommandLine {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                int batteryLevel = parseBatteryLevel(line);
+                double batteryLevel = parseBatteryLevel(line);
                 if (batteryLevel != -1) {
                     return batteryLevel;
                 }
             }
         }
         throw new Exception("Unable to retrieve battery level");
+    }
+    
+    public static double parseBatteryLevel(String line) {
+        try {
+            if (line == null || line.trim().isEmpty()) return -1;
+            
+            String digits = line.replaceAll("[^0-9]", "").trim();
+            if (digits.isEmpty()) return -1;
+            
+            return Double.parseDouble(digits);
+        } catch (NumberFormatException ex) {
+            logger.severe("[EXCEPTION]: " + ex.getMessage() + " | line: " + line);
+            return -1;
+        }
     }
     
     public static boolean getBatteryStatus() {
@@ -182,6 +160,27 @@ public class CallCommandLine {
             logger.severe("[EXCEPTION]: " + e.getMessage());
         }
         return false;
+    }
+    
+    private static boolean parseBatteryStatus(String line, boolean isMac) {
+        if (line == null || line.trim().isEmpty()) {
+            return false;
+        }
+        
+        if (!isMac) {
+            try {
+                String digits = line.replaceAll("[^0-9]", "").trim();
+                if (digits.isEmpty()) return false;
+                
+                int status = Integer.parseInt(digits);
+                return (status == 2);
+            } catch (NumberFormatException e) {
+                logger.severe("[EXCEPTION]: " + e.getMessage() + " | line: " + line);
+                return false;
+            }
+        } else {
+            return line.toLowerCase().contains("charging");
+        }
     }
     
     public static void setPCVolume(int percentage) {
@@ -224,18 +223,8 @@ public class CallCommandLine {
         try {
             String os = getOS();
             ProcessBuilder processBuilder = getProcessBuilderForBatteryReport(os);
-            
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
-            
-            /*
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                	JOptionPane.showMessageDialog(null, line, "Battery Report", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-             */
 
             try {
                 process.waitFor();

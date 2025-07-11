@@ -14,6 +14,8 @@ import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.TRAY
 import static com.battery_level_alarm.monitoring.system_core.Battorion.DashboardPanel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.GRID_BAG_CONSTRAINTS_CONFIGURATION;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.START_BATTORION_WITH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.HYPERLINK_HOVER_COLOR;
 import static com.battery_level_alarm.monitoring.system_core.helpers.SaverModePanel.createSaverModePanelButton;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_APPLICATION;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_TRAY;
@@ -76,50 +78,55 @@ public class TraySettingsGUI {
 	}
 	
 	private static JScrollPane createFirstCardPanel() {
-		JPanel trayMainNorthPanel = new JPanel(new GridBagLayout());
+		JPanel trayMainNorthPanel = new JPanel();
+		trayMainNorthPanel.setLayout(new BoxLayout(trayMainNorthPanel, BoxLayout.Y_AXIS));
 		trayMainNorthPanel.setOpaque(true);
+		trayMainNorthPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		trayMainNorthPanel.setPreferredSize(new Dimension(350, 200));
 		
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.insets = new Insets(5, 0, 5, 0);
-		int row = 0;
-		
 		JLabel titleLabel = new JLabel("Tray Icon Preview Settings");
-		titleLabel.setOpaque(false);
 		titleLabel.setFont(DEFAULT_TITLE_FONT);
-		gbc.gridy = row++;
-		trayMainNorthPanel.add(titleLabel, gbc);
+		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		trayMainNorthPanel.add(titleLabel);
+		trayMainNorthPanel.add(Box.createVerticalStrut(15));
 		
-		JButton button = createSaverModePanelButton(200);
-		gbc.gridy = row++;
-		trayMainNorthPanel.add(button, gbc);
+		JButton saverButton = createSaverModePanelButton(200);
+		JPanel buttonContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		buttonContainer.setOpaque(false);
+		buttonContainer.add(saverButton);
+		trayMainNorthPanel.add(buttonContainer);
+		trayMainNorthPanel.add(Box.createVerticalStrut(15));
 		
-		JPanel checkBoxPanel = createCheckBoxesPanel();
-		gbc.gridy = row++;
-		trayMainNorthPanel.add(checkBoxPanel, gbc);
+		JPanel checkBoxContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		checkBoxContainer.setOpaque(false);
+		checkBoxContainer.add(createCheckBoxesPanel());
+		trayMainNorthPanel.add(checkBoxContainer);
+		trayMainNorthPanel.add(Box.createVerticalStrut(10));
 		
-		setButtonDefaultSize();
-		setDimension(0, 0);
-		JPanel aboutPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		aboutPanel.setOpaque(true);
+		JPanel aboutPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		aboutPanel.setOpaque(false);
 		addLabelWithMouseListener(
-				new GridBagConstraints(), aboutPanel, "About Tray Panel ", new Color(0, 134, 179),
-				() -> Thread.ofVirtual().start(() -> launchAndOpenTopic(SETTINGS_QUESTIONNAIRE, 950)), DEFAULT_FONT
+				new GridBagConstraints(),
+				aboutPanel,
+				"About Tray Panel ",
+				HYPERLINK_HOVER_COLOR,
+				() -> Thread.ofVirtual().start(() -> launchAndOpenTopic(SETTINGS_QUESTIONNAIRE, 950)),
+				DEFAULT_FONT
 		);
-		gbc.gridy = row++;
-		trayMainNorthPanel.add(aboutPanel, gbc);
+		trayMainNorthPanel.add(aboutPanel);
+		trayMainNorthPanel.add(Box.createVerticalStrut(5));
 		
-		JPanel aboutTrayIntegration = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		aboutTrayIntegration.setOpaque(true);
+		JPanel aboutTrayIntegration = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		aboutTrayIntegration.setOpaque(false);
 		addLabelWithMouseListener(
-				new GridBagConstraints(), aboutTrayIntegration, "About Tray Integration ", new Color(0, 134, 179),
-				() -> Thread.ofVirtual().start(() -> launchAndOpenTopic(TRAY_INTEGRATION, 0)), DEFAULT_FONT
+				new GridBagConstraints(),
+				aboutTrayIntegration,
+				"About Tray Integration ",
+				HYPERLINK_HOVER_COLOR,
+				() -> Thread.ofVirtual().start(() -> launchAndOpenTopic(TRAY_INTEGRATION, 0)),
+				DEFAULT_FONT
 		);
-		gbc.gridy = row;
-		trayMainNorthPanel.add(aboutTrayIntegration, gbc);
+		trayMainNorthPanel.add(aboutTrayIntegration);
 		
 		JScrollPane trayMainSettingsPanel = new JScrollPane(trayMainNorthPanel);
 		applyScrollConfigurationDetails(trayMainSettingsPanel, CARDS_SET_SCROLL_CONFIGURATION);
@@ -132,7 +139,7 @@ public class TraySettingsGUI {
 		checkBoxesPanel.setOpaque(true);
 		GridBagConstraints gbc = createGridBagConstraints(GRID_BAG_CONSTRAINTS_CONFIGURATION);
 		
-		String modeToUse = prefs.get("StartBattorionWith", String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
+		String modeToUse = prefs.get(START_BATTORION_WITH, String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
 		boolean isChecked = modeToUse.equals(String.valueOf(START_WITH_TRAY));
 		addCheckbox(
 				gbc, checkBoxesPanel, "Start with Tray window", isChecked,
@@ -140,7 +147,7 @@ public class TraySettingsGUI {
 					JCheckBox source = (JCheckBox) e.getSource();
 					boolean selected = source.isSelected();
 					String newMode = selected ? String.valueOf(START_WITH_TRAY) : String.valueOf(START_WITH_APPLICATION);
-					prefs.put("StartBattorionWith", newMode);
+					prefs.put(START_BATTORION_WITH, newMode);
 				}
 		);
 		return checkBoxesPanel;

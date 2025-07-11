@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.tray_manager.modern_component;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.APP_THEME;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
 
@@ -68,7 +69,7 @@ public class JavaFXSoundComboBox {
 		section.setPadding(new Insets(15));
 		section.getStyleClass().add("try-notification-vbox");
 		
-		String modeRaw = prefs.get("appTheme", AS_SYSTEM.toString());
+		String modeRaw = prefs.get(APP_THEME, AS_SYSTEM.toString());
 		String mode = modeRaw.toUpperCase().replace(" ", "_");
 		setVBoxThemeMode(section, SystemTheme.valueOf(mode));
 		return section;

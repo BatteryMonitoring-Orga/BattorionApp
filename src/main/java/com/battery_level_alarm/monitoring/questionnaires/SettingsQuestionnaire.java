@@ -118,9 +118,6 @@ public class SettingsQuestionnaire {
 									    <li><b>Notify Before Installing:</b><br>
 									        Receive a prompt before the update is applied.
 									    </li>
-									    <li><b>Auto-Restart After Update:</b><br>
-									        Automatically restart the application after an update finishes.
-									    </li>
 									    <li><b>Version Information:</b><br>
 									        View the current installed version and the latest available version.
 									    </li>

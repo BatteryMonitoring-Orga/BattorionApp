@@ -200,7 +200,7 @@ public abstract class BaseBatteryChart implements BatteryChart {
 	
 	private NumberAxis createXAxis() {
 		NumberAxis axis = new NumberAxis(0, 15, 1);
-		axis.setLabel(isLanguageArabic() ? "الوقت (دقائق)" : "Time (Minutes)");
+		axis.setLabel("Time (Minutes)");
 		axis.setTickLabelsVisible(isShowXAxisLabels());
 		axis.setAutoRanging(false);
 		return axis;
@@ -208,7 +208,7 @@ public abstract class BaseBatteryChart implements BatteryChart {
 	
 	private NumberAxis createYAxis() {
 		NumberAxis axis = new NumberAxis(0, 100, 10);
-		axis.setLabel(isLanguageArabic() ? "مستوى البطارية (%)" : "Battery Level (%)");
+		axis.setLabel("Battery Level (%)");
 		axis.setTickLabelsVisible(isShowYAxisLabels());
 		return axis;
 	}

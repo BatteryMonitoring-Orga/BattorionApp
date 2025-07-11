@@ -4,14 +4,15 @@ import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionCheck
 import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.REFRESH_ICON_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.UPDATE_FREQUENCY;
 import static com.battery_level_alarm.monitoring.system_core.handlers.BattorionMainProcessHandler.isWaitingForInternet;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.restartMonitorLoop;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.currentDeviceLabel;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.labeledNode;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createBackButton;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
+import static com.battery_level_alarm.monitoring.website.Website.createFXWebsiteCaller;
 
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.MiniToast;
 import com.battery_level_alarm.monitoring.versions_manager.update_ui.TrayReleaseNotify;
@@ -35,17 +36,15 @@ public class DashboardTab {
 	public static ProgressBar progressBar;
 	public static Label batteryStatus;
 	public static Label batteryLevel;
+	public static Label batteryEstimatedTime;
 	public static Label audioOutput;
 	public static Label batteryMonitoring;
 	
 	public static Tab createDashboardTab() {
-		VBox content = new VBox(20);
+		VBox content = new VBox(25);
 		content.setPadding(insets);
 		content.setMaxWidth(Double.MAX_VALUE);
 		VBox.setVgrow(content, Priority.ALWAYS);
-		
-		Button backButton = createBackButton();
-		content.getChildren().add(backButton);
 		
 		VBox batteryBox = createBatteryInfoBox();
 		VBox infoBox = createInfoBox();
@@ -78,10 +77,17 @@ public class DashboardTab {
 		HBox batteryLevelBox = new HBox(new Label("Battery Level: "), batteryLevel);
 		batteryLevelBox.setStyle("-fx-padding: 5px 70px 5px 70px !important;");
 		
+		batteryEstimatedTime = new Label("");
+		HBox batteryEstimatedTimeBox = new HBox(new Label("Estimated Time: "), batteryEstimatedTime);
+		batteryEstimatedTimeBox.setMaxWidth(Double.MAX_VALUE);
+		batteryEstimatedTimeBox.setAlignment(Pos.CENTER);
+		batteryEstimatedTimeBox.setPadding(new Insets(5, 10, 5, 25));
+		
 		VBox batteryBox = new VBox(10,
 				batteryStatusBox,
 				createStyledProgressBar(),
-				batteryLevelBox
+				batteryLevelBox,
+				batteryEstimatedTimeBox
 		);
 		batteryBox.setPadding(new Insets(10));
 		batteryBox.setStyle("-fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 8;");
@@ -95,6 +101,7 @@ public class DashboardTab {
 		VBox infoBox = new VBox(12,
 				createAudioDeviceBox(),
 				batteryMonitoringBox,
+				createFXWebsiteCaller(Pos.CENTER_LEFT),
 				new Separator(),
 				createUpdateSpeedSelector()
 		);
@@ -116,7 +123,7 @@ public class DashboardTab {
 			String deviceName = audioDevice[1];
 			audioOutput.setText(deviceName);
 			currentDeviceLabel.setText("Current Device:   " + deviceName);
-			MiniToast.show(refreshAudioDevice.localToScreen(0, 0), "Using: " + deviceName, 0.75);
+			MiniToast.show(refreshAudioDevice.localToScreen(0, 0), "Using: " + deviceName, 0.75, false, null);
 			primaryStage.requestFocus();
 		});
 		
@@ -154,7 +161,7 @@ public class DashboardTab {
 	}
  
 	private static HBox createUpdateSpeedSelector() {
-		UpdateSpeed savedValue = UpdateSpeed.valueOf(prefs.get("UpdateFrequency", UpdateSpeed.MEDIUM.name()));
+		UpdateSpeed savedValue = UpdateSpeed.valueOf(prefs.get(UPDATE_FREQUENCY, UpdateSpeed.MEDIUM.name()));
 		ComboBox<UpdateSpeed> comboBox = new ComboBox<>(
 			FXCollections.observableArrayList(
 				UpdateSpeed.FAST,
@@ -174,7 +181,7 @@ public class DashboardTab {
 		
 		comboBox.setOnAction(_ -> {
 			UpdateSpeed selected = comboBox.getValue();
-			prefs.put("UpdateFrequency", selected.name());
+			prefs.put(UPDATE_FREQUENCY, selected.name());
 			restartMonitorLoop(primaryStage.isShowing());
 		});
 		return new HBox(20, labeledNode("Update Speed:\u2003", comboBox));

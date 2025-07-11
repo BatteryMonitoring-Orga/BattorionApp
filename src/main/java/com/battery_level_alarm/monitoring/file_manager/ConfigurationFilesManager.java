@@ -2,7 +2,6 @@ package com.battery_level_alarm.monitoring.file_manager;
 import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.setSaveAfterNumOfRecords;
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.*;
-import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.setAutoRestartAfterUpdate;
 import static com.battery_level_alarm.monitoring.graphics.base.ChartType.LINE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
@@ -120,8 +119,8 @@ public class ConfigurationFilesManager {
         isAudioDeviceCmdletsInstalled = json.optBoolean("audio device cmdlets installed", false);
         customizationGradientBackground = json.optBoolean("customization gradient background", false);
         Appearance.setThemeName(json.optString("theme mode", "Light"));
-        PanelStyler.setGradientBackgroundDarkModeName(json.optString("gradient background dark mode", "BloodEmber"));
-        PanelStyler.setGradientBackgroundLightModeName(json.optString("gradient background light mode", "FrozenRose"));
+        PanelStyler.setGradientBackgroundDarkModeName(json.optString("gradient background dark mode", "CobaltNight"));
+        PanelStyler.setGradientBackgroundLightModeName(json.optString("gradient background light mode", "AquaBloom"));
         loadCustomGradientBackgroundColor(json);
     }
 
@@ -176,8 +175,8 @@ public class ConfigurationFilesManager {
         customizationGradientBackground = false;
         progressBarInFirstMode = true;
         Appearance.setThemeName("Light");
-        PanelStyler.setGradientBackgroundDarkModeName("BloodEmber");
-        PanelStyler.setGradientBackgroundLightModeName("FrozenRose");
+        PanelStyler.setGradientBackgroundDarkModeName("CobaltNight");
+        PanelStyler.setGradientBackgroundLightModeName("AquaBloom");
     }
 
     public static void saveDropDownListConfigurations() {
@@ -456,7 +455,6 @@ public class ConfigurationFilesManager {
         json.put("check for updates automatically", isCheckForUpdatesAutomatically());
         json.put("download updates automatically", isDownloadUpdatesAutomatically());
         json.put("notify before installing", isNotifyBeforeInstalling());
-        json.put("auto-restart after update", isAutoRestartAfterUpdate());
         json.put("previous version", getPreviousVersion());
         return json;
     }
@@ -483,7 +481,6 @@ public class ConfigurationFilesManager {
         setCheckForUpdatesAutomatically(json.optBoolean("check for updates automatically", true));
         setDownloadUpdatesAutomatically(json.optBoolean("download updates automatically", false));
         setNotifyBeforeInstalling(json.optBoolean("notify before installing", false));
-        setAutoRestartAfterUpdate(json.optBoolean("auto-restart after update", true));
         setPreviousVersion(json.optString("previous version", "5.0.0"));
     }
     
@@ -491,7 +488,6 @@ public class ConfigurationFilesManager {
         setCheckForUpdatesAutomatically(true);
         setDownloadUpdatesAutomatically(false);
         setNotifyBeforeInstalling(false);
-        setAutoRestartAfterUpdate(true);
         setPreviousVersion("5.0.0");
     }
     
@@ -513,7 +509,6 @@ public class ConfigurationFilesManager {
         json.put("sketch color", getSketchColor().toString());
         json.put("background color", getBackgroundColor().toString());
         json.put("axis color", getAxisColor().toString());
-        json.put("language", getLanguage());
         json.put("chart type", getChartType());
         json.put("show points on graph", isShowDataPoints());
         json.put("show values on hover", isShowValuesOnHover());
@@ -555,7 +550,6 @@ public class ConfigurationFilesManager {
         setSketchColor(javafx.scene.paint.Color.web(json.optString("sketch color", "#f3622d")));
         setBackgroundColor(javafx.scene.paint.Color.web(json.optString("background color", "WHITE")));
         setAxisColor(javafx.scene.paint.Color.web(json.optString("axis color", "BLACK")));
-        setLanguage(json.optString("language", "English"));
         setChartType(json.optString("chart type", LINE.name()));
         setShowDataPoints(json.optBoolean("show points on graph", true));
         setShowValuesOnHover(json.optBoolean("show values on hover", true));
@@ -573,12 +567,11 @@ public class ConfigurationFilesManager {
         setSaveAfterNumOfRecords(json.optInt("auto-save every (records)", 250));
     }
     
-    private static void loadDefaultGraphConfigurations() {
+    public static void loadDefaultGraphConfigurations() {
         setPainterTheme(GRAPH_THEME.FlatIntellijLightLaf.getDisplayName());
         setSketchColor(javafx.scene.paint.Color.web("#f3622d"));
         setBackgroundColor(javafx.scene.paint.Color.WHITE);
         setAxisColor(javafx.scene.paint.Color.BLACK);
-        setLanguage("English");
         setChartType(LINE.name());
         setShowDataPoints(true);
         setShowValuesOnHover(true);

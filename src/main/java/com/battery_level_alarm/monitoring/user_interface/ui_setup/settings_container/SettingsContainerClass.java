@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.TEXT_FONT;
 
 import javax.swing.*;
@@ -7,7 +8,6 @@ import java.awt.*;
 import java.util.Objects;
 
 public class SettingsContainerClass {
-    public static final String ICONS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Icons/";
     private static final String TOOLTIP_APP_SETTINGS = "Manage general application preferences and behavior.";
     private static final String TOOLTIP_PC_SETTINGS = "Adjust settings related to your computer and hardware.";
     private static final String TOOLTIP_GRAPHICS_SETTINGS = "Configure graphics options and visual performance.";
@@ -124,6 +124,18 @@ public class SettingsContainerClass {
             mainTabbedPanel.setComponentAt(index, pcSettingPanel);
         }
 
+        mainTabbedPanel.revalidate();
+        mainTabbedPanel.repaint();
+    }
+    
+    public static void refreshGraphSettingsTab() {
+        if (mainTabbedPanel == null) return;
+        graphicSettingsPanel = GraphSettingsGUI.createGraphSettingsGUI();
+        int index = mainTabbedPanel.indexOfTab("Graphic");
+        if (index != -1) {
+            mainTabbedPanel.setComponentAt(index, graphicSettingsPanel);
+        }
+        
         mainTabbedPanel.revalidate();
         mainTabbedPanel.repaint();
     }

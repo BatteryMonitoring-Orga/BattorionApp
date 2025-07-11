@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
+import com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
 
@@ -12,9 +13,12 @@ import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.*
 import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveUpdateVersionConfigurations;
 import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.*;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocExternalFilesLoader.loadMarkdownAsHtml;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.*;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.GRID_BAG_CONSTRAINTS_CONFIGURATION;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.HYPERLINK_HOVER_COLOR;
 import static com.battery_level_alarm.monitoring.system_core.handlers.BattorionMainProcessHandler.isWaitingForInternet;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.DashboardPanel;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.APP_VERSION;
@@ -27,7 +31,6 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabelWithMouseListener;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.DEFAULT_FONT;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.releaseManager;
-import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.restartApplication;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance.isAfterNoon;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeNames.*;
 
@@ -48,7 +51,7 @@ public class UpdateSettingsGUI {
 		JLabel latestVersionLabel = createLabel("", new Font("Serif", Font.BOLD, 15));
 		updateValues(statusLabel, latestVersionLabel);
 		JLabel aboutUpdatePanel = addLabelWithMouseListener(
-				gbc, new JPanel(), "About Update Panel", new Color(0, 134, 179),
+				gbc, new JPanel(), "About Update Panel", HYPERLINK_HOVER_COLOR,
 				() -> Thread.ofVirtual().start(() -> launchAndOpenTopic(SETTINGS_QUESTIONNAIRE, 1500)), DEFAULT_FONT
 		);
 		
@@ -123,12 +126,6 @@ public class UpdateSettingsGUI {
 			saveUpdateVersionConfigurations();
 		})));
 		
-		panel.add(Box.createVerticalStrut(5));
-		panel.add(setLeftAlign(addCheckbox(gbc, new JPanel(), "Auto-restart after update", isAutoRestartAfterUpdate(), e -> {
-			JCheckBox checkBox = (JCheckBox) e.getSource();
-			setAutoRestartAfterUpdate(checkBox.isSelected());
-			saveUpdateVersionConfigurations();
-		})));
 		panel.add(Box.createVerticalStrut(10));
 		return panel;
 	}
@@ -148,9 +145,21 @@ public class UpdateSettingsGUI {
 			setButtonBackgroundColor();
 			dashboardButton.setBackground(DARK_BLUE);
 		}));
-		panel.add(createButtonPanel("View Release Notes", btnSize, _ -> {
+		panel.add(createButtonPanel("View Latest Release Notes", btnSize, _ -> {
 			checkForVersionUpdates();
 			if(thereIsNewVersion) {
+				Thread.ofVirtual().start(() -> {
+					boolean isTrue = installLatestReleaseNotesFile();
+					if(isTrue) {
+						MiniDocTopicsBuilder.latestReleaseNote = loadMarkdownAsHtml(LATEST_RELEASE_NOTES_MD);
+						if (TOPICS.isEmpty()) {
+							buildTopicsMap();
+						}
+						TOPICS.put(LATEST_RELEASE_NEW, MiniDocTopicsBuilder::getLatestReleaseMarkdownText);
+						launchAndOpenTopic(LATEST_RELEASE_NEW, 0);
+					}
+				});
+			} else {
 				Thread.ofVirtual().start(() -> launchAndOpenTopic(WHATS_NEW, 0));
 			}
 		}));
@@ -158,9 +167,6 @@ public class UpdateSettingsGUI {
 		panel.add(createButtonPanel("Rollback to Previous Version", btnSize, _ -> {
 			latestVersion = getPreviousVersion();
 			releaseManager();
-			if(!isAutoRestartAfterUpdate()) {
-				restartApplication();
-			}
 		}));
 		panel.add(Box.createVerticalStrut(7));
 		return panel;

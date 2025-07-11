@@ -42,7 +42,6 @@ public class GraphSettings {
 	}
 	
 	private static String painterTheme;
-	private static String language;
 	private static String chartType;
 	private static String saveFormat;
 	
@@ -95,14 +94,6 @@ public class GraphSettings {
 	
 	public static void setAxisColor(Color value) {
 		axisColor = value;
-	}
-	
-	public static String getLanguage() {
-		return language;
-	}
-	
-	public static void setLanguage(String value) {
-		language = value;
 	}
 	
 	public static String getChartType() {

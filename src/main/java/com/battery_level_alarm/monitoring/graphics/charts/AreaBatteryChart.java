@@ -11,7 +11,7 @@ import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph
 public class AreaBatteryChart extends BaseBatteryChart {
 	@Override
 	public AreaChart<Number, Number> createGraph(NumberAxis xAxis, NumberAxis yAxis) {
-		series.setName(isLanguageArabic() ? "نسبة البطارية" : "Battery Percentage");
+		series.setName("Battery Percentage");
 		AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
 		chart.setCreateSymbols(isShowDataPoints());
 		return chart;

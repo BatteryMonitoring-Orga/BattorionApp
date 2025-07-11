@@ -1,0 +1,50 @@
+GraalVM:
+
+<plugins>
+    <plugin>
+        <groupId>org.graalvm.buildtools</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+        <version>0.10.2</version>
+        <configuration>
+            <imageName>Battorion</imageName>
+            <mainClass>com.battery_level_alarm.monitoring.system_core.Battorion</mainClass>
+            <fallback>false</fallback>
+            <verbose>true</verbose>
+        </configuration>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>compile-no-fork</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+</plugins>
+
+<profiles>
+    <profile>
+        <id>native</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.graalvm.buildtools</groupId>
+                    <artifactId>native-maven-plugin</artifactId>
+                    <version>0.10.2</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <imageName>monitoring-native</imageName>
+                        <mainClass>com.battery_level_alarm.monitoring.system_core.Battorion</mainClass>
+                        <fallback>false</fallback>
+                        <verbose>true</verbose>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>

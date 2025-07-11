@@ -134,6 +134,7 @@ public class ComputerSettings {
     public static String getDefaultSpeakerOutputDeviceName() {
         return defaultSpeakerOutputDeviceName;
     }
+    
     public static void setDefaultSpeakerOutputDeviceName(String defaultSpeakerOutputDeviceName) {
         ComputerSettings.defaultSpeakerOutputDeviceName = defaultSpeakerOutputDeviceName;
         if(currentAudioDevice == null) {

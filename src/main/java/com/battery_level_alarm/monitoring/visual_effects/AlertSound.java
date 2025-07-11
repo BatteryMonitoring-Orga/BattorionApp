@@ -140,6 +140,7 @@ public class AlertSound {
                 player = new Player(soundStream);
                 player.play();
             } catch (JavaLayerException e) {
+                logger.severe("[EXCEPTION]: " + e.getMessage());
                 printErrorMessage(e);
             }
         });
@@ -170,6 +171,7 @@ public class AlertSound {
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e);
         }
         
@@ -182,6 +184,7 @@ public class AlertSound {
             }
             Thread.sleep(100);
         } catch (InterruptedException e) {
+            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e);
         }
         

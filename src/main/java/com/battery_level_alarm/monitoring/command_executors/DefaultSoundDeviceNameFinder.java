@@ -7,6 +7,8 @@ import java.util.*;
 
 public class DefaultSoundDeviceNameFinder {
 	private static final String OUTPUT_FILE = MAIN_FOLDER_PATH + "/output.csv";
+	private static final String SOUND_VOLUME_VIEW_PATH = MAIN_FOLDER_PATH + "/SoundVolumeView-main/soundvolumeview-x64";
+	
 	private static final List<String> VALID_DEVICE_NAMES = Arrays.asList(
 			"Realtek Audio",
 			"Realtek(R) Audio",
@@ -59,13 +61,24 @@ public class DefaultSoundDeviceNameFinder {
 	}
 	
 	private static void runSoundVolumeProcess() throws IOException, InterruptedException {
+		String soundVolumeViewPath = SOUND_VOLUME_VIEW_PATH + "/SoundVolumeView.exe";
+		java.io.File exeFile = new java.io.File(soundVolumeViewPath);
+		if (!exeFile.exists()) {
+			throw new UnsupportedOperationException("File not found: " + soundVolumeViewPath);
+		}
+		
 		ProcessBuilder pb = new ProcessBuilder(
-				"SoundVolumeView.exe",
+				soundVolumeViewPath,
 				"/scomma",
 				OUTPUT_FILE
 		);
+		
+		pb.redirectErrorStream(true);
 		Process process = pb.start();
-		process.waitFor();
+		int exitCode = process.waitFor();
+		if (exitCode != 0) {
+			throw new RuntimeException("SoundVolumeView process failed with exit code: " + exitCode);
+		}
 	}
 	
 	private static void deleteOutputFile() {

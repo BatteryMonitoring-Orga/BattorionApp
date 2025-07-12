@@ -12,7 +12,7 @@ import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPa
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
 
-import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
+import com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance;
 import com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler;
@@ -348,7 +348,7 @@ public class ConfigurationFilesManager {
         json.put("Automatically restore brightness level", isAutomaticallyRestoreBrightnessLevel());
         json.put("Default Speaker Output Device Name", getDefaultSpeakerOutputDeviceName());
         json.put("Current audio device", getCurrentAudioDevice());
-        json.put("Audio devices", getAudioDevices());
+        json.put("Audio devices", getAudioDevicesList());
         json.put("Volume Level", getVolumeLevel());
         json.put("Brightness level", getBrightnessLevel());
         json.put("Brightness Control Option", getBrightnessControlOption());
@@ -403,7 +403,7 @@ public class ConfigurationFilesManager {
                 audioDevicesList.add(audioDevicesArray.optString(i, ""));
             }
         }
-        setAudioDevices(audioDevicesList);
+        setAudioDevicesList(audioDevicesList);
     }
 
     private static void loadDefaultComputerSettings() {
@@ -421,14 +421,14 @@ public class ConfigurationFilesManager {
         setVolumeLevel(35);
         setBrightnessLevel(60);
         setBrightnessControlOption(2);
-        setAudioDevices(new ArrayList<>());
+        setAudioDevicesList(new ArrayList<>());
         setNotificationSoundFileName("Alarm01.wav");
         initializeDefaultSpeakerDevice();
     }
     
     private static void initializeDefaultSpeakerDevice() {
         try {
-            String defaultSpeakerOutputDeviceName = DefaultSoundDeviceNameFinder.findFirstValidRenderDevice();
+            String defaultSpeakerOutputDeviceName = SoundDevicesNamesFinder.findFirstDefaultValidRenderDevice();
             setDefaultSpeakerOutputDeviceName(defaultSpeakerOutputDeviceName);
             setCurrentAudioDevice(defaultSpeakerOutputDeviceName);
         } catch (Exception e) {
@@ -590,12 +590,8 @@ public class ConfigurationFilesManager {
     }
     
     private static void printErrorMessage(Throwable e, String loggerText) {
-        logger.severe(loggerText + ": " + e.getMessage());
-        JOptionPane.showMessageDialog(
-                null,
-                "Error: " + e.getClass().getName() + "\nMessage: " + e.getMessage(),
-                "Battery Level Error",
-                JOptionPane.ERROR_MESSAGE
-        );
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        logger.severe("[EXCEPTION]: " + loggerText + ": " + e.getMessage());
     }
 }

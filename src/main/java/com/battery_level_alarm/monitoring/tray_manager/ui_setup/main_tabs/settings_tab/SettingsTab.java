@@ -116,15 +116,17 @@ public class SettingsTab {
 	
 	public static VBox createAudioSettingsSection() {
 		currentDeviceLabel.setText("Current Device:   " + getCurrentAudioDevice());
-		audioDeviceSelect.getItems().setAll(getAudioDevices());
+		audioDeviceSelect.getItems().setAll(getAudioDevicesList());
 		audioDeviceSelect.setValue(getCurrentAudioDevice());
 		audioDeviceSelect.setCursor(Cursor.HAND);
 		audioDeviceSelect.setPrefSize(120, 20);
 		audioDeviceSelect.setStyle("-fx-font-size: 13px;");
 		audioDeviceSelect.setOnAction(_ -> {
 			String selected = audioDeviceSelect.getValue();
-			setCurrentAudioDevice(selected);
-			ConfigurationFilesManager.saveComputerSettings();
+			if(selected != null && !selected.isEmpty()) {
+				setCurrentAudioDevice(selected);
+				ConfigurationFilesManager.saveComputerSettings();
+			}
 		});
 		
 		customDeviceField.setPrefHeight(25);

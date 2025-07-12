@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
-import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getAudioDevices;
+import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getAudioDevicesList;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isMonitorRunning;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isAudioDeviceCmdletsInstalled;
@@ -106,7 +106,7 @@ public class AudioOutputDeviceNameChecker {
     }
 
     private static String checkDevicesList(String currentDevice){
-        for(String entry : getAudioDevices()){
+        for(String entry : getAudioDevicesList()){
             if(currentDevice.contains(entry)){
                 return entry;
             }
@@ -118,7 +118,7 @@ public class AudioOutputDeviceNameChecker {
     private static String getDeviceFullName(String currentDevice){
         String[] lines = currentDevice.split("\\R");
         for (String line : lines) {
-            for (String entry : getAudioDevices()) {
+            for (String entry : getAudioDevicesList()) {
                 if (line.contains(entry)) {
                     return line.trim();
                 }

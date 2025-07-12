@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core;
+import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.extractAudioOutputFamilies;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
 import static com.battery_level_alarm.monitoring.flow_chat.CallStepsFlow.handleUserFlows;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.scheduler;
@@ -29,7 +30,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.messages.Display
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 import static java.util.logging.Level.SEVERE;
 
-import com.battery_level_alarm.monitoring.command_executors.DefaultSoundDeviceNameFinder;
+import com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder;
 import com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
@@ -133,6 +134,7 @@ public class Battorion {
     public static void departure(String modeToUse, String[] args) {
         try {
             prepareStartup();
+            Thread.ofVirtual().start(Battorion::setupAudioDevicesNames);
             DepartureModes mode = BattorionTrayUI.DepartureModes.valueOf(modeToUse);
             if (mode == DepartureModes.START_WITH_TRAY) {
                 isApplicationMode = false;
@@ -166,7 +168,6 @@ public class Battorion {
         PrepareDiskInfoGUI.createGUI();
         BatteryStatisticsGUI.createGUI();
         SwingUtilities.invokeLater(Battorion::createAndShowGUI);
-        Thread.ofVirtual().start(Battorion::setupDefaultAudioDeviceIfUnknown);
     }
     
     public static void rebuild() {
@@ -275,17 +276,26 @@ public class Battorion {
         }
     }
     
-    private static void setupDefaultAudioDeviceIfUnknown() {
-        if (getDefaultSpeakerOutputDeviceName().equals(UNKNOWN_OUTPUT_DEVICE)) {
-            String defaultDevice = DefaultSoundDeviceNameFinder.findFirstValidRenderDevice();
+    private static void setupAudioDevicesNames() {
+        java.util.List<String> audioDevices = getAudioDevicesList();
+        setAudioDevicesList(extractAudioOutputFamilies());
+        if(audioDevices != null && !audioDevices.isEmpty()) {
+            for(String item : audioDevices) {
+                addItemToAudioList(item);
+            }
+        } if(getDefaultSpeakerOutputDeviceName() == null || getDefaultSpeakerOutputDeviceName().isEmpty() ||
+                getDefaultSpeakerOutputDeviceName().equals(UNKNOWN_OUTPUT_DEVICE)) {
+            String defaultDevice = SoundDevicesNamesFinder.findFirstDefaultValidRenderDevice();
             setDefaultSpeakerOutputDeviceName(defaultDevice);
             
             String item = getItemFromAudioList(defaultDevice);
             if (item == null) {
                 addItemToAudioList(defaultDevice);
+            } if (getCurrentAudioDevice().equals(UNKNOWN_OUTPUT_DEVICE)) {
+                setCurrentAudioDevice(defaultDevice);
             }
-            saveComputerSettings();
         }
+        saveComputerSettings();
     }
 
     private static void configurationSystemTrayNotifications() {

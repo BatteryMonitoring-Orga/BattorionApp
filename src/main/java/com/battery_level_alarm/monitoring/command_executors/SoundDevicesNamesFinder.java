@@ -5,10 +5,9 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import java.io.*;
 import java.util.*;
 
-public class DefaultSoundDeviceNameFinder {
+public class SoundDevicesNamesFinder {
 	private static final String OUTPUT_FILE = MAIN_FOLDER_PATH + "/output.csv";
 	private static final String SOUND_VOLUME_VIEW_PATH = MAIN_FOLDER_PATH + "/SoundVolumeView-main/soundvolumeview-x64";
-	
 	private static final List<String> VALID_DEVICE_NAMES = Arrays.asList(
 			"Realtek Audio",
 			"Realtek(R) Audio",
@@ -23,7 +22,12 @@ public class DefaultSoundDeviceNameFinder {
 			"Motu Audio Device"
 	);
 	
-	public static String findFirstValidRenderDevice() {
+	private static final Set<String> knownOutputKeywords = new HashSet<>(Arrays.asList(
+			"Speakers", "Headphones", "Headset", "Earphones", "USB Audio", "USB",
+			"سماعات", "سماعة", "سماعة رأس", "مكبر"
+	));
+	
+	public static String findFirstDefaultValidRenderDevice() {
 		try {
 			runSoundVolumeProcess();
 			try (BufferedReader reader = new BufferedReader(new FileReader(OUTPUT_FILE))) {
@@ -55,6 +59,47 @@ public class DefaultSoundDeviceNameFinder {
 				deleteOutputFile();
 			} catch (Exception ex) {
 				logger.severe("[EXCEPTION]: " + ex.getMessage());
+			}
+		}
+		return null;
+	}
+	
+	public static List<String> extractAudioOutputFamilies() {
+		Set<String> families = new LinkedHashSet<>();
+		try {
+			runSoundVolumeProcess();
+			try (BufferedReader reader = new BufferedReader(new FileReader(OUTPUT_FILE))) {
+				String line;
+				while ((line = reader.readLine()) != null) {
+					String[] parts = line.split(",");
+					if (parts.length < 4) continue;
+					
+					String type = parts[1].trim();
+					String direction = parts[2].trim();
+					if (!type.equalsIgnoreCase("Device") || !direction.equalsIgnoreCase("Render")) continue;
+					
+					String name = parts[0].trim();
+					String deviceName = parts[3].trim();
+					String candidate = extractMatchingKeyword(name);
+					if (candidate == null) {
+						candidate = extractMatchingKeyword(deviceName);
+					} if (candidate != null) {
+						families.add(candidate);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.severe("[EXCEPTION]: " + e.getMessage());
+		} finally {
+			deleteOutputFile();
+		}
+		return new ArrayList<>(families);
+	}
+	
+	private static String extractMatchingKeyword(String text) {
+		for (String keyword : SoundDevicesNamesFinder.knownOutputKeywords) {
+			if (text.toLowerCase().contains(keyword.toLowerCase())) {
+				return keyword;
 			}
 		}
 		return null;

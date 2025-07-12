@@ -115,15 +115,17 @@ public class ComputerSettingsGUI {
 
         setDimension(++index, 0);
         JComboBox<String> audioDevicesComboBox = addLabeledComboBox(
-                gbc, thirdPanel, "Select the audio device used", getAudioDevices().toArray(new String[0]),
+                gbc, thirdPanel, "Select the audio device used", getAudioDevicesList().toArray(new String[0]),
                 getCurrentAudioDevice(), 4, e -> {
                     if (e.getSource() instanceof JComboBox<?>) {
                         @SuppressWarnings("unchecked")
                         JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
                         String selectedSound = Objects.requireNonNull(comboBox.getSelectedItem()).toString();
-                        setCurrentAudioDevice(selectedSound);
-                        activeAudioDeviceName.setText(selectedSound);
-                        ConfigurationFilesManager.saveComputerSettings();
+                        if(selectedSound != null && !selectedSound.isEmpty()) {
+                            setCurrentAudioDevice(selectedSound);
+                            activeAudioDeviceName.setText(selectedSound);
+                            ConfigurationFilesManager.saveComputerSettings();
+                        }
                     }
                 }, 160, 30);
 

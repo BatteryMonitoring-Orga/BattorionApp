@@ -93,10 +93,10 @@ public class ComputerSettings {
         ComputerSettings.automaticallyRestoreBrightnessLevel = automaticallyRestoreBrightnessLevel;
     }
 
-    public static List<String> getAudioDevices() {
+    public static List<String> getAudioDevicesList() {
         return audioDevices;
     }
-    public static void setAudioDevices(List<String> audioDevices) {
+    public static void setAudioDevicesList(List<String> audioDevices) {
         ComputerSettings.audioDevices = audioDevices;
     }
     public static boolean addItemToAudioList(String device) {

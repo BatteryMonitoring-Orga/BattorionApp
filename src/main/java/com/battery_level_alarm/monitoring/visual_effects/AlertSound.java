@@ -140,7 +140,6 @@ public class AlertSound {
                 player = new Player(soundStream);
                 player.play();
             } catch (JavaLayerException e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage());
                 printErrorMessage(e);
             }
         });
@@ -171,20 +170,19 @@ public class AlertSound {
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e);
         }
         
         try {
             String deviceName = getDefaultSpeakerOutputDeviceName();
-            if (ComputerSettings.isEnableExchangeToSpeakerAudioOutput() && isFromCriticalAlert) {
+            if (deviceName != null && !deviceName.isEmpty() && isFromCriticalAlert &&
+                    ComputerSettings.isEnableExchangeToSpeakerAudioOutput()) {
                 setAudioOutputDevice(deviceName);
                 activeAudioDeviceName.setText(deviceName);
                 audioOutputDeviceDashTextField.setText(deviceName);
             }
             Thread.sleep(100);
         } catch (InterruptedException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e);
         }
         
@@ -194,7 +192,7 @@ public class AlertSound {
             CallCommandLine.setSoundUnmute(0);
         }
     }
-
+    
     public static void cleanupAudioSettingsAfterAlert() {
         try {
             if(ComputerSettings.isRestoringSoundLevelAfterAlert()) {
@@ -202,7 +200,7 @@ public class AlertSound {
                 Thread.sleep(100);
             }
         } catch (InterruptedException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
             throw new RuntimeException(e);
         }
         
@@ -217,7 +215,7 @@ public class AlertSound {
         }
         isProcessesApplied = false;
     }
-
+    
     private static void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }

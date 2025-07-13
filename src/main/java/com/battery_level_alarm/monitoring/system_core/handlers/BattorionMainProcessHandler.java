@@ -2,10 +2,10 @@ package com.battery_level_alarm.monitoring.system_core.handlers;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker.AudioDeviceThread;
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.isCheckForUpdatesAutomatically;
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.isDownloadUpdatesAutomatically;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.checkForVersionUpdates;
-import static com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader.isInternetAvailable;
-import static com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader.isInternetAvailableFlag;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.thereIsNewVersion;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.checkForVersionUpdates;
+import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
+import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailableFlag;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.alternativeStage;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.scheduler;
 import static com.battery_level_alarm.monitoring.graphics.executor.LocalScheduledExecutorService.changeTimer;
@@ -23,8 +23,8 @@ import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.isPro
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 
-import com.battery_level_alarm.monitoring.file_manager.AudioDeviceToolChecker;
-import com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader;
+import com.battery_level_alarm.monitoring.registration_manager.AudioDeviceToolChecker;
+import com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader;
 import com.battery_level_alarm.monitoring.flow_chat.CallStepsFlow;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import javafx.application.Platform;

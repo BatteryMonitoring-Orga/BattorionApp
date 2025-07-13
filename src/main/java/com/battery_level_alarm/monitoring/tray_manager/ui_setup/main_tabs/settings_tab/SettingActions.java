@@ -3,8 +3,8 @@ import static com.battery_level_alarm.monitoring.command_executors.AudioOutput$C
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setNotificationSoundFileName;
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.setMaximumLevel;
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.setMinimumLevel;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveComputerSettings;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveSettings;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveComputerSettings;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveSettings;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.START_BATTORION_WITH;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.pauseThreads;
@@ -14,7 +14,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.B
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.removeMainTrayIcon;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 
 public class SettingActions {

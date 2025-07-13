@@ -6,7 +6,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_APPLICATION;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_TRAY;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 
 import com.battery_level_alarm.monitoring.visual_effects.Brightness;
 import javafx.application.Platform;

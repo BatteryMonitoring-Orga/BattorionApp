@@ -13,7 +13,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingActions.*;
 
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.tray_manager.modern_component.JavaFXSoundComboBox;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;

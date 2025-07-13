@@ -32,7 +32,7 @@ module monitoring {
 	exports com.battery_level_alarm.monitoring.command_executors;
 	exports com.battery_level_alarm.monitoring.core_utilities;
 	exports com.battery_level_alarm.monitoring.download_tracker;
-	exports com.battery_level_alarm.monitoring.file_manager;
+	exports com.battery_level_alarm.monitoring.registration_manager;
 	exports com.battery_level_alarm.monitoring.graphics.base;
 	exports com.battery_level_alarm.monitoring.skeleton_constraints;
 	exports com.battery_level_alarm.monitoring.system_automation;
@@ -40,7 +40,6 @@ module monitoring {
 	exports com.battery_level_alarm.monitoring.visual_effects;
 	exports com.battery_level_alarm.monitoring.visual_effects.appearance;
 	exports com.battery_level_alarm.monitoring.visual_effects.gradient;
-	exports com.battery_level_alarm.monitoring.tray_manager.tray_executors.actions;
 	exports com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor;
 	exports com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications;
 	exports com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related;
@@ -65,7 +64,6 @@ module monitoring {
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications to javafx.swing;
-	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.actions to javafx.swing;
 	exports com.battery_level_alarm.monitoring.questionnaires;
 	exports com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
 	exports com.battery_level_alarm.monitoring.graphics.ui;
@@ -77,4 +75,5 @@ module monitoring {
 	exports com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container;
 	exports com.battery_level_alarm.monitoring.visual_effects.messages;
 	exports com.battery_level_alarm.monitoring.flow_chat;
+	opens com.battery_level_alarm.monitoring.registration_manager to javafx.swing;
 }

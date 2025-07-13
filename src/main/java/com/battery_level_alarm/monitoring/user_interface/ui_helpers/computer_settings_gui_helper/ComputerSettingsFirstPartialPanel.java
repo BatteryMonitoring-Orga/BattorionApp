@@ -1,14 +1,17 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.registration_manager.AutoStartManager.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.mainFrame;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.motherPanel;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.APP_NAME;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.getCurrentExePath;
+import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getRow;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.LABELS_FONT;
-import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setColumn;
-import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setDimension;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.DropDownList.*;
+import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.addToggleButton;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;
 
@@ -18,7 +21,7 @@ import com.battery_level_alarm.monitoring.user_interface.ui_config.ComponentHier
 import com.battery_level_alarm.monitoring.user_interface.ui_config.CompoundUpdaterRecord;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ProgressBarValueUpdater;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ToggleButtonRecord;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -29,6 +32,7 @@ import java.util.function.Consumer;
 public class ComputerSettingsFirstPartialPanel {
     private static final boolean[] COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY = {
             isActivateTheAwakeningFeature(),
+            isAutoStartEnabled(APP_NAME),
             isEnableSystemNotificationSound(),
             isEnableUnmuteVolumeAutomatically()
     };
@@ -53,33 +57,35 @@ public class ComputerSettingsFirstPartialPanel {
         int partialIndex = 0;
         partialIndex = addToggleFeature(
                 gbc, partialPanelContent, partialIndex,
-                " Activate the awakening feature:",
+                "Activate the awakening feature:",
                 ComputerSettings::setActivateTheAwakeningFeature,
                 ComputerSettings.isActivateTheAwakeningFeature()
         );
-
+        partialIndex = addStartupToggleFeature(gbc, partialPanelContent, partialIndex, isAutoStartEnabled(APP_NAME));
+        
         partialIndex = addToggleFeature(
                 gbc, partialPanelContent, partialIndex,
-                " Enable System Notification Sound:",
+                "Enable System Notification Sound:",
                 ComputerSettings::setEnableSystemNotificationSound,
                 ComputerSettings.isEnableSystemNotificationSound()
         );
-
         addToggleFeature(
                 gbc, partialPanelContent, partialIndex,
-                " Enable unmute volume automatically:",
+                "Enable unmute volume automatically:",
                 ComputerSettings::setEnableUnmuteVolumeAutomatically,
                 ComputerSettings.isEnableUnmuteVolumeAutomatically()
         );
-
+        
         decideTheSizeDimension();
         COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY[0] = partialPanelContent;
         mainPartialPanel.add(partialPanelContent, BorderLayout.CENTER);
         return mainPartialPanel;
     }
 
-    private static int addToggleFeature(GridBagConstraints gbc, JPanel panel, int index,
-                                        String label, Consumer<Boolean> setter, boolean currentState) {
+    private static int addToggleFeature(
+            GridBagConstraints gbc, JPanel panel, int index,
+            String label, Consumer<Boolean> setter, boolean currentState
+    ) {
         setDimension(index, 0);
         addLabel(gbc, panel, label, LABELS_FONT);
         CompoundUpdaterRecord compoundUpdaterRecord = getCompoundUpdaterRecord(hierarchy, index);
@@ -89,12 +95,48 @@ public class ComputerSettingsFirstPartialPanel {
                 currentState ? "On" : "Off",
                 new Dimension(60, 30)
         );
-
         setColumn(1);
-        addLabel(gbc, panel, FOUR_SPACE, LABELS_FONT);
+        addLabel(gbc, panel, TWO_SPACE + ONE_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(gbc, panel, toggleButtonRecord, compoundUpdaterRecord);
         return index + 1;
+    }
+    
+    private static int addStartupToggleFeature(GridBagConstraints gbc, JPanel panel, int index, boolean currentState) {
+        setDimension(index, 0);
+        addLabel(gbc, panel, "Run the application at system startup:", LABELS_FONT);
+        setColumn(1);
+        addLabel(gbc, panel, TWO_SPACE + ONE_SPACE, LABELS_FONT);
+        setColumn(2);
+        gbc.gridx = getColumn();
+        gbc.gridy = getRow();
+        panel.add(createRunOnStartupButton(index, currentState), gbc);
+        return index + 1;
+    }
+    
+    private static JToggleButton createRunOnStartupButton(int index, boolean currentState) {
+        CompoundUpdaterRecord compoundUpdaterRecord = getCompoundUpdaterRecord(hierarchy, index);
+        JToggleButton toggleButton = new JToggleButton(currentState ? "On" : "Off");
+        toggleButton.setPreferredSize(new Dimension(60, 30));
+        toggleButton.setFont(toggleButtonsFont);
+        toggleButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        toggleButton.setSelected(currentState);
+        toggleButton.setBackground(currentState ? new Color(72, 201, 176) : Color.DARK_GRAY);
+        toggleButton.setForeground(currentState ? Color.BLACK : Color.WHITE);
+        toggleButton.addActionListener(_ -> {
+            boolean isSelected = toggleButton.isSelected();
+            if(isSelected) {
+                enableAutoStart(APP_NAME, getCurrentExePath());
+            } else {
+                disableAutoStart(APP_NAME);
+            }
+            
+            toggleButton.setText(isSelected ? "On" : "Off");
+            toggleButton.setBackground(isSelected ? new Color(72, 201, 176) : Color.DARK_GRAY);
+            toggleButton.setForeground(isSelected ? Color.BLACK : Color.WHITE);
+            updateProgressBars(compoundUpdaterRecord.progressBarValueUpdater());
+        });
+        return toggleButton;
     }
 
     private static CompoundUpdaterRecord getCompoundUpdaterRecord(ComponentHierarchy hierarchy, int index) {
@@ -102,6 +144,7 @@ public class ComputerSettingsFirstPartialPanel {
             case 0 -> getFirstCompoundUpdaterRecord(hierarchy);
             case 1 -> getSecondCompoundUpdaterRecord(hierarchy);
             case 2 -> getThirdCompoundUpdaterRecord(hierarchy);
+            case 3 -> getFourthCompoundUpdaterRecord(hierarchy);
             default -> throw new IllegalArgumentException("Invalid index for CompoundUpdaterRecord");
         };
     }
@@ -114,12 +157,12 @@ public class ComputerSettingsFirstPartialPanel {
                 new JComponent[]{}
         );
     }
-
+    
     private static @NotNull CompoundUpdaterRecord getSecondCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
         return createCompoundUpdaterRecord(
                 hierarchy,
                 1,
-                ComputerSettings::isEnableSystemNotificationSound,
+                () -> isAutoStartEnabled(APP_NAME),
                 new JComponent[]{}
         );
     }
@@ -128,6 +171,15 @@ public class ComputerSettingsFirstPartialPanel {
         return createCompoundUpdaterRecord(
                 hierarchy,
                 2,
+                ComputerSettings::isEnableSystemNotificationSound,
+                new JComponent[]{}
+        );
+    }
+
+    private static @NotNull CompoundUpdaterRecord getFourthCompoundUpdaterRecord(ComponentHierarchy hierarchy) {
+        return createCompoundUpdaterRecord(
+                hierarchy,
+                3,
                 ComputerSettings::isEnableUnmuteVolumeAutomatically,
                 new JComponent[]{}
         );
@@ -138,7 +190,7 @@ public class ComputerSettingsFirstPartialPanel {
             int index,
             Callable<Boolean> conditionSupplier,
             JComponent[] components
-    ){
+    ) {
         ProgressBarValueUpdater progressBarUpdater = new ProgressBarValueUpdater(
                 ProgressBar,
                 COMPUTER_SETTINGS_FIRST_PARTIAL_TRUE_ARRAY,
@@ -161,6 +213,6 @@ public class ComputerSettingsFirstPartialPanel {
         partialPanelDimension = new Dimension(WIDTH, getFirstPCHeight());
     }
     public static int getFirstPCHeight() {
-        return 160;
+        return 220;
     }
 }

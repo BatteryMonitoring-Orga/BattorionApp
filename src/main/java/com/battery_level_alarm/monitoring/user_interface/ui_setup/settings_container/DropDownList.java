@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveDropDownListConfigurations;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveDropDownListConfigurations;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.WIDTH;

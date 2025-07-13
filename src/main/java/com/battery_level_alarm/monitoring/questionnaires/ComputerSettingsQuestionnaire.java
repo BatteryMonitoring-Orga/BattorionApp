@@ -9,13 +9,20 @@ public class ComputerSettingsQuestionnaire {
 					<p>This panel provides a comprehensive interface to control automatic system behaviors and audio configurations.</p>
 
 					<ol>
-						<li><b>Auto Wake-Up Settings</b>
+						<li><b>Auto Wake-Up</b>
 							<ul>
 								<li><b>Wake the PC every (Minutes):</b><br>
 												Define how frequently the system should wake itself automatically (default is every 5 minutes).</li>
 							</ul>
 						</li>
-
+						<li><b>Run the Application at System Startup</b>
+						     <ul>
+						        <li>Enable this option to have the application launch automatically every time your computer boots up.</li>
+						        <li>This ensures that battery monitoring and alerts start without needing manual intervention.</li>
+						        <li>Ideal for users who want continuous protection and notifications without having to remember to open the app.</li>
+						     </ul>
+						</li>
+  
 						<li><b>Audio Output Handling</b>
 							<ul>
 								<li><b>Exchange Output to Speaker:</b><br>

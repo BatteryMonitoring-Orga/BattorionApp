@@ -21,7 +21,7 @@ import com.battery_level_alarm.monitoring.core_utilities.EffectDirection;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.*;
 import com.battery_level_alarm.monitoring.visual_effects.Brightness;
 import com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass;
 import org.jetbrains.annotations.NotNull;
 
@@ -128,7 +128,7 @@ public class ComputerSettingsFourthPartialPanel {
 
         setPopUpMenu(sliderValueTextField,
                 new JComponent[]{
-                        new JLabel(" Press 'Enter' to save the new brightness value ")
+                        new JLabel("Press 'Enter' to save the new brightness value ")
                 }, new Font("Serif", Font.PLAIN, 12), false,
                 ComputerSettingsFourthPartialPanel::setEnableRequestFocusInWindow,
                 ComputerSettingsFourthPartialPanel::isEnableRequestFocusInWindow);

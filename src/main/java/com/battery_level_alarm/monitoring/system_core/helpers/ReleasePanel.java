@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.releasePanel;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isDarkMode;
 import static com.battery_level_alarm.monitoring.versions_manager.update_ui.AppReleaseNotify.getNotifyBox;

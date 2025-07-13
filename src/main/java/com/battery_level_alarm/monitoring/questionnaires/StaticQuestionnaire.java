@@ -27,66 +27,91 @@ public class StaticQuestionnaire {
     
     public static String getAboutDispatchText() {
         return """
-            <html>
-                <head>
-                    <style>
-                        body {
-                            font-family: Serif, sans-serif;
-                            line-height: 1.6;
-                            color: #222;
-                            padding: 20px 30px;
-                            margin: 0;
-                            background-color: #fff;
-                        }
-                        h1, h2, b {
-                            color: #111;
-                        }
-                        h2 {
-                            margin-top: 0;
-                            margin-bottom: 15px;
-                            font-weight: bold;
-                            font-size: 18px;
-                        }
-                        p {
-                            margin: 10px 0;
-                        }
-                        ul {
-                            margin: 10px 0 20px 20px;
-                        }
-                        a {
-                            text-decoration: none;
-                            color: #007acc;
-                            font-weight: bold;
-                        }
-                        a:hover {
-                            text-decoration: underline;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h2>About Battorion</h2>
-                    <p><b>Version: </b>""" + APP_VERSION +
-            """
-                    </p>
-                    <p><b>Author:</b> Muath Hassoun</p>
-                    <p>This application monitors your battery level and provides alerts in the following cases:</p>
+        <html>
+            <head>
+                <style>
+                    body {
+                        font-family: Serif, sans-serif;
+                        line-height: 1.6;
+                        color: #222;
+                        padding: 20px 30px;
+                        margin: 0;
+                        background-color: #fff;
+                    }
+                    h1, h2, b {
+                        color: #111;
+                    }
+                    h2 {
+                        margin-top: 0;
+                        margin-bottom: 15px;
+                        font-weight: bold;
+                        font-size: 18px;
+                    }
+                    p {
+                        margin: 10px 0;
+                    }
+                    ul {
+                        margin: 10px 0 20px 20px;
+                    }
+                    a {
+                        text-decoration: none;
+                        color: #007acc;
+                        font-weight: bold;
+                    }
+                    a:hover {
+                        text-decoration: underline;
+                    }
+                    .core {
+                        background-color: #e0f0ff;
+                        border-left: 5px solid #007acc;
+                        padding: 10px 15px;
+                        margin: 20px 0;
+                    }
+                </style>
+            </head>
+            <body>
+                <h2>About Battorion</h2>
+                <p><b>Version: </b>""" + APP_VERSION + """
+                </p>
+                <p><b>Author:</b> Muath Hassoun — Computer Engineer and Software Developer</p>
+                <br>
+                <div class="core">
+                    <h3>Core Functionality</h3>
+                    <p>This application monitors your battery level continuously and provides timely alerts to help you maintain battery health and prevent damage or unexpected shutdowns.</p>
                     <ul>
-                                    <li><b>High Battery</b>: If the level reaches <b>85% or more</b>, you will be asked to unplug the charger.</li>
-                                    <li><b>Low Battery</b>: If the level drops to <b>25% or less</b>, you will be reminded to charge the battery.</li>
+                        <li><b>High Battery Alert:</b> When battery level reaches <b>85% or more</b>, you receive a reminder to unplug the charger to avoid overcharging.</li>
+                        <li><b>Low Battery Alert:</b> When battery level drops to <b>25% or less</b>, you get notified to recharge your battery.</li>
                     </ul>
-                    <p>The program operates in the background, periodically checking the battery level.</p>
-                    <p>It is compatible with Windows, Linux, and macOS.</p>
-                    <p>To use the application:</p>
-                    <ul>
-                                    <li>Click '<b>Start</b>' to begin monitoring.</li>
-                                    <li>Click '<b>Stop</b>' to halt monitoring.</li>
-                    </ul>
-                    <p>Thank you for using Battorion!</p>
-                    <p><a href='openTab-openComprehensiveBatteryGuideInArabic'>Comprehensive guide in Arabic</a></p>
-                    <p><a href='openTab-openComprehensiveBatteryGuideInEnglish'>Comprehensive guide in English</a></p>
-                </body>
-            </html>
-            """;
+                    <p>The program operates silently in the background, periodically checking battery status to keep you informed without interruptions.</p>
+                </div>
+
+                <h3>Additional Features</h3>
+                <ul>
+                    <li><b>Battery Report Management:</b> Generate, open, and analyze detailed battery health reports with ease.</li>
+                    <li><b>Sound and Notification Alerts:</b> Customize sound notifications and visual pop-ups for critical battery events.</li>
+                    <li><b>Tray Integration:</b> Minimize the app to system tray with customizable icons and quick access menus.</li>
+                    <li><b>Graphical Battery Data:</b> View customizable graphs showing battery level trends and alerts.</li>
+                    <li><b>Audio Output Control:</b> Automatically switch and restore audio devices during alerts.</li>
+                    <li><b>Automatic System Behaviors:</b> Features like auto wake-up and volume adjustments to enhance user experience.</li>
+                    <li><b>Cross-platform Compatibility:</b> Fully functional on Windows, Linux, and macOS.</li>
+                </ul>
+
+                <h3>How to Use Battorion</h3>
+                <ul>
+                    <li>Click '<b>Start</b>' to begin monitoring your battery.</li>
+                    <li>Click '<b>Stop</b>' to pause monitoring whenever desired.</li>
+                    <li>Customize alert thresholds, sounds, and notification styles in settings for a tailored experience.</li>
+                    <li>Utilize battery reports and graphs to understand your battery health over time.</li>
+                    <li>Access tray icon features for quick app control and status overview.</li>
+                </ul>
+
+                <p>Thank you for choosing Battorion! We strive to help you maintain your battery’s longevity effectively.</p>
+                <br>
+                <p><a href='openTab-openComprehensiveBatteryGuideInArabic'>Comprehensive guide in Arabic</a></p>
+                <p><a href='openTab-openComprehensiveBatteryGuideInEnglish'>Comprehensive guide in English</a></p>
+            </body>
+        </html>
+        """;
     }
     
     public static String getDiskInfoExplanation() {

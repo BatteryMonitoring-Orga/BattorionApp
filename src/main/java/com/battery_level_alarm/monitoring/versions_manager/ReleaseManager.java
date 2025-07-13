@@ -3,6 +3,8 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
+
+import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,7 +14,8 @@ import java.util.Optional;
 
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.isNotifyBeforeInstalling;
 import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.version;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
+import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
@@ -95,13 +98,22 @@ public class ReleaseManager {
 		releaseLog("🧹 Starting cleanup after installation...");
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(MAIN_FOLDER_PATH),
 				entry -> Files.isDirectory(entry) && entry.getFileName().toString().startsWith(RELEASE_FOLDER))) {
-			for (Path existing : stream) {
-				try (DirectoryStream<Path> contents = Files.newDirectoryStream(existing)) {
-					for (Path file : contents) {
-						deleteDirectoryRecursively(file);
-					}
+			for (Path dir : stream) {
+				deleteDirectoryRecursively(dir);
+			}
+		} catch (Exception e) {
+			logger.severe("[EXCEPTION]: " + e.getMessage());
+		}
+		
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(MAIN_FOLDER_PATH),
+				entry -> Files.isRegularFile(entry) && entry.getFileName().toString().startsWith(RELEASE_NOTES_MD))) {
+			for (Path file : stream) {
+				try {
+					Files.deleteIfExists(file);
+					releaseLog("🗑️ Deleted file: " + file.getFileName());
+				} catch (IOException e) {
+					releaseLog("⚠️ Failed to delete file: " + file.getFileName() + " → " + e.getMessage());
 				}
-				break;
 			}
 		} catch (Exception e) {
 			logger.severe("[EXCEPTION]: " + e.getMessage());

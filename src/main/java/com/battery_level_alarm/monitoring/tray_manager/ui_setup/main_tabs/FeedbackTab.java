@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.jetbrains.annotations.NotNull;
 
-import static com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader.isInternetAvailable;
+import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.showAlert;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.insets;
 

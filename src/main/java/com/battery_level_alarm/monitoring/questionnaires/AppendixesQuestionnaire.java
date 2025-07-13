@@ -23,28 +23,41 @@ public class AppendixesQuestionnaire {
 	
 	public static String aboutSystemTrayNotification() {
 		return """
-            <html><body style='font-family: Serif, sans-serif; padding: 10px;'>
+        <html>
+          <body style='font-family: Serif, sans-serif; padding: 10px; color:#222;'>
             <h2>About System Tray Notification</h2>
-            <p>This feature allows your application to display notifications in the system tray.</p>
-            <p>It includes options for showing alerts, playing sounds, and customizing notification messages.</p>
-    
+
+            <p><strong>Core Purpose:</strong> This application continuously monitors your computer’s battery health and status, delivering proactive alerts to help you maintain optimal battery performance and avoid unexpected power interruptions.</p>
+
+            <p>The <strong>System Tray Notification</strong> serves as the central communication hub for the app, offering real-time updates and alerts through the notification area of your desktop. It works silently in the background, keeping you informed without disrupting your work.</p>
+
             <h3>Key Features:</h3>
             <ul>
-                <li><b>Tray Icon:</b><br>
-                    Displays a notification icon in the system tray.</li>
-                <li><b>Popup Menu:</b><br>
-                    Provides a right-click menu with options (e.g., stop program).</li>
-                <li><b>Notifications:</b><br>
-                    Shows alerts with custom messages and sound.</li>
-                <li><b>Timer Control:</b><br>
-                    Allows notifications to be repeated at set intervals.</li>
-                <li><b>Custom Dialog:</b><br>
-                    Displays either a text message or a JPanel when the icon is clicked.</li>
+              <li><strong>Persistent Tray Icon:</strong><br>
+                  An always-visible icon that visually indicates battery status and app activity at a glance.</li>
+              <li><strong>Contextual Popup Menu:</strong><br>
+                  Right-click the icon to quickly access functions such as opening the main window, generating battery reports, or exiting the program.</li>
+              <li><strong>Customizable Notifications:</strong><br>
+                  Receive timely alerts with personalized messages and sounds when battery levels cross critical or user-defined thresholds.</li>
+              <li><strong>Configurable Alert Timing:</strong><br>
+                  Control how frequently notifications are repeated during critical battery conditions, balancing awareness and interruption.</li>
+              <li><strong>Interactive Dialogs:</strong><br>
+                  Click the tray icon to open detailed panels or messages that provide insights and management tools for your battery.</li>
             </ul>
-    
-            <p>This feature ensures that important notifications are delivered efficiently without interrupting workflow.</p>
-            </body></html>
-            """;
+
+            <h3>How to Use This Feature Effectively</h3>
+            <ul>
+              <li><strong>Set Alert Thresholds Wisely:</strong> Customize minimum and maximum battery levels in settings to receive alerts tailored to your usage habits and battery health.</li>
+              <li><strong>Enable Both Visual and Sound Alerts:</strong> Combining notifications ensures you won’t miss critical battery warnings, even if you’re away from the screen.</li>
+              <li><strong>Use the Tray Icon Menu for Quick Actions:</strong> Access essential controls like report generation or app exit without opening the main interface.</li>
+              <li><strong>Adjust Notification Repeat Intervals:</strong> Set intervals that keep you informed without overwhelming you with frequent alerts.</li>
+              <li><strong>Regularly Review Battery Reports:</strong> Use the notifications as a prompt to check detailed battery health reports to maintain optimal performance.</li>
+            </ul>
+
+            <p>By integrating this feature into your daily routine, you can proactively manage your device's battery health, prevent unexpected shutdowns, and prolong overall battery lifespan.</p>
+          </body>
+        </html>
+        """;
 	}
 	
 	public static String aboutPlaySounds() {

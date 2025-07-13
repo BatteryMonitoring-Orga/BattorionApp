@@ -136,10 +136,11 @@ public class RelatedToButtons {
             GridBagConstraints gbc, JPanel panel,
             ToggleButtonRecord record,
             CompoundUpdaterRecord updaterRecord
-    ){
+    ) {
         JToggleButton toggleButton = new JToggleButton(record.value());
         toggleButton.setPreferredSize(record.dimension());
         toggleButton.setFont(toggleButtonsFont);
+        toggleButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         toggleButton.setSelected(record.value().equals("On"));
         setColor(toggleButton, record.stateChangeHandler());
         setToggleButtonAction(toggleButton, record, updaterRecord);
@@ -150,10 +151,10 @@ public class RelatedToButtons {
     }
 
     private static void setToggleButtonAction(
-            JToggleButton toggleButton,
-            ToggleButtonRecord record,
-            CompoundUpdaterRecord updaterRecord
-    ){
+		    JToggleButton toggleButton,
+		    ToggleButtonRecord record,
+		    CompoundUpdaterRecord updaterRecord
+    ) {
         toggleButton.addActionListener(_ -> {
             setColor(toggleButton, record.stateChangeHandler());
             record.saveAction().run();
@@ -179,7 +180,7 @@ public class RelatedToButtons {
         });
     }
 
-    private static void setColor(JToggleButton toggleButton, Consumer<Boolean> stateChangeHandler){
+    private static void setColor(JToggleButton toggleButton, Consumer<Boolean> stateChangeHandler) {
         boolean isOn = toggleButton.isSelected();
         toggleButton.setText(isOn ? "On" : "Off");
         toggleButton.setBackground(isOn ? new Color(72, 201, 176) : Color.DARK_GRAY);

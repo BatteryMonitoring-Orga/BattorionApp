@@ -16,7 +16,7 @@ import com.battery_level_alarm.monitoring.core_utilities.EffectDirection;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.*;
 import com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.graphics.ui;
 import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.*;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.loadDefaultGraphConfigurations;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveGraphConfigurations;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.loadDefaultGraphConfigurations;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveGraphConfigurations;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.reloadGraphUI;
 import static com.battery_level_alarm.monitoring.graphics.base.ChartType.*;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;

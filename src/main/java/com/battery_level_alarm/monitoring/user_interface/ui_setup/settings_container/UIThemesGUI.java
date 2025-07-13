@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveGeneralConfigurations;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveGeneralConfigurations;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.SETTINGS_QUESTIONNAIRE;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.*;

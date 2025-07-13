@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesN
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
 import static com.battery_level_alarm.monitoring.flow_chat.CallStepsFlow.handleUserFlows;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.scheduler;
+import static com.battery_level_alarm.monitoring.registration_manager.AutoStartManager.enableAutoStart;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.IS_A_LIFE_REPORT_PANEL;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.system_core.InitializeMainPanels.*;
@@ -21,7 +22,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.B
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.LifeReportPanelUI.refreshReportPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.*;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.*;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.cleanupAfterInstallation;
@@ -123,6 +124,9 @@ public class Battorion {
                 prefs.putBoolean(NEW_TRAY_TAB, true);
                 cleanupAfterInstallation();
             }));
+        } if(!prefs.getBoolean(START_ON_BOOT, false)){
+            prefs.putBoolean(START_ON_BOOT, true);
+            enableAutoStart(APP_NAME, getCurrentExePath());
         }
         
         loadGeneralConfigurations();
@@ -206,7 +210,7 @@ public class Battorion {
     }
     
     private static void initializeMainFrame() {
-        mainFrame = new JFrame(APP_NAME);
+        mainFrame = new JFrame(APP_FRAME_TITLE);
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.setIconImage(CallResources.getImage(
                 IMAGES_FOLDER_PATH, "13228401",

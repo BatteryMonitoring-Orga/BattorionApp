@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.wake
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
-import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.actions.AutoStartManager.*;
+import static com.battery_level_alarm.monitoring.registration_manager.AutoStartManager.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.DARK;
@@ -42,7 +42,6 @@ import java.util.Objects;
 
 public class TrayIconManager {
 	private static TrayIcon mainTrayIcon;
-	
 	static void createTrayIcon() {
 		if (!SystemTray.isSupported()) return;
 		try {
@@ -144,7 +143,7 @@ public class TrayIconManager {
 		Tooltip.install(startOnBoot, new Tooltip("Enable or disable start on system boot"));
 		startOnBoot.setOnAction(_ -> {
 			if (startOnBoot.isSelected()) {
-				enableAutoStart(APP_NAME, getCurrentExeDirectory());
+				enableAutoStart(APP_NAME, getCurrentExePath());
 			} else {
 				disableAutoStart(APP_NAME);
 			}

@@ -20,7 +20,7 @@ import com.battery_level_alarm.monitoring.user_interface.ui_config.SingleDropDow
 import com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelper;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import com.battery_level_alarm.monitoring.visual_effects.AlertSound;
 import org.jdesktop.swingx.border.DropShadowBorder;
 

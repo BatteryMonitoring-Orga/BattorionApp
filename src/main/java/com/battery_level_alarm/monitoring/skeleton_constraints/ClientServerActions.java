@@ -17,7 +17,7 @@ import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploade
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.Keys.STATUS;
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.STATUS.ACTIVE;
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
-import static com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader.isInternetAvailable;
+import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.BATTORION_WEBSITE;

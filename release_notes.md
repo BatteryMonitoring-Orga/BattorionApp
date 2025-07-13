@@ -37,6 +37,20 @@ A new integrated **Feedback System** has been added to empower users to share th
   Feedback collected directly helps shape the future of the application, ensuring user needs and expectations are continuously met.
 
 ---
+## New: Automatic Startup Option
+
+A convenient **Run at System Startup** feature has been introduced to give users more control over how the application integrates into their daily workflow.
+
+- **Seamless Auto-Launch:**  
+  Users can now enable the application to start automatically whenever the system boots, ensuring it’s always ready without requiring manual launch.
+
+- **Flexible Configuration:**  
+  This option is fully optional and can be turned on or off at any time from the settings panel, adapting to each user’s preference.
+
+- **Improves Productivity:**  
+  Auto-start capability helps users maintain consistent monitoring and faster access to core features with no extra steps.
+
+---
 ## Bugs & Fixes
 
 ### ✅ Smart Audio Output Detection Fix

@@ -6,7 +6,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.appearance.Theme
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.*;
 
 import com.battery_level_alarm.monitoring.system_core.Battorion;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import com.formdev.flatlaf.intellijthemes.*;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme;

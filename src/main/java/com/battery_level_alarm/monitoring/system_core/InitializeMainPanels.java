@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getCurrentAudioDevice;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.thereIsNewVersion;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_HEIGHT;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.WEST_PANEL_OPEN_WIDTH;

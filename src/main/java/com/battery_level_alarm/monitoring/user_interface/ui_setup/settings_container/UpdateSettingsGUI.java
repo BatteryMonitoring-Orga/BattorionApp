@@ -10,8 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.*;
-import static com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager.saveUpdateVersionConfigurations;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.*;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveUpdateVersionConfigurations;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.*;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocExternalFilesLoader.loadMarkdownAsHtml;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.*;

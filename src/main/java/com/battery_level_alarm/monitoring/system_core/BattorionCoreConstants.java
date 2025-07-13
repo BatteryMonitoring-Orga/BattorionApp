@@ -5,7 +5,7 @@ import static com.battery_level_alarm.monitoring.feedback_system.UserDataFetcher
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.Keys.*;
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.LICENSE.FREE_TRIAL;
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.STATUS.ACTIVE;
-import static com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader.isInternetAvailable;
+import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
@@ -29,8 +29,9 @@ public class BattorionCoreConstants {
     public static class AppInfo {
         public static final String APP_VERSION = version("config.enc");
         public static final String APP_NAME = "Battorion";
+        public static final String APP_FRAME_TITLE = APP_NAME + " — Comprehensive Battery & System Management";
+        public static final String TRAY_NOTIFICATION_NAME = APP_NAME + " — Running in Background";
         public static final String NULL_VALUE = "null";
-        public static final String TRAY_NOTIFICATION_NAME = "Battorion - In Background Process";
         
         public static final URI BATTORION_WEBSITE = getBattorionWebsiteURI();
         private static URI getBattorionWebsiteURI() {
@@ -42,17 +43,27 @@ public class BattorionCoreConstants {
             }
         }
         
-        public static String getCurrentExeDirectory() {
+        public static String getCurrentExePath() {
             try {
                 File codeSourceFile = new File(AppInfo.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-                String path = codeSourceFile.getParent();
-                if (path == null || path.isEmpty()) {
-                    path = System.getProperty("user.dir");
+                File current = codeSourceFile.isDirectory() ? codeSourceFile : codeSourceFile.getParentFile();
+                File root = null;
+                while (current != null) {
+                    if (current.getName().equalsIgnoreCase("Battorion")) {
+                        root = current;
+                        break;
+                    }
+                    current = current.getParentFile();
                 }
-                return path;
+                
+                if (root != null) {
+                    return new File(root, APP_NAME + ".exe").getAbsolutePath();
+                } else {
+                    return new File(System.getProperty("user.dir"), APP_NAME + ".exe").getAbsolutePath();
+                }
             } catch (Exception e) {
                 printErrorMessage(e);
-                return System.getProperty("user.dir");
+                return new File(System.getProperty("user.dir"), APP_NAME + ".exe").getAbsolutePath();
             }
         }
     }
@@ -143,6 +154,7 @@ public class BattorionCoreConstants {
         public static final String START_BATTORION_WITH = "StartBattorionWith";
         public static final String NEW_RELEASE = "new-release";
         public static final String APP_THEME = "appTheme";
+        public static final String START_ON_BOOT = "startOnBootControlled";
         public static final String TIME_RUNNING_IN_BACKGROUND = "IsFirstTimeRunningInBackground";
         public static final String SHOW_BATTERY_ICON = "showBatteryIcon";
         public static final String WAKE_UP_PC_AUTO = "wakeUpPCAuto";

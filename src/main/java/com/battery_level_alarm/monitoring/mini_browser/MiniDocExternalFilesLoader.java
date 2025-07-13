@@ -8,9 +8,9 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 
-import static com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader.isInternetAvailable;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.ensureReleaseNotesExists;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.installCurrentReleaseNotesFile;
+import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.ensureReleaseNotesExists;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.installCurrentReleaseNotesFile;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;

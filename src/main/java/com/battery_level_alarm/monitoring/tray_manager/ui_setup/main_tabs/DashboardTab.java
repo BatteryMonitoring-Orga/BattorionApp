@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs;
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker.getAudioOutputDevice;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.thereIsNewVersion;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.REFRESH_ICON_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.UPDATE_FREQUENCY;

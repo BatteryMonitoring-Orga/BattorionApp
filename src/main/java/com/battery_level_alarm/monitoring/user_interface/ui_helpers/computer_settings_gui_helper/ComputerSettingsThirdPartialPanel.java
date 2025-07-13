@@ -18,7 +18,7 @@ import com.battery_level_alarm.monitoring.user_interface.ui_config.ComponentHier
 import com.battery_level_alarm.monitoring.user_interface.ui_config.CompoundUpdaterRecord;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ProgressBarValueUpdater;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ToggleButtonRecord;
-import com.battery_level_alarm.monitoring.file_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -83,7 +83,7 @@ public class ComputerSettingsThirdPartialPanel {
         );
 
         setColumn(1);
-        addLabel(gbc, panel, FOUR_SPACE, LABELS_FONT);
+        addLabel(gbc, panel, FOUR_SPACE + TWO_SPACE + ONE_SPACE, LABELS_FONT);
         setColumn(2);
         addToggleButton(gbc, panel, toggleButtonRecord, compoundUpdaterRecord);
         return index + 1;

@@ -7,8 +7,8 @@ import java.nio.file.*;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-import static com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader.isInternetAvailable;
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
+import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.releaseLog;

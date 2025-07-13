@@ -2,7 +2,7 @@ package com.battery_level_alarm.monitoring.versions_manager;
 import java.io.File;
 import java.io.IOException;
 
-import static com.battery_level_alarm.monitoring.file_manager.RemoteVersionChecker.latestVersion;
+import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.NEW_RELEASE;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.restartApplication;

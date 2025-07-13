@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.download_tracker;
-import com.battery_level_alarm.monitoring.file_manager.EssentialToolsDownloader;
+import com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;

@@ -7,7 +7,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setBrightnessControlOption;
 import static com.battery_level_alarm.monitoring.core_utilities.DropDownListStatus.*;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.isSilentMode;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
@@ -39,7 +39,7 @@ public class ConfigurationFilesManager {
     public static final String UNKNOWN_OUTPUT_DEVICE = "Unknown (S) E404";
     
     private static File getMainFolderPath(String configFileName) {
-        File folderDir = new File(MAIN_FOLDER_PATH);
+        File folderDir = new File(CONFIGURATIONS_MAIN_FOLDER_PATH);
         if (!folderDir.exists()) {
             boolean isCreated = folderDir.mkdirs();
             if (!isCreated) {

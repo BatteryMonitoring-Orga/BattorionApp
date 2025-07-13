@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.registration_manager;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 
 import javax.swing.*;
 import java.io.*;
@@ -34,8 +34,8 @@ public class EssentialToolsDownloader {
         for (String[] repo : REPOSITORIES) {
             String repoName = repo[0];
             String repoZipUrl = repo[1];
-            String zipPath = MAIN_FOLDER_PATH + File.separator + repoName + ".zip";
-            String repoPath = MAIN_FOLDER_PATH + File.separator + repoName;
+            String zipPath = CONFIGURATIONS_MAIN_FOLDER_PATH + File.separator + repoName + ".zip";
+            String repoPath = CONFIGURATIONS_MAIN_FOLDER_PATH + File.separator + repoName;
             isAllFilesExist = false;
 
             if (new File(repoPath).exists()) {
@@ -103,12 +103,12 @@ public class EssentialToolsDownloader {
     }
 
     static void unzip(String zipFilePath) {
-        File dir = new File(com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH);
+        File dir = new File(com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH);
         if (!dir.exists()) dir.mkdirs();
         try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
             ZipEntry entry = zipIn.getNextEntry();
             while (entry != null) {
-                File filePath = new File(com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH, entry.getName());
+                File filePath = new File(com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH, entry.getName());
                 if (entry.isDirectory()) {
                     filePath.mkdirs();
                 } else {

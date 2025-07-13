@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.releaseLog;
 
@@ -26,7 +26,7 @@ public class VersionInstaller {
 		try {
 			releaseLog("ℹ️ Starting release installation process...");
 			releaseLog("\u200B");
-			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(MAIN_FOLDER_PATH),
+			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH),
 					entry -> Files.isDirectory(entry) && entry.getFileName().toString().startsWith(RELEASE_FOLDER))) {
 				for (Path existing : stream) {
 					try (DirectoryStream<Path> contents = Files.newDirectoryStream(existing)) {
@@ -41,7 +41,7 @@ public class VersionInstaller {
 			}
 			
 			if (releaseFolderPath == null) {
-				releaseFolderPath = Paths.get(MAIN_FOLDER_PATH, RELEASE_FOLDER);
+				releaseFolderPath = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, RELEASE_FOLDER);
 				Files.createDirectories(releaseFolderPath);
 				releaseLog("✅ Created new release directory: " + releaseFolderPath.getFileName());
 			} if (latestVersion == null || latestVersion.isBlank()) {
@@ -76,7 +76,7 @@ public class VersionInstaller {
 				}
 			}
 			releaseLog("ℹ️ Moving release folder to versioned name...");
-			Path newFolderName = Paths.get(MAIN_FOLDER_PATH + "/" + RELEASE_FOLDER + latestVersion);
+			Path newFolderName = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH + "/" + RELEASE_FOLDER + latestVersion);
 			Files.move(releaseFolderPath, newFolderName, StandardCopyOption.REPLACE_EXISTING);
 			
 			releaseLog("✅ Files moved to: " + RELEASE_FOLDER + latestVersion);

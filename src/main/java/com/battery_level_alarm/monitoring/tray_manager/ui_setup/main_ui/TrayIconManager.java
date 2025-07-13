@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.wake
 import static com.battery_level_alarm.monitoring.system_automation.WakeUpPC.wakeUpThreadInterruptRequest;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.getCurrentExePath;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.registration_manager.AutoStartManager.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.*;

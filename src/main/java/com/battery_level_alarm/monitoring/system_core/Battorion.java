@@ -6,6 +6,7 @@ import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph
 import static com.battery_level_alarm.monitoring.registration_manager.AutoStartManager.enableAutoStart;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PanelIdentifiers.IS_A_LIFE_REPORT_PANEL;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.moveFileToRoamingFolder;
 import static com.battery_level_alarm.monitoring.system_core.InitializeMainPanels.*;
 import static com.battery_level_alarm.monitoring.system_core.handlers.BatteryModeHandler.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.*;
@@ -122,10 +123,12 @@ public class Battorion {
             Thread.ofVirtual().start(() -> Platform.startup(() -> {
                 prefs.put(NEW_RELEASE, String.valueOf(false));
                 prefs.putBoolean(NEW_TRAY_TAB, true);
+                moveFileToRoamingFolder(getVersionFilePath(), VERSION_FILE_NAME);
                 cleanupAfterInstallation();
             }));
         } if(!prefs.getBoolean(START_ON_BOOT, false)){
             prefs.putBoolean(START_ON_BOOT, true);
+            moveFileToRoamingFolder(getVersionFilePath(), VERSION_FILE_NAME);
             enableAutoStart(APP_NAME, getCurrentExePath());
         }
         

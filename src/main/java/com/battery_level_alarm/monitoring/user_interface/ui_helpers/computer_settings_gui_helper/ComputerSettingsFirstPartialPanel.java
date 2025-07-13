@@ -4,7 +4,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.AutoStartM
 import static com.battery_level_alarm.monitoring.system_core.Battorion.mainFrame;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.motherPanel;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.APP_NAME;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.getCurrentExePath;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.getCurrentExePath;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.getRow;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.COMPUTER_SETTINGS_GUI_DROP_DOWN_LIST_PANELS_ARRAY;

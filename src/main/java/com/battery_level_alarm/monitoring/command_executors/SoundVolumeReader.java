@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 public class SoundVolumeReader {
     private static double mainValue = 0.0;
-    private static final String SVCL_PATH = MAIN_FOLDER_PATH + "/svcl-x64-main/svcl-x64";
+    private static final String SVCL_PATH = CONFIGURATIONS_MAIN_FOLDER_PATH + "/svcl-x64-main/svcl-x64";
 
     private static void returnVolumeLevel() {
         Thread thread = new Thread(() -> {

@@ -16,7 +16,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.i
 import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.version;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.NEW_RELEASE;
@@ -78,7 +78,7 @@ public class ReleaseManager {
 				Thread.sleep(2_000);
 				
 				isReleaseInstallProcessRunning = true;
-				releaseFolderPath = Paths.get(MAIN_FOLDER_PATH + "/" + RELEASE_FOLDER + latestVersion);
+				releaseFolderPath = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH + "/" + RELEASE_FOLDER + latestVersion);
 				hasSucceeded = initializationProcess(releaseFolderPath);
 				if (!hasSucceeded) {
 					isReleaseInstallProcessRunning = false;
@@ -96,7 +96,7 @@ public class ReleaseManager {
 	
 	public static void cleanupAfterInstallation() {
 		releaseLog("🧹 Starting cleanup after installation...");
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(MAIN_FOLDER_PATH),
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH),
 				entry -> Files.isDirectory(entry) && entry.getFileName().toString().startsWith(RELEASE_FOLDER))) {
 			for (Path dir : stream) {
 				deleteDirectoryRecursively(dir);
@@ -105,7 +105,7 @@ public class ReleaseManager {
 			logger.severe("[EXCEPTION]: " + e.getMessage());
 		}
 		
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(MAIN_FOLDER_PATH),
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH),
 				entry -> Files.isRegularFile(entry) && entry.getFileName().toString().startsWith(RELEASE_NOTES_MD))) {
 			for (Path file : stream) {
 				try {

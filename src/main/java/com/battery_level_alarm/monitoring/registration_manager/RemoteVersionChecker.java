@@ -11,7 +11,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.Configurat
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.unzip;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.LATEST_RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.APP_VERSION;
 
@@ -25,8 +25,8 @@ public class RemoteVersionChecker {
 	public static void checkForVersionUpdates() {
 		String repoName = REPOSITORIES[0][0];
 		String zipUrl = REPOSITORIES[0][1];
-		Path zipPath = Paths.get(MAIN_FOLDER_PATH, repoName + ".zip");
-		Path extractedFolder = Paths.get(MAIN_FOLDER_PATH, repoName);
+		Path zipPath = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName + ".zip");
+		Path extractedFolder = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName);
 		
 		try {
 			try (InputStream in = URI.create(zipUrl).toURL().openStream()) {
@@ -88,14 +88,14 @@ public class RemoteVersionChecker {
 	}
 	
 	public static boolean ensureReleaseNotesExists() {
-		Path targetFile = Paths.get(MAIN_FOLDER_PATH, RELEASE_NOTES_MD);
+		Path targetFile = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, RELEASE_NOTES_MD);
 		return Files.exists(targetFile);
 	}
 	
 	public static void installCurrentReleaseNotesFile() {
 		String repoName = REPOSITORIES[0][0];
-		Path zipPath = Paths.get(MAIN_FOLDER_PATH, repoName + ".zip");
-		Path extractedFolder = Paths.get(MAIN_FOLDER_PATH, repoName);
+		Path zipPath = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName + ".zip");
+		Path extractedFolder = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName);
 		
 		try {
 			Path releaseFile = installReleaseNotes();
@@ -103,7 +103,7 @@ public class RemoteVersionChecker {
 				return;
 			}
 			
-			Path targetFile = Paths.get(MAIN_FOLDER_PATH, releaseFile.getFileName().toString());
+			Path targetFile = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, releaseFile.getFileName().toString());
 			Files.copy(releaseFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
 		} catch (Exception e) {
 			logger.severe("[EXCEPTION]: " + e.getMessage());
@@ -124,8 +124,8 @@ public class RemoteVersionChecker {
 	
 	public static boolean installLatestReleaseNotesFile() {
 		String repoName = REPOSITORIES[0][0];
-		Path zipPath = Paths.get(MAIN_FOLDER_PATH, repoName + ".zip");
-		Path extractedFolder = Paths.get(MAIN_FOLDER_PATH, repoName);
+		Path zipPath = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName + ".zip");
+		Path extractedFolder = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName);
 		
 		try {
 			Path releaseFile = installReleaseNotes();
@@ -133,7 +133,7 @@ public class RemoteVersionChecker {
 				return false;
 			}
 			
-			Path targetFile = Paths.get(MAIN_FOLDER_PATH, LATEST_RELEASE_NOTES_MD);
+			Path targetFile = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, LATEST_RELEASE_NOTES_MD);
 			Files.copy(releaseFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
 			return true;
 		} catch (Exception e) {
@@ -157,8 +157,8 @@ public class RemoteVersionChecker {
 	private static Path installReleaseNotes() {
 		String repoName = REPOSITORIES[0][0];
 		String zipUrl = REPOSITORIES[0][1];
-		Path zipPath = Paths.get(MAIN_FOLDER_PATH, repoName + ".zip");
-		Path extractedFolder = Paths.get(MAIN_FOLDER_PATH, repoName);
+		Path zipPath = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName + ".zip");
+		Path extractedFolder = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName);
 		
 		try {
 			try (InputStream in = URI.create(zipUrl).toURL().openStream()) {

@@ -12,14 +12,14 @@ import java.nio.channels.FileLock;
 import java.util.*;
 
 public class SingletonObject {
+    public static final String CONFIGURATIONS_MAIN_FOLDER_PATH = System.getProperty("user.home") + MAIN_FOLDER_NAME;
     private static final String LOCK_FILE_NAME = "bat_locker.lock";
-    public static final String MAIN_FOLDER_PATH = System.getProperty("user.home") + MAIN_FOLDER_NAME;
     private static FileLock lock = null;
     private static FileChannel channel = null;
     private static File lockFile;
     
     public static void singletonMethod(String modeToUse, String[] args) {
-        File lockDir = new File(MAIN_FOLDER_PATH);
+        File lockDir = new File(CONFIGURATIONS_MAIN_FOLDER_PATH);
         if (!lockDir.exists() && !lockDir.mkdir()) {
             JOptionPane.showMessageDialog(
                     null,
@@ -43,7 +43,7 @@ public class SingletonObject {
             
             String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
             String startTime = new Date().toString();
-            String info = "User=" + MAIN_FOLDER_PATH + "\nPID=" + pid + "\nStarted=" + startTime + "\n";
+            String info = "User=" + CONFIGURATIONS_MAIN_FOLDER_PATH + "\nPID=" + pid + "\nStarted=" + startTime + "\n";
             fos.write(info.getBytes());
             fos.flush();
             

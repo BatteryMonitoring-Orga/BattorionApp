@@ -6,9 +6,10 @@ import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploade
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.LICENSE.FREE_TRIAL;
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.STATUS.ACTIVE;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.MAIN_FOLDER_NAME;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_DATA_UPLOADED;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
@@ -17,6 +18,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +31,8 @@ import java.util.UUID;
 
 public class BattorionCoreConstants {
     public static class AppInfo {
-        public static final String APP_VERSION = version("config.enc");
+        public static final String VERSION_FILE_NAME = "config.enc";
+        public static final String APP_VERSION = version(getVersionFilePath() + "/" + VERSION_FILE_NAME);
         public static final String APP_NAME = "Battorion";
         public static final String APP_FRAME_TITLE = APP_NAME + " — Comprehensive Battery & System Management";
         public static final String TRAY_NOTIFICATION_NAME = APP_NAME + " — Running in Background";
@@ -43,27 +48,17 @@ public class BattorionCoreConstants {
             }
         }
         
-        public static String getCurrentExePath() {
-            try {
-                File codeSourceFile = new File(AppInfo.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-                File current = codeSourceFile.isDirectory() ? codeSourceFile : codeSourceFile.getParentFile();
-                File root = null;
-                while (current != null) {
-                    if (current.getName().equalsIgnoreCase("Battorion")) {
-                        root = current;
-                        break;
-                    }
-                    current = current.getParentFile();
-                }
-                
-                if (root != null) {
-                    return new File(root, APP_NAME + ".exe").getAbsolutePath();
+        public static String getVersionFilePath() {
+            String path = Paths.BATTORION_MAIN_FOLDER_PATH + "/" + VERSION_FILE_NAME;
+            if (new File(path).exists()) {
+                return Paths.BATTORION_MAIN_FOLDER_PATH;
+            } else {
+                path = RoamingConfigClass.ROAMING_CONFIG_PATH + "/" + VERSION_FILE_NAME;
+                if (new File(path).exists()) {
+                    return RoamingConfigClass.ROAMING_CONFIG_PATH;
                 } else {
-                    return new File(System.getProperty("user.dir"), APP_NAME + ".exe").getAbsolutePath();
+                    return "./";
                 }
-            } catch (Exception e) {
-                printErrorMessage(e);
-                return new File(System.getProperty("user.dir"), APP_NAME + ".exe").getAbsolutePath();
             }
         }
     }
@@ -102,9 +97,46 @@ public class BattorionCoreConstants {
         public static final String SUPPORT_VIDEOS_PATH = "/com/battery_level_alarm/monitoring/support-videos/";
         public static final String CHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-start-2574.wav";
         public static final String DISCHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-back-2575.wav";
-        public static final String BATTERY_REPORT_PATH = MAIN_FOLDER_PATH + "\\battery-report.html";
-        public static final String ROAMING_CONFIG_PATH = getRoamingConfigPath();
+        public static final String BATTERY_REPORT_PATH = CONFIGURATIONS_MAIN_FOLDER_PATH + "\\battery-report.html";
         
+        public static final String BATTORION_MAIN_FOLDER_PATH = getBattorionMainFolderPath();
+        private static String getBattorionMainFolderPath() {
+            try {
+                String path = Paths.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+                return new File(path).getParent();
+            } catch (Exception e) {
+                logger.severe("[EXCEPTION]: " + e.getMessage());
+                return null;
+            }
+        }
+        
+        public static String getCurrentExePath() {
+            try {
+                File codeSourceFile = new File(AppInfo.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+                File current = codeSourceFile.isDirectory() ? codeSourceFile : codeSourceFile.getParentFile();
+                File root = null;
+                while (current != null) {
+                    if (current.getName().equalsIgnoreCase("Battorion")) {
+                        root = current;
+                        break;
+                    }
+                    current = current.getParentFile();
+                }
+                
+                if (root != null) {
+                    return new File(root, AppInfo.APP_NAME + ".exe").getAbsolutePath();
+                } else {
+                    return new File(System.getProperty("user.dir"), AppInfo.APP_NAME + ".exe").getAbsolutePath();
+                }
+            } catch (Exception e) {
+                printErrorMessage(e);
+                return new File(System.getProperty("user.dir"), AppInfo.APP_NAME + ".exe").getAbsolutePath();
+            }
+        }
+    }
+    
+    public static class RoamingConfigClass {
+        public static final String ROAMING_CONFIG_PATH = getRoamingConfigPath();
         private static String getRoamingConfigPath() {
             String os = System.getProperty("os.name").toLowerCase();
             if (os.contains("win")) {
@@ -117,6 +149,17 @@ public class BattorionCoreConstants {
                     return xdg + MAIN_FOLDER_NAME + "/";
                 else
                     return System.getProperty("user.home") + "/.config" + MAIN_FOLDER_NAME + "/";
+            }
+        }
+        
+        public static void moveFileToRoamingFolder(String sourceDir, String fileName) {
+            try {
+                Path sourcePath = java.nio.file.Paths.get(sourceDir, fileName);
+                Path targetPath = java.nio.file.Paths.get(ROAMING_CONFIG_PATH, fileName);
+                Files.createDirectories(java.nio.file.Paths.get(ROAMING_CONFIG_PATH));
+                Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                logger.severe("[EXCEPTION]: " + e.getMessage());
             }
         }
     }

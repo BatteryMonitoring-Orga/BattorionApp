@@ -12,7 +12,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.EssentialT
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.ensureReleaseNotesExists;
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.installCurrentReleaseNotesFile;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 
 public class MiniDocExternalFilesLoader {
@@ -20,7 +20,7 @@ public class MiniDocExternalFilesLoader {
 		try {
 			String markdownText;
 			if (RELEASE_NOTES_MD.equalsIgnoreCase(filename) && ensureReleaseNotesExists()) {
-				markdownText = readMarkdownFile(new File(MAIN_FOLDER_PATH, RELEASE_NOTES_MD));
+				markdownText = readMarkdownFile(new File(CONFIGURATIONS_MAIN_FOLDER_PATH, RELEASE_NOTES_MD));
 				return markdownText;
 			}
 			
@@ -29,7 +29,7 @@ public class MiniDocExternalFilesLoader {
 			if (!file.exists()) {
 				if(isInternetAvailable()) {
 					installCurrentReleaseNotesFile();
-					String path = MAIN_FOLDER_PATH + "/" + RELEASE_NOTES_MD;
+					String path = CONFIGURATIONS_MAIN_FOLDER_PATH + "/" + RELEASE_NOTES_MD;
 					markdownText = readMarkdownFile(new File(path));
 				} else {
 					markdownText = "<h2 style='color:red;'>File not found: " + file.getAbsolutePath() + "</h2>";

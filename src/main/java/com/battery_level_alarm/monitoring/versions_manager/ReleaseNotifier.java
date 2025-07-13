@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.versions_manager.VersionInstaller.RELEASE_FOLDER;
 
 public class ReleaseNotifier {
@@ -84,7 +84,7 @@ public class ReleaseNotifier {
 			alert.setResultConverter(dialogButton -> {
 				if (dialogButton == openFolderBtn) {
 					try {
-						Path newFolderName = Paths.get(MAIN_FOLDER_PATH + "/" + RELEASE_FOLDER + latestVersion);
+						Path newFolderName = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH + "/" + RELEASE_FOLDER + latestVersion);
 						if (Files.exists(newFolderName)) {
 							Desktop.getDesktop().open(newFolderName.toFile());
 						} else {

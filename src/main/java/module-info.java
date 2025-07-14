@@ -9,7 +9,7 @@ module monitoring {
 	requires java.prefs;
 	requires java.management;
 	requires jdk.jsobject;
-
+	
 	requires com.formdev.flatlaf;
 	requires com.formdev.flatlaf.intellijthemes;
 	requires org.jetbrains.annotations;
@@ -63,14 +63,15 @@ module monitoring {
 	opens com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor to javafx.swing;
 	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related to javafx.swing;
-	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications to javafx.swing;
 	exports com.battery_level_alarm.monitoring.questionnaires;
 	exports com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
 	exports com.battery_level_alarm.monitoring.graphics.ui;
-	opens com.battery_level_alarm.monitoring.graphics.ui to javafx.graphics;
+	opens com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications to javafx.swing;
 	exports com.battery_level_alarm.monitoring.graphics.executor;
-	opens com.battery_level_alarm.monitoring.graphics.executor to javafx.graphics;
+	opens com.battery_level_alarm.monitoring.graphics.ui to javafx.graphics;
 	exports com.battery_level_alarm.monitoring.graphics.records;
+	opens com.battery_level_alarm.monitoring.graphics.executor to javafx.graphics;
+	
 	opens com.battery_level_alarm.monitoring.graphics.records to javafx.graphics;
 	exports com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container;
 	exports com.battery_level_alarm.monitoring.visual_effects.messages;

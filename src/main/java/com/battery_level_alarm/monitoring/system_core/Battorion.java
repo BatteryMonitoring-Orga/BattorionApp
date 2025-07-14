@@ -123,12 +123,13 @@ public class Battorion {
             Thread.ofVirtual().start(() -> Platform.startup(() -> {
                 prefs.put(NEW_RELEASE, String.valueOf(false));
                 prefs.putBoolean(NEW_TRAY_TAB, true);
-                moveFileToRoamingFolder(getVersionFilePath(), VERSION_FILE_NAME);
+                moveFileToRoamingFolder(getVersionFileParentPath(), VERSION_FILE_NAME);
                 cleanupAfterInstallation();
             }));
-        } if(!prefs.getBoolean(START_ON_BOOT, false)){
+        } if(!prefs.getBoolean(START_ON_BOOT, false)) {
             prefs.putBoolean(START_ON_BOOT, true);
-            moveFileToRoamingFolder(getVersionFilePath(), VERSION_FILE_NAME);
+            prefs.put(VERSION_FILE_PATH, getVersionFileParentPath());
+            moveFileToRoamingFolder(getVersionFileParentPath(), VERSION_FILE_NAME);
             enableAutoStart(APP_NAME, getCurrentExePath());
         }
         

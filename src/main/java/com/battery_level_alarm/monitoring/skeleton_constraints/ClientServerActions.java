@@ -26,7 +26,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UserOnboarding.createAnalyticsMap;
 
 public class ClientServerActions {
-	private static final boolean isUnderDevelopment = false;
+	private static final boolean isUnderDevelopment = true;
 	
 	static void clintToServerAction() {
 		Thread.ofVirtual().start(() -> {

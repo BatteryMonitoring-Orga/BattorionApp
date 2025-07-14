@@ -52,7 +52,6 @@ public class TrayIconManager {
 			mainTrayIcon = new TrayIcon(image, "Battorion (Battery Monitor)");
 			mainTrayIcon.setImageAutoSize(true);
 			mainTrayIcon.addActionListener(_ -> showApp());
-			
 			mainTrayIcon.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {

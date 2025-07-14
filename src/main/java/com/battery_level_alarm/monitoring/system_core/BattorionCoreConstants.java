@@ -11,6 +11,7 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.MAIN_FOLDER_NAME;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_DATA_UPLOADED;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.VERSION_FILE_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import java.io.File;
@@ -32,7 +33,7 @@ import java.util.UUID;
 public class BattorionCoreConstants {
     public static class AppInfo {
         public static final String VERSION_FILE_NAME = "config.enc";
-        public static final String APP_VERSION = version(getVersionFilePath() + "/" + VERSION_FILE_NAME);
+        public static final String APP_VERSION = version(getVersionFileParentPath() + "/" + VERSION_FILE_NAME);
         public static final String APP_NAME = "Battorion";
         public static final String APP_FRAME_TITLE = APP_NAME + " — Comprehensive Battery & System Management";
         public static final String TRAY_NOTIFICATION_NAME = APP_NAME + " — Running in Background";
@@ -48,16 +49,21 @@ public class BattorionCoreConstants {
             }
         }
         
-        public static String getVersionFilePath() {
+        public static String getVersionFileParentPath() {
             String path = Paths.BATTORION_MAIN_FOLDER_PATH + "/" + VERSION_FILE_NAME;
             if (new File(path).exists()) {
                 return Paths.BATTORION_MAIN_FOLDER_PATH;
             } else {
-                path = RoamingConfigClass.ROAMING_CONFIG_PATH + "/" + VERSION_FILE_NAME;
+                path = prefs.get(VERSION_FILE_PATH, ".") + "/" + VERSION_FILE_NAME;
                 if (new File(path).exists()) {
                     return RoamingConfigClass.ROAMING_CONFIG_PATH;
                 } else {
-                    return "./";
+                    path = RoamingConfigClass.ROAMING_CONFIG_PATH + "/" + VERSION_FILE_NAME;
+                    if (new File(path).exists()) {
+                        return RoamingConfigClass.ROAMING_CONFIG_PATH;
+                    } else {
+                        return "./";
+                    }
                 }
             }
         }
@@ -209,6 +215,7 @@ public class BattorionCoreConstants {
         public static final String USER_DATA_UPLOADED = "IsUserDataUploaded";
         public static final String LAST_STATUS_VALIDATE = "status";
         public static final String NEW_TRAY_TAB = "HasSeenNewTab";
+        public static final String VERSION_FILE_PATH = "HasSeenNewTab";
     }
     
     public static class Dimensions {

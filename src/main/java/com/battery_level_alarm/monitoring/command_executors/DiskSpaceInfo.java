@@ -1,7 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.PrepareDiskInfoGUI;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -176,7 +175,7 @@ public class DiskSpaceInfo {
             
             return String.format(formattedSize);
         } catch (NumberFormatException e) {
-	        logger.severe("[EXCEPTION]: " + e.getMessage());
+	        printErrorMessage(e);
             return "Unable to parse file information.";
         }
     }
@@ -188,7 +187,7 @@ public class DiskSpaceInfo {
             
             return String.format(formattedFreeSpace);
         } catch (NumberFormatException e) {
-	        logger.severe("[EXCEPTION]: " + e.getMessage());
+	        printErrorMessage(e);
             return "Unable to parse directory information.";
         }
     }

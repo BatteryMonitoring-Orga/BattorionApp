@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class EstimatedRunTime {
 	private static String getOS() {
@@ -34,7 +34,7 @@ public class EstimatedRunTime {
 				return Double.parseDouble(digits);
 			}
 		} catch (Exception ex) {
-			logger.severe("[EXCEPTION]: " + ex.getMessage() + " | line: " + line);
+			printErrorMessage(ex);
 		}
 		return -1;
 	}
@@ -71,7 +71,7 @@ public class EstimatedRunTime {
 				}
 			}
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 		return -1;
 	}

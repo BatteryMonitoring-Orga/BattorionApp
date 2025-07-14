@@ -194,10 +194,9 @@ public class DashboardTab {
 		return progressBar;
 	}
 	
-	private static void handleScroll(ScrollEvent event, VBox content, Pane viewport) {
+	static void handleScroll(ScrollEvent event, VBox content, Pane viewport) {
 		double deltaY = event.getDeltaY();
 		double newTranslate = content.getTranslateY() + deltaY;
-		
 		newTranslate = Math.min(newTranslate, 0);
 		newTranslate = Math.max(newTranslate, -1 * (content.getHeight() - viewport.getHeight()));
 		content.setTranslateY(newTranslate);

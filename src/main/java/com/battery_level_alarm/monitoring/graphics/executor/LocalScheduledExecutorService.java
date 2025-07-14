@@ -1,8 +1,8 @@
 package com.battery_level_alarm.monitoring.graphics.executor;
 import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.isAutoUpdate;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.*;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.status;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.system_core.Battorion;
 
@@ -31,7 +31,7 @@ public class LocalScheduledExecutorService {
                         isValueChanged = true;
                     }
                 } catch (Exception e) {
-                    logger.severe("[EXCEPTION]: " + e.getMessage());
+                    printErrorMessage(e);
                     batteryLevelForGraphics = previousLevel;
                 }
                 

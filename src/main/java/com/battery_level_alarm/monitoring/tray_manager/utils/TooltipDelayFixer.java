@@ -3,7 +3,7 @@ import javafx.scene.control.Tooltip;
 import java.lang.reflect.Field;
 import javafx.util.Duration;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 /*
 Tooltip tooltip = new Tooltip("My fast tooltip");
@@ -24,7 +24,7 @@ public class TooltipDelayFixer {
 			objTimer.getKeyFrames().clear();
 			objTimer.getKeyFrames().add(new javafx.animation.KeyFrame(openDelay));
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 	}
 }

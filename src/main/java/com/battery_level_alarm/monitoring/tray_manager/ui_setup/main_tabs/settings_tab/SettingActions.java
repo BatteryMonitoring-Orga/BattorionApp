@@ -12,6 +12,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.mai
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.removeMainTrayIcon;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
@@ -84,7 +85,7 @@ public class SettingActions {
 				pauseThreads();
 				stop();
 			} catch (Exception ex) {
-				logger.severe("[EXCEPTION]: " + ex.getMessage());
+				printErrorMessage(ex);
 			}
 			
 			try {
@@ -92,7 +93,7 @@ public class SettingActions {
 				isApplicationMode = true;
 				build();
 			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 	}

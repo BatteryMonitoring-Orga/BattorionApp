@@ -7,7 +7,6 @@ import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploade
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.STATUS.ACTIVE;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.MAIN_FOLDER_NAME;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_DATA_UPLOADED;
@@ -38,13 +37,14 @@ public class BattorionCoreConstants {
         public static final String APP_FRAME_TITLE = APP_NAME + " — Comprehensive Battery & System Management";
         public static final String TRAY_NOTIFICATION_NAME = APP_NAME + " — Running in Background";
         public static final String NULL_VALUE = "null";
+        public static String UserEmail;
         
         public static final URI BATTORION_WEBSITE = getBattorionWebsiteURI();
         private static URI getBattorionWebsiteURI() {
             try {
                 return new URI("https://battorion-website.vercel.app/");
             } catch (URISyntaxException e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage());
+                printErrorMessage(e);
                 return null;
             }
         }
@@ -56,7 +56,7 @@ public class BattorionCoreConstants {
             } else {
                 path = prefs.get(VERSION_FILE_PATH, ".") + "/" + VERSION_FILE_NAME;
                 if (new File(path).exists()) {
-                    return RoamingConfigClass.ROAMING_CONFIG_PATH;
+                    return prefs.get(VERSION_FILE_PATH, ".");
                 } else {
                     path = RoamingConfigClass.ROAMING_CONFIG_PATH + "/" + VERSION_FILE_NAME;
                     if (new File(path).exists()) {
@@ -111,7 +111,7 @@ public class BattorionCoreConstants {
                 String path = Paths.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
                 return new File(path).getParent();
             } catch (Exception e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage());
+                printErrorMessage(e);
                 return null;
             }
         }
@@ -165,7 +165,7 @@ public class BattorionCoreConstants {
                 Files.createDirectories(java.nio.file.Paths.get(ROAMING_CONFIG_PATH));
                 Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage());
+                printErrorMessage(e);
             }
         }
     }
@@ -215,7 +215,7 @@ public class BattorionCoreConstants {
         public static final String USER_DATA_UPLOADED = "IsUserDataUploaded";
         public static final String LAST_STATUS_VALIDATE = "status";
         public static final String NEW_TRAY_TAB = "HasSeenNewTab";
-        public static final String VERSION_FILE_PATH = "HasSeenNewTab";
+        public static final String VERSION_FILE_PATH = "VersionFilePath";
     }
     
     public static class Dimensions {
@@ -318,7 +318,7 @@ public class BattorionCoreConstants {
                         times++;
                     }
                 } catch (Exception e) {
-                    logger.severe("[EXCEPTION]: " + e.getMessage());
+                    printErrorMessage(e);
                 }
             }
             

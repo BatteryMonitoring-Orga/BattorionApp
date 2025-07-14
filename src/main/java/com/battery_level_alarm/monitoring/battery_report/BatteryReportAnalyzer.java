@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class BatteryReportAnalyzer {
 	public static void analyze(String reportFilePath) {
@@ -24,7 +24,7 @@ public class BatteryReportAnalyzer {
 			BatteryInfo.setLastMeasuredCapacity(lastCapacity);
 			BatteryInfo.setEstimatedRuntimeMinutes(lastRuntime);
 		} catch (IOException e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 	}
 	
@@ -41,7 +41,7 @@ public class BatteryReportAnalyzer {
 			BatteryInfo.setFullChargeCapacity(fullChargeCapacity);
 			BatteryInfo.setHealthPercentage(health);
 		} catch (IOException e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 	}
 	

@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import java.io.*;
 import java.util.*;
@@ -52,13 +52,13 @@ public class SoundDevicesNamesFinder {
 				}
 			}
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		} finally {
 			try {
 				Thread.sleep(5000);
 				deleteOutputFile();
 			} catch (Exception ex) {
-				logger.severe("[EXCEPTION]: " + ex.getMessage());
+				printErrorMessage(ex);
 			}
 		}
 		return null;
@@ -89,7 +89,7 @@ public class SoundDevicesNamesFinder {
 				}
 			}
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		} finally {
 			deleteOutputFile();
 		}
@@ -130,17 +130,14 @@ public class SoundDevicesNamesFinder {
 		File file = new File(OUTPUT_FILE);
 		for (int i = 0; i < 5; i++) {
 			if (!file.exists()) {
-				logger.info("[INFO]: output.csv not found, no need to delete");
 				return;
 			} if (file.delete()) {
-				logger.info("[INFO]: ✔ output.csv deleted");
 				return;
 			}
 			
 			File renamed = new File(file.getAbsolutePath() + ".tmp");
 			if (file.renameTo(renamed)) {
 				if (renamed.delete()) {
-					logger.info("[INFO]: ✔ Renamed and deleted output.csv.tmp");
 					return;
 				}
 			}
@@ -151,8 +148,6 @@ public class SoundDevicesNamesFinder {
 				Thread.currentThread().interrupt();
 			}
 		}
-		
 		file.deleteOnExit();
-		logger.severe("[ERROR]: ❌ Failed to delete output.csv after retries, will try on JVM exit");
 	}
 }

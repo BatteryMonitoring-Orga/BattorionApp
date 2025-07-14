@@ -26,6 +26,7 @@ import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuild
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isDarkMode;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class MiniDocBrowser extends Application {
 	private static final CountDownLatch latch = new CountDownLatch(1);
@@ -205,7 +206,7 @@ public class MiniDocBrowser extends Application {
 				try {
 					browser.start(primaryStage);
 				} catch (Exception e) {
-					logger.severe("[EXCEPTION]: " + e.getMessage());
+					printErrorMessage(e);
 				}
 			}
 		});
@@ -224,7 +225,7 @@ public class MiniDocBrowser extends Application {
 				try {
 					latch.await();
 				} catch (InterruptedException e) {
-					logger.severe("[EXCEPTION]: " + e.getMessage());
+					printErrorMessage(e);
 					Thread.currentThread().interrupt();
 					return;
 				}

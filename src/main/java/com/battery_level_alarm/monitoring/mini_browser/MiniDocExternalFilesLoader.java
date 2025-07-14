@@ -13,7 +13,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.RemoteVers
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.installCurrentReleaseNotesFile;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class MiniDocExternalFilesLoader {
 	public static String loadMarkdownAsHtml(String filename) {
@@ -38,7 +38,7 @@ public class MiniDocExternalFilesLoader {
 			}
 			return readMarkdownFile(file);
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 			return "<h2 style='color:red;'>Error loading markdown: " + filename + "<br>" + e.getMessage() + "</h2>";
 		}
 	}
@@ -51,7 +51,7 @@ public class MiniDocExternalFilesLoader {
 			Node document = parser.parse(markdown);
 			return renderer.render(document);
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 		return "<h2 style='color:red;'>File not found: " + file.getAbsolutePath() + "</h2>";
 	}

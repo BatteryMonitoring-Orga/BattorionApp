@@ -1,8 +1,8 @@
 package com.battery_level_alarm.monitoring.system_automation;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
-import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
+import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import java.awt.*;
 import java.util.concurrent.*;
 
@@ -43,14 +43,14 @@ public class WakeUpPC {
 						Point position = getMousePosition();
 						doRobotAction(robot, position, false, 0, 0);
 					} catch (Exception e) {
-						logger.severe("[EXCEPTION]: " + e.getMessage());
+						printErrorMessage(e);
 					}
 				} else {
 					shutdownScheduler();
 				}
 			}, 0, wakeUpEverySeconds, TimeUnit.SECONDS);
 		} catch (AWTException e) {
-			DisplayMessages.printErrorMessage(e);
+			printErrorMessage(e);
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class WakeUpPC {
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 			keepAwakeExecutor = null;
 		}

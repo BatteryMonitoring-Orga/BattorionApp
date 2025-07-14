@@ -9,6 +9,7 @@ import org.apache.batik.transcoder.SVGAbstractTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
 
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class CallResources {
     private static final String DEFAULT_EXTEND = ".png";
@@ -36,7 +37,7 @@ public class CallResources {
                 Image finalImage = getScaledImage(rawImg, (int) dimension.getWidth(), (int) dimension.getHeight());
                 return new ImageIcon(finalImage);
             } catch (Exception e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage());
+                printErrorMessage(e);
             }
         }
         
@@ -67,7 +68,7 @@ public class CallResources {
         URL resource = Battorion.class.getResource(path);
 
         if (resource == null) {
-            System.err.println("Error: File not found - " + path);
+            logger.severe("Error: File not found - " + path);
             throw new IllegalArgumentException("File not found: " + path);
         }
 

@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class HardwareInfoReader {
 	private static final SystemInfo systemInfo = new SystemInfo();
@@ -31,7 +31,7 @@ public class HardwareInfoReader {
 				}
 			}
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 		return "Unknown OS";
 	}
@@ -61,7 +61,7 @@ public class HardwareInfoReader {
 				long gb = bytes / (1024 * 1024 * 1024);
 				return gb + " GB";
 			} catch (NumberFormatException e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 		GlobalMemory memory = hal.getMemory();

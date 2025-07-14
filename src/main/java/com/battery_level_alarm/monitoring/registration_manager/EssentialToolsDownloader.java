@@ -1,5 +1,4 @@
 package com.battery_level_alarm.monitoring.registration_manager;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 
@@ -71,7 +70,7 @@ public class EssentialToolsDownloader {
             connection.setReadTimeout(5000);
             return connection.getResponseCode() == 200;
         } catch (IOException | URISyntaxException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
             return false;
         }
     }

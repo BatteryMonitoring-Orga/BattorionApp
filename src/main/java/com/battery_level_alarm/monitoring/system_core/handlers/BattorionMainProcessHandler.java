@@ -61,7 +61,7 @@ public class BattorionMainProcessHandler {
 					loadMarkdownAsHtml(RELEASE_NOTES_MD);
 				}
 			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 				Thread.currentThread().interrupt();
 			}
 		});
@@ -114,7 +114,7 @@ public class BattorionMainProcessHandler {
 					}
 					CallStepsFlow.scheduler.shutdown();
 				} catch (Exception e) {
-					logger.severe("[EXCEPTION]: " + e.getMessage());
+					printErrorMessage(e);
 				}
 			});
 		} catch (Exception exception) {

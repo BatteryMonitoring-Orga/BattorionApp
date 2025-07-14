@@ -12,8 +12,8 @@ import static com.battery_level_alarm.monitoring.registration_manager.EssentialT
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.LATEST_RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.APP_VERSION;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class RemoteVersionChecker {
 	public static String latestVersion = null;
@@ -46,18 +46,18 @@ public class RemoteVersionChecker {
 				saveUpdateVersionConfigurations();
 			}
 		} catch (IOException e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		} finally {
 			try {
 				Files.deleteIfExists(zipPath);
 			} catch (IOException e) {
-				logger.warning("Could not delete zip file: " + e.getMessage());
+				printErrorMessage(e);
 			}
 			
 			try {
 				deleteDirectory(extractedFolder);
 			} catch (IOException e) {
-				logger.warning("Could not delete extracted folder: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 	}
@@ -80,7 +80,7 @@ public class RemoteVersionChecker {
 						try {
 							Files.delete(p);
 						} catch (IOException e) {
-							logger.severe("[EXCEPTION]: " + e.getMessage());
+							printErrorMessage(e);
 						}
 					});
 			}
@@ -106,18 +106,18 @@ public class RemoteVersionChecker {
 			Path targetFile = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH, releaseFile.getFileName().toString());
 			Files.copy(releaseFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		} finally {
 			try {
 				Files.deleteIfExists(zipPath);
 			} catch (IOException e) {
-				logger.warning("Could not delete zip file: " + e.getMessage());
+				printErrorMessage(e);
 			}
 			
 			try {
 				deleteDirectory(extractedFolder);
 			} catch (IOException e) {
-				logger.warning("Could not delete extracted folder: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 	}
@@ -137,18 +137,18 @@ public class RemoteVersionChecker {
 			Files.copy(releaseFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
 			return true;
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		} finally {
 			try {
 				Files.deleteIfExists(zipPath);
 			} catch (IOException e) {
-				logger.warning("Could not delete zip file: " + e.getMessage());
+				printErrorMessage(e);
 			}
 			
 			try {
 				deleteDirectory(extractedFolder);
 			} catch (IOException e) {
-				logger.warning("Could not delete extracted folder: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 		return false;
@@ -167,7 +167,7 @@ public class RemoteVersionChecker {
 			unzip(zipPath.toString());
 			return findConfigFile(extractedFolder, RELEASE_NOTES_MD);
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 			return null;
 		}
 	}

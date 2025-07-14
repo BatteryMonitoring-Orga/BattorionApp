@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.SHOW_BATTERY_ICON;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,7 +24,7 @@ public class BatteryTrayIcon {
 					SystemTray.getSystemTray().add(trayIcon);
 				}
 			} catch (AWTException e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		} else {
 			trayIcon.setImage(iconImage);

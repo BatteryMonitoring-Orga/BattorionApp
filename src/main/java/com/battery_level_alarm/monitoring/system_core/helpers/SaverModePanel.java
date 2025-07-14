@@ -33,6 +33,7 @@ import static com.battery_level_alarm.monitoring.visual_effects.gradient.Gradien
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientThemes.LIGHT_GRADIENTS;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.getStartCustomColor;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class SaverModePanel {
 	public static void setupSaverModePanel() {
@@ -135,7 +136,7 @@ public class SaverModePanel {
 					Platform.runLater(future);
 					result[0] = future.get();
 				} catch (Exception ex) {
-					logger.severe("[EXCEPTION]: " + ex.getMessage());
+					printErrorMessage(ex);
 					return;
 				} if (!result[0]) {
 					return;

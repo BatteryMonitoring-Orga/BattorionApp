@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class FileDownloaderWithProgress {
 	private static ProgressBar downloadProgressBar;
@@ -55,7 +56,7 @@ public class FileDownloaderWithProgress {
 			isDownloading = false;
 			return true;
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 			Platform.runLater(() -> {
 				downloadProgressBar.setStyle("-fx-accent: red;");
 				downloadProgressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);

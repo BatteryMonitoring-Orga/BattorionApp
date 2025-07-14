@@ -18,16 +18,13 @@ import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploade
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.STATUS.ACTIVE;
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.BATTORION_WEBSITE;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.LAST_STATUS_VALIDATE;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_DATA_UPLOADED;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UserOnboarding.createAnalyticsMap;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class ClientServerActions {
-	private static final boolean isUnderDevelopment = true;
-	
 	static void clintToServerAction() {
 		Thread.ofVirtual().start(() -> {
 			BattorionCoreConstants.UserOnboarding.userSessionTracker();
@@ -35,10 +32,6 @@ public class ClientServerActions {
 				String id = prefs.get(BattorionCoreConstants.PrefKeysIdentifiers.USER_IDENTIFIER, null);
 				boolean isUploaded = prefs.getBoolean(USER_DATA_UPLOADED, false);
 				try {
-					if(isUnderDevelopment) {
-						return;
-					}
-					
 					if(!isUploaded) {
 						Map<String, Object> data = BattorionCoreConstants.UserOnboarding.basicUserDataUpload();
 						if(data == null || data.isEmpty()) return;
@@ -53,7 +46,7 @@ public class ClientServerActions {
 					}
 				} catch (Exception e) {
 					prefs.putBoolean(USER_DATA_UPLOADED, false);
-					logger.severe("[EXCEPTION]: " + e.getMessage());
+					printErrorMessage(e);
 				}
 			} else {
 				checkDeviceActivation(new HashMap<>());
@@ -67,14 +60,16 @@ public class ClientServerActions {
 			try {
 				Map<String, Object> dtatMap = sendUserIdAndGetFilteredData(id, List.of(
 						STATUS,
+						EMAIL,
 						LICENSE_TYPE,
 						LICENSE_EXPIRES_AT
 				));
 				
 				prefs.put(LAST_STATUS_VALIDATE, dtatMap.get(STATUS).toString());
+				BattorionCoreConstants.AppInfo.UserEmail = dtatMap.get(EMAIL).toString();
 				checkDeviceActivation(dtatMap);
 			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		};
 		scheduler.scheduleAtFixedRate(task, 0, 3, TimeUnit.HOURS);
@@ -95,7 +90,7 @@ public class ClientServerActions {
 				try {
 					Desktop.getDesktop().browse(BATTORION_WEBSITE);
 				} catch (Exception ex) {
-					logger.severe("[EXCEPTION]: " + ex.getMessage());
+					printErrorMessage(ex);
 				}
 			}
 		});

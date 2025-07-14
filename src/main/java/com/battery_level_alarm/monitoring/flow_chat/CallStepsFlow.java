@@ -15,7 +15,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.NEW_BATTORION_USER;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_GAVE_FEEDBACK;
@@ -23,6 +22,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.flow_chat.DynamicStepsFlow.flow;
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.westSideButton;
 import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.feedback;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class CallStepsFlow {
 	private static final Queue<ChatStep> chatFlow = new LinkedList<>();
@@ -44,7 +44,7 @@ public class CallStepsFlow {
 						scheduler.shutdown();
 					}
 				} catch (Exception e) {
-					logger.severe("[EXCEPTION]: " + e.getMessage());
+					printErrorMessage(e);
 				}
 			}, 0, 60, TimeUnit.MINUTES);
 		} if (!prefs.getBoolean(USER_GAVE_FEEDBACK, false) && shouldAskForFeedback()) {

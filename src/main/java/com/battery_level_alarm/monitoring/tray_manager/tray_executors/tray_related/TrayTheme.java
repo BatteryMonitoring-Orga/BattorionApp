@@ -1,6 +1,5 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isApplicationMode;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.tray_manager.modern_component.JavaFXSoundComboBox.setVBoxThemeMode;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.notificationUI;
@@ -109,7 +108,7 @@ public class TrayTheme {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			return (reader.readLine() != null) ? SystemTheme.DARK : SystemTheme.LIGHT;
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 			return SystemTheme.LIGHT;
 		}
 	}

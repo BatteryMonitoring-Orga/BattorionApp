@@ -1,8 +1,8 @@
 package com.battery_level_alarm.monitoring.skeleton_constraints;
-import com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.ClientServerActions.clintToServerAction;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import javax.swing.*;
 import java.io.*;
@@ -53,14 +53,14 @@ public class SingletonObject {
                     if (channel != null) channel.close();
                     if (lockFile.exists()) lockFile.delete();
                 } catch (Exception e) {
-                    DisplayMessages.printErrorMessage(e);
+                    printErrorMessage(e);
                 }
             }));
             
             clintToServerAction();
             departure(modeToUse, args);
         } catch (IOException e) {
-            logger.severe("Unexpected error in SingletonObject: " + e.getMessage());
+            printErrorMessage(e);
             showIfAlreadyRunning();
         }
     }
@@ -82,7 +82,7 @@ public class SingletonObject {
                 }
             }
         } catch (IOException ioEx) {
-            logger.warning("Unable to read lock file: " + ioEx.getMessage());
+            printErrorMessage(ioEx);
             details.append("Could not read lock file.\n");
         }
         
@@ -93,7 +93,7 @@ public class SingletonObject {
                 Optional<ProcessHandle> process = ProcessHandle.of(pid);
                 processAlive = process.isPresent() && process.get().isAlive();
             } catch (NumberFormatException e) {
-                logger.warning("Invalid PID in lock file: " + e.getMessage());
+                printErrorMessage(e);
             }
         }
         

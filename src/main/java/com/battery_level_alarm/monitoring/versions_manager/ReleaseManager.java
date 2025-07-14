@@ -17,7 +17,6 @@ import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.ve
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.latestVersion;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.NEW_RELEASE;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UpdateSettingsGUI.downloadButtonName;
@@ -26,6 +25,7 @@ import static com.battery_level_alarm.monitoring.versions_manager.Initialization
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.releaseLog;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.showAllLogs;
 import static com.battery_level_alarm.monitoring.versions_manager.VersionInstaller.*;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class ReleaseManager {
 	public static boolean isReleaseInstallProcessRunning = false;
@@ -88,24 +88,26 @@ public class ReleaseManager {
 			} catch (Exception ex) {
 				Thread.currentThread().interrupt();
 				releaseLog("❌ Unexpected exception in release manager thread: " + ex.getMessage());
-				logger.severe("[EXCEPTION]: " + ex.getMessage());
 				isReleaseInstallProcessRunning = false;
+				printErrorMessage(ex);
 			}
 		});
 	}
 	
 	public static void cleanupAfterInstallation() {
 		releaseLog("🧹 Starting cleanup after installation...");
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH),
+		Path parent = Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH);
+		
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(parent,
 				entry -> Files.isDirectory(entry) && entry.getFileName().toString().startsWith(RELEASE_FOLDER))) {
 			for (Path dir : stream) {
 				deleteDirectoryRecursively(dir);
 			}
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 		
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(CONFIGURATIONS_MAIN_FOLDER_PATH),
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(parent,
 				entry -> Files.isRegularFile(entry) && entry.getFileName().toString().startsWith(RELEASE_NOTES_MD))) {
 			for (Path file : stream) {
 				try {
@@ -116,7 +118,7 @@ public class ReleaseManager {
 				}
 			}
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 	}
 	
@@ -151,6 +153,7 @@ public class ReleaseManager {
 			}
 		} catch (Exception e) {
 			releaseLog("❌ Failed to restart Battorion.exe: " + e.getMessage());
+			printErrorMessage(e);
 			isReleaseInstallProcessRunning = false;
 		}
 	}

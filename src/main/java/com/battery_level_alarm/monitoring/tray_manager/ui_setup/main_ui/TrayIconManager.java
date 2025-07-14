@@ -22,7 +22,6 @@ import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_execu
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingActions;
-import com.battery_level_alarm.monitoring.visual_effects.messages.LoggedMessage;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -90,7 +89,6 @@ public class TrayIconManager {
 					}
 				}
 			});
-			
 			SystemTray.getSystemTray().add(mainTrayIcon);
 		} catch (Exception e) {
 			printErrorMessage(e);
@@ -102,7 +100,7 @@ public class TrayIconManager {
 			SystemTray.getSystemTray().remove(mainTrayIcon);
 			return true;
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 		return false;
 	}
@@ -179,7 +177,7 @@ public class TrayIconManager {
 				}
 				Monitor.changeFlag = true;
 			} catch (Exception e) {
-				LoggedMessage.error("Failed to update tray icon.", e);
+				printErrorMessage(e);
 			}
 		});
 		CustomMenuItem item = new CustomMenuItem(showBatteryIcon);

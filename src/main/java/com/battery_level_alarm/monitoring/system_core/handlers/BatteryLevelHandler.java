@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.system_core.handlers;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.BatteryLevelHandlerConstants.*;
 import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.DEFAULT_SECONDARY_SOUND_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.visual_effects.AlertSound;
@@ -37,7 +37,7 @@ public class BatteryLevelHandler {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
     }
     
@@ -63,7 +63,7 @@ public class BatteryLevelHandler {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
     }
     
@@ -80,7 +80,7 @@ public class BatteryLevelHandler {
         try {
             Thread.sleep(UserChoices.getRepeatIntervalBeforeRiskPhase() * 1000L);
         } catch (InterruptedException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
     }
     
@@ -93,7 +93,7 @@ public class BatteryLevelHandler {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
         counter = 0;
     }

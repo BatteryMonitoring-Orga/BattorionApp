@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.setSaveAfterNumOfRecords;
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.*;
 import static com.battery_level_alarm.monitoring.graphics.base.ChartType.LINE;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setBrightnessControlOption;
@@ -21,7 +22,6 @@ import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,8 +34,6 @@ public class ConfigurationFilesManager {
     private static final String PC_SETTINGS_FILE_PATH = "./_pc-settings.cfg";
     private static final String UPDATE_SETTINGS_FILE_PATH = "./_update-settings.cfg";
     private static final String GRAPH_SETTINGS_FILE_PATH = "./_painter-settings.cfg";
-    
-    private static final Logger logger = Logger.getLogger(ConfigurationFilesManager.class.getName());
     public static final String UNKNOWN_OUTPUT_DEVICE = "Unknown (S) E404";
     
     private static File getMainFolderPath(String configFileName) {
@@ -62,7 +60,6 @@ public class ConfigurationFilesManager {
         )) {
             file.write(json.toString(4));
         } catch (IOException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save panel mode");
         }
     }
@@ -101,7 +98,7 @@ public class ConfigurationFilesManager {
             }
             loadGeneralConfigurationsJson(jsonContent);
         } catch (IOException | JSONException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             loadDefaultGeneralConfigurations();
             setStartCustomColor(new Color(5, 56, 89));
             setEndCustomColor(new Color(0, 67, 8));
@@ -140,7 +137,7 @@ public class ConfigurationFilesManager {
                 saveGeneralConfigurations();
             }
         } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             setStartCustomColor(new Color(5, 56, 89));
             saveGeneralConfigurations();
         }
@@ -160,7 +157,7 @@ public class ConfigurationFilesManager {
                 saveGeneralConfigurations();
             }
         } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             setEndCustomColor(new Color(0, 67, 8));
             saveGeneralConfigurations();
         }
@@ -186,7 +183,6 @@ public class ConfigurationFilesManager {
         )) {
             file.write(json.toString(4));
         } catch (IOException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save drop down list states");
         }
     }
@@ -215,7 +211,7 @@ public class ConfigurationFilesManager {
             }
             loadDropDownListConfigurationsJson(jsonContent);
         } catch (IOException | JSONException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             loadDefaultDropDownListConfigurations();
             saveDropDownListConfigurations();
         }
@@ -251,7 +247,6 @@ public class ConfigurationFilesManager {
         )) {
             file.write(json.toString(4));
         } catch (IOException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save settings");
         }
     }
@@ -284,7 +279,7 @@ public class ConfigurationFilesManager {
             }
             loadSettingsFromJson(jsonContent);
         } catch (IOException | JSONException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             loadDefaultSettings();
             saveSettings();
         }
@@ -328,7 +323,6 @@ public class ConfigurationFilesManager {
         )) {
             file.write(json.toString(4));
         } catch (IOException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save pc details");
         }
     }
@@ -367,7 +361,7 @@ public class ConfigurationFilesManager {
             }
             loadComputerSettingsFromJson(jsonContent);
         } catch (IOException | JSONException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             loadDefaultComputerSettings();
             saveComputerSettings();
         }
@@ -432,7 +426,7 @@ public class ConfigurationFilesManager {
             setDefaultSpeakerOutputDeviceName(defaultSpeakerOutputDeviceName);
             setCurrentAudioDevice(defaultSpeakerOutputDeviceName);
         } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             setDefaultSpeakerOutputDeviceName(UNKNOWN_OUTPUT_DEVICE);
             setCurrentAudioDevice(UNKNOWN_OUTPUT_DEVICE);
         }
@@ -445,7 +439,6 @@ public class ConfigurationFilesManager {
         )) {
             file.write(json.toString(4));
         } catch (IOException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save update settings");
         }
     }
@@ -470,7 +463,7 @@ public class ConfigurationFilesManager {
             }
             loadUpdateVersionConfigurationsJson(jsonContent);
         } catch (IOException | JSONException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             loadDefaultUpdateVersionConfigurations();
             saveUpdateVersionConfigurations();
         }
@@ -498,7 +491,6 @@ public class ConfigurationFilesManager {
         )) {
             file.write(json.toString(4));
         } catch (IOException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             printErrorMessage(e, "Failed to save graph settings");
         }
     }
@@ -538,7 +530,7 @@ public class ConfigurationFilesManager {
             }
             loadGraphConfigurationsJson(jsonContent);
         } catch (IOException | JSONException e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e, e.getMessage());
             loadDefaultGraphConfigurations();
             saveGraphConfigurations();
         }

@@ -35,6 +35,7 @@ import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionPr
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.dashboardButton;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.Appearance.getPopupMenu;
 import static com.battery_level_alarm.monitoring.visual_effects.appearance.ThemesStatics.ThemeIcons.THEME_ICON_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.website.Website.websiteCaller;
 
 public class TopAssistPanel {
@@ -106,7 +107,7 @@ public class TopAssistPanel {
 							createPopup("You're already using the latest version.", button);
 						}
 					} catch (Exception ex) {
-						logger.severe("[EXCEPTION]: " + ex.getMessage());
+						printErrorMessage(ex);
 					}
 				}
 			}

@@ -10,9 +10,9 @@ import java.util.List;
 
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
 import static com.battery_level_alarm.monitoring.flow_chat.DynamicStepsFlow.flow;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.westSideButton;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class FeedbackFlowChat {
 	public static void callSmartFeedbackStepsFlow() {
@@ -135,7 +135,7 @@ public class FeedbackFlowChat {
 										updates.put(UserDataUploader.Keys.EMAIL, email);
 										updateUserData(prefs.get(BattorionCoreConstants.PrefKeysIdentifiers.USER_IDENTIFIER, null), updates);
 									} catch (Exception e) {
-										logger.severe("[EXCEPTION]: " + e.getMessage());
+										printErrorMessage(e);
 									}
 						}))),
 						new ChatOption("No", () -> {})

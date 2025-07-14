@@ -1,5 +1,4 @@
 package com.battery_level_alarm.monitoring.command_executors;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.BATTERY_REPORT_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
@@ -134,7 +133,7 @@ public class CallCommandLine {
             
             return Double.parseDouble(digits);
         } catch (NumberFormatException ex) {
-            logger.severe("[EXCEPTION]: " + ex.getMessage() + " | line: " + line);
+            printErrorMessage(ex);
             return -1;
         }
     }
@@ -157,7 +156,7 @@ public class CallCommandLine {
                 }
             }
         } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
         return false;
     }
@@ -175,7 +174,7 @@ public class CallCommandLine {
                 int status = Integer.parseInt(digits);
                 return (status == 2);
             } catch (NumberFormatException e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage() + " | line: " + line);
+                printErrorMessage(e);
                 return false;
             }
         } else {

@@ -12,10 +12,15 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
+import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ASSETS_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class FeedbackPopup {
 	public static void feedback(boolean isDarkTheme) {
@@ -36,6 +41,30 @@ public class FeedbackPopup {
 		
 		TextField emailField = new TextField();
 		emailField.setPromptText("Your Email");
+		
+		CheckBox rememberEmailCheckBox = new CheckBox("Remember my email for later use");
+		rememberEmailCheckBox.setStyle("-fx-text-fill: " + textColor + "; -fx-font-weight: bold; -fx-font-size: 14px;");
+		
+		String savedEmail = BattorionCoreConstants.AppInfo.UserEmail;
+		if (savedEmail != null && !savedEmail.isEmpty()) {
+			emailField.setText(savedEmail);
+			rememberEmailCheckBox.setVisible(false);
+		}
+		
+		emailField.textProperty().addListener((_, _, newValue) -> {
+			if (savedEmail != null && !savedEmail.isEmpty()) {
+				if (newValue.equalsIgnoreCase(savedEmail)) {
+					rememberEmailCheckBox.setVisible(false);
+					rememberEmailCheckBox.setSelected(false);
+				} else {
+					rememberEmailCheckBox.setVisible(true);
+					rememberEmailCheckBox.setSelected(false);
+				}
+			}
+		});
+		
+		TextField subjectField = new TextField();
+		subjectField.setPromptText("Subject");
 		
 		TextArea feedbackArea = new TextArea();
 		feedbackArea.setPromptText("Write your feedback here...");
@@ -59,16 +88,28 @@ public class FeedbackPopup {
 		submitBtn.setOnAction(_ -> {
 			String name = nameField.getText().trim();
 			String email = emailField.getText().trim();
+			String subject = subjectField.getText().trim();
 			String feedback = feedbackArea.getText().trim();
 			
-			if (name.isBlank() || email.isBlank() || feedback.isBlank()) {
+			if (name.isBlank() || email.isBlank() || subject.isBlank() || feedback.isBlank()) {
 				showAlert(Alert.AlertType.WARNING, "Please fill in all fields.");
 			} else {
+				if (rememberEmailCheckBox.isVisible() && rememberEmailCheckBox.isSelected()) {
+					try {
+						Map<String, Object> updates = new HashMap<>();
+						updates.put(UserDataUploader.Keys.EMAIL, email);
+						updateUserData(prefs.get(BattorionCoreConstants.PrefKeysIdentifiers.USER_IDENTIFIER, null), updates);
+					} catch (Exception e) {
+						printErrorMessage(e);
+					}
+				}
+				
 				popupStage.close();
 				String userId = BattorionCoreConstants.UserIdentifier.getOrCreateUserId();
 				Thread.ofVirtual().start(() -> {
 					if (isInternetAvailable()) {
-						Thread.ofVirtual().start(() -> FeedbackSender.sendFeedback(userId, name, email, feedback));
+						Thread.ofVirtual().start(() ->
+								FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback));
 					} else {
 						Platform.runLater(() -> showAlert(Alert.AlertType.WARNING, "No internet connection. Please try again later."));
 					}
@@ -78,8 +119,8 @@ public class FeedbackPopup {
 		
 		String buttonStyle = getButtonStyle(isDarkTheme);
 		String buttonHoverStyle = String.format("""
-		    -fx-background-color: %s;
-		""", isDarkTheme ? "#00000033" : "#ffffff44");
+            -fx-background-color: %s;
+        """, isDarkTheme ? "#00000033" : "#ffffff44");
 		
 		submitBtn.setStyle(buttonStyle);
 		closeBtn.setStyle(buttonStyle);
@@ -94,6 +135,8 @@ public class FeedbackPopup {
 				styledLabel("Your Feedback Matters", textColor, 20),
 				styledLabel("Name:", textColor, 15), nameField,
 				styledLabel("Email:", textColor, 15), emailField,
+				rememberEmailCheckBox,
+				styledLabel("Subject:", textColor, 15), subjectField,
 				styledLabel("Feedback:", textColor, 15), scrollPane,
 				new HBox(10, submitBtn, closeBtn)
 		);
@@ -102,7 +145,7 @@ public class FeedbackPopup {
 		form.setAlignment(Pos.CENTER_LEFT);
 		form.setStyle("-fx-background-color: " + backgroundColor + "; -fx-background-radius: 10;");
 		
-		Scene popupScene = new Scene(form, 400, 500);
+		Scene popupScene = new Scene(form, 400, 520);
 		popupScene.setFill(javafx.scene.paint.Color.TRANSPARENT);
 		Image icon = new Image(Objects.requireNonNull(FeedbackPopup.class.getResourceAsStream(ASSETS_FOLDER_PATH + "feedback.png")));
 		
@@ -117,15 +160,15 @@ public class FeedbackPopup {
 		String buttonTextColor = isDarkTheme ? "black" : "white";
 		String buttonBorder = isDarkTheme ? "black" : "white";
 		return String.format("""
-		    -fx-background-color: %s;
-		    -fx-text-fill: %s;
-		    -fx-font-size: 14px;
-		    -fx-padding: 8px 16px;
-		    -fx-border-radius: 8px;
-		    -fx-background-radius: 8px;
-		    -fx-border-color: %s;
-		    -fx-border-width: 1.5px;
-		""", buttonBackground, buttonTextColor, buttonBorder);
+            -fx-background-color: %s;
+            -fx-text-fill: %s;
+            -fx-font-size: 14px;
+            -fx-padding: 8px 16px;
+            -fx-border-radius: 8px;
+            -fx-background-radius: 8px;
+            -fx-border-color: %s;
+            -fx-border-width: 1.5px;
+        """, buttonBackground, buttonTextColor, buttonBorder);
 	}
 	
 	private static Label styledLabel(String text, String color, int fontSize) {

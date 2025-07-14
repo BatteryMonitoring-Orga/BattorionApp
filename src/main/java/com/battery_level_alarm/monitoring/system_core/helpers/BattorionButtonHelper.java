@@ -17,6 +17,8 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_setup.setting
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.mainTabbedPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass.createStatisticsContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass.statisticsMainTabbedPanel;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+
 import com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
 
@@ -38,7 +40,7 @@ public class BattorionButtonHelper {
                         imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
             }
         } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
         
         JButton button;

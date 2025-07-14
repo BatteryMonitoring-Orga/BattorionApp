@@ -10,6 +10,7 @@ import java.awt.datatransfer.StringSelection;
 
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.BATTORION_WEBSITE;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class Website {
 	public static void websiteCaller() {
@@ -18,14 +19,13 @@ public class Website {
 				Desktop.getDesktop().browse(BATTORION_WEBSITE);
 			}
 		} catch (Exception ex) {
-			logger.severe("[EXCEPTION]: " + ex.getMessage());
 			try {
 				StringSelection selection = new StringSelection(BATTORION_WEBSITE.toString());
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(selection, null);
 				logger.info("Website URL copied to clipboard.");
 			} catch (Exception clipboardEx) {
-				logger.warning("Failed to copy URL to clipboard: " + clipboardEx.getMessage());
+				printErrorMessage(clipboardEx);
 			}
 		}
 	}
@@ -51,19 +51,17 @@ public class Website {
 						Desktop.getDesktop().browse(BATTORION_WEBSITE);
 					}
 				} catch (Exception ex) {
-					logger.severe("[EXCEPTION]: " + ex.getMessage());
 					try {
 						Toolkit.getDefaultToolkit()
 								.getSystemClipboard()
 								.setContents(new java.awt.datatransfer.StringSelection(BATTORION_WEBSITE.toString()), null);
 						logger.info("Website URL copied to clipboard.");
 					} catch (Exception clipboardEx) {
-						logger.warning("Failed to copy URL to clipboard: " + clipboardEx.getMessage());
+						printErrorMessage(clipboardEx);
 					}
 				}
 			});
 		}
-		
 		container.getChildren().add(link);
 		return container;
 	}

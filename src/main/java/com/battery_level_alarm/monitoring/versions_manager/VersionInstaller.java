@@ -12,6 +12,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.RemoteVers
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.releaseLog;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class VersionInstaller {
 	private static final String[] LINKS = {
@@ -86,7 +87,7 @@ public class VersionInstaller {
 		} catch (IOException e) {
 			MSG = "❌ Installation failed: " + e.getMessage();
 			releaseLog(MSG);
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 			return false;
 		}
 	}
@@ -111,7 +112,7 @@ public class VersionInstaller {
 			}
 		} catch (Exception e) {
 			releaseLog("❌ Exception during directory cleanup: " + e.getMessage());
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 	}
 }

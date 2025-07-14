@@ -115,9 +115,10 @@ public class Battorion {
         setupUIFont();
         prefs = Preferences.userNodeForPackage(Battorion.class);
 	    String modeToUse = prefs.get(START_BATTORION_WITH, String.valueOf(DepartureModes.START_WITH_APPLICATION));
-        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
-            logger.log(SEVERE, "🚨 Uncaught exception in thread: " + thread.getName(), throwable)
-        );
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            logger.log(SEVERE, "🚨 Uncaught exception in thread: " + thread.getName(), throwable);
+            printErrorMessage(throwable);
+        });
         
         if(Boolean.parseBoolean(prefs.get(NEW_RELEASE, String.valueOf(false)))) {
             Thread.ofVirtual().start(() -> Platform.startup(() -> {
@@ -156,7 +157,7 @@ public class Battorion {
                 handleUserFlows();
             }
         } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
     }
     
@@ -415,7 +416,7 @@ public class Battorion {
                                 handleNormalBattery(batteryBar, alertLabel, batteryColor);
                             }
                         } catch (Exception e) {
-                            logger.severe("[EXCEPTION]: " + e.getMessage());
+                            printErrorMessage(e);
                         }
                         
                         if (ComputerSettings.isActivateTheAwakeningFeature()) {
@@ -430,7 +431,7 @@ public class Battorion {
                     }
                 } catch (Exception e) {
                     Thread.currentThread().interrupt();
-                    logger.severe("[EXCEPTION]: " + e.getMessage());
+                    printErrorMessage(e);
                     SwingUtilities.invokeLater(() -> alertLabel.setText(
                             TWO_SPACE + "Battery Monitoring was Stopped!"
                     ));
@@ -439,7 +440,7 @@ public class Battorion {
             monitoringThread.start();
         } catch (Exception e) {
             Thread.currentThread().interrupt();
-            logger.severe("[EXCEPTION]: " + e.getMessage());
+            printErrorMessage(e);
         }
     }
     

@@ -5,11 +5,11 @@ import static com.battery_level_alarm.monitoring.graphics.base.ChartType.LINE;
 import static com.battery_level_alarm.monitoring.graphics.ui.GraphPaneHelper.createMainScene;
 import static com.battery_level_alarm.monitoring.graphics.executor.LocalScheduledExecutorService.createMainScheduledExecutor;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.batteryLevel;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.ColorUtils.*;
 import static com.battery_level_alarm.monitoring.visual_effects.ColorUtils.ColorType.*;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.graphics.charts.AreaBatteryChart;
 import com.battery_level_alarm.monitoring.graphics.charts.LineBatteryChart;
@@ -58,7 +58,6 @@ public class BatteryLevelGraph extends Application {
                 mainGraphScrolls[1] = new ScrollPane();
             });
         } catch (Exception e) {
-            logger.severe("[EXCEPTION]: " + e.getMessage());
             Platform.runLater(() -> {
                 mainGraphScrolls[0] = new ScrollPane();
                 mainGraphScrolls[1] = new ScrollPane();
@@ -92,7 +91,7 @@ public class BatteryLevelGraph extends Application {
                 batteryChartImpl.updateChartData();
                 batteryChartImpl.applyNodeColor(getCurrentChartColor());
             } catch (Exception e) {
-                logger.severe("[EXCEPTION]: " + e.getMessage());
+                printErrorMessage(e);
             }
         });
     }

@@ -1,5 +1,4 @@
 package com.battery_level_alarm.monitoring.command_executors;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +59,7 @@ public class AlternativeDiskSpace {
                     try {
                         Files.delete(dir);
                     } catch (IOException e) {
-                        logger.severe("[EXCEPTION]: " + e.getMessage());
+                        printErrorMessage(e);
                         failedFiles.incrementAndGet();
                     }
                     return FileVisitResult.CONTINUE;

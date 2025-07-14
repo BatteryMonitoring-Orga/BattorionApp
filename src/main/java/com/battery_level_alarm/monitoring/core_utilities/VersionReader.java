@@ -3,6 +3,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+
 public class VersionReader {
 	public static String version(String path) {
 		Properties props = new Properties();
@@ -16,7 +18,7 @@ public class VersionReader {
 				return "0.0.0";
 			}
 		} catch (IOException e) {
-			System.err.println("Error reading config file: " + e.getMessage());
+			printErrorMessage(e);
 		}
 		return "0.0.0";
 	}

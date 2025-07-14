@@ -1,7 +1,6 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.getAlertBeforeRiskPhaseBy;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.BATTERY_REPORT_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
@@ -16,6 +15,7 @@ import static com.battery_level_alarm.monitoring.command_executors.AudioOutputDe
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.getBatteryLevel;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.getBatteryStatus;
 import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.battery_report.BatteryLiveInfoReader;
 import com.battery_level_alarm.monitoring.battery_report.BatteryReportAnalyzer;
@@ -124,7 +124,7 @@ public class Monitor {
 				}
 				isApplicationStarted = false;
 			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}, 0, interval, TimeUnit.MILLISECONDS);
 	}
@@ -134,7 +134,7 @@ public class Monitor {
 			try {
 				monitorTask.cancel(true);
 			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 		startMonitorLoop(isVisible);
@@ -165,7 +165,7 @@ public class Monitor {
 				isToastNotifyEnabled = true;
 			}
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 			isCharging = false;
 			chargeLevel = 0;
 		}
@@ -201,7 +201,7 @@ public class Monitor {
 			try {
 				VIRTUAL_EXECUTOR.submit(() -> organizationOfRecallProcess(msg));
 			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 	}
@@ -271,7 +271,7 @@ public class Monitor {
 			);
 			BatteryTrayIcon.showBatteryTrayIcon(chargeLevel, color);
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 	}
 	
@@ -282,7 +282,7 @@ public class Monitor {
 					pauseLock.wait();
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
-					logger.severe("[EXCEPTION]: " + ex.getMessage());
+					printErrorMessage(ex);
 				}
 			}
 		}
@@ -358,7 +358,7 @@ public class Monitor {
 				callFlag = false;
 			}), 5, TimeUnit.SECONDS);
 		} catch (Exception e) {
-			logger.severe("[EXCEPTION]: " + e.getMessage());
+			printErrorMessage(e);
 		}
 	}
 	
@@ -382,7 +382,7 @@ public class Monitor {
 				AlertSound.cleanupAudioSettingsAfterAlert();
 				isAlertInProgress = true;
 			} catch (Exception e) {
-				logger.severe("[EXCEPTION]: " + e.getMessage());
+				printErrorMessage(e);
 			}
 		}
 	}

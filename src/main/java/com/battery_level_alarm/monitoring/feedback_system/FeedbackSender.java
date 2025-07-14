@@ -11,10 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_GAVE_FEEDBACK;
 import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.showAlert;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class FeedbackSender {
 	public static void sendFeedback(String userId, String name, String email, String feedback) {
@@ -63,13 +63,7 @@ public class FeedbackSender {
 						"Failed to send feedback. HTTP Code: " + responseCode + "\n" + message));
 			}
 		} catch (Exception e) {
-			logException(e);
+			printErrorMessage(e);
 		}
-	}
-	
-	public static void logException(Exception e) {
-		StringWriter sw = new StringWriter();
-		e.printStackTrace(new PrintWriter(sw));
-		logger.severe("[EXCEPTION]: " + sw);
 	}
 }

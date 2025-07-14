@@ -9,7 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Map;
 
-import static com.battery_level_alarm.monitoring.feedback_system.FeedbackSender.logException;
+import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+
 //        fetchJsonFile("settings.json");
 //        fetchJsonFile("instructions.json");
 public class FileFetcher {
@@ -40,7 +41,7 @@ public class FileFetcher {
 					Map<String, Object> error = mapper.readValue(json, new TypeReference<>() {});
 				}
 			} catch (Exception e) {
-				logException(e);
+				printErrorMessage(e);
 			}
 		});
 	}

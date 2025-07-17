@@ -17,7 +17,7 @@ import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.s
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class FeedbackSender {
-	public static void sendFeedback(String userId, String name, String email, String feedback) {
+	public static void sendFeedback(String userId, String name, String email, String feedback, File image) {
 		try {
 			String apiUrl = "https://battorion-website.vercel.app/api/feedback";
 			Map<String, String> feedbackMap = new HashMap<>();
@@ -25,6 +25,13 @@ public class FeedbackSender {
 			feedbackMap.put("UserName", name);
 			feedbackMap.put("UserEmail", email);
 			feedbackMap.put("UserFeedback", feedback);
+			if(image != null) {
+				try (InputStream is = new FileInputStream(image)) {
+					byte[] bytes = is.readAllBytes();
+					String base64 = java.util.Base64.getEncoder().encodeToString(bytes);
+					feedbackMap.put("SupportImage", base64);
+				}
+			}
 			
 			ObjectMapper mapper = new ObjectMapper();
 			String json = mapper.writeValueAsString(feedbackMap);

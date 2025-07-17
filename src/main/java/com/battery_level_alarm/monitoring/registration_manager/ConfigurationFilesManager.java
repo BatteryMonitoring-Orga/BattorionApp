@@ -4,6 +4,8 @@ import static com.battery_level_alarm.monitoring.core_utilities.GraphSettings.se
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.*;
 import static com.battery_level_alarm.monitoring.graphics.base.ChartType.LINE;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.DEFAULT_DARK_GRADIENT;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.DEFAULT_LIGHT_GRADIENT;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setBrightnessControlOption;
@@ -116,8 +118,8 @@ public class ConfigurationFilesManager {
         isAudioDeviceCmdletsInstalled = json.optBoolean("audio device cmdlets installed", false);
         customizationGradientBackground = json.optBoolean("customization gradient background", false);
         Appearance.setThemeName(json.optString("theme mode", "Light"));
-        PanelStyler.setGradientBackgroundDarkModeName(json.optString("gradient background dark mode", "CobaltNight"));
-        PanelStyler.setGradientBackgroundLightModeName(json.optString("gradient background light mode", "AquaBloom"));
+        PanelStyler.setGradientBackgroundDarkModeName(json.optString("gradient background dark mode", DEFAULT_DARK_GRADIENT));
+        PanelStyler.setGradientBackgroundLightModeName(json.optString("gradient background light mode", DEFAULT_LIGHT_GRADIENT));
         loadCustomGradientBackgroundColor(json);
     }
 
@@ -172,8 +174,8 @@ public class ConfigurationFilesManager {
         customizationGradientBackground = false;
         progressBarInFirstMode = true;
         Appearance.setThemeName("Light");
-        PanelStyler.setGradientBackgroundDarkModeName("CobaltNight");
-        PanelStyler.setGradientBackgroundLightModeName("AquaBloom");
+        PanelStyler.setGradientBackgroundDarkModeName(DEFAULT_DARK_GRADIENT);
+        PanelStyler.setGradientBackgroundLightModeName(DEFAULT_LIGHT_GRADIENT);
     }
 
     public static void saveDropDownListConfigurations() {

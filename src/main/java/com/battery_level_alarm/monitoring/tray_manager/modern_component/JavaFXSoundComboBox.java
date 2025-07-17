@@ -22,10 +22,12 @@ import java.util.Objects;
 
 public class JavaFXSoundComboBox {
 	private static final Font STYLE = Font.font("Serif", 14);
-	private static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-dark-style.css";
-	private static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-gray-style.css";
-	private static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-cream-style.css";
-	private static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try-notifications-light-style.css";
+	private static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-dark-style.css";
+	private static final String DARK_BLUE_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-dark-blue-style.css";
+	private static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-gray-style.css";
+	private static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-cream-style.css";
+	private static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-light-style.css";
+	private static final String LAVENDER_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-lavender-style.css";
 	
 	public static HBox createSoundSelector(List<SoundItem> soundItems) {
 		ComboBox<SoundItem> comboBox = new ComboBox<>(FXCollections.observableArrayList(soundItems));
@@ -78,7 +80,9 @@ public class JavaFXSoundComboBox {
 	public static void setVBoxThemeMode(VBox section, SystemTheme mode) {
 		switch (mode) {
 			case DARK -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(DARK_THEME_FILE_PATH)).toExternalForm());
+			case DARK_BLUE -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(DARK_BLUE_THEME_FILE_PATH)).toExternalForm());
 			case LIGHT -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
+			case LAVENDER -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(LAVENDER_THEME_FILE_PATH)).toExternalForm());
 			case GRAY -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(GRAY_THEME_FILE_PATH)).toExternalForm());
 			case CREAM -> section.getStylesheets().add(Objects.requireNonNull(JavaFXSoundComboBox.class.getResource(CREAM_THEME_FILE_PATH)).toExternalForm());
 			default -> {

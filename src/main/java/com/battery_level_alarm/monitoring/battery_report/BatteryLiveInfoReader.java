@@ -61,7 +61,7 @@ public class BatteryLiveInfoReader {
 			map.put("Current Capacity", currentCapacity >= 0 ? String.format("%.0f mWh", currentCapacity) : "N/A");
 			map.put("Max Capacity", maxCapacity >= 0 ? String.format("%.0f mWh", maxCapacity) : "N/A");
 			map.put("Design Capacity", designCapacity >= 0 ? String.format("%.0f mWh", designCapacity) : "N/A");
-			map.put("Battery Wear", wear >= 0 ? String.format("%.1f%%", wear) : "N/A");
+			map.put("Battery Wear", wear >= 0 ? String.format("%.2f%%", wear) : "N/A");
 			map.put("Cycle Count", cycleCount >= 0 ? String.valueOf(cycleCount) : "N/A");
 			
 			String direction = rawRate > 0 ? "Charging" : "Discharging";

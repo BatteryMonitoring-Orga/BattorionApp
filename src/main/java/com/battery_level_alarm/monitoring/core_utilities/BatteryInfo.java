@@ -33,6 +33,26 @@ public class BatteryInfo {
 		BatteryInfo.healthPercentage = healthPercentage;
 	}
 	
+	public static String evaluateHealthStatus() {
+		if (healthPercentage >= 96) {
+			return "Pristine";
+		} else if (healthPercentage >= 90) {
+			return "Excellent";
+		} else if (healthPercentage >= 80) {
+			return "Very Good";
+		} else if (healthPercentage >= 65) {
+			return "Good";
+		} else if (healthPercentage >= 50) {
+			return "Fair";
+		} else if (healthPercentage >= 35) {
+			return "Worn";
+		} else if (healthPercentage >= 20) {
+			return "Poor";
+		} else {
+			return "Critical";
+		}
+	}
+	
 	public static long getLastMeasuredCapacity() {
 		return lastMeasuredCapacity;
 	}

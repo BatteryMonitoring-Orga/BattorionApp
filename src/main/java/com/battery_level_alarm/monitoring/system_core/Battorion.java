@@ -143,13 +143,15 @@ public class Battorion {
     public static void departure(String modeToUse, String[] args) {
         try {
             prepareStartup();
-            Thread.ofVirtual().start(Battorion::setupAudioDevicesNames);
+            Thread.ofVirtual().start(() -> {
+                loadComputerSettings();
+                setupAudioDevicesNames();
+            });
             DepartureModes mode = BattorionTrayUI.DepartureModes.valueOf(modeToUse);
             if (mode == DepartureModes.START_WITH_TRAY) {
                 isApplicationMode = false;
                 isMiniBrowserLaunched = true;
                 loadSettings();
-                loadComputerSettings();
                 main_fx(args);
             } else {
                 isApplicationMode = true;
@@ -168,7 +170,6 @@ public class Battorion {
         configurationHistoryMap();
         
         loadSettings();
-        loadComputerSettings();
         configurationSystemTrayNotifications();
         loadDropDownListConfigurations();
         loadGraphConfigurations();

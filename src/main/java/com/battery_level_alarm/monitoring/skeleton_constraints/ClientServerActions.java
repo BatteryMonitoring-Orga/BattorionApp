@@ -66,7 +66,7 @@ public class ClientServerActions {
 				));
 				
 				prefs.put(LAST_STATUS_VALIDATE, dtatMap.get(STATUS).toString());
-				BattorionCoreConstants.AppInfo.UserEmail = dtatMap.get(EMAIL).toString();
+				prefs.put(USER_EMAIL, dtatMap.get(EMAIL).toString());
 				checkDeviceActivation(dtatMap);
 			} catch (Exception e) {
 				printErrorMessage(e);

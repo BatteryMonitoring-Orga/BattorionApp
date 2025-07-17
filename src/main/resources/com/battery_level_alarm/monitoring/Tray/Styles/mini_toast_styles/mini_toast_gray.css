@@ -1,0 +1,15 @@
+.mini-toast-root {
+    -fx-background-color: transparent;
+    -fx-padding: -30 -30;
+    -fx-margin: 0;
+    -fx-border-insets: 0;
+    -fx-background-insets: 0;
+}
+
+.mini-toast-label {
+    -fx-background-color: #dcdcdc;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 5, 0.3, 0, 2);
+    -fx-padding: 6 12 6 12;
+    -fx-text-fill: black;
+}

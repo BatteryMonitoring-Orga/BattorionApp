@@ -30,10 +30,12 @@ import java.util.Objects;
 public class BattorionTrayUI extends Application {
 	public static final String BATTORION_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/battorion_background.png";
 	public static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles";
-	public static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/dark-theme.css";
-	public static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/gray-theme.css";
-	public static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/cream-theme.css";
-	public static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/light-theme.css";
+	public static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/dark-theme.css";
+	public static final String DARK_BLUE_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/dark-blue-theme.css";
+	public static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/gray-theme.css";
+	public static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/cream-theme.css";
+	public static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/light-theme.css";
+	public static final String LAVENDER_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/lavender-theme.css";
 	private static String trayTheme;
 	
 	public static Stage primaryStage;
@@ -220,20 +222,13 @@ public class BattorionTrayUI extends Application {
 			if (primaryStage == null) createPopupWindow();
 			if (!primaryStage.isShowing()) {
 				if (primaryTabPane == null) return;
-				for (Tab tab : primaryTabPane.getTabs()) {
-					if ("Dashboard".equals(tab.getText())) {
-						primaryStage.show();
-						primaryStage.setAlwaysOnTop(true);
-						primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 361);
-						primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 485);
-						primaryTabPane.getSelectionModel().select(tab);
-						if(!prefs.getBoolean(NEW_TRAY_TAB, false)) {
-							showNewTabHint("Feedback");
-						}
-						break;
-					}
-				}
+				primaryStage.show();
 				primaryStage.setAlwaysOnTop(true);
+				primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 361);
+				primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 485);
+				if(!prefs.getBoolean(NEW_TRAY_TAB, false)) {
+					showNewTabHint("Feedback");
+				}
 			} else {
 				primaryStage.toFront();
 			}

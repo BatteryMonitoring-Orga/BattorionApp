@@ -18,7 +18,6 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.G
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.addSeparator;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabelWithMouseListener;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.DEFAULT_FONT;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.TWO_SPACE;
 
 public class LifeReportPanelUI {
 	public static Map<String, String> updateBatteryLiveInfo() {
@@ -89,7 +88,9 @@ public class LifeReportPanelUI {
 		
 		addKeyValue(valuesPanel, "Designed Capacity", getDesignedCapacity() + " mWh", gbc, keyFont, valueFont);
 		addKeyValue(valuesPanel, "Full Charge Capacity", getFullChargeCapacity() + " mWh", gbc, keyFont, valueFont);
-		addKeyValue(valuesPanel, "Battery Health", String.format("%.2f %%", getHealthPercentage()), gbc, keyFont, valueFont);
+		addKeyValue(valuesPanel, "Battery Health",
+				String.format("%.2f%%", getHealthPercentage()) + "  (" + evaluateHealthStatus() + ")",
+				gbc, keyFont, valueFont);
 		
 		int separatorRow = gbc.gridy;
 		addSeparatorLine(separatorRow, valuesPanel);

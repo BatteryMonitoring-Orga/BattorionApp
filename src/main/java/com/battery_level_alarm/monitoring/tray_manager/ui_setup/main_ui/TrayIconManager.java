@@ -41,7 +41,9 @@ import java.io.InputStream;
 import java.util.Objects;
 
 public class TrayIconManager {
+	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/tray_asset";
 	private static TrayIcon mainTrayIcon;
+	
 	static void createTrayIcon() {
 		if (!SystemTray.isSupported()) return;
 		try {
@@ -232,6 +234,10 @@ public class TrayIconManager {
 			cssFile = STYLES_FILES_DIR_PATH + "/tray-gray.css";
 		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(CREAM))) {
 			cssFile = STYLES_FILES_DIR_PATH + "/tray-cream.css";
+		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(DARK_BLUE))) {
+			cssFile = STYLES_FILES_DIR_PATH + "/tray-dark-blue.css";
+		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(LAVENDER))) {
+			cssFile = STYLES_FILES_DIR_PATH + "/tray-lavender.css";
 		} else {
 			TrayTheme.SystemTheme theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
 			cssFile = (theme == DARK) ? STYLES_FILES_DIR_PATH + "/tray-dark.css" : STYLES_FILES_DIR_PATH + "/tray-light.css";

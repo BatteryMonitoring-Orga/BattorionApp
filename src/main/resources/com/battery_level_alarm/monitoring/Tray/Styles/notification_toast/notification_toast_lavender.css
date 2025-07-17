@@ -1,0 +1,28 @@
+#notification-pane {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f3ecff, #e6dcfa);
+    -fx-background-radius: 8 24 8 24 !important;
+    -fx-border-radius: 8 24 8 24 !important;
+    -fx-border-color: linear-gradient(to right, #c8b6ef, #bda9e6, #c8b6ef);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(132, 94, 194, 0.2), 12, 0.2, 0, 4);
+}
+
+#notification-label {
+    -fx-text-fill: #6a5a92;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: linear-gradient(to right, #b59ae9, #9e87d7, #845ec2);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-radius: 22;
+    -fx-effect: dropshadow(gaussian, rgba(132, 94, 194, 0.35), 8, 0.3, 0, 3);
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to right, #8e72c9, #7a5cb6, #6e4ba8);
+}

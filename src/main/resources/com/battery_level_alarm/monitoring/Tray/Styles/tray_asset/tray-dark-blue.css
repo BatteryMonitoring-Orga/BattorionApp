@@ -1,0 +1,39 @@
+#tray-context-menu {
+    -fx-background-color: #252b31;
+    -fx-background-radius: 0 10 0 10 !important;
+    -fx-border-radius: 0 10 0 10 !important;
+    -fx-border-color: linear-gradient(to right, #5f6d78, #8fa2ad, #5f6d78);
+    -fx-border-width: 2;
+    -fx-pref-width: 175px;
+}
+
+#item-open,
+#item-pause,
+#item-settings,
+#item-about,
+#item-pin-to-tray,
+#item-switch-mode {
+    -fx-padding: 0 26 0 26;
+    -fx-font-family: "Times New Roman", Serif;
+    -fx-text-fill: #d2d6da;
+    -fx-font-size: 14px;
+}
+
+#item-switch-mode {
+    -fx-text-fill: #a0adb8;
+}
+
+#item-exit {
+    -fx-padding: 0 26 0 26;
+    -fx-font-family: "Times New Roman", Serif;
+    -fx-text-fill: #c45c5c;
+    -fx-font-size: 14px;
+}
+
+#checkbox-startup,
+#checkbox-wake-up,
+#checkbox-battery-icon {
+    -fx-text-fill: #d2d6da;
+    -fx-font-family: "Times New Roman", Serif;
+    -fx-font-size: 14px;
+}

@@ -1,0 +1,41 @@
+.try-notification-vbox {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f7f3ff, #eee4fa);
+    -fx-border-color: linear-gradient(to right, #c7b3eb, #bca8e2, #c7b3eb);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(87, 75, 115, 0.12), 10, 0.2, 0, 3);
+}
+
+.try-notification-hbox {
+    -fx-spacing: 10;
+}
+
+.try-notification-button {
+    -fx-background-color: linear-gradient(to right, #b59ae9, #9e87d7, #845ec2);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 9 18 9 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(132, 94, 194, 0.35), 7, 0.3, 0, 3);
+}
+
+.try-notification-button:hover {
+    -fx-background-color: linear-gradient(to right, #967dd1, #7c65b4, #6e4ba8);
+}
+
+.try-notification-combo {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f6f1fd, #ede2f9);
+    -fx-border-color: #c7b3eb;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+}
+
+.try-notification-combo .list-cell {
+    -fx-text-fill: #5d4f7c;
+}

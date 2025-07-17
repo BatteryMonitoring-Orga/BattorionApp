@@ -20,7 +20,7 @@ import javafx.util.Duration;
 import java.util.Objects;
 
 public class MiniToast {
-	private static final String STYLES_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles";
+	private static final String STYLES_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/mini_toast_styles";
 	
 	public static void show(
 			Point2D screenCoordinates, String msg, double durationSeconds,
@@ -55,6 +55,10 @@ public class MiniToast {
 			cssFile = STYLES_PATH + "/mini_toast_dark.css";
 		} else if (mode.equalsIgnoreCase(String.valueOf(GRAY))) {
 			cssFile = STYLES_PATH + "/mini_toast_gray.css";
+		} else if (mode.equalsIgnoreCase(String.valueOf(DARK_BLUE))) {
+			cssFile = STYLES_PATH + "/mini_toast_dark_blue.css";
+		} else if (mode.equalsIgnoreCase(String.valueOf(LAVENDER))) {
+			cssFile = STYLES_PATH + "/mini_toast_lavender.css";
 		} else if (mode.equalsIgnoreCase(String.valueOf(CREAM))) {
 			cssFile = STYLES_PATH + "/mini_toast_cream.css";
 		} else {

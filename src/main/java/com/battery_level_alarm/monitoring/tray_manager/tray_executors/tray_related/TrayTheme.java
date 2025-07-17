@@ -15,7 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class TrayTheme {
-	public enum SystemTheme { DARK, LIGHT, GRAY, CREAM, AS_SYSTEM }
+	public enum SystemTheme { DARK, DARK_BLUE, LIGHT, LAVENDER, GRAY, CREAM, AS_SYSTEM }
 	private static SystemTheme currentTheme;
 	private static ScheduledExecutorService scheduler;
 	
@@ -23,7 +23,6 @@ public class TrayTheme {
 		if (scheduler != null && !scheduler.isShutdown() && !scheduler.isTerminated()) {
 			return;
 		}
-		
 		currentTheme = getCurrentSystemTheme();
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduler.scheduleAtFixedRate(() -> {
@@ -62,6 +61,8 @@ public class TrayTheme {
 		scene.getStylesheets().clear();
 		String themePath = switch (selectedTheme) {
 			case DARK -> DARK_THEME_FILE_PATH;
+			case DARK_BLUE -> DARK_BLUE_THEME_FILE_PATH;
+			case LAVENDER -> LAVENDER_THEME_FILE_PATH;
 			case GRAY -> GRAY_THEME_FILE_PATH;
 			case CREAM -> CREAM_THEME_FILE_PATH;
 			case AS_SYSTEM -> {

@@ -36,13 +36,24 @@ public class BattorionCoreConstants {
         public static final String APP_NAME = "Battorion";
         public static final String APP_FRAME_TITLE = APP_NAME + " — Comprehensive Battery & System Management";
         public static final String TRAY_NOTIFICATION_NAME = APP_NAME + " — Running in Background";
+        public static final String DEFAULT_DARK_GRADIENT = "DarkBlueFade3";
+        public static final String DEFAULT_LIGHT_GRADIENT = "LavenderIceGlow";
         public static final String NULL_VALUE = "null";
-        public static String UserEmail;
         
         public static final URI BATTORION_WEBSITE = getBattorionWebsiteURI();
         private static URI getBattorionWebsiteURI() {
             try {
                 return new URI("https://battorion-website.vercel.app/");
+            } catch (URISyntaxException e) {
+                printErrorMessage(e);
+                return null;
+            }
+        }
+        
+        public static final URI BATTORION_WEBSITE_SEND_IMAGE_PAGE = getBattorionWebsiteSendImagePageURI();
+        private static URI getBattorionWebsiteSendImagePageURI() {
+            try {
+                return new URI("https://battorion-website.vercel.app/html/send-image.html");
             } catch (URISyntaxException e) {
                 printErrorMessage(e);
                 return null;
@@ -214,6 +225,7 @@ public class BattorionCoreConstants {
         public static final String BATTORION_STARTED_AT = "DownloadedAtDate";
         public static final String USER_DATA_UPLOADED = "IsUserDataUploaded";
         public static final String LAST_STATUS_VALIDATE = "status";
+        public static final String USER_EMAIL = "email";
         public static final String NEW_TRAY_TAB = "HasSeenNewTab";
         public static final String VERSION_FILE_PATH = "VersionFilePath";
     }

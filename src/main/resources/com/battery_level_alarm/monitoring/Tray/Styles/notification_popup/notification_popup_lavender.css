@@ -1,0 +1,45 @@
+.notification-root {
+    -fx-background-color: linear-gradient(to bottom right, #fdfbff, #f3e9ff, #ede0fb);
+    -fx-background-radius: 5 25 5 25 !important;
+    -fx-border-radius: 5 25 5 25 !important;
+    -fx-border-color: linear-gradient(to right, #a47ae0, #e3d6ff, #a47ae0);
+    -fx-border-width: 2;
+    -fx-background-insets: 0;
+    -fx-background-clip: padding-box;
+    -fx-border-insets: 0;
+    -fx-effect: dropshadow(gaussian, rgba(132, 94, 194, 0.2), 14, 0.3, 0, 5);
+    -fx-padding: 0;
+}
+
+.title-label {
+    -fx-font-size: 18px;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-weight: 700;
+    -fx-text-fill: #7a55c6;
+    -fx-padding: 0 0 4 0;
+}
+
+.message-label {
+    -fx-font-size: 15px;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-weight: 400;
+    -fx-text-fill: #6a549c;
+    -fx-line-spacing: 1.2;
+}
+
+.title-box {
+    -fx-padding: 12 16 6 16;
+    -fx-alignment: center-left;
+}
+
+.message-box {
+    -fx-padding: 6 16 16 16;
+    -fx-alignment: center-left;
+}
+
+.title-icon,
+.message-icon {
+    -fx-background-radius: 50%;
+    -fx-padding: 6;
+    -fx-effect: dropshadow(gaussian, rgba(132, 94, 194, 0.15), 8, 0.2, 0, 3);
+}

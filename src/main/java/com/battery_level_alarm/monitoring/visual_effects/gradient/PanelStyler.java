@@ -1,4 +1,6 @@
 package com.battery_level_alarm.monitoring.visual_effects.gradient;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.DEFAULT_DARK_GRADIENT;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.DEFAULT_LIGHT_GRADIENT;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.getEndPreviewColor;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.getStartPreviewColor;
@@ -13,9 +15,12 @@ public class PanelStyler {
     private static String gradientBackgroundLightModeName;
     private static Color startCustomColor;
     private static Color endCustomColor;
-    private static Color appliedStartColor;
-    private static Color appliedEndColor;
-
+    private static Color[] currentGradientColors = new Color[]{
+            new Color(0x0f2027),
+            new Color(0x203a43),
+            new Color(0x2c5364)
+    };
+    
     public static String getGradientBackgroundDarkModeName(){
         return gradientBackgroundDarkModeName;
     }
@@ -44,7 +49,7 @@ public class PanelStyler {
 
     public static JPanel applyGradientBackground(
             JPanel panel, boolean isDarkMode, boolean isRoundedCorner, int cornerRadius, boolean isForPreview
-    ){
+    ) {
         panel.setOpaque(false);
         panel.paintComponents(panel.getGraphics());
         panel = new JPanel() {
@@ -55,10 +60,19 @@ public class PanelStyler {
                 Graphics2D g2d = (Graphics2D) g.create();
                 int width = getWidth();
                 int height = getHeight();
-                g2d.setColor(getBackground());
-
-                GradientPaint gradient = new GradientPaint(0, 0, appliedStartColor, width, height, appliedEndColor);
-                g2d.setPaint(gradient);
+                
+                float[] fractions = new float[currentGradientColors.length];
+                for (int i = 0; i < fractions.length; i++) {
+                    fractions[i] = (float) i / (fractions.length - 1);
+                }
+                
+                LinearGradientPaint paint = new LinearGradientPaint(
+                        0, 0, width, height,
+                        fractions,
+                        currentGradientColors
+                );
+                
+                g2d.setPaint(paint);
                 if (isRoundedCorner) {
                     g2d.fillRoundRect(0, 0, width, height, cornerRadius, cornerRadius);
                 } else {
@@ -70,28 +84,24 @@ public class PanelStyler {
         panel.setLayout(new BorderLayout());
         return panel;
     }
-
+    
     private static void getGradientBackgroundColors(boolean isDarkMode, boolean isForPreview){
         if (isDarkMode && !isForPreview && !customizationGradientBackground) {
             Color[] colors = DARK_GRADIENTS.get(gradientBackgroundDarkModeName);
             if(colors == null){
-                colors = DARK_GRADIENTS.get("BloodEmber");
+                colors = DARK_GRADIENTS.get(DEFAULT_DARK_GRADIENT);
             }
-            appliedStartColor = colors[0];
-            appliedEndColor = colors[1];
+            currentGradientColors = colors;
         } else if (!isForPreview && !customizationGradientBackground){
             Color[] colors = LIGHT_GRADIENTS.get(gradientBackgroundLightModeName);
             if(colors == null){
-                colors = LIGHT_GRADIENTS.get("FrozenRose");
+                colors = LIGHT_GRADIENTS.get(DEFAULT_LIGHT_GRADIENT);
             }
-            appliedStartColor = colors[0];
-            appliedEndColor = colors[1];
+            currentGradientColors = colors;
         } else if (!isForPreview){
-            appliedStartColor = startCustomColor;
-            appliedEndColor = endCustomColor;
+            currentGradientColors = new Color[]{ startCustomColor, endCustomColor };
         } else {
-            appliedStartColor = getStartPreviewColor();
-            appliedEndColor = getEndPreviewColor();
+            currentGradientColors = new Color[]{ getStartPreviewColor(), getEndPreviewColor() };
         }
     }
 }

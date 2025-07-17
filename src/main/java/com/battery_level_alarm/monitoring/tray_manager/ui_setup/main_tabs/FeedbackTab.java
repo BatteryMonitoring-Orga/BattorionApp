@@ -4,11 +4,14 @@ import com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants;
 import com.battery_level_alarm.monitoring.feedback_system.FeedbackSender;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,16 +19,23 @@ import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploade
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.showAlert;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_EMAIL;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab.handleScroll;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.insets;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.website.Website.createFXWebsiteSendImagePageCaller;
 
 public class FeedbackTab {
+	private static Label selectedFileLabel;
+	private static boolean isFileSelected = false;
+	
 	public static Tab createFeedbackTab() {
 		Label titleLabel = new Label("Your Feedback Matters");
-		titleLabel.setStyle("-fx-font-size: 20px;");
-		VBox content = new VBox(20, titleLabel, createFeedbackFormBox());
+		titleLabel.setStyle("-fx-font-size: 22px;");
+		Pane hyperlink = createFXWebsiteSendImagePageCaller(Pos.CENTER_LEFT);
+		VBox headerBox = new VBox(titleLabel, hyperlink);
+		VBox content = new VBox(20, headerBox, createFeedbackFormBox());
 		content.setPadding(insets);
 		
 		Pane viewport = new Pane(content);
@@ -39,6 +49,8 @@ public class FeedbackTab {
 	
 	private static VBox createFeedbackFormBox() {
 		final double MAX_WIDTH = 270;
+		final File[] selectedFile = {null};
+		
 		Label nameLabel = new Label("Name");
 		TextField nameField = new TextField();
 		nameField.setId("feedback-name");
@@ -52,12 +64,11 @@ public class FeedbackTab {
 		emailField.setPromptText("Enter your email address");
 		emailField.setId("feedback-email");
 		
-		String savedEmail = BattorionCoreConstants.AppInfo.UserEmail;
+		String savedEmail = prefs.get(USER_EMAIL, "");
 		if (savedEmail != null && !savedEmail.isEmpty()) {
 			emailField.setText(savedEmail);
 			rememberEmailCheckBox.setVisible(false);
 		}
-		
 		emailField.textProperty().addListener((_, _, newValue) -> {
 			if (savedEmail != null && !savedEmail.isEmpty()) {
 				if (newValue.equalsIgnoreCase(savedEmail)) {
@@ -102,9 +113,13 @@ public class FeedbackTab {
 		feedbackArea.setPrefWidth(MAX_WIDTH);
 		rememberEmailCheckBox.setMaxWidth(MAX_WIDTH);
 		rememberEmailCheckBox.setPrefWidth(MAX_WIDTH);
+		
 		HBox centeredButtonBox = getSubmitButtonBox(
-				nameField, emailField, subjectField, feedbackArea, rememberEmailCheckBox
+				nameField, emailField, subjectField, feedbackArea, rememberEmailCheckBox, selectedFile
 		);
+		HBox attachImageButtonBox = createAttachImageBox(selectedFile);
+		HBox buttonsBox = new HBox(attachImageButtonBox, centeredButtonBox);
+		buttonsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 		
 		VBox formBox = new VBox(10,
 				nameLabel, nameField,
@@ -112,7 +127,7 @@ public class FeedbackTab {
 				rememberEmailCheckBox,
 				subjectLabel, subjectField,
 				feedbackLabel, feedbackArea,
-				centeredButtonBox
+				buttonsBox, selectedFileLabel
 		);
 		formBox.setPadding(new Insets(10));
 		formBox.setStyle("-fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 8;");
@@ -126,13 +141,13 @@ public class FeedbackTab {
 			TextField emailField,
 			TextField subjectField,
 			TextArea feedbackArea,
-			CheckBox rememberEmailCheckBox
+			CheckBox rememberEmailCheckBox,
+			File[] selectedFile
 	) {
 		Button sendButton = new Button("Send");
 		sendButton.setId("feedback-send-button");
 		sendButton.setMaxWidth(100);
 		sendButton.setPrefWidth(100);
-		
 		sendButton.setOnAction(_ -> {
 			String name = nameField.getText().trim();
 			String email = emailField.getText().trim();
@@ -157,11 +172,17 @@ public class FeedbackTab {
 				emailField.setText("");
 				subjectField.setText("");
 				feedbackArea.setText("");
-				rememberEmailCheckBox.setSelected(false);
+				selectedFileLabel.setText("");
 				Thread.ofVirtual().start(() -> {
 					if (isInternetAvailable()) {
-						Thread.ofVirtual().start(() ->
-								FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback));
+						Thread.ofVirtual().start(() -> {
+							if(isFileSelected) {
+								FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback, selectedFile[0]);
+								isFileSelected = false;
+							} else {
+								FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback, null);
+							}
+						});
 					} else {
 						Platform.runLater(() ->
 								showAlert(Alert.AlertType.WARNING, "No internet connection. Please try again later."));
@@ -171,8 +192,40 @@ public class FeedbackTab {
 		});
 		
 		HBox centeredButtonBox = new HBox(sendButton);
-		centeredButtonBox.setPadding(new Insets(5, 0, 0, 0));
+		centeredButtonBox.setPadding(new Insets(5, 0, 0, 5));
 		centeredButtonBox.setAlignment(javafx.geometry.Pos.CENTER);
 		return centeredButtonBox;
+	}
+	
+	private static @NotNull HBox createAttachImageBox(File[] selectedFile) {
+		selectedFileLabel = new Label();
+		selectedFileLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #555;");
+		selectedFileLabel.setWrapText(true);
+		selectedFileLabel.setMaxWidth(250);
+		
+		Button attachButton = new Button("Attach Image");
+		attachButton.setTooltip(new Tooltip("Attach a screenshot or image (optional)"));
+		attachButton.setId("feedback-attach-button");
+		attachButton.setMaxWidth(150);
+		attachButton.setPrefWidth(150);
+		attachButton.setOnAction(_ -> {
+			isFileSelected = false;
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Select Image");
+			fileChooser.getExtensionFilters().addAll(
+					new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+			);
+			File file = fileChooser.showOpenDialog(attachButton.getScene().getWindow());
+			if (file != null) {
+				selectedFile[0] = file;
+				isFileSelected = true;
+				selectedFileLabel.setText("Selected: " + file.getName());
+			}
+		});
+		
+		HBox attachBox = new HBox(attachButton);
+		attachBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+		attachBox.setPadding(new Insets(5, 5, 0, 0));
+		return attachBox;
 	}
 }

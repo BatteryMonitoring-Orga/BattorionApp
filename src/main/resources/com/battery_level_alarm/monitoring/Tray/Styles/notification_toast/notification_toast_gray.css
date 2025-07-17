@@ -1,0 +1,26 @@
+#notification-pane {
+    -fx-background-color: rgba(40, 40, 40, 0.95);
+    -fx-background-radius: 5 20 5 20 !important;
+    -fx-border-radius: 5 20 5 20 !important;
+    -fx-border-color: rgba(200, 200, 200, 0.6);
+    -fx-border-width: 2;
+}
+
+#notification-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-color: rgba(200, 200, 200, 0.6);
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-radius: 20;
+}
+
+.button:hover {
+    -fx-background-color: rgba(220, 220, 220, 0.9);
+}

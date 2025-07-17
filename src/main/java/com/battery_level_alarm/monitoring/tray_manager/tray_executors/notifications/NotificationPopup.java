@@ -4,7 +4,6 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.STYLES_FILES_DIR_PATH;
 
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
 import javafx.animation.KeyFrame;
@@ -31,6 +30,7 @@ public class NotificationPopup {
 	private static final int width = 350;
 	private static final int height = 150;
 	private final int displayDurationMillis;
+	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/notification_popup";
 	
 	public NotificationPopup(String title, String msg, String titleIconPath, String messageIconPath, int durationMillis) {
 		this.displayDurationMillis = durationMillis;
@@ -78,6 +78,10 @@ public class NotificationPopup {
 			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_gray.css";
 		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(CREAM))) {
 			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_cream.css";
+		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(DARK_BLUE))) {
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_dark_blue.css";
+		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(LAVENDER))) {
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_popup_lavender.css";
 		} else {
 			TrayTheme.SystemTheme theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
 			cssFile = (theme == DARK) ? STYLES_FILES_DIR_PATH + "/notification_popup_dark.css" : STYLES_FILES_DIR_PATH + "/notification_popup_light.css";

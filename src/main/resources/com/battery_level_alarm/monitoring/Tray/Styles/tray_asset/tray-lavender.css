@@ -1,0 +1,54 @@
+#tray-context-menu {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f8f4ff, #f1e8fc);
+    -fx-background-radius: 0 10 0 10 !important;
+    -fx-border-radius: 0 10 0 10 !important;
+    -fx-border-color: linear-gradient(to right, #a78bda, #dacff5, #a78bda);
+    -fx-border-width: 2;
+    -fx-pref-width: 175px;
+    -fx-effect: dropshadow(gaussian, rgba(132, 94, 194, 0.12), 10, 0.2, 0, 3);
+}
+
+#item-open,
+#item-pause,
+#item-settings,
+#item-about,
+#item-pin-to-tray,
+#item-switch-mode {
+    -fx-padding: 0 26 0 26;
+    -fx-font-family: "Times New Roman", Serif;
+    -fx-text-fill: #5c4a7c;
+    -fx-font-size: 14px;
+    -fx-background-color: transparent;
+}
+
+#item-switch-mode {
+    -fx-text-fill: #7d5cc4;
+    -fx-font-weight: bold;
+}
+
+#item-exit {
+    -fx-padding: 0 26 0 26;
+    -fx-font-family: "Times New Roman", Serif;
+    -fx-text-fill: #c44c5a;
+    -fx-font-size: 14px;
+    -fx-background-color: transparent;
+}
+
+#checkbox-startup,
+#checkbox-wake-up,
+#checkbox-battery-icon {
+    -fx-text-fill: #5c4a7c;
+    -fx-font-family: "Times New Roman", Serif;
+    -fx-font-size: 14px;
+}
+
+#item-open:hover,
+#item-pause:hover,
+#item-settings:hover,
+#item-about:hover,
+#item-pin-to-tray:hover,
+#item-switch-mode:hover,
+#item-exit:hover {
+    -fx-background-color: rgba(132, 94, 194, 0.08);
+    -fx-background-radius: 6;
+}

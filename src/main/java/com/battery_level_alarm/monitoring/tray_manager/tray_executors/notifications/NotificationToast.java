@@ -24,10 +24,10 @@ import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tra
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.isToastNotifyEnabled;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.STYLES_FILES_DIR_PATH;
 
 public class NotificationToast {
 	private static boolean isShowingToast = false;
+	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/notification_toast";
 	
 	public static void showNotification(String message, Stage owner, boolean isWelcomeMSG) {
 		if (isShowingToast || !isToastNotifyEnabled) return;
@@ -127,6 +127,10 @@ public class NotificationToast {
 			cssFile = STYLES_FILES_DIR_PATH + "/notification_toast_gray.css";
 		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(CREAM))) {
 			cssFile = STYLES_FILES_DIR_PATH + "/notification_toast_cream.css";
+		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(DARK_BLUE))) {
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_toast_dark_blue.css";
+		} else if (mode != null && mode.equalsIgnoreCase(String.valueOf(LAVENDER))) {
+			cssFile = STYLES_FILES_DIR_PATH + "/notification_toast_lavender.css";
 		} else {
 			TrayTheme.SystemTheme theme = System.getProperty("os.name").toLowerCase().contains("mac") ? getMacTheme() : getSystemTheme();
 			cssFile = (theme == DARK) ? STYLES_FILES_DIR_PATH + "/notification_toast_dark.css" : STYLES_FILES_DIR_PATH + "/notification_toast_light.css";

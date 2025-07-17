@@ -1,6 +1,8 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.APP_VERSION;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.MAIN_FOLDER_NAME;
+import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.STYLES_FILES_DIR_PATH;
+
 import com.battery_level_alarm.monitoring.battery_report.HTMLOpener;
 
 import com.battery_level_alarm.monitoring.questionnaires.AppendixesQuestionnaire;
@@ -190,7 +192,7 @@ public class TrayAlerts {
 		}
 		
 		DialogPane pane = alert.getDialogPane();
-		pane.getStylesheets().add(Objects.requireNonNull(TrayAlerts.class.getResource("/com/battery_level_alarm/monitoring/Tray/Styles/dialog-style.css")).toExternalForm());
+		pane.getStylesheets().add(Objects.requireNonNull(TrayAlerts.class.getResource(STYLES_FILES_DIR_PATH + "/dialog-style.css")).toExternalForm());
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.setResizable(false);
 		stage.getIcons().add(new Image(Objects.requireNonNull(

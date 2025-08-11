@@ -82,12 +82,13 @@ public class AppNotificationToast {
 		closeButton.setFont(Font.font(14));
 		closeButton.setFocusTraversable(false);
 		
-		VBox closeButtonBox = new VBox(closeButton);
+		Region topGap = new Region();
+		topGap.setPrefHeight(10);
+		VBox closeButtonBox = new VBox(topGap, closeButton);
 		closeButtonBox.setAlignment(Pos.TOP_CENTER);
 		
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
-		
 		HBox rootLayout = new HBox(20, batteryBox, centerBox, spacer, closeButtonBox);
 		rootLayout.setAlignment(Pos.CENTER_LEFT);
 		

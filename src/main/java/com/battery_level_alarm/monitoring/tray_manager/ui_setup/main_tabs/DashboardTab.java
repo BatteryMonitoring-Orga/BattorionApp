@@ -24,10 +24,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Objects;
@@ -56,10 +53,15 @@ public class DashboardTab {
 				content.getChildren().addAll(notifyBox, batteryBox, new Separator(), infoBox);
 			} else {
 				content.getChildren().addAll(batteryBox, new Separator(), infoBox);
+				content.setPadding(new Insets(
+						content.getInsets().getTop() + 16,
+						content.getInsets().getRight(),
+						content.getInsets().getBottom(),
+						content.getInsets().getLeft()));
 			}
 		});
 		
-		Pane viewport = new Pane(content);
+		StackPane viewport = new StackPane(content);
 		Rectangle clip = new Rectangle();
 		clip.widthProperty().bind(viewport.widthProperty());
 		clip.heightProperty().bind(viewport.heightProperty());

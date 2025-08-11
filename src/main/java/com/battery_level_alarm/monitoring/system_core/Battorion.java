@@ -98,6 +98,7 @@ public class Battorion {
     private static final int duration = 1000;
     private static int lastBatteryLevel = 0;
     public static int batteryLevel = 0;
+    private static String msg = "";
 	public static String status = "";
     public static String lastMode = "";
     
@@ -117,7 +118,7 @@ public class Battorion {
     public static void main(String[] args) {
         setupUIFont();
         prefs = Preferences.userNodeForPackage(Battorion.class);
-	    String modeToUse = prefs.get(START_BATTORION_WITH, String.valueOf(DepartureModes.START_WITH_APPLICATION));
+        String modeToUse = prefs.get(START_BATTORION_WITH, String.valueOf(DepartureModes.START_WITH_APPLICATION));
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             logger.log(SEVERE, "🚨 Uncaught exception in thread: " + thread.getName(), throwable);
             printErrorMessage(throwable);
@@ -138,7 +139,7 @@ public class Battorion {
         }
         
         loadGeneralConfigurations();
-	    loadUpdateVersionConfigurations();
+        loadUpdateVersionConfigurations();
         Appearance.theme_setup();
         SingletonObject.singletonMethod(modeToUse, args);
     }
@@ -409,10 +410,16 @@ public class Battorion {
                                 highLevelActions(batteryColor);
                             } else if (!isSilentMode && !isCharging && (batteryLevel <= minValue)) {
                                 lowLevelActions(batteryColor);
+                            } else if (isCharging && (batteryLevel >= maxValue)) {
+                                msg = "Battery is too high! Please unplug the charger...";
+                                toastNotification();
+                            } else if (!isCharging && (batteryLevel <= minValue)) {
+                                msg = "Battery is too low! Please plug the charger...";
+                                toastNotification();
                             } else if (
                                     !isSilentMode && isCharging &&
                                     (batteryLevel >= (maxValue - UserChoices.getAlertBeforeRiskPhaseBy()))
-                            ){
+                            ) {
                                 handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
                                 Platform.setImplicitExit(false);
                                 Platform.runLater(() -> AppNotificationToast.showNotification("Battery level is high! Please unplug the charger.", batteryLevel, false));
@@ -455,7 +462,7 @@ public class Battorion {
         }
     }
     
-    public static void checkAndReset(Color batteryColor){
+    public static void checkAndReset(Color batteryColor) {
         try {
             getBatteryMode(batteryColor);
             batteryLevel = (int) getBatteryLevel();
@@ -490,20 +497,18 @@ public class Battorion {
     }
     
     private static void highLevelActions(Color batteryColor) {
-        try{
-            String msg = "Battery is too high! Please unplug the charger...";
-            if(isEnableSystemNotificationSound()){
+        try {
+            msg = "Battery is too high! Please unplug the charger...";
+            if(isEnableSystemNotificationSound()) {
                 organizationOfRecallProcess(msg);
-            }
-            isFromCriticalAlert = true;
-            handleHighBattery(batteryBar, alertLabel, batteryColor, msg);
-            Platform.setImplicitExit(false);
-            Platform.runLater(() -> AppNotificationToast.showNotification(msg, batteryLevel, false));
-            
-            checkBrightnessControlMode(1);
-            if(!operationIsEnd){
+            } if(!operationIsEnd) {
                 howLongBatteryNeedToFullOrDump(status, "End");
             }
+            
+            isFromCriticalAlert = true;
+            handleHighBattery(batteryBar, alertLabel, batteryColor, msg);
+            toastNotification();
+            checkBrightnessControlMode(1);
             operationIsEnd = true;
         } catch (Exception e) {
             printErrorMessage(e);
@@ -511,20 +516,18 @@ public class Battorion {
     }
     
     private static void lowLevelActions(Color batteryColor) {
-        try{
-            String msg = "Battery is too low! Please plug the charger...";
-            if(isEnableSystemNotificationSound()){
+        try {
+            msg = "Battery is too low! Please plug the charger...";
+            if(isEnableSystemNotificationSound()) {
                 organizationOfRecallProcess(msg);
-            }
-            isFromCriticalAlert = true;
-            handleLowBattery(batteryBar, alertLabel, batteryColor, msg);
-            Platform.setImplicitExit(false);
-            Platform.runLater(() -> AppNotificationToast.showNotification(msg, batteryLevel, false));
-            
-            checkBrightnessControlMode(2);
-            if(!operationIsEnd){
+            } if(!operationIsEnd) {
                 howLongBatteryNeedToFullOrDump(status, "End");
             }
+            
+            isFromCriticalAlert = true;
+            handleLowBattery(batteryBar, alertLabel, batteryColor, msg);
+            toastNotification();
+            checkBrightnessControlMode(2);
             operationIsEnd = true;
         } catch (Exception e) {
             printErrorMessage(e);
@@ -537,13 +540,17 @@ public class Battorion {
         }
         callFlag = true;
         callNotifier(msg);
-        
         Timer organizer = new Timer(
                 15000,
                 _ -> callFlag = false
         );
         organizer.setRepeats(false);
         organizer.start();
+    }
+    
+    private static void toastNotification() {
+        Platform.setImplicitExit(false);
+        Platform.runLater(() -> AppNotificationToast.showNotification(msg, batteryLevel, false));
     }
     
     private static void checkBrightnessControlMode(int from) {

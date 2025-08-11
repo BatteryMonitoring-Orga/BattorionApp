@@ -18,7 +18,6 @@ import static com.battery_level_alarm.monitoring.visual_effects.messages.Display
 
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationToast;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryIconWindow;
-import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryTrayIcon;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
@@ -165,11 +164,7 @@ public class TrayIconManager {
 			prefs.put(SHOW_BATTERY_ICON, String.valueOf(selected));
 			try {
 				if (selected) {
-					if (BatteryTrayIcon.trayIcon != null) {
-						SystemTray.getSystemTray().add(BatteryTrayIcon.trayIcon);
-					} else {
-						Thread.ofVirtual().start(() -> BatteryIconWindow.show(chargeLevel / 100.0, isCharging));
-					}
+					Thread.ofVirtual().start(() -> BatteryIconWindow.show(chargeLevel / 100.0, isCharging));
 				} else if (BatteryIconWindow.getPrimaryIconStage() != null) {
 					BatteryIconWindow.getInvisibleOwner().hide();
 					BatteryIconWindow.getPrimaryIconStage().hide();

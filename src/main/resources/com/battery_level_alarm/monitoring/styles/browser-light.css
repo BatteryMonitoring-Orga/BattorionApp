@@ -1,0 +1,129 @@
+.root {
+    -fx-font-family: 'Segoe UI', 'Fira Sans', sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: linear-gradient(to bottom, #f5f7fa, #dce3ed);
+    -fx-text-fill: #1e1e2f;
+}
+
+#main-split-pane {
+    -fx-background-color: linear-gradient(to bottom, #f5f7fa, #dce3ed);
+}
+
+#sidebar {
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-border-color: #a178df;
+    -fx-border-width: 0 1px 0 0;
+}
+
+#topic-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111111;
+}
+
+#topic-list {
+    -fx-control-inner-background: rgba(255, 255, 255, 1);
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+    -fx-text-fill: #555f68;
+}
+
+.topic-list-header {
+    -fx-control-inner-background: linear-gradient(to right, #4fa3d9, #2c91d6);
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 8px 12px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+.list-cell {
+    -fx-text-fill: #666a6d;
+    -fx-background-color: transparent;
+}
+
+.list-cell:hover {
+    -fx-background-color: rgba(132, 94, 194, 0.3);
+}
+
+.list-cell:selected {
+    -fx-background-color: #845ec2;
+    -fx-text-fill: #ffffff;
+}
+
+.tab-pane {
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 6);
+}
+
+.tab {
+    -fx-background-insets: 0;
+}
+
+.tab:selected {
+    -fx-background-color: linear-gradient(to bottom, #f5f7fa, #e4e9f0);
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #111111;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #845ec2;
+}
+
+#tab-wrapper {
+    -fx-background-color: rgba(255, 255, 255, 0.96);
+}
+
+#web-view {
+    -fx-background-color: rgba(255, 255, 255, 1);
+}
+
+.web-view * {
+    font-family: 'Segoe UI', 'Fira Sans', sans-serif;
+    font-size: 14px;
+    color: #1e1e2f;
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.web-view h1, .web-view h2, .web-view h3 {
+    font-weight: bold;
+    color: #111111;
+    margin-top: 1em;
+}
+
+.web-view p {
+    margin-bottom: 1em;
+    color: #555f68;
+}
+
+.web-view a {
+    color: #845ec2;
+    text-decoration: none;
+}
+
+.web-view a:hover {
+    text-decoration: underline;
+}
+
+.web-view code {
+    font-family: 'Fira Code', monospace;
+    background-color: #e4e9f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #1e1e2f;
+}
+
+.web-view pre {
+    background-color: #f5f7fa;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    color: #1e1e2f;
+}

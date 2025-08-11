@@ -9,6 +9,8 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_setup.LifeRep
 
 public class ChooseActionPanel {
     private static final Font FONT = new Font("Serif", Font.BOLD, 14);
+    public static JButton reanalyzeButton;
+    
     public static JPanel create() {
         File reportFile = new File(BATTERY_REPORT_PATH);
         String buttonText = reportFile.exists() ? "Re-create" : "Create";
@@ -40,7 +42,7 @@ public class ChooseActionPanel {
         createButton.setMinimumSize(buttonSize);
         createButton.setAlignmentY(Component.CENTER_ALIGNMENT);
         
-        JButton reanalyzeButton = new JButton("Reanalyze");
+        reanalyzeButton = new JButton("Reanalyze");
         reanalyzeButton.setFont(FONT);
         reanalyzeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         reanalyzeButton.setPreferredSize(buttonSize);
@@ -58,7 +60,7 @@ public class ChooseActionPanel {
         wrapper.add(panel, new GridBagConstraints());
         
         createButton.addActionListener(_ -> batteryReport());
-        reanalyzeButton.addActionListener(_ -> refreshReportPanel(true));
+        reanalyzeButton.addActionListener(_ -> Thread.ofVirtual().start(() -> refreshReportPanel(true)));
         openButton.addActionListener(_ -> {
             if (reportFile.exists()) {
                 HTMLOpener.open(BATTERY_REPORT_PATH);

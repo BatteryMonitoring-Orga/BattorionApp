@@ -22,12 +22,12 @@ import java.util.Objects;
 
 public class JavaFXSoundComboBox {
 	private static final Font STYLE = Font.font("Serif", 14);
-	private static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-dark-style.css";
-	private static final String DARK_BLUE_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-dark-blue-style.css";
-	private static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-gray-style.css";
-	private static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-cream-style.css";
-	private static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-light-style.css";
-	private static final String LAVENDER_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/try_notification/try-notifications-lavender-style.css";
+	private static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/try_notification/try-notifications-dark-style.css";
+	private static final String DARK_BLUE_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/try_notification/try-notifications-dark-blue-style.css";
+	private static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/try_notification/try-notifications-gray-style.css";
+	private static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/try_notification/try-notifications-cream-style.css";
+	private static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/try_notification/try-notifications-light-style.css";
+	private static final String LAVENDER_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/try_notification/try-notifications-lavender-style.css";
 	
 	public static HBox createSoundSelector(List<SoundItem> soundItems) {
 		ComboBox<SoundItem> comboBox = new ComboBox<>(FXCollections.observableArrayList(soundItems));

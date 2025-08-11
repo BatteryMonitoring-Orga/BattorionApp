@@ -34,6 +34,7 @@ import static java.util.logging.Level.SEVERE;
 
 import com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder;
 import com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph;
+import com.battery_level_alarm.monitoring.modern_ui.AppNotificationToast;
 import com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
@@ -103,6 +104,8 @@ public class Battorion {
     private static volatile boolean callFlag = false;
     private static volatile boolean interruptRequest = false;
     public static volatile boolean isMonitorRunning = false;
+    public static volatile boolean isFXLaunched = false;
+    public static volatile boolean isAppToastNotifyEnabled = true;
     public static boolean isApplicationMode = true;
     public static boolean isFromCriticalAlert = false;
     public static boolean isWasInCriticalPhase = false;
@@ -147,6 +150,7 @@ public class Battorion {
                 loadComputerSettings();
                 setupAudioDevicesNames();
             });
+            
             DepartureModes mode = BattorionTrayUI.DepartureModes.valueOf(modeToUse);
             if (mode == DepartureModes.START_WITH_TRAY) {
                 isApplicationMode = false;
@@ -208,6 +212,8 @@ public class Battorion {
         setupMainFrameListeners();
         handleAutoMonitoring();
         
+        Platform.setImplicitExit(false);
+        Platform.runLater(() -> AppNotificationToast.showNotification("\uD83D\uDC4B Hey there! Welcome to Battorion — Where innovation meets simplicity!", batteryLevel, true));
         if(!isWestSidePartAppear){
             westSideButton.doClick();
         }
@@ -408,11 +414,15 @@ public class Battorion {
                                     (batteryLevel >= (maxValue - UserChoices.getAlertBeforeRiskPhaseBy()))
                             ){
                                 handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
+                                Platform.setImplicitExit(false);
+                                Platform.runLater(() -> AppNotificationToast.showNotification("Battery level is high! Please unplug the charger.", batteryLevel, false));
                             } else if (
                                     !isSilentMode && !isCharging &&
                                     (batteryLevel <= (minValue + UserChoices.getAlertBeforeRiskPhaseBy()))
                             ) {
                                 handleBatteryWarning(batteryBar, alertLabel, "", batteryColor);
+                                Platform.setImplicitExit(false);
+                                Platform.runLater(() -> AppNotificationToast.showNotification("Battery level is low! Please connect the charger.", batteryLevel, false));
                             } else {
                                 handleNormalBattery(batteryBar, alertLabel, batteryColor);
                             }
@@ -427,7 +437,7 @@ public class Battorion {
                             break;
                         } if ((lastBatteryLevel != batteryLevel) || !status.equals(lastMode)) {
                             lastBatteryLevel = batteryLevel;
-		                    refreshReportPanel(IS_A_LIFE_REPORT_PANEL.equals(whatIsVisible()));
+                            Thread.ofVirtual().start(() -> refreshReportPanel(IS_A_LIFE_REPORT_PANEL.equals(whatIsVisible())));
                         }
                     }
                 } catch (Exception e) {
@@ -467,7 +477,11 @@ public class Battorion {
     
     static void getBatteryMode(Color batteryColor) {
     	try {
+            boolean previousCharging = isCharging;
     		isCharging = getBatteryStatus();
+            if(isCharging != previousCharging) {
+                isAppToastNotifyEnabled = true;
+            }
 		} catch (Exception e) {
             printErrorMessage(e);
 		}
@@ -477,11 +491,14 @@ public class Battorion {
     
     private static void highLevelActions(Color batteryColor) {
         try{
+            String msg = "Battery is too high! Please unplug the charger...";
             if(isEnableSystemNotificationSound()){
-                organizationOfRecallProcess("Battery is too high! Please unplug the charger...");
+                organizationOfRecallProcess(msg);
             }
             isFromCriticalAlert = true;
-            handleHighBattery(batteryBar, alertLabel, batteryColor, "Battery is too high! Please unplug the charger...");
+            handleHighBattery(batteryBar, alertLabel, batteryColor, msg);
+            Platform.setImplicitExit(false);
+            Platform.runLater(() -> AppNotificationToast.showNotification(msg, batteryLevel, false));
             
             checkBrightnessControlMode(1);
             if(!operationIsEnd){
@@ -501,6 +518,8 @@ public class Battorion {
             }
             isFromCriticalAlert = true;
             handleLowBattery(batteryBar, alertLabel, batteryColor, msg);
+            Platform.setImplicitExit(false);
+            Platform.runLater(() -> AppNotificationToast.showNotification(msg, batteryLevel, false));
             
             checkBrightnessControlMode(2);
             if(!operationIsEnd){

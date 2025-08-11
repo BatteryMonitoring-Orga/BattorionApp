@@ -20,6 +20,7 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_setup.statist
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph;
+import com.battery_level_alarm.monitoring.user_interface.ui_setup.LifeReportPanelUI;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
 
 import javax.swing.*;
@@ -205,6 +206,7 @@ public class BattorionButtonHelper {
         LifeReportPanel = lifeReportPanel();
         LifeReportPanel.setVisible(true);
         motherPanel.add(LifeReportPanel, BorderLayout.CENTER);
+        Thread.ofVirtual().start(LifeReportPanelUI::updateBatteryLiveInfo);
     }
     
     public static void setupSettingPanel() {

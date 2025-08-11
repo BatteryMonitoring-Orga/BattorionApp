@@ -30,7 +30,7 @@ public class NotificationPopup {
 	private static final int width = 350;
 	private static final int height = 150;
 	private final int displayDurationMillis;
-	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/notification_popup";
+	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/notification_popup";
 	
 	public NotificationPopup(String title, String msg, String titleIconPath, String messageIconPath, int durationMillis) {
 		this.displayDurationMillis = durationMillis;

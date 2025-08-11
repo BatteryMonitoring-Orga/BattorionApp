@@ -4,11 +4,12 @@ import java.net.URI;
 import java.nio.file.*;
 import java.util.Comparator;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static com.battery_level_alarm.monitoring.core_utilities.UpdateSettings.setPreviousVersion;
 import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.version;
 import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveUpdateVersionConfigurations;
-import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.unzip;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.LATEST_RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
@@ -169,6 +170,34 @@ public class RemoteVersionChecker {
 		} catch (Exception e) {
 			printErrorMessage(e);
 			return null;
+		}
+	}
+	
+	
+	private static void unzip(String zipFilePath) {
+		File dir = new File(com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH);
+		if (!dir.exists()) dir.mkdirs();
+		try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
+			ZipEntry entry = zipIn.getNextEntry();
+			while (entry != null) {
+				File filePath = new File(com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH, entry.getName());
+				if (entry.isDirectory()) {
+					filePath.mkdirs();
+				} else {
+					filePath.getParentFile().mkdirs();
+					try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath))) {
+						byte[] buffer = new byte[4096];
+						int bytesRead;
+						while ((bytesRead = zipIn.read(buffer)) != -1) {
+							bos.write(buffer, 0, bytesRead);
+						}
+					}
+				}
+				zipIn.closeEntry();
+				entry = zipIn.getNextEntry();
+			}
+		} catch (IOException e) {
+			printErrorMessage(e);
 		}
 	}
 }

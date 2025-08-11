@@ -41,10 +41,9 @@ public class AlternativeDiskSpace {
             Path tempPath = Paths.get(tempDir);
             AtomicLong deletedFiles = new AtomicLong();
             AtomicLong failedFiles = new AtomicLong();
-            
             Files.walkFileTree(tempPath, new SimpleFileVisitor<>() {
                 @Override
-                public @NotNull FileVisitResult visitFile(Path file, @NotNull BasicFileAttributes attrs) {
+                public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) {
                     try {
                         Files.delete(file);
                         deletedFiles.incrementAndGet();
@@ -55,7 +54,7 @@ public class AlternativeDiskSpace {
                 }
 
                 @Override
-                public @NotNull FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                public @NotNull FileVisitResult postVisitDirectory(@NotNull Path dir, IOException exc) {
                     try {
                         Files.delete(dir);
                     } catch (IOException e) {
@@ -86,10 +85,9 @@ public class AlternativeDiskSpace {
             Path tempPath = Paths.get(tempDir);
             AtomicLong totalSize = new AtomicLong();
             AtomicLong totalFiles = new AtomicLong();
-            
             Files.walkFileTree(tempPath, new SimpleFileVisitor<>() {
                 @Override
-                public @NotNull FileVisitResult visitFile(Path file, @NotNull BasicFileAttributes attrs) {
+                public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) {
                     totalSize.addAndGet(attrs.size());
                     totalFiles.incrementAndGet();
                     return FileVisitResult.CONTINUE;

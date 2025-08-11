@@ -9,7 +9,8 @@ import java.awt.image.BufferedImage;
 public class BatteryTrayIcon {
 	public static TrayIcon trayIcon;
 	
-	public static void showBatteryTrayIcon(int value, Color color) {
+	public static void showBatteryTrayIcon(int value, boolean isCharging, Color color) {
+		Thread.ofVirtual().start(() -> BatteryIconWindow.show(value / 100.0, isCharging));
 		Image iconImage = createProgressBarIcon(value, color);
 		String tooltipText = "Battery Level: " + value + "%";
 		
@@ -20,7 +21,7 @@ public class BatteryTrayIcon {
 				boolean isAllowToAdd = Boolean.parseBoolean(
 						prefs.get(SHOW_BATTERY_ICON, String.valueOf(false))
 				);
-				if(isAllowToAdd) {
+				if (isAllowToAdd) {
 					SystemTray.getSystemTray().add(trayIcon);
 				}
 			} catch (AWTException e) {
@@ -35,7 +36,6 @@ public class BatteryTrayIcon {
 	private static Image createProgressBarIcon(int value, Color fillColor) {
 		int barWidth = 10;
 		int barHeight = 70;
-		
 		int margin = 2;
 		int totalWidth = barWidth + margin * 2;
 		int totalHeight = barHeight + margin * 2;

@@ -70,6 +70,11 @@ public class DiskSpaceInfo {
             setUnderTracking(process);
             try {
                 process.waitFor();
+	            JOptionPane.showMessageDialog(null,
+			            "Temporary files cleaned successfully.",
+			            "Clean Temp", JOptionPane.INFORMATION_MESSAGE);
+	            long endTime = System.currentTimeMillis();
+	            printTheResult(process, startTime, endTime);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException("The thread was interrupted while waiting for the process.", e);

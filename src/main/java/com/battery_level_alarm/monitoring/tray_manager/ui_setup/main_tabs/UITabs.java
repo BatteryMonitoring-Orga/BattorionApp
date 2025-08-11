@@ -6,8 +6,6 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.createSettingsTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.StatisticsTab.createStatisticsTab;
 
-import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.MiniToast;
-import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -16,7 +14,7 @@ import java.util.Objects;
 import java.util.Stack;
 
 public class UITabs {
-	private static final String BACK_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/back.png";
+	private static final String BACK_ICON_PATH = "/com/battery_level_alarm/monitoring/tray-res/icons/back.png";
 	private static final Stack<Tab> tabHistory = new Stack<>();
 	private static boolean isNavigatingBack = false;
 	

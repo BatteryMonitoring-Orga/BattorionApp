@@ -1,5 +1,4 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container;
-import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -12,19 +11,10 @@ import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.lau
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.SETTINGS_QUESTIONNAIRE;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.TRAY_INTEGRATION;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.DashboardPanel;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.RecordConfigurations.GRID_BAG_CONSTRAINTS_CONFIGURATION;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.START_BATTORION_WITH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.HYPERLINK_HOVER_COLOR;
 import static com.battery_level_alarm.monitoring.system_core.helpers.SaverModePanel.createSaverModePanelButton;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_APPLICATION;
-import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.DepartureModes.START_WITH_TRAY;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.getTrayUI;
-import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.createGridBagConstraints;
-import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.GridBagConstraintsDetails.setDimension;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.addCheckbox;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.applyScrollConfigurationDetails;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.setButtonDefaultSize;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabelWithMouseListener;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.DEFAULT_FONT;
 
@@ -81,27 +71,22 @@ public class TraySettingsGUI {
 		JPanel trayMainNorthPanel = new JPanel();
 		trayMainNorthPanel.setLayout(new BoxLayout(trayMainNorthPanel, BoxLayout.Y_AXIS));
 		trayMainNorthPanel.setOpaque(true);
-		trayMainNorthPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-		trayMainNorthPanel.setPreferredSize(new Dimension(350, 200));
+		trayMainNorthPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+		trayMainNorthPanel.setPreferredSize(new Dimension(350, 150));
+		trayMainNorthPanel.setMaximumSize(new Dimension(350, 150));
 		
-		JLabel titleLabel = new JLabel("Tray Icon Preview Settings");
+		JLabel titleLabel = new JLabel("Tray Icon Preview");
 		titleLabel.setFont(DEFAULT_TITLE_FONT);
 		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		trayMainNorthPanel.add(titleLabel);
-		trayMainNorthPanel.add(Box.createVerticalStrut(15));
+		trayMainNorthPanel.add(Box.createVerticalStrut(5));
 		
 		JButton saverButton = createSaverModePanelButton(200);
 		JPanel buttonContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		buttonContainer.setOpaque(false);
 		buttonContainer.add(saverButton);
 		trayMainNorthPanel.add(buttonContainer);
-		trayMainNorthPanel.add(Box.createVerticalStrut(15));
-		
-		JPanel checkBoxContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		checkBoxContainer.setOpaque(false);
-		checkBoxContainer.add(createCheckBoxesPanel());
-		trayMainNorthPanel.add(checkBoxContainer);
-		trayMainNorthPanel.add(Box.createVerticalStrut(10));
+		trayMainNorthPanel.add(Box.createVerticalStrut(5));
 		
 		JPanel aboutPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		aboutPanel.setOpaque(false);
@@ -114,7 +99,6 @@ public class TraySettingsGUI {
 				DEFAULT_FONT
 		);
 		trayMainNorthPanel.add(aboutPanel);
-		trayMainNorthPanel.add(Box.createVerticalStrut(5));
 		
 		JPanel aboutTrayIntegration = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		aboutTrayIntegration.setOpaque(false);
@@ -132,25 +116,6 @@ public class TraySettingsGUI {
 		applyScrollConfigurationDetails(trayMainSettingsPanel, CARDS_SET_SCROLL_CONFIGURATION);
 		trayMainSettingsPanel.setBackground(DashboardPanel.getBackground());
 		return trayMainSettingsPanel;
-	}
-	
-	private static JPanel createCheckBoxesPanel() {
-		JPanel checkBoxesPanel = new JPanel(new GridBagLayout());
-		checkBoxesPanel.setOpaque(true);
-		GridBagConstraints gbc = createGridBagConstraints(GRID_BAG_CONSTRAINTS_CONFIGURATION);
-		
-		String modeToUse = prefs.get(START_BATTORION_WITH, String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
-		boolean isChecked = modeToUse.equals(String.valueOf(START_WITH_TRAY));
-		addCheckbox(
-				gbc, checkBoxesPanel, "Start with Tray window", isChecked,
-				e -> {
-					JCheckBox source = (JCheckBox) e.getSource();
-					boolean selected = source.isSelected();
-					String newMode = selected ? String.valueOf(START_WITH_TRAY) : String.valueOf(START_WITH_APPLICATION);
-					prefs.put(START_BATTORION_WITH, newMode);
-				}
-		);
-		return checkBoxesPanel;
 	}
 	
 	private static JScrollPane createTrayPreviewPanel() {

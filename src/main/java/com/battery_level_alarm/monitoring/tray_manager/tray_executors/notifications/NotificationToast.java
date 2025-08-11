@@ -27,7 +27,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.mai
 
 public class NotificationToast {
 	private static boolean isShowingToast = false;
-	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/notification_toast";
+	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/notification_toast";
 	
 	public static void showNotification(String message, Stage owner, boolean isWelcomeMSG) {
 		if (isShowingToast || !isToastNotifyEnabled) return;
@@ -69,7 +69,7 @@ public class NotificationToast {
 		toastStage.setHeight(50);
 		
 		Image icon = new Image(Objects.requireNonNull(
-				NotificationToast.class.getResource("/com/battery_level_alarm/monitoring/Tray/Icons/hint.png")
+				NotificationToast.class.getResource("/com/battery_level_alarm/monitoring/tray-res/icons/hint.png")
 		).toExternalForm());
 		toastStage.getIcons().add(icon);
 		

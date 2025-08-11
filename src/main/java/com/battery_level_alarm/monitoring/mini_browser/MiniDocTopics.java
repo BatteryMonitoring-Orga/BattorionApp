@@ -25,5 +25,8 @@ public class MiniDocTopics {
 	public static final String COMPREHENSIVE_BATTERY_GUIDE_EN = "Comprehensive Battery Guide (EN)";
 	public static final String BATTERY_CALIBRATION_AR = "Battery Calibration and Performance Analysis (AR)";
 	public static final String BATTERY_CALIBRATION_EN = "Battery Calibration and Performance Analysis (EN)";
+	
+	public static final String RECOMMENDATION_HEADER = "─ Recommendations ─";
+	public static final String RECOMMENDATION_SOFTWARE = "Recommended Battery & PC Management Software";
 	public static final String END_OF_TITLES = "─ End of Internal Sections ─";
 }

@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.command_executors;
-import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
-import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getAudioDevicesList;
+import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.extractAudioOutputFamilies;
+import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveComputerSettings;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.isMonitorRunning;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isAudioDeviceCmdletsInstalled;
@@ -37,6 +38,7 @@ public class AudioOutputDeviceNameChecker {
 
     public static void doExecutionSingleton() {
         if (isAudioDeviceCmdletsInstalled) {
+            checkAudioOutputFamilies();
             String returnedOutput = getCurrentAudioOutputDevice();
             String currentDevice = checkDevicesList(returnedOutput);
             String currentDeviceFullName = getDeviceFullName(returnedOutput);
@@ -44,7 +46,7 @@ public class AudioOutputDeviceNameChecker {
                 lastOutputDevice = currentDevice;
                 activeAudioDeviceName.setText(lastOutputDevice);
                 audioOutputDeviceDashTextField.setText(currentDeviceFullName);
-            } else if (!lastOutputDevice.equals(currentDeviceFullName)){
+            } else if (!lastOutputDevice.equals(currentDeviceFullName)) {
                 audioOutputDeviceDashTextField.setText(currentDeviceFullName);
             }
         }
@@ -52,6 +54,7 @@ public class AudioOutputDeviceNameChecker {
     
     public static String[] getAudioOutputDevice() {
         if(isAudioDeviceCmdletsInstalled) {
+            checkAudioOutputFamilies();
             String returnedOutput = getCurrentAudioOutputDevice();
             String currentDevice = checkDevicesList(returnedOutput);
             String currentDeviceFullName = getDeviceFullName(returnedOutput);
@@ -61,6 +64,17 @@ public class AudioOutputDeviceNameChecker {
             };
         }
         return new String[]{};
+    }
+    
+    private static void checkAudioOutputFamilies() {
+        java.util.List<String> audioDevices = getAudioDevicesList();
+        setAudioDevicesList(extractAudioOutputFamilies());
+        if(audioDevices != null && !audioDevices.isEmpty()) {
+            for(String item : audioDevices) {
+                addItemToAudioList(item);
+            }
+        }
+        saveComputerSettings();
     }
     
     private static String getCurrentAudioOutputDevice() {

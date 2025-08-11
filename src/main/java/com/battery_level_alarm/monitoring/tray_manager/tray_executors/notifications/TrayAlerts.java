@@ -196,13 +196,13 @@ public class TrayAlerts {
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.setResizable(false);
 		stage.getIcons().add(new Image(Objects.requireNonNull(
-				TrayAlerts.class.getResource("/com/battery_level_alarm/monitoring/Tray/Icons/info.png")).toExternalForm()));
+				TrayAlerts.class.getResource("/com/battery_level_alarm/monitoring/tray-res/icons/info.png")).toExternalForm()));
 		alert.showAndWait();
 	}
 	
 	private static VBox getTrayInstructionsVBox(String os) {
 		if (os.contains("win")) {
-			URL arrowUrl = TrayAlerts.class.getResource("/com/battery_level_alarm/monitoring/Tray/Icons/up_arrow.png");
+			URL arrowUrl = TrayAlerts.class.getResource("/com/battery_level_alarm/monitoring/tray-res/icons/up_arrow.png");
 			HBox line1 = getLine1(arrowUrl);
 			
 			Label label2 = new Label("""

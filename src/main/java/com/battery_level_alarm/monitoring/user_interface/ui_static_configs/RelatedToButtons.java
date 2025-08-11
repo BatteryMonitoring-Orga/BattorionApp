@@ -15,11 +15,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Enumeration;
 import java.util.function.Consumer;
 
 public class RelatedToButtons {
     public static final Font toggleButtonsFont = new Font("Serif", Font.BOLD, 15);
+    public static final String clearButtonText = "CLEAR";
     private static int buttonWidth = 150;
     private static int buttonHeight = 30;
     public static ButtonGroup buttonGroup;
@@ -30,42 +30,37 @@ public class RelatedToButtons {
             String[] buttonsToolTip,
             ActionListener[] actions,
             int numberOfButtons
-    ){
+    ) {
         JPanel groupPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        ButtonGroup group = new ButtonGroup();
+        buttonGroup = new ButtonGroup();
         for(int i=0; i < numberOfButtons; i++){
             JRadioButton radioButton = new JRadioButton();
             radioButton.setFont(textFieldFont);
             radioButton.setToolTipText(buttonsToolTip[i]);
             radioButton.addActionListener(actions[i]);
             setRadioButtonMouseListener(radioButton, i, buttonNames);
-            group.add(radioButton);
+            buttonGroup.add(radioButton);
             groupPanel.add(radioButton);
         }
-
+        
+        buttonGroup.add(getClearButton());
         gbc.gridx = getColumn();
         gbc.gridy = getRow();
         panel.add(groupPanel, gbc);
-        return group;
+        return buttonGroup;
     }
-
-    private static @NotNull JRadioButton getClearButton(ButtonGroup group) {
+    
+    private static @NotNull JRadioButton getClearButton() {
         JRadioButton clearButton = new JRadioButton();
-        clearButton.setFont(textFieldFont);
-        clearButton.setToolTipText(
-                """
-                        This button allows you to clear the selection
-                        of all radio buttons in the group.
-                        (it will not deselect itself)"""
-        );
-        clearButton.addActionListener(_ -> clearSelection(group));
+        clearButton.setText(clearButtonText);
+        clearButton.setVisible(false);
         return clearButton;
     }
 
     private static void setRadioButtonMouseListener(
             JRadioButton radioButton, int index,
             String[] buttonNames
-    ){
+    ) {
         radioButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -76,13 +71,6 @@ public class RelatedToButtons {
                 radioButton.setText("");
             }
         });
-    }
-
-    private static void clearSelection(ButtonGroup group) {
-        Enumeration<AbstractButton> buttons = group.getElements();
-        while (buttons.hasMoreElements()) {
-            buttons.nextElement().setSelected(false);
-        }
     }
 
     public static JButton addButton(GridBagConstraints gbc, JPanel secondPartPanel, String label, ActionListener listener) {

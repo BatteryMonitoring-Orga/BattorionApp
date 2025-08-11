@@ -105,15 +105,16 @@ public class BattorionCoreConstants {
     
     public static class Paths {
         public static final String MAIN_FOLDER_NAME = "/Battorion";
-        public static final String IMAGES_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Images/";
-        public static final String ICONS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Icons/";
-        public static final String CSS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Styles/";
-        public static final String ASSETS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/Assets/";
-        public static final String BUTTON_ICONS_PATH = "/com/battery_level_alarm/monitoring/mainButtonIcons/";
-        public static final String REFRESH_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/";
+        public static final String IMAGES_FOLDER_PATH = "/com/battery_level_alarm/monitoring/images/";
+        public static final String ICONS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/icons/";
+        public static final String CSS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/styles/";
+        public static final String ASSETS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/assets/";
+        public static final String HTML_PAGES_FOLDER_PATH = "/com/battery_level_alarm/monitoring/html-pages/";
+        public static final String BUTTON_ICONS_PATH = "/com/battery_level_alarm/monitoring/main-buttons-icon/";
+        public static final String REFRESH_ICON_PATH = "/com/battery_level_alarm/monitoring/tray-res/icons/";
         public static final String SUPPORT_VIDEOS_PATH = "/com/battery_level_alarm/monitoring/support-videos/";
-        public static final String CHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-start-2574.wav";
-        public static final String DISCHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/mixkit-software-interface-back-2575.wav";
+        public static final String CHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/alert-sounds/mixkit-software-interface-start-2574.wav";
+        public static final String DISCHARGING_SOUND_PATH = "/com/battery_level_alarm/monitoring/alert-sounds/mixkit-software-interface-back-2575.wav";
         public static final String BATTERY_REPORT_PATH = CONFIGURATIONS_MAIN_FOLDER_PATH + "\\battery-report.html";
         
         public static final String BATTORION_MAIN_FOLDER_PATH = getBattorionMainFolderPath();

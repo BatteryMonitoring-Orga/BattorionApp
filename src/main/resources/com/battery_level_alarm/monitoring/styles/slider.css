@@ -1,0 +1,15 @@
+.slider {
+    -fx-padding: 0;
+    -fx-control-inner-background: white;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.slider .track {
+    -fx-background-color: linear-gradient(to right, #4facfe, #00f2fe);
+}
+
+.slider .thumb {
+    -fx-background-color: #1e88ff;
+}

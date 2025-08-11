@@ -18,7 +18,6 @@ import com.battery_level_alarm.monitoring.tray_manager.modern_component.JavaFXSo
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme;
-import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SoundItem;
 import com.notifications.system_tray_notifications.basics.AlarmSounds;
 
@@ -27,14 +26,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class SettingsTab {
 	public static CheckBox enableSound = new CheckBox("Enable Notification Sound");
@@ -54,7 +53,7 @@ public class SettingsTab {
 	};
 	
 	public static Tab createSettingsTab() {
-		VBox content = new VBox(20,
+		VBox content = new VBox(25,
 				createToggleRunModeButton(),
 				createAudioSettingsSection(),
 				createAutomationSection(),
@@ -63,21 +62,20 @@ public class SettingsTab {
 		);
 		content.setPadding(insets);
 		
-		ScrollPane scrollPane = new ScrollPane(content);
-		scrollPane.getStylesheets().add(Objects.requireNonNull(
-				DashboardTab.class.getResource(STYLES_FILES_DIR_PATH + "/hide-scroll.css")
-		).toExternalForm());
-		scrollPane.setFitToWidth(true);
-		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		return createTab("Settings", scrollPane);
+		Pane viewport = new Pane(content);
+		Rectangle clip = new Rectangle();
+		clip.widthProperty().bind(viewport.widthProperty());
+		clip.heightProperty().bind(viewport.heightProperty());
+		viewport.setClip(clip);
+		viewport.setOnScroll(event -> handleScroll(event, content, viewport));
+		return createTab("Settings", viewport);
 	}
 	
 	private static VBox createToggleRunModeButton() {
 		Button toggleRunModeButton = new Button("Show Window");
-		toggleRunModeButton.setMaxSize(110, 30);
-		toggleRunModeButton.setPrefSize(110, 30);
-		toggleRunModeButton.setMinSize(110, 30);
+		toggleRunModeButton.setMaxSize(120, 30);
+		toggleRunModeButton.setPrefSize(120, 30);
+		toggleRunModeButton.setMinSize(120, 30);
 		toggleRunModeButton.setTooltip(new Tooltip("Restore the application window from background to foreground"));
 		toggleRunModeButton.setOnAction(_ -> {
 			if(isApplicationMode) {
@@ -100,9 +98,9 @@ public class SettingsTab {
 		headerBox.getItems().addAll("Top", "Bottom");
 		headerBox.setValue(prefs.get(TAB_HEADER_POSITION, "Bottom"));
 		headerBox.setCursor(Cursor.HAND);
-		headerBox.setMinWidth(112);
-		headerBox.setPrefWidth(112);
-		headerBox.setMaxWidth(112);
+		headerBox.setMinWidth(122);
+		headerBox.setPrefWidth(122);
+		headerBox.setMaxWidth(122);
 		headerBox.setOnAction(_ -> {
 			String selected = headerBox.getValue();
 			prefs.put(TAB_HEADER_POSITION, selected);
@@ -119,7 +117,9 @@ public class SettingsTab {
 		audioDeviceSelect.getItems().setAll(getAudioDevicesList());
 		audioDeviceSelect.setValue(getCurrentAudioDevice());
 		audioDeviceSelect.setCursor(Cursor.HAND);
-		audioDeviceSelect.setPrefSize(120, 20);
+		audioDeviceSelect.setMaxWidth(140);
+		audioDeviceSelect.setPrefWidth(140);
+		audioDeviceSelect.setMinWidth(140);
 		audioDeviceSelect.setStyle("-fx-font-size: 13px;");
 		audioDeviceSelect.setOnAction(_ -> {
 			String selected = audioDeviceSelect.getValue();
@@ -186,12 +186,23 @@ public class SettingsTab {
 		deleteAudioDevice.setToggleGroup(audioModeGroup);
 		setAsDefaultAO.setToggleGroup(audioModeGroup);
 		
-		useSelectedAO.setOnAction(_ -> customDeviceField.setText(getCurrentAudioDevice()));
-		addAudioDevice.setOnAction(_ -> RadioButtonsActions.addAudioDeviceAction());
-		deleteAudioDevice.setOnAction(_ -> RadioButtonsActions.deleteAudioDeviceAction());
+		useSelectedAO.setOnAction(_ -> {
+			customDeviceField.setText(getCurrentAudioDevice());
+			customDeviceField.setStyle(customDeviceFieldStyle);
+			setGroupSelectedFalse(audioModeGroup);
+		});
+		addAudioDevice.setOnAction(_ -> {
+			RadioButtonsActions.addAudioDeviceAction();
+			setGroupSelectedFalse(audioModeGroup);
+		});
+		deleteAudioDevice.setOnAction(_ -> {
+			RadioButtonsActions.deleteAudioDeviceAction();
+			setGroupSelectedFalse(audioModeGroup);
+		});
 		setAsDefaultAO.setOnAction(_ -> {
 			RadioButtonsActions.setAsDefaultAOAction();
 			Monitor.isShouldUpdateTrayDashboard = true;
+			setGroupSelectedFalse(audioModeGroup);
 		});
 		return new HBox(10, useSelectedAO, addAudioDevice, deleteAudioDevice, setAsDefaultAO);
 	}
@@ -199,6 +210,10 @@ public class SettingsTab {
 	private static void setRadioButtonMouseListener(RadioButton radioButton, int index, String[] buttonNames) {
 		radioButton.setOnMouseEntered(_ -> radioButton.setText(buttonNames[index]));
 		radioButton.setOnMouseExited(_ -> radioButton.setText(""));
+	}
+	
+	private static void setGroupSelectedFalse(ToggleGroup group) {
+		group.selectToggle(null);
 	}
 	
 	public static VBox createNotificationSection() {
@@ -285,5 +300,19 @@ public class SettingsTab {
 		HBox box = new HBox(10, label, control);
 		box.setAlignment(Pos.CENTER_LEFT);
 		return box;
+	}
+	
+	static void handleScroll(ScrollEvent event, VBox content, Pane viewport) {
+		if (Math.abs(event.getDeltaY()) <= Math.abs(event.getDeltaX())) {
+			return;
+		} if (content.getHeight() <= viewport.getHeight()) {
+			return;
+		}
+		
+		double deltaY = event.getDeltaY();
+		double newTranslate = content.getTranslateY() + deltaY;
+		newTranslate = Math.min(newTranslate, 0);
+		newTranslate = Math.max(newTranslate, -1 * (content.getHeight() - viewport.getHeight()));
+		content.setTranslateY(newTranslate);
 	}
 }

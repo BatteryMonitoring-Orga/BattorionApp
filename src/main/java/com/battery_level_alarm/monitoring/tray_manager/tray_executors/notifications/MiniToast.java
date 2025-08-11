@@ -20,7 +20,7 @@ import javafx.util.Duration;
 import java.util.Objects;
 
 public class MiniToast {
-	private static final String STYLES_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/mini_toast_styles";
+	private static final String STYLES_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/mini_toast_styles";
 	
 	public static void show(
 			Point2D screenCoordinates, String msg, double durationSeconds,

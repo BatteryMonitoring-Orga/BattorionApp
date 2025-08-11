@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
+import static com.battery_level_alarm.monitoring.battery_report.BatteryDataOrganizer.groupBatteryData;
+import static com.battery_level_alarm.monitoring.battery_report.BatteryJsonAnalyzer.extractBatteryInfo;
+import static com.battery_level_alarm.monitoring.battery_report.ChooseActionPanel.reanalyzeButton;
 import static com.battery_level_alarm.monitoring.core_utilities.BatteryInfo.*;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.LIFE_REPORT_QUESTIONNAIRE;
@@ -20,30 +23,44 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.DEFAULT_FONT;
 
 public class LifeReportPanelUI {
-	public static Map<String, String> updateBatteryLiveInfo() {
+	private static Map<String, Map<String, String>> liveInfo;
+	private static Map<String, String> batteryData;
+	
+	public static Map<String, Map<String, String>> updateBatteryLiveInfo() {
 		BatteryReportAnalyzer.analyze(BATTERY_REPORT_PATH);
-		Map<String, String> liveInfo = BatteryLiveInfoReader.getBatteryInfoAsMap();
+		liveInfo = BatteryLiveInfoReader.getBatteryInfoAsMap();
+		batteryData = extractBatteryInfo();
 		estimatedRemainingTime.setText("Battery Life Estimate: " + BatteryInfo.getEstimatedTimeRemaining());
-		return liveInfo;
+		return groupBatteryData(liveInfo, batteryData);
 	}
 	
 	public static JPanel lifeReportPanel() {
-		Map<String, String> liveInfo = updateBatteryLiveInfo();
 		JPanel lifeReportPanel = new JPanel(new BorderLayout());
 		lifeReportPanel.add(ChooseActionPanel.create(), BorderLayout.SOUTH);
-		lifeReportPanel.add(createLifeReportPanel(liveInfo), BorderLayout.CENTER);
+		Map<String, Map<String, String>> grouped = groupBatteryData(liveInfo, batteryData);
+		if(grouped == null) {
+			lifeReportPanel.add(createEmptyMSGPanel(), BorderLayout.CENTER);
+			reanalyzeButton.setEnabled(false);
+		} else {
+			lifeReportPanel.add(createLifeReportPanel(grouped), BorderLayout.CENTER);
+			reanalyzeButton.setEnabled(true);
+		}
 		return lifeReportPanel;
 	}
 	
 	public static void refreshReportPanel(boolean switchToLifeReportPanel) {
-		Map<String, String> liveInfo = updateBatteryLiveInfo();
-		if (LifeReportPanel == null) {
+		Map<String, Map<String, String>> grouped = updateBatteryLiveInfo();
+		if(grouped == null) {
+			return;
+		} if (LifeReportPanel == null) {
 			LifeReportPanel = new JPanel(new BorderLayout());
+		} if(reanalyzeButton != null) {
+			reanalyzeButton.setEnabled(true);
 		}
 		
 		LifeReportPanel.removeAll();
 		LifeReportPanel.add(ChooseActionPanel.create(), BorderLayout.SOUTH);
-		LifeReportPanel.add(createLifeReportPanel(liveInfo), BorderLayout.CENTER);
+		LifeReportPanel.add(createLifeReportPanel(grouped), BorderLayout.CENTER);
 		LifeReportPanel.revalidate();
 		LifeReportPanel.repaint();
 		if (switchToLifeReportPanel) {
@@ -52,7 +69,7 @@ public class LifeReportPanelUI {
 		}
 	}
 	
-	private static JScrollPane createLifeReportPanel(Map<String, String> liveInfo) {
+	private static JScrollPane createLifeReportPanel(Map<String, Map<String, String>> grouped) {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		JPanel headerPanel = new JPanel();
 		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
@@ -96,8 +113,14 @@ public class LifeReportPanelUI {
 		addSeparatorLine(separatorRow, valuesPanel);
 		gbc.gridy = separatorRow + 1;
 		
-		for (Map.Entry<String, String> entry : liveInfo.entrySet()) {
-			addKeyValue(valuesPanel, entry.getKey(), entry.getValue(), gbc, keyFont, valueFont);
+		for (Map.Entry<String, Map<String, String>> group : grouped.entrySet()) {
+			String sectionTitle = group.getKey();
+			Map<String, String> sectionValues = group.getValue();
+			
+			addSubTitle(valuesPanel, sectionTitle, gbc);
+			for (Map.Entry<String, String> entry : sectionValues.entrySet()) {
+				addKeyValue(valuesPanel, entry.getKey(), entry.getValue(), gbc, keyFont, valueFont);
+			}
 		}
 		mainPanel.add(valuesPanel, BorderLayout.CENTER);
 		
@@ -107,11 +130,26 @@ public class LifeReportPanelUI {
 		return scrollPane;
 	}
 	
+	private static void addSubTitle(JPanel panel, String key, GridBagConstraints gbc) {
+		JLabel sectionLabel = new JLabel(key);
+		sectionLabel.setFont(new Font("Serif", Font.BOLD, 18));
+		if(!key.contains("Basic")) {
+			JLabel label = new JLabel(" ");
+			panel.add(label, gbc);
+			gbc.gridy++;
+		}
+		
+		gbc.gridx = 0;
+		gbc.gridwidth = 2;
+		panel.add(sectionLabel, gbc);
+		gbc.gridy++;
+		gbc.gridwidth = 1;
+	}
+	
 	private static void addKeyValue(JPanel panel, String key, String value,
 	                                GridBagConstraints gbc, Font keyFont, Font valueFont) {
 		JLabel keyLabel = new JLabel(key + ":");
 		keyLabel.setFont(keyFont);
-		
 		JLabel valueLabel = new JLabel(value);
 		valueLabel.setFont(valueFont);
 		
@@ -129,5 +167,34 @@ public class LifeReportPanelUI {
 		separatorConstraints.insets = new Insets(15, 0, 15, 0);
 		setDimension(separatorRow, 0);
 		addSeparator(separatorConstraints, valuesPanel, 200);
+	}
+	
+	private static JPanel createEmptyMSGPanel() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+		
+		JLabel titleLabel = new JLabel("🔋 Battery Health Report");
+		titleLabel.setFont(new Font("Serif", Font.BOLD, 22));
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setForeground(Color.GRAY);
+		
+		JLabel infoLabel = new JLabel("<html><div style='text-align: center;'>"
+				+ "No data available to display right now.<br>"
+				+ "This may happen because the program has just started.<br>"
+				+ "Please wait up to 1 minute for the program to analyze the data."
+				+ "</div></html>");
+		infoLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+		infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		infoLabel.setForeground(Color.DARK_GRAY);
+		
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		panel.add(titleLabel, gbc);
+		gbc.gridy++;
+		panel.add(infoLabel, gbc);
+		return panel;
 	}
 }

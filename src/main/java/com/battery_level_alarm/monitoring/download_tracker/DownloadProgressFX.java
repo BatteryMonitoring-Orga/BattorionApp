@@ -22,7 +22,7 @@ import javafx.util.Duration;
 import java.util.Objects;
 
 public class DownloadProgressFX {
-    private static final String DOWNLOAD_PROGRESS_PNG = "/com/battery_level_alarm/monitoring/Images/Download.png";
+    private static final String DOWNLOAD_PROGRESS_PNG = "/com/battery_level_alarm/monitoring/images/Download.png";
     private static double progressValue = 0.0;
     private static ImageView downloadIcon;
     private static Arc progressArc;

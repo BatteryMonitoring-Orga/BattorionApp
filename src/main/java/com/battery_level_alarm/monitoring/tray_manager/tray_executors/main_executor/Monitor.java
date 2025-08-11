@@ -269,7 +269,7 @@ public class Monitor {
 					(int) (batteryLevelColor.getGreen() * 255),
 					(int) (batteryLevelColor.getBlue() * 255)
 			);
-			BatteryTrayIcon.showBatteryTrayIcon(chargeLevel, color);
+			BatteryTrayIcon.showBatteryTrayIcon(chargeLevel, isCharging, color);
 		} catch (Exception e) {
 			printErrorMessage(e);
 		}
@@ -367,8 +367,8 @@ public class Monitor {
 		Platform.setImplicitExit(false);
 		Platform.runLater(() -> new NotificationPopup(
 				"Battorion Alert", msg,
-				"/com/battery_level_alarm/monitoring/Images/13228401.png",
-				"/com/battery_level_alarm/monitoring/Images/alert_stn.png",
+				"/com/battery_level_alarm/monitoring/images/13228401.png",
+				"/com/battery_level_alarm/monitoring/images/alert_stn.png",
 				5000
 		).show());
 		

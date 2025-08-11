@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ConfigurationFilesManager {
+    private static final String CONFIG_SUB_FOLDER = "/z-config";
     private static final String CONFIG_PANEL_MODE_FILE = "./_general.cfg";
     private static final String CONFIG_DROP_DOWN_LIST_FILE = "./_dropdown-list.cfg";
     private static final String CONFIG_SETTINGS_FILE_PATH = "./_settings.cfg";
@@ -39,7 +40,7 @@ public class ConfigurationFilesManager {
     public static final String UNKNOWN_OUTPUT_DEVICE = "Unknown (S) E404";
     
     private static File getMainFolderPath(String configFileName) {
-        File folderDir = new File(CONFIGURATIONS_MAIN_FOLDER_PATH);
+        File folderDir = new File(CONFIGURATIONS_MAIN_FOLDER_PATH + CONFIG_SUB_FOLDER);
         if (!folderDir.exists()) {
             boolean isCreated = folderDir.mkdirs();
             if (!isCreated) {
@@ -289,7 +290,7 @@ public class ConfigurationFilesManager {
 
     private static void loadSettingsFromJson(StringBuilder jsonContent) {
         JSONObject json = new JSONObject(jsonContent.toString());
-        UserChoices.setPrimarySoundPath(json.optString("Primary Sound Path", "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav"));
+        UserChoices.setPrimarySoundPath(json.optString("Primary Sound Path", "/com/battery_level_alarm/monitoring/alert-sounds/flash_flood_warning.wav"));
         UserChoices.setSoundDuration(json.optInt("Primary Sound Duration", 5));
         UserChoices.setSecondarySoundPath(json.optString("Secondary Sound Path", "java.awt.Toolkit.getDefaultToolkit().beep()"));
         UserChoices.setMinimumLevel(json.optInt("Minimum Level", 25));
@@ -304,7 +305,7 @@ public class ConfigurationFilesManager {
     }
 
     private static void loadDefaultSettings() {
-        UserChoices.setPrimarySoundPath("/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav");
+        UserChoices.setPrimarySoundPath("/com/battery_level_alarm/monitoring/alert-sounds/flash_flood_warning.wav");
         UserChoices.setSecondarySoundPath("java.awt.Toolkit.getDefaultToolkit().beep()");
         UserChoices.setSoundDuration(5);
         UserChoices.setMinimumLevel(25);

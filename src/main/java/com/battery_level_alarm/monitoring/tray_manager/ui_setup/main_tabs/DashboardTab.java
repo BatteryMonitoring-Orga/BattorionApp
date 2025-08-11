@@ -195,6 +195,12 @@ public class DashboardTab {
 	}
 	
 	static void handleScroll(ScrollEvent event, VBox content, Pane viewport) {
+		if (Math.abs(event.getDeltaY()) <= Math.abs(event.getDeltaX())) {
+			return;
+		} if (content.getHeight() <= viewport.getHeight()) {
+			return;
+		}
+		
 		double deltaY = event.getDeltaY();
 		double newTranslate = content.getTranslateY() + deltaY;
 		newTranslate = Math.min(newTranslate, 0);

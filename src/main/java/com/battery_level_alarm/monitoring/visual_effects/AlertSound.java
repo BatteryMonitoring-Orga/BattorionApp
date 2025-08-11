@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URL;
 
 public class AlertSound {
-    public static final String DEFAULT_PRIMARY_SOUND_PATH = "/com/battery_level_alarm/monitoring/Sounds/flash_flood_warning.wav";
+    public static final String DEFAULT_PRIMARY_SOUND_PATH = "/com/battery_level_alarm/monitoring/alert-sounds/flash_flood_warning.wav";
     public static final String DEFAULT_SECONDARY_SOUND_PATH = "java.awt.Toolkit.getDefaultToolkit().beep()";
     private static Player player;
     private static Clip clip;

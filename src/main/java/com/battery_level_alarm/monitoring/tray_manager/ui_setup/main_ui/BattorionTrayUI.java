@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.isFXLaunched;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.TRAY_NOTIFICATION_NAME;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
@@ -28,14 +29,14 @@ import javafx.util.Duration;
 import java.util.Objects;
 
 public class BattorionTrayUI extends Application {
-	public static final String BATTORION_ICON_PATH = "/com/battery_level_alarm/monitoring/Tray/Icons/battorion_background.png";
-	public static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles";
-	public static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/dark-theme.css";
-	public static final String DARK_BLUE_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/dark-blue-theme.css";
-	public static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/gray-theme.css";
-	public static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/cream-theme.css";
-	public static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/light-theme.css";
-	public static final String LAVENDER_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/interface/lavender-theme.css";
+	public static final String BATTORION_ICON_PATH = "/com/battery_level_alarm/monitoring/tray-res/icons/battorion_background.png";
+	public static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles";
+	public static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/dark-theme.css";
+	public static final String DARK_BLUE_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/dark-blue-theme.css";
+	public static final String GRAY_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/gray-theme.css";
+	public static final String CREAM_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/cream-theme.css";
+	public static final String LIGHT_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/light-theme.css";
+	public static final String LAVENDER_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/lavender-theme.css";
 	private static String trayTheme;
 	
 	public static Stage primaryStage;
@@ -76,6 +77,7 @@ public class BattorionTrayUI extends Application {
 	
 	public static void main_fx(String[] args) {
 		isLaunched = true;
+		isFXLaunched = true;
 		launch(args);
 	}
 	
@@ -106,8 +108,8 @@ public class BattorionTrayUI extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.setAlwaysOnTop(true);
 		primaryStage.initStyle(StageStyle.DECORATED);
-		primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 361);
-		primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 485);
+		primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 363);
+		primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 535);
 	}
 	
 	static void createPopupWindow() {
@@ -117,7 +119,7 @@ public class BattorionTrayUI extends Application {
 		primaryTabPane = createTabsPanel();
 		setUpdateTabHeaderPosition(position);
 		
-		primaryScene = new Scene(primaryTabPane, 350, 450);
+		primaryScene = new Scene(primaryTabPane, 350, 500);
 		primaryScene.getStylesheets().add(Objects.requireNonNull(BattorionTrayUI.class.getResource(LIGHT_THEME_FILE_PATH)).toExternalForm());
 		primaryTabPane.setStyle("-fx-tab-min-width: 100 !important; -fx-tab-max-height: 24 !important; -fx-font-size: 10px !important;");
 		primaryStage.setScene(primaryScene);
@@ -224,8 +226,8 @@ public class BattorionTrayUI extends Application {
 				if (primaryTabPane == null) return;
 				primaryStage.show();
 				primaryStage.setAlwaysOnTop(true);
-				primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 361);
-				primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 485);
+				primaryStage.setX(Screen.getPrimary().getVisualBounds().getWidth() - 363);
+				primaryStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 535);
 				if(!prefs.getBoolean(NEW_TRAY_TAB, false)) {
 					showNewTabHint("Feedback");
 				}

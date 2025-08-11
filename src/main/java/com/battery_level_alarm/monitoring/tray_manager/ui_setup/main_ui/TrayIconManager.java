@@ -41,7 +41,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 public class TrayIconManager {
-	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/Tray/Styles/tray_asset";
+	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/tray_asset";
 	private static TrayIcon mainTrayIcon;
 	
 	static void createTrayIcon() {
@@ -75,7 +75,7 @@ public class TrayIconManager {
 							
 							Stage stage = new Stage(StageStyle.TRANSPARENT);
 							stage.getIcons().add(new javafx.scene.image.Image(Objects.requireNonNull(
-									TrayIconManager.class.getResource("/com/battery_level_alarm/monitoring/Tray/Icons/menu.png")
+									TrayIconManager.class.getResource("/com/battery_level_alarm/monitoring/tray-res/icons/menu.png")
 							).toExternalForm()));
 							stage.setAlwaysOnTop(true);
 							stage.setScene(scene);
@@ -122,7 +122,7 @@ public class TrayIconManager {
 	private static List<MenuItem> createStandardItems(TrayIcon trayIcon) {
 		return List.of(
 				createItem("Open", "Open the application window", BattorionTrayUI::showApp, "item-open"),
-				createItem("Pause", "Pause the application threads", Monitor::pushAndResume, "item-pause"),
+				createItem("Pause", "Pause the application main executors", Monitor::pushAndResume, "item-pause"),
 				createItem("Settings", "Open the settings window", BattorionTrayUI::openSettingsWindow, "item-settings"),
 				createItem("About", "About this application", TrayAlerts::showAboutDialog, "item-about"),
 				createItem("Pin to Tray", "Show instructions to pin icon", TrayAlerts::showTrayPinInstructionsFX, "item-pin-to-tray"),
@@ -172,7 +172,7 @@ public class TrayIconManager {
 								(int) (batteryLevelColor.getGreen() * 255),
 								(int) (batteryLevelColor.getBlue() * 255)
 						);
-						BatteryTrayIcon.showBatteryTrayIcon(chargeLevel, color);
+						BatteryTrayIcon.showBatteryTrayIcon(chargeLevel, isCharging, color);
 					}
 				} else {
 					SystemTray.getSystemTray().remove(BatteryTrayIcon.trayIcon);

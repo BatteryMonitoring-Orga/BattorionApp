@@ -12,8 +12,13 @@ import static com.battery_level_alarm.monitoring.command_executors.CallCommandLi
 import static com.battery_level_alarm.monitoring.core_utilities.BatteryInfo.setEstimatedTimeRemaining;
 
 public class BatteryLiveInfoReader {
-	public static Map<String, String> getBatteryInfoAsMap() {
-		Map<String, String> map = new LinkedHashMap<>();
+	public static Map<String, Map<String, String>> getBatteryInfoAsMap() {
+		Map<String, Map<String, String>> nestedMap = new LinkedHashMap<>();
+		Map<String, String> basicInfo = new LinkedHashMap<>();
+		Map<String, String> powerMetrics = new LinkedHashMap<>();
+		Map<String, String> degradation = new LinkedHashMap<>();
+		Map<String, String> warnings = new LinkedHashMap<>();
+		
 		SystemInfo systemInfo = new SystemInfo();
 		HardwareAbstractionLayer hal = systemInfo.getHardware();
 		
@@ -32,7 +37,8 @@ public class BatteryLiveInfoReader {
 			double designCapacity = battery.getDesignCapacity();
 			if (BatteryInfo.getFullChargeCapacity() > 0) {
 				maxCapacity = BatteryInfo.getFullChargeCapacity();
-			} if (BatteryInfo.getDesignedCapacity() > 0) {
+			}
+			if (BatteryInfo.getDesignedCapacity() > 0) {
 				designCapacity = BatteryInfo.getDesignedCapacity();
 			}
 			
@@ -53,26 +59,33 @@ public class BatteryLiveInfoReader {
 			double wear = (designCapacity > 0 && maxCapacity >= 0)
 					? (1 - maxCapacity / designCapacity) * 100 : -1;
 			
-			map.put("Battery Name", name);
-			map.put("Chemistry", chemistry != null && !chemistry.isBlank() ? chemistry : "N/A");
-			map.put("Charge Level", percent >= 0 ? String.format("%.1f%%", percent) : "N/A");
-			map.put("Charging", charging ? "Yes" : "No");
-			map.put("Estimated Remaining Time", timeText);
-			map.put("Current Capacity", currentCapacity >= 0 ? String.format("%.0f mWh", currentCapacity) : "N/A");
-			map.put("Max Capacity", maxCapacity >= 0 ? String.format("%.0f mWh", maxCapacity) : "N/A");
-			map.put("Design Capacity", designCapacity >= 0 ? String.format("%.0f mWh", designCapacity) : "N/A");
-			map.put("Battery Wear", wear >= 0 ? String.format("%.2f%%", wear) : "N/A");
-			map.put("Cycle Count", cycleCount >= 0 ? String.valueOf(cycleCount) : "N/A");
+			basicInfo.put("Battery Name", name);
+			basicInfo.put("Chemistry", chemistry != null && !chemistry.isBlank() ? chemistry : "N/A");
+			basicInfo.put("Charge Level", percent >= 0 ? String.format("%.1f%%", percent) : "N/A");
+			basicInfo.put("Charging", charging ? "Yes" : "No");
+			basicInfo.put("Estimated Remaining Time", timeText);
+			basicInfo.put("Current Capacity", currentCapacity >= 0 ? String.format("%.0f mWh", currentCapacity) : "N/A");
+			basicInfo.put("Max Capacity", maxCapacity >= 0 ? String.format("%.0f mWh", maxCapacity) : "N/A");
+			basicInfo.put("Design Capacity", designCapacity >= 0 ? String.format("%.0f mWh", designCapacity) : "N/A");
+			
+			degradation.put("Battery Wear", wear >= 0 ? String.format("%.2f%%", wear) : "N/A");
+			degradation.put("Cycle Count", cycleCount >= 0 ? String.valueOf(cycleCount) : "N/A");
 			
 			String direction = rawRate > 0 ? "Charging" : "Discharging";
 			String rateText = hasValidRate ? String.format("%.0f mW (%s)", absRate, direction) : "N/A";
-			map.put("Power Usage Rate", rateText);
-			map.put("Voltage", voltage > 0 ? String.format("%.2f V", voltage) : "N/A");
-			map.put("Amperage", amperage != 0 ? String.format("%.0f mA", amperage) : "N/A");
+			
+			powerMetrics.put("Usage Rate", rateText);
+			powerMetrics.put("Voltage", voltage > 0 ? String.format("%.2f V", voltage) : "N/A");
+			powerMetrics.put("Amperage", amperage != 0 ? String.format("%.0f mA", amperage) : "N/A");
 			if (maxCapacity > designCapacity && designCapacity > 0) {
-				map.put("Warning", "⚠️ Max Capacity > Design Capacity! Possible calibration issue.");
+				warnings.put("Warning", "⚠ Max Capacity > Design Capacity! Possible calibration issue.");
 			}
 		}
-		return map;
+		
+		if (!basicInfo.isEmpty()) nestedMap.put("Basic", basicInfo);
+		if (!powerMetrics.isEmpty()) nestedMap.put("Power Metrics", powerMetrics);
+		if (!degradation.isEmpty()) nestedMap.put("Degradation", degradation);
+		if (!warnings.isEmpty()) nestedMap.put("Warnings", warnings);
+		return nestedMap;
 	}
 }

@@ -15,15 +15,13 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Supplier;
 
-import static com.battery_level_alarm.monitoring.system_core.Battorion.isMiniBrowserLaunched;
-import static com.battery_level_alarm.monitoring.battery_report.HTMLOpener.readHtmlAsText;
+import static com.battery_level_alarm.monitoring.battery_report.HTMLOpener.safeLoad;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocEmptyMessage.createEmptyMessagePane;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocEmptyMessage.emptyMessagePane;
-import static com.battery_level_alarm.monitoring.mini_browser.MiniDocHtmlFix.fixRelativePaths;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTabFactory.createTab;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.TOPICS;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.buildTopicsMap;
-import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isDarkMode;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
@@ -85,10 +83,9 @@ public class MiniDocBrowser extends Application {
 					setStyle("");
 				} else if (item.startsWith("─")) {
 					setText(item);
-					setStyle("-fx-font-weight: bold; -fx-background-color: #eeeeee; -fx-text-fill: #555;");
+					getStyleClass().add("topic-list-header");
 				} else {
 					setText(item);
-					setStyle("");
 				}
 			}
 		});
@@ -113,12 +110,17 @@ public class MiniDocBrowser extends Application {
 			content = TOPICS.get(selected).get();
 		} if (content.startsWith("external::")) {
 			String realPath = content.substring("external::".length());
-			String htmlContent = readHtmlAsText(realPath);
-			String fixedHtml = fixRelativePaths(htmlContent, realPath);
-			newTab = createTab(selected, fixedHtml);
+			WebView webView = new WebView();
+			WebEngine engine = webView.getEngine();
+			safeLoad(engine, realPath);
+			Tab tab = new Tab(selected, new BorderPane(webView));
+			tabPane.getTabs().add(tab);
+			tabPane.getSelectionModel().select(tab);
+			return;
 		} else {
 			newTab = createTab(selected, content);
 		}
+		
 		tabPane.getTabs().add(newTab);
 		tabPane.getSelectionModel().select(newTab);
 	}
@@ -131,7 +133,7 @@ public class MiniDocBrowser extends Application {
 		sideBar.setPadding(new Insets(10));
 		sideBar.setSpacing(5);
 		sideBar.setId("sidebar");
-		sideBar.setMinWidth(200);
+		sideBar.setMinWidth(150);
 		sideBar.setMaxWidth(400);
 		return sideBar;
 	}
@@ -146,9 +148,9 @@ public class MiniDocBrowser extends Application {
 		SplitPane mainContent = new SplitPane();
 		mainContent.setId("main-split-pane");
 		mainContent.getItems().addAll(sideBar, contentWrapper);
-		mainContent.setDividerPositions(0.25);
+		mainContent.setDividerPositions(0.2);
 		mainContent.getDividers().getFirst().positionProperty().addListener((_, _, newVal) -> {
-			double minPos = 200.0 / stage.getWidth();
+			double minPos = 150.0 / stage.getWidth();
 			double maxPos = 400.0 / stage.getWidth();
 			if (newVal.doubleValue() < minPos) mainContent.setDividerPositions(minPos);
 			else if (newVal.doubleValue() > maxPos) mainContent.setDividerPositions(maxPos);
@@ -157,7 +159,7 @@ public class MiniDocBrowser extends Application {
 	}
 	
 	private static Scene createScene(SplitPane mainContent) {
-		Scene scene = new Scene(mainContent, 1050, 650);
+		Scene scene = new Scene(mainContent, 1100, 650);
 		isDarkTheme = isDarkMode;
 		String cssFile = isDarkMode ? "browser-dark.css" : "browser-light.css";
 		scene.getStylesheets().add(Objects.requireNonNull(MiniDocBrowser.class.getResource(CSS_FOLDER_PATH + cssFile)).toExternalForm());
@@ -181,8 +183,11 @@ public class MiniDocBrowser extends Application {
 			return;
 		} if (TOPICS.isEmpty()) {
 			buildTopicsMap();
-		} if (!isMiniBrowserLaunched) {
+		} if (!isMiniBrowserLaunched && !isFXLaunched) {
+			isFXLaunched = true;
 			launch(args);
+		} else if (isMiniBrowserLaunched && isFXLaunched) {
+			Platform.runLater(() -> new MiniDocBrowser().start(new Stage()));
 		} else {
 			if (isDarkTheme == isDarkMode) {
 				Platform.runLater(() -> {
@@ -246,9 +251,10 @@ public class MiniDocBrowser extends Application {
 			Tab newTab;
 			if (content.startsWith("external::")) {
 				String realPath = content.substring("external::".length());
-				String htmlContent = readHtmlAsText(realPath);
-				String fixedHtml = fixRelativePaths(htmlContent, realPath);
-				newTab = createTab(topicTitle, fixedHtml);
+				WebView webView = new WebView();
+				WebEngine engine = webView.getEngine();
+				safeLoad(engine, realPath);
+				newTab = new Tab(topicTitle, new BorderPane(webView));
 			} else {
 				newTab = createTab(topicTitle, content);
 			}

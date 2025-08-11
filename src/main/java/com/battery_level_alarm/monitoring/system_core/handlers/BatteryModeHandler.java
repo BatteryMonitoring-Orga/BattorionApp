@@ -3,6 +3,7 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
+import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.isSilentMode;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
@@ -49,21 +50,17 @@ public class BatteryModeHandler {
     
     private static void exchangeMode(String mode) {
         calcSharpDifference(mode);
-        
         if(lastMode.contains("Charging")) {
-            AlertSound.useDefaultDuration = true;
-            if(lastMode.contains("Not")){
-                if(UserChoices.isEnableChargeAndDischargeSound()) {
+            if(!isSilentMode) {
+                AlertSound.useDefaultDuration = true;
+                if(lastMode.contains("Not") && UserChoices.isEnableChargeAndDischargeSound()){
                     AlertSound.playSound(CHARGING_SOUND_PATH);
-                }
-                calcSharpDifference(lastMode);
-            } else {
-                if(UserChoices.isEnableChargeAndDischargeSound()) {
+                } else if(UserChoices.isEnableChargeAndDischargeSound()) {
                     AlertSound.playSound(DISCHARGING_SOUND_PATH);
                 }
-                calcSharpDifference(lastMode);
             }
             doTheFollowingOperations();
+            calcSharpDifference(lastMode);
         }
     }
 

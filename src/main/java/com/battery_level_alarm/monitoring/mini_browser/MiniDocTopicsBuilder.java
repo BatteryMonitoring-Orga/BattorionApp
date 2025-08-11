@@ -23,7 +23,7 @@ import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.STAT
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.SYSTEM_SETTINGS_QUESTIONNAIRE;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.SYSTEM_TRAY_NOTIFICATION;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.TRAY_INTEGRATION;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.MAIN_FOLDER_NAME;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 
 public class MiniDocTopicsBuilder {
 	public static final Map<String, Supplier<String>> TOPICS = new LinkedHashMap<>();
@@ -64,12 +64,15 @@ public class MiniDocTopicsBuilder {
 		TOPICS.put(NOTIFICATION_SOUND, AppendixesQuestionnaire::aboutPlaySounds);
 		TOPICS.put(OUTPUT_AUDIO_DEVICE, AppendixesQuestionnaire::aboutSelectAudioDevice);
 		
-		TOPICS.put(EXTERNAL_DOCS_HEADER, () -> "<h3>External</h3>");
 		String basePath = System.getProperty("user.home") + MAIN_FOLDER_NAME + "/comprehensive_guide-main/";
+		TOPICS.put(EXTERNAL_DOCS_HEADER, () -> "<h3>External</h3>");
 		TOPICS.put(COMPREHENSIVE_BATTERY_GUIDE_AR, () -> "external::" + basePath + "Comprehensive Guide - Arabic.html");
 		TOPICS.put(COMPREHENSIVE_BATTERY_GUIDE_EN, () -> "external::" + basePath + "Comprehensive Guide - English.html");
 		TOPICS.put(BATTERY_CALIBRATION_AR, () -> "external::" + basePath + "BatteryCalibrationAndPerformanceAnalysisInArabic.html");
 		TOPICS.put(BATTERY_CALIBRATION_EN, () -> "external::" + basePath + "BatteryCalibrationAndPerformanceAnalysisInEnglish.html");
-		TOPICS.put(END_OF_TITLES, () -> "<h3>End of Internal Sections</h3>");
+		
+		TOPICS.put(RECOMMENDATION_HEADER, () -> "<h3>Recommendations</h3>");
+		TOPICS.put(RECOMMENDATION_SOFTWARE, () -> "external::" + HTML_PAGES_FOLDER_PATH + "recommendations.html");
+//		TOPICS.put(END_OF_TITLES, () -> "<h3>End of Internal Sections</h3>");
 	}
 }

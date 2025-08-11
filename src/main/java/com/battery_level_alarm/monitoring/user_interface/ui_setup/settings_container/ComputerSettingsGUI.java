@@ -30,6 +30,7 @@ import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFile
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Enumeration;
 import java.util.Objects;
 
 public class ComputerSettingsGUI {
@@ -277,8 +278,12 @@ public class ComputerSettingsGUI {
             JTextField audioDevicesActionField,
             JComboBox<String> audioDevicesComboBox
     ){
-        return new ActionListener[]{
-                _ -> audioDevicesActionField.setText(getCurrentAudioDevice()),
+        return new ActionListener[] {
+                _ -> {
+                    audioDevicesActionField.setText(getCurrentAudioDevice());
+                    audioDevicesActionField.setForeground(UIManager.getColor("TextField.Foreground"));
+                    setGroupSelectedFalse();
+                },
                 _ -> {
                     boolean isAdded = ComputerSettings.addItemToAudioList(audioDevicesActionField.getText());
                     if(isAdded){
@@ -290,6 +295,7 @@ public class ComputerSettingsGUI {
                         audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[1]);
                         audioDevicesActionField.setForeground(Color.RED);
                     }
+                    setGroupSelectedFalse();
                 }, _ -> {
                     boolean isDeleted = ComputerSettings.removeItemFromAudioList(audioDevicesActionField.getText());
                     if (isDeleted) {
@@ -301,13 +307,25 @@ public class ComputerSettingsGUI {
                         audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[3]);
                         audioDevicesActionField.setForeground(Color.RED);
                     }
+                    setGroupSelectedFalse();
                 }, _ -> {
                     setAudioOutputDevice(audioDevicesActionField.getText());
                     activeAudioDeviceName.setText(audioDevicesActionField.getText());
                     audioOutputDeviceDashTextField.setText(audioDevicesActionField.getText());
                     audioDevicesActionField.setText(DEVICE_STATUS_MESSAGES[4]);
                     audioDevicesActionField.setForeground(GREEN_COLOR);
+                    setGroupSelectedFalse();
                 }
         };
+    }
+    
+    private static void setGroupSelectedFalse() {
+        Enumeration<AbstractButton> buttons = buttonGroup.getElements();
+        while (buttons.hasMoreElements()) {
+            AbstractButton button = buttons.nextElement();
+            if(button.getText().equalsIgnoreCase(clearButtonText)) {
+                button.setSelected(true);
+            }
+        }
     }
 }

@@ -78,7 +78,7 @@ public class StatisticsTab {
 			Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
 			stage.setResizable(false);
 			stage.getIcons().add(new Image(Objects.requireNonNull(UITabs.class.getResource(
-					"/com/battery_level_alarm/monitoring/Tray/Icons/info.png")).toExternalForm()));
+					"/com/battery_level_alarm/monitoring/tray-res/icons/info.png")).toExternalForm()));
 			dialog.showAndWait();
 		});
 		return info;

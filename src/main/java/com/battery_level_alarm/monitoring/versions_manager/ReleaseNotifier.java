@@ -21,7 +21,7 @@ import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonO
 import static com.battery_level_alarm.monitoring.versions_manager.VersionInstaller.RELEASE_FOLDER;
 
 public class ReleaseNotifier {
-	private static final String STYLE_PATH = "/com/battery_level_alarm/monitoring/Styles";
+	private static final String STYLE_PATH = "/com/battery_level_alarm/monitoring/styles";
 	private static final List<String> logs = new ArrayList<>();
 	private static boolean isAlertShown = false;
 	public static String callBackMSG;
@@ -53,7 +53,7 @@ public class ReleaseNotifier {
 			alert.setHeaderText(title != null ? title : "Installation Feedback");
 			((Stage) alert.getDialogPane().getScene().getWindow())
 					.getIcons().add(new Image(Objects.requireNonNull(
-							ReleaseNotifier.class.getResourceAsStream("/com/battery_level_alarm/monitoring/Assets/log.png")
+							ReleaseNotifier.class.getResourceAsStream("/com/battery_level_alarm/monitoring/assets/log.png")
 					)));
 			
 			DialogPane dialogPane = alert.getDialogPane();
@@ -121,7 +121,7 @@ public class ReleaseNotifier {
 			alert.setHeaderText(title);
 			((Stage) alert.getDialogPane().getScene().getWindow())
 					.getIcons().add(new Image(Objects.requireNonNull(
-							ReleaseNotifier.class.getResourceAsStream("/com/battery_level_alarm/monitoring/Assets/cream_log.png")
+							ReleaseNotifier.class.getResourceAsStream("/com/battery_level_alarm/monitoring/assets/cream_log.png")
 					)));
 			
 			DialogPane dialogPane = alert.getDialogPane();

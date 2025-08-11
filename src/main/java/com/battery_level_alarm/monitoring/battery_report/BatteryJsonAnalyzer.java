@@ -113,4 +113,24 @@ public class BatteryJsonAnalyzer {
 		finalMap.putAll(spareMetric);
 		return finalMap;
 	}
+	
+	public static String[] getMainPackagesTemp() {
+		try {
+			String[] values = new String[2];
+			Map<String, String> map = extractBatteryInfo();
+			if(!map.isEmpty()) {
+				for(String key : map.keySet()) {
+					if(key.contains("Package")) {
+						values[0] = map.get(key);
+					} else if(key.contains("GPU Core Temperature")) {
+						values[1] = map.get(key);
+					}
+				}
+			}
+			return values;
+		} catch (Exception e) {
+			printErrorMessage(e);
+		}
+		return null;
+	}
 }

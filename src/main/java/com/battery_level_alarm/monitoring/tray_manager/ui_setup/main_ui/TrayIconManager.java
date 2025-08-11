@@ -17,6 +17,7 @@ import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationToast;
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryIconWindow;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryTrayIcon;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.TrayAlerts;
@@ -155,10 +156,10 @@ public class TrayIconManager {
 	
 	private static CustomMenuItem createBatteryIconItem() {
 		boolean isAllowToAdd = Boolean.parseBoolean(prefs.get(SHOW_BATTERY_ICON, "false"));
-		CheckBox showBatteryIcon = new CheckBox("Show Battery Icon");
+		CheckBox showBatteryIcon = new CheckBox("Show Battery Window");
 		showBatteryIcon.setId("checkbox-battery-icon");
 		showBatteryIcon.setSelected(isAllowToAdd);
-		Tooltip.install(showBatteryIcon, new Tooltip("Enable or disable displaying the battery icon"));
+		Tooltip.install(showBatteryIcon, new Tooltip("Display battery status as overlay"));
 		showBatteryIcon.setOnAction(_ -> {
 			boolean selected = showBatteryIcon.isSelected();
 			prefs.put(SHOW_BATTERY_ICON, String.valueOf(selected));
@@ -167,15 +168,11 @@ public class TrayIconManager {
 					if (BatteryTrayIcon.trayIcon != null) {
 						SystemTray.getSystemTray().add(BatteryTrayIcon.trayIcon);
 					} else {
-						java.awt.Color color = new java.awt.Color(
-								(int) (batteryLevelColor.getRed() * 255),
-								(int) (batteryLevelColor.getGreen() * 255),
-								(int) (batteryLevelColor.getBlue() * 255)
-						);
-						BatteryTrayIcon.showBatteryTrayIcon(chargeLevel, isCharging, color);
+						Thread.ofVirtual().start(() -> BatteryIconWindow.show(chargeLevel / 100.0, isCharging));
 					}
-				} else {
-					SystemTray.getSystemTray().remove(BatteryTrayIcon.trayIcon);
+				} else if (BatteryIconWindow.getPrimaryIconStage() != null) {
+					BatteryIconWindow.getInvisibleOwner().hide();
+					BatteryIconWindow.getPrimaryIconStage().hide();
 				}
 				Monitor.changeFlag = true;
 			} catch (Exception e) {

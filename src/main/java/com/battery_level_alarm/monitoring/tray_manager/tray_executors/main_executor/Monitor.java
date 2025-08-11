@@ -23,7 +23,7 @@ import com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo;
 import com.battery_level_alarm.monitoring.core_utilities.BatteryInfo;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationToast;
-import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryTrayIcon;
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryIconWindow;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationPopup;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import com.battery_level_alarm.monitoring.visual_effects.AlertSound;
@@ -264,12 +264,7 @@ public class Monitor {
 	
 	private static void updateTrayIcon() {
 		try {
-			java.awt.Color color = new java.awt.Color(
-					(int) (batteryLevelColor.getRed() * 255),
-					(int) (batteryLevelColor.getGreen() * 255),
-					(int) (batteryLevelColor.getBlue() * 255)
-			);
-			BatteryTrayIcon.showBatteryTrayIcon(chargeLevel, isCharging, color);
+			Thread.ofVirtual().start(() -> BatteryIconWindow.show(chargeLevel / 100.0, isCharging));
 		} catch (Exception e) {
 			printErrorMessage(e);
 		}

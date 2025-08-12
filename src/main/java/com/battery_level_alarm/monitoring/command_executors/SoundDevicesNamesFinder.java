@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import java.io.*;
@@ -7,7 +8,7 @@ import java.util.*;
 
 public class SoundDevicesNamesFinder {
 	private static final String OUTPUT_FILE = CONFIGURATIONS_MAIN_FOLDER_PATH + "/output.csv";
-	private static final String SOUND_VOLUME_VIEW_PATH = CONFIGURATIONS_MAIN_FOLDER_PATH + "/SoundVolumeView-main/soundvolumeview-x64";
+	private static final String SOUND_VOLUME_VIEW_PATH = ROAMING_CONFIG_PATH + "/SoundVolumeView-main/soundvolumeview-x64";
 	private static final List<String> VALID_DEVICE_NAMES = Arrays.asList(
 			"Realtek Audio",
 			"Realtek(R) Audio",

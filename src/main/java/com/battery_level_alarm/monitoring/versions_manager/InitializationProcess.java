@@ -24,7 +24,7 @@ public class InitializationProcess {
 			releaseLog("\u200B");
 			
 			try {
-				prefs.put(NEW_RELEASE, String.valueOf(true));
+				prefs.putBoolean(NEW_RELEASE, true);
 				Process process = new ProcessBuilder("cmd", "/c", setupFile.getAbsolutePath())
 						.directory(releaseFolderPath.toFile())
 						.start();

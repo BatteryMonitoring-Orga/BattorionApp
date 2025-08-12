@@ -154,14 +154,14 @@ public class TrayIconManager {
 	}
 	
 	private static CustomMenuItem createBatteryIconItem() {
-		boolean isAllowToAdd = Boolean.parseBoolean(prefs.get(SHOW_BATTERY_ICON, "false"));
+		boolean isAllowToAdd = prefs.getBoolean(SHOW_BATTERY_ICON, true);
 		CheckBox showBatteryIcon = new CheckBox("Show Battery Window");
 		showBatteryIcon.setId("checkbox-battery-icon");
 		showBatteryIcon.setSelected(isAllowToAdd);
 		Tooltip.install(showBatteryIcon, new Tooltip("Display battery status as overlay"));
 		showBatteryIcon.setOnAction(_ -> {
 			boolean selected = showBatteryIcon.isSelected();
-			prefs.put(SHOW_BATTERY_ICON, String.valueOf(selected));
+			prefs.putBoolean(SHOW_BATTERY_ICON, selected);
 			try {
 				if (selected) {
 					Thread.ofVirtual().start(() -> BatteryIconWindow.show(chargeLevel / 100.0, isCharging));
@@ -180,7 +180,7 @@ public class TrayIconManager {
 	}
 	
 	private static CustomMenuItem createWakeUpItem() {
-		boolean isWakeUpAuto = Boolean.parseBoolean(prefs.get(WAKE_UP_PC_AUTO, "false"));
+		boolean isWakeUpAuto = prefs.getBoolean(WAKE_UP_PC_AUTO, false);
 		long wakeUpIntervalSeconds = 90L;
 		if (isWakeUpAuto) {
 			wakeUp(wakeUpIntervalSeconds);
@@ -192,7 +192,7 @@ public class TrayIconManager {
 		Tooltip.install(wakeUpPC, new Tooltip("Keep the PC awake automatically"));
 		wakeUpPC.setOnAction(_ -> {
 			boolean enabled = wakeUpPC.isSelected();
-			prefs.put(WAKE_UP_PC_AUTO, String.valueOf(enabled));
+			prefs.putBoolean(WAKE_UP_PC_AUTO, enabled);
 			if (enabled) {
 				wakeUp(wakeUpIntervalSeconds);
 			} else {

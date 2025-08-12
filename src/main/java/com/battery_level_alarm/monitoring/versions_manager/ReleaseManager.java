@@ -124,7 +124,7 @@ public class ReleaseManager {
 	
 	public static void restartApplication() {
 		try {
-			prefs.put(NEW_RELEASE, String.valueOf(true));
+			prefs.putBoolean(NEW_RELEASE, true);
 			releaseLog("✅ Initialization done. Restarting app...");
 			String pf64 = System.getenv("ProgramW6432");
 			Path rootFolder = Paths.get(pf64, "Battorion");

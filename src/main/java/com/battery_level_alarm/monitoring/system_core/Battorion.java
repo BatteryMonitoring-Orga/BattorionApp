@@ -124,9 +124,9 @@ public class Battorion {
             printErrorMessage(throwable);
         });
         
-        if(Boolean.parseBoolean(prefs.get(NEW_RELEASE, String.valueOf(false)))) {
+        if(prefs.getBoolean(NEW_RELEASE, false)) {
             Thread.ofVirtual().start(() -> Platform.startup(() -> {
-                prefs.put(NEW_RELEASE, String.valueOf(false));
+                prefs.putBoolean(NEW_RELEASE, false);
                 prefs.putBoolean(NEW_TRAY_TAB, true);
                 moveFileToRoamingFolder(getVersionFileParentPath(), VERSION_FILE_NAME);
                 cleanupAfterInstallation();

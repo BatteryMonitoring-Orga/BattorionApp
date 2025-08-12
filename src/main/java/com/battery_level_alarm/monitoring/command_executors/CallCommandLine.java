@@ -1,14 +1,14 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.BATTERY_REPORT_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class CallCommandLine {
-    public static final String NIR_CMD_PATH = CONFIGURATIONS_MAIN_FOLDER_PATH + "/NirCMD-main/nircmd";
+    public static final String NIR_CMD_PATH = ROAMING_CONFIG_PATH + "/NirCMD-main/nircmd";
     public static String getOS() {
         return System.getProperty("os.name").toLowerCase();
     }

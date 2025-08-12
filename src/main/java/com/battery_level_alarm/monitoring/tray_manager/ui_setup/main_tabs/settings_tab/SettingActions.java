@@ -9,6 +9,8 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.START_BATTORION_WITH;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.pauseThreads;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor.Monitor.stop;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryIconWindow.getInvisibleOwner;
+import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryIconWindow.getPrimaryIconStage;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.removeMainTrayIcon;
@@ -79,6 +81,9 @@ public class SettingActions {
 				boolean isTrayIconRemoved = removeMainTrayIcon();
 				if (!isTrayIconRemoved) {
 					logger.severe("[TrayIconManager] ERROR: Unable to remove system tray icon.");
+				} if (getPrimaryIconStage() != null) {
+					getPrimaryIconStage().hide();
+					getInvisibleOwner().hide();
 				}
 				
 				primaryStage.hide();

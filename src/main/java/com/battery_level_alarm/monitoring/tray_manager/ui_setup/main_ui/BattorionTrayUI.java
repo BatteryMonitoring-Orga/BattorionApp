@@ -89,10 +89,10 @@ public class BattorionTrayUI extends Application {
 		createTrayIcon();
 		if(isLaunched) {
 			backgroundProcessMonitoring(trayTheme);
-		} if(Boolean.parseBoolean(prefs.get(TIME_RUNNING_IN_BACKGROUND, "true"))) {
+		} if(prefs.getBoolean(TIME_RUNNING_IN_BACKGROUND, true)) {
 			showTrayUsageTutorial(new Stage());
 			showApp();
-			prefs.put(TIME_RUNNING_IN_BACKGROUND, "false");
+			prefs.putBoolean(TIME_RUNNING_IN_BACKGROUND, false);
 		}
 	}
 	

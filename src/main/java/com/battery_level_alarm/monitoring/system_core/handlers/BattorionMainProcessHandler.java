@@ -102,7 +102,7 @@ public class BattorionMainProcessHandler {
 					scheduler.shutdown();
 				});
 				
-				if(!Boolean.parseBoolean(prefs.get(WAKE_UP_PC_AUTO, String.valueOf(false)))) {
+				if(!prefs.getBoolean(WAKE_UP_PC_AUTO, false)) {
 					wakeUpThreadInterruptRequest();
 				} if(mainPreviewFrame != null) {
 					mainPreviewFrame.dispose();

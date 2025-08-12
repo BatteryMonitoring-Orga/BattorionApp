@@ -217,15 +217,15 @@ public class SettingsTab {
 	}
 	
 	public static VBox createNotificationSection() {
-		enableSound.setSelected(Boolean.parseBoolean(prefs.get(TRAY_NOTIFICATION_ENABLE, String.valueOf(true))));
+		enableSound.setSelected(prefs.getBoolean(TRAY_NOTIFICATION_ENABLE, true));
 		enableSound.setOnAction(_ -> {
-			prefs.put(TRAY_NOTIFICATION_ENABLE, String.valueOf(enableSound.isSelected()));
+			prefs.putBoolean(TRAY_NOTIFICATION_ENABLE, enableSound.isSelected());
 			Monitor.changeFlag = true;
 		});
 		
-		enableToast.setSelected(Boolean.parseBoolean(prefs.get(TOAST_NOTIFICATION_ENABLE, String.valueOf(true))));
+		enableToast.setSelected(prefs.getBoolean(TOAST_NOTIFICATION_ENABLE, true));
 		enableToast.setOnAction(_ -> {
-			prefs.put(TOAST_NOTIFICATION_ENABLE, String.valueOf(enableToast.isSelected()));
+			prefs.putBoolean(TOAST_NOTIFICATION_ENABLE, enableToast.isSelected());
 			Monitor.changeFlag = true;
 		});
 		

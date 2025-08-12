@@ -70,7 +70,7 @@ public class Monitor {
 	public static void backgroundProcessMonitoring(String theme) {
 		if (!isAlive) {
 			start();
-			if(Boolean.parseBoolean(prefs.get(TOAST_NOTIFICATION_ENABLE, String.valueOf(true)))) {
+			if(prefs.getBoolean(TOAST_NOTIFICATION_ENABLE, true)) {
 				msg = "👋 Welcome! Battery Monitor is running.";
 				NotificationToast.showNotification(msg, primaryStage, true);
 			} if(theme.equalsIgnoreCase(AS_SYSTEM.toString())) {
@@ -141,15 +141,9 @@ public class Monitor {
 	}
 	
 	private static void fetchUserPreferences() {
-		isEnableDevelopedSystemNotificationSound = Boolean.parseBoolean(
-				prefs.get(TRAY_NOTIFICATION_ENABLE, String.valueOf(true))
-		);
-		isEnableToastNotification = Boolean.parseBoolean(
-				prefs.get(TOAST_NOTIFICATION_ENABLE, String.valueOf(true))
-		);
-		isBatteryTrayNestedIconAllowToAdd = Boolean.parseBoolean(
-				prefs.get(SHOW_BATTERY_ICON, String.valueOf(false))
-		);
+		isEnableDevelopedSystemNotificationSound = prefs.getBoolean(TRAY_NOTIFICATION_ENABLE, true);
+		isEnableToastNotification = prefs.getBoolean(TOAST_NOTIFICATION_ENABLE, true);
+		isBatteryTrayNestedIconAllowToAdd = prefs.getBoolean(SHOW_BATTERY_ICON, false);
 	}
 	
 	private static void updateBatteryStatus() {

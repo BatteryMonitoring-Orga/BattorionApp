@@ -127,7 +127,7 @@ public class SaverModePanel {
 		button.setMaximumSize(dimension);
 		button.addActionListener(_ -> {
 			setVisibleFalse();
-			boolean isFirstTime = Boolean.parseBoolean(prefs.get(TIME_RUNNING_IN_BACKGROUND, String.valueOf(true)));
+			boolean isFirstTime = prefs.getBoolean(TIME_RUNNING_IN_BACKGROUND, true);
 			if (isFirstTime) {
 				final boolean[] result = {false};
 				try {

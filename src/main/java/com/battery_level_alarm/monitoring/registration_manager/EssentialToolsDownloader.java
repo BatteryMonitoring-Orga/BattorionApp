@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.registration_manager;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
-import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 
 import javax.swing.*;
 import java.io.*;
@@ -39,13 +39,12 @@ public class EssentialToolsDownloader {
             boolean isZip = fileName.endsWith(".zip");
             
             if (isZip) {
-                String zipPath = CONFIGURATIONS_MAIN_FOLDER_PATH + File.separator + fileName;
-                String repoPath = CONFIGURATIONS_MAIN_FOLDER_PATH + File.separator + repoName;
+                String zipPath = ROAMING_CONFIG_PATH + File.separator + fileName;
+                String repoPath = ROAMING_CONFIG_PATH + File.separator + repoName;
                 if (new File(repoPath).exists()) {
                     isFileExist = true;
                     continue;
                 } try {
-                    System.out.println("Download: " + zipPath);
                     isAllFilesExist = false;
                     downloadFile(repoUrl, zipPath, progressCallback);
                     unzipWithConditionalFlatten(zipPath, repoName);
@@ -54,12 +53,11 @@ public class EssentialToolsDownloader {
                     printErrorMessage(e);
                 }
             } else {
-                String savePath = CONFIGURATIONS_MAIN_FOLDER_PATH + File.separator + fileName;
+                String savePath = ROAMING_CONFIG_PATH + File.separator + fileName;
                 if (new File(savePath).exists()) {
                     isFileExist = true;
                     continue;
                 } try {
-                    System.out.println("Download: " + savePath);
                     downloadFile(repoUrl, savePath, progressCallback);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "❌ Error downloading essential tool: " + repoName + ": " + e.getMessage(), "Support Center", JOptionPane.ERROR_MESSAGE);
@@ -117,7 +115,7 @@ public class EssentialToolsDownloader {
     }
     
     private static void unzipWithConditionalFlatten(String zipFilePath, String repoName) throws IOException {
-        File targetDir = new File(CONFIGURATIONS_MAIN_FOLDER_PATH, repoName);
+        File targetDir = new File(ROAMING_CONFIG_PATH, repoName);
         if (targetDir.exists()) {
             try (var paths = Files.walk(targetDir.toPath())) {
                 paths.sorted(Comparator.reverseOrder()).forEach(p -> {
@@ -130,18 +128,22 @@ public class EssentialToolsDownloader {
             } catch (IOException e) {
                 printErrorMessage(e);
             }
+        } if (!targetDir.mkdirs() && !targetDir.exists()) {
+            throw new IOException("Failed to create target directory: " + targetDir);
         }
-        targetDir.mkdirs();
         
         try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath))) {
             ZipEntry entry;
             while ((entry = zipIn.getNextEntry()) != null) {
                 File filePath = new File(targetDir, entry.getName());
                 if (entry.isDirectory()) {
-                    filePath.mkdirs();
+                    if (!filePath.mkdirs() && !filePath.exists()) {
+                        throw new IOException("Failed to create directory: " + filePath);
+                    }
                 } else {
-                    filePath.getParentFile().mkdirs();
-                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath))) {
+                    if (!filePath.getParentFile().mkdirs() && !filePath.getParentFile().exists()) {
+                        throw new IOException("Failed to create directory: " + filePath.getParentFile());
+                    } try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath))) {
                         byte[] buffer = new byte[4096];
                         int bytesRead;
                         while ((bytesRead = zipIn.read(buffer)) != -1) {
@@ -162,11 +164,11 @@ public class EssentialToolsDownloader {
             try (var walk = Files.walk(onlyDir.toPath())) {
                 walk.forEach(source -> {
                     try {
-                        Path dest = targetDir.toPath().resolve(onlyDir.toPath().relativize(source));
+                        Path destination = targetDir.toPath().resolve(onlyDir.toPath().relativize(source));
                         if (Files.isDirectory(source)) {
-                            if (!Files.exists(dest)) Files.createDirectories(dest);
+                            if (!Files.exists(destination)) Files.createDirectories(destination);
                         } else {
-                            Files.move(source, dest, StandardCopyOption.REPLACE_EXISTING);
+                            Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
                         }
                     } catch (IOException e) {
                         printErrorMessage(e);

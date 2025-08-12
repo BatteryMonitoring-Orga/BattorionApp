@@ -10,11 +10,12 @@ import java.util.Map;
 
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.EXPORT_HARDWARE_MONITOR_FILE;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class BatteryJsonAnalyzer {
 	private static final String JSON_FILE_PATH = CONFIGURATIONS_MAIN_FOLDER_PATH + "/hardware-monitor.json";
-	private static final String POWER_SHELL_SCRIPT = CONFIGURATIONS_MAIN_FOLDER_PATH + "\\" + EXPORT_HARDWARE_MONITOR_FILE;
+	private static final String POWER_SHELL_SCRIPT = ROAMING_CONFIG_PATH + "\\" + EXPORT_HARDWARE_MONITOR_FILE;
 	
 	public static int runPowerShellScript() {
 		try {
@@ -30,8 +31,8 @@ public class BatteryJsonAnalyzer {
 		String workingDir = CONFIGURATIONS_MAIN_FOLDER_PATH;
 		String psCommand =
 				"Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; " +
-						"cd '" + workingDir + "'; " +
-						". '" + POWER_SHELL_SCRIPT + "'";
+				"cd '" + workingDir + "'; " +
+				"Start-Process powershell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \"" + POWER_SHELL_SCRIPT + "\"' -WindowStyle Hidden";
 		
 		ProcessBuilder builder = new ProcessBuilder(
 				"powershell.exe",

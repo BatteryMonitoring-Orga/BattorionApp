@@ -1,4 +1,5 @@
 package com.battery_level_alarm.monitoring.command_executors;
+import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
@@ -65,7 +66,17 @@ public class SoundDevicesNamesFinder {
 		return null;
 	}
 	
-	public static List<String> extractAudioOutputFamilies() {
+	public static void updateAudioDevicesList() {
+		java.util.List<String> audioDevices = getAudioDevicesList();
+		setAudioDevicesList(extractAudioOutputFamilies());
+		if(audioDevices != null && !audioDevices.isEmpty()) {
+			for(String item : audioDevices) {
+				addItemToAudioList(item);
+			}
+		}
+	}
+	
+	private static List<String> extractAudioOutputFamilies() {
 		Set<String> families = new LinkedHashSet<>();
 		try {
 			runSoundVolumeProcess();

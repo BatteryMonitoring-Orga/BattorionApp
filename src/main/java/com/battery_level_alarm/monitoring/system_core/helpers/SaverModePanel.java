@@ -147,6 +147,7 @@ public class SaverModePanel {
 			cleanup(true);
 			Platform.setImplicitExit(false);
 			Platform.runLater(() -> {
+				isProgramCurrentlyStarted = true;
 				Monitor.isShouldUpdateTrayDashboard = true;
 				new BattorionTrayUI().start(new Stage());
 				backgroundProcessMonitoring(prefs.get(APP_THEME, String.valueOf(AS_SYSTEM)));

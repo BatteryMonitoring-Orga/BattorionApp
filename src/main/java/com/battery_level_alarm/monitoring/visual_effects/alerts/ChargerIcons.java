@@ -15,6 +15,7 @@ public class ChargerIcons {
 	public static void showCircularImage(String imageName) {
 		IconStage = new Stage();
 		IconStage.initStyle(StageStyle.TRANSPARENT);
+		IconStage.getIcons().add(new Image(Objects.requireNonNull(ChargerIcons.class.getResourceAsStream(ICONS_FOLDER_PATH + imageName))));
 		
 		Image image = new Image(Objects.requireNonNull(ChargerIcons.class.getResource(ICONS_FOLDER_PATH + imageName)).toExternalForm());
 		ImageView imageView = new ImageView(image);

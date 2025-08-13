@@ -43,7 +43,7 @@ public class RecordConfigurations {
             1.0,
             GridBagConstraints.WEST,
             GridBagConstraints.BOTH,
-            new Insets(10, 10, 10, 10),
+            new Insets(5, 10, 5, 10),
             0,
             0
     );

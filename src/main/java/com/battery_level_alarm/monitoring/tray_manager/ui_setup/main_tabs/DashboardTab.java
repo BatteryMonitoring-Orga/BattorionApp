@@ -186,7 +186,7 @@ public class DashboardTab {
 			prefs.put(UPDATE_FREQUENCY, selected.name());
 			restartMonitorLoop(primaryStage.isShowing());
 		});
-		return new HBox(20, labeledNode("Update Speed:\u2003", comboBox));
+		return new HBox(20, labeledNode("Update Speed:\u2003", comboBox, true));
 	}
 	
 	private static ProgressBar createStyledProgressBar() {

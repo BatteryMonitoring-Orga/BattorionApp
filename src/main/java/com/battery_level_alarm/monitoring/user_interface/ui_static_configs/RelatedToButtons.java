@@ -21,7 +21,7 @@ public class RelatedToButtons {
     public static final Font toggleButtonsFont = new Font("Serif", Font.BOLD, 15);
     public static final String clearButtonText = "CLEAR";
     private static int buttonWidth = 150;
-    private static int buttonHeight = 30;
+    private static int buttonHeight = 40;
     public static ButtonGroup buttonGroup;
 
     public static ButtonGroup getGroupOfButtons(

@@ -95,6 +95,7 @@ public class SettingActions {
 			
 			try {
 				prefs.put(START_BATTORION_WITH, String.valueOf(BattorionTrayUI.DepartureModes.START_WITH_APPLICATION));
+				isProgramCurrentlyStarted = true;
 				isApplicationMode = true;
 				build();
 			} catch (Exception e) {

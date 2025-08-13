@@ -1,6 +1,7 @@
 package com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_executor;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.getAlertBeforeRiskPhaseBy;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.isProgramCurrentlyStarted;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.CHARGING_MODE_ICON_NAME;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.DIS_CHARGING_MODE_ICON_NAME;
@@ -162,7 +163,7 @@ public class Monitor {
 			int minValue = UserChoices.getMinimumLevel();
 			batteryLevelColor = getBatteryColor(chargeLevel, minValue, maxValue);
 			
-			if(isCharging != previousCharging) {
+			if((isCharging != previousCharging) && !isProgramCurrentlyStarted) {
 				isToastNotifyEnabled = true;
 				Thread.ofVirtual().start(() -> Platform.runLater(() -> {
 					showCircularImage(isCharging? CHARGING_MODE_ICON_NAME : DIS_CHARGING_MODE_ICON_NAME);
@@ -170,6 +171,8 @@ public class Monitor {
 					delay.setOnFinished(_ -> hideIconsStage());
 					delay.play();
 				}));
+			} else {
+				isProgramCurrentlyStarted = false;
 			}
 		} catch (Exception e) {
 			printErrorMessage(e);

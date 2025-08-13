@@ -10,7 +10,6 @@ public class GridBagConstraintsDetails {
 
     public static GridBagConstraints createGridBagConstraints(GridBagConstraintsConfiguration configuration) {
         GridBagConstraints gbc = new GridBagConstraints();
-
         gbc.gridx = configuration.gridx();
         gbc.gridy = configuration.gridy();
         gbc.gridwidth = configuration.gridwidth();

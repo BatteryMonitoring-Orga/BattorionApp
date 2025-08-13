@@ -213,6 +213,6 @@ public class ComputerSettingsFirstPartialPanel {
         partialPanelDimension = new Dimension(WIDTH, getFirstPCHeight());
     }
     public static int getFirstPCHeight() {
-        return 220;
+        return 180;
     }
 }

@@ -143,6 +143,6 @@ public class ComputerSettingsSecondPartialPanel {
         partialPanelDimension = new Dimension(WIDTH, getSecondPCHeight());
     }
     public static int getSecondPCHeight() {
-        return 110;
+        return 90;
     }
 }

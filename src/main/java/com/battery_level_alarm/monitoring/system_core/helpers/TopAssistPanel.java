@@ -13,8 +13,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.updateAudioDevicesList;
+import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getAudioDevicesList;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocBrowser.launchAndOpenTopic;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopics.ENABLE_COMPUTER_NOTIFICATIONS;
+import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveComputerSettings;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionButtonHelper.setButtonBackgroundColor;

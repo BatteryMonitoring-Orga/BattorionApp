@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.command_executors;
-import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.extractAudioOutputFamilies;
+import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.updateAudioDevicesList;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager.saveComputerSettings;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.audioOutputDeviceDashTextField;
@@ -67,13 +67,7 @@ public class AudioOutputDeviceNameChecker {
     }
     
     private static void checkAudioOutputFamilies() {
-        java.util.List<String> audioDevices = getAudioDevicesList();
-        setAudioDevicesList(extractAudioOutputFamilies());
-        if(audioDevices != null && !audioDevices.isEmpty()) {
-            for(String item : audioDevices) {
-                addItemToAudioList(item);
-            }
-        }
+        updateAudioDevicesList();
         saveComputerSettings();
     }
     

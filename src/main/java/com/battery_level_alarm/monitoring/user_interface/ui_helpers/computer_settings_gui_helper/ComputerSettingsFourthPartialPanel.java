@@ -387,12 +387,12 @@ public class ComputerSettingsFourthPartialPanel {
     
     public static int getFourthPCHeight() {
         if(ComputerSettings.isAutomaticallyReduceAndRestoreBL()){
-            return 280;
+            return 240;
         } else {
             if(thereIsInvisiblePartFlag){
-                return 330;
+                return 280;
             } else {
-                return 370;
+                return 320;
             }
         }
     }

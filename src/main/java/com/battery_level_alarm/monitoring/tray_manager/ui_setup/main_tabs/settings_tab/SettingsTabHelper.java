@@ -99,7 +99,7 @@ class SettingsTabHelper {
 			Platform.runLater(() -> brightnessLevelField.setText(brightnessLevelValue + ""));
 		});
 		
-		return new HBox(10, labeledNode("PC - Brightness Level: ", brightnessLevelField));
+		return new HBox(10, labeledNode("PC - Brightness Level: ", brightnessLevelField, true));
 	}
 	
 	private static Slider createSlider() {

@@ -5,6 +5,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
 import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.isSilentMode;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
+import static com.battery_level_alarm.monitoring.visual_effects.alerts.ChargerIcons.hideIconsStage;
 import static com.battery_level_alarm.monitoring.visual_effects.alerts.ChargerIcons.showCircularImage;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
@@ -48,16 +49,20 @@ public class BatteryModeHandler {
     }
     
     public static void track() {
-        if(!status.equals(lastMode)) {
+        if(!status.equals(lastMode) && !isProgramCurrentlyStarted) {
             exchangeMode(lastMode);
             lastMode = status;
             BattorionPanelHelper.refreshBatteryStatisticsPanel();
-            Thread.ofVirtual().start(() -> Platform.runLater(() -> {
-                showCircularImage(status.contains("Dis")? DIS_CHARGING_MODE_ICON_NAME : CHARGING_MODE_ICON_NAME);
+            Thread.ofVirtual().start(() -> {
+                Platform.runLater(() -> showCircularImage(status.equalsIgnoreCase(IS_IN_DIS_CHARGING_MODE)? DIS_CHARGING_MODE_ICON_NAME : CHARGING_MODE_ICON_NAME));
                 ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-                scheduler.schedule(ChargerIcons::hideIconsStage, 2, TimeUnit.SECONDS);
-                scheduler.shutdown();
-            }));
+                scheduler.schedule(() -> {
+                    Platform.runLater(ChargerIcons::hideIconsStage);
+                    scheduler.shutdown();
+                }, 2, TimeUnit.SECONDS);
+            });
+        } else {
+            isProgramCurrentlyStarted = false;
         }
     }
     

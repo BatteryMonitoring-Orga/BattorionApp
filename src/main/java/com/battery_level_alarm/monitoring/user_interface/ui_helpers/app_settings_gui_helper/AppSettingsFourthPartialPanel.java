@@ -139,6 +139,6 @@ public class AppSettingsFourthPartialPanel {
     }
 
     private static void decideTheSizeDimension(){
-        partialPanelDimension = new Dimension(WIDTH, 110);
+        partialPanelDimension = new Dimension(WIDTH, 85);
     }
 }

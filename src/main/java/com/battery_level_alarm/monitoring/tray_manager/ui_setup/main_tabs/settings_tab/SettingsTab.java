@@ -1,6 +1,8 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab;
+import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.updateAudioDevicesList;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.REFRESH_ICON_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.valueOf;
@@ -27,6 +29,8 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
@@ -34,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SettingsTab {
 	public static CheckBox enableSound = new CheckBox("Enable Notification Sound");
@@ -85,7 +90,7 @@ public class SettingsTab {
 		});
 		
 		VBox runModeBox = new VBox(20,
-				labeledNode("Display App Interface  ", toggleRunModeButton),
+				labeledNode("Display App Interface  ", toggleRunModeButton, true),
 				createTabHeaderMode()
 		);
 		runModeBox.setPadding(new Insets(10));
@@ -109,7 +114,7 @@ public class SettingsTab {
 			rebuildTabPanels();
 			Monitor.isShouldUpdateTrayDashboard = true;
 		});
-		return new HBox(10, labeledNode("Tab Header Position\u2003", headerBox));
+		return new HBox(10, labeledNode("Tab Header Position\u2003", headerBox, true));
 	}
 	
 	public static VBox createAudioSettingsSection() {
@@ -150,10 +155,12 @@ public class SettingsTab {
 		helpLink.setStyle("-fx-font-size: 14px;");
 		helpLink.setOnAction(_ -> TrayAlerts.howDoISelectTheAudioOutput());
 		
-		HBox deviceSelector = labeledNode("Choose Device:", audioDeviceSelect);
+		Button listRefreshButton = getAudioDevicesListRefreshButton();
+		HBox audioDevicesSection = labeledNode("\uD83C\uDFA7 Audio Output", listRefreshButton, false);
+		HBox deviceSelector = labeledNode("Choose Device:", audioDeviceSelect, true);
 		HBox radioGroupBox = getRadioGroupBox();
 		return new VBox(10,
-				new Label("\uD83C\uDFA7 Audio Output"),
+				audioDevicesSection,
 				currentDeviceLabel,
 				deviceSelector,
 				new Label("Custom Device Name: "),
@@ -161,6 +168,28 @@ public class SettingsTab {
 				radioGroupBox,
 				helpLink
 		);
+	}
+	
+	private static Button getAudioDevicesListRefreshButton() {
+		Button refreshAudioDevicesList = new Button("");
+		refreshAudioDevicesList.setMinSize(25,25);
+		refreshAudioDevicesList.setPrefSize(25,25);
+		refreshAudioDevicesList.setMaxSize(25,25);
+		refreshAudioDevicesList.getStyleClass().add("refresh-button");
+		refreshAudioDevicesList.setId("refresh-button-id");
+		refreshAudioDevicesList.setTooltip(new Tooltip("Refresh audio devices list"));
+		refreshAudioDevicesList.setOnAction(_ -> {
+			updateAudioDevicesList();
+			audioDeviceSelect.getItems().setAll(getAudioDevicesList());
+		});
+		
+		Image refreshImage = new Image(Objects.requireNonNull(SettingsTab.class.getResourceAsStream(REFRESH_ICON_PATH + "refresh.png")));
+		ImageView icon = new ImageView(refreshImage);
+		icon.setFitHeight(20);
+		icon.setFitWidth(20);
+		refreshAudioDevicesList.setGraphic(icon);
+		refreshAudioDevicesList.setStyle("-fx-z-index: 1000px;");
+		return refreshAudioDevicesList;
 	}
 	
 	private static HBox getRadioGroupBox() {
@@ -254,9 +283,9 @@ public class SettingsTab {
 				enableSound,
 				enableToast,
 				notificationUI,
-				labeledNode("Select Sound:  \u2003\u2003", soundSelect),
-				labeledNode("Battery Min Level: ", batteryMinLevel),
-				labeledNode("Battery Max Level:", batteryMaxLevel)
+				labeledNode("Select Sound:  \u2003\u2003", soundSelect, true),
+				labeledNode("Battery Min Level: ", batteryMinLevel, true),
+				labeledNode("Battery Max Level:", batteryMaxLevel, true)
 		);
 		styleSection(section);
 		return section;
@@ -283,7 +312,7 @@ public class SettingsTab {
 		
 		VBox box = new VBox(10,
 				new Label("\uD83C\uDFA8 Theme"),
-				labeledNode("App Theme:   \u2003\u2003", themeSelector)
+				labeledNode("App Theme:   \u2003\u2003", themeSelector, true)
 		);
 		styleSection(box);
 		return box;
@@ -294,10 +323,10 @@ public class SettingsTab {
 		box.setStyle("-fx-border-color: lightgray; -fx-border-radius: 6; -fx-border-width: 1;");
 	}
 	
-	public static HBox labeledNode(String labelText, Control control) {
+	public static HBox labeledNode(String labelText, Control control, boolean startWithLabel) {
 		Label label = new Label(labelText);
 		label.setMinHeight(Region.USE_PREF_SIZE);
-		HBox box = new HBox(10, label, control);
+		HBox box = startWithLabel? new HBox(10, label, control) : new HBox(10, control, label);
 		box.setAlignment(Pos.CENTER_LEFT);
 		return box;
 	}

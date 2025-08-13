@@ -70,7 +70,7 @@ public class AppNotificationToast {
 		
 		HBox controls = getControls();
 		HBox.setHgrow(controls, Priority.ALWAYS);
-		controls.setAlignment(Pos.BOTTOM_RIGHT);
+		controls.setAlignment(Pos.BOTTOM_CENTER);
 		controls.setMaxWidth(Double.MAX_VALUE);
 		
 		VBox centerBox = new VBox(15, messageLabel, controls);

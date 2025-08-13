@@ -151,9 +151,9 @@ public class AppSettingsThirdPartialPanel {
 
     private static void decideTheSizeDimension(){
         if(UserChoices.isEnableSecondarySound()){
-            partialPanelDimension = new Dimension(WIDTH, 160);
+            partialPanelDimension = new Dimension(WIDTH, 130);
         } else {
-            partialPanelDimension = new Dimension(WIDTH, 60);
+            partialPanelDimension = new Dimension(WIDTH, 45);
         }
     }
 }

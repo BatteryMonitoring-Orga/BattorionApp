@@ -132,7 +132,6 @@ public class TraySettingsGUI {
 		Platform.runLater(() -> {
 			Scene scene = getTrayUI();
 			scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-			
 			SwingUtilities.invokeLater(() -> {
 				jfxPanel.setScene(scene);
 				contentPanel.add(jfxPanel, BorderLayout.CENTER);

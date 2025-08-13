@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core;
-import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.extractAudioOutputFamilies;
+import static com.battery_level_alarm.monitoring.command_executors.SoundDevicesNamesFinder.updateAudioDevicesList;
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.addItemToAudioList;
 import static com.battery_level_alarm.monitoring.flow_chat.CallStepsFlow.handleUserFlows;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.scheduler;
@@ -107,6 +107,7 @@ public class Battorion {
     public static volatile boolean isMonitorRunning = false;
     public static volatile boolean isFXLaunched = false;
     public static volatile boolean isAppToastNotifyEnabled = true;
+    public static volatile boolean isProgramCurrentlyStarted = true;
     public static boolean isApplicationMode = true;
     public static boolean isFromCriticalAlert = false;
     public static boolean isWasInCriticalPhase = false;
@@ -294,13 +295,8 @@ public class Battorion {
     }
     
     private static void setupAudioDevicesNames() {
-        java.util.List<String> audioDevices = getAudioDevicesList();
-        setAudioDevicesList(extractAudioOutputFamilies());
-        if(audioDevices != null && !audioDevices.isEmpty()) {
-            for(String item : audioDevices) {
-                addItemToAudioList(item);
-            }
-        } if(getDefaultSpeakerOutputDeviceName() == null || getDefaultSpeakerOutputDeviceName().isEmpty() ||
+        updateAudioDevicesList();
+        if(getDefaultSpeakerOutputDeviceName() == null || getDefaultSpeakerOutputDeviceName().isEmpty() ||
                 getDefaultSpeakerOutputDeviceName().equals(UNKNOWN_OUTPUT_DEVICE)) {
             String defaultDevice = SoundDevicesNamesFinder.findFirstDefaultValidRenderDevice();
             setDefaultSpeakerOutputDeviceName(defaultDevice);

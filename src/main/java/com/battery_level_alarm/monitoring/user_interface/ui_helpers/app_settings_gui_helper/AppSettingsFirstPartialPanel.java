@@ -135,6 +135,6 @@ public class AppSettingsFirstPartialPanel {
     }
 
     private static void decideTheSizeDimension(){
-        partialPanelDimension = new Dimension(WIDTH, 160);
+        partialPanelDimension = new Dimension(WIDTH, 130);
     }
 }

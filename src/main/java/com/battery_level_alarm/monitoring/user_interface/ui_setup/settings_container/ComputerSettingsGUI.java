@@ -160,13 +160,11 @@ public class ComputerSettingsGUI {
                     updateAudioDevicesList();
                     saveComputerSettings();
                     SwingUtilities.invokeLater(() -> {
-                        audioDevicesComboBox.setEditable(false);
                         audioDevicesComboBox.setEnabled(false);
                         audioDevicesComboBox.removeAllItems();
                         for (String item : getAudioDevicesList()) {
                             audioDevicesComboBox.addItem(item);
                         }
-                        audioDevicesComboBox.setEditable(true);
                         audioDevicesComboBox.setEnabled(true);
                     });
                 }), DEFAULT_FONT

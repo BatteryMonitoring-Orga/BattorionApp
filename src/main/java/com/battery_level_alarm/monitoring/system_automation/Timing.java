@@ -19,8 +19,8 @@ public class Timing {
     private static int DisChargingStartAtLevel;
 
     public static void configurationHistoryMap(){
-        history.put(isIn_ChargingMode, new ArrayList<>());
-        history.put(isIn_DisChargingMode, new ArrayList<>());
+        history.put(IS_IN_CHARGING_MODE, new ArrayList<>());
+        history.put(IS_IN_DIS_CHARGING_MODE, new ArrayList<>());
     }
 
     public static Map<String, ArrayList<Double>> getHistoryMap(){
@@ -78,9 +78,9 @@ public class Timing {
     }
 
     private static void setSharpDifference(String mode, int maxDifference){
-        if(mode.equals(isIn_ChargingMode)){
+        if(mode.equals(IS_IN_CHARGING_MODE)){
             ChargingSharpDifference = maxDifference;
-        } else if(mode.equals(isIn_DisChargingMode)){
+        } else if(mode.equals(IS_IN_DIS_CHARGING_MODE)){
             DischargingSharpDifference = maxDifference;
         }
     }
@@ -96,19 +96,19 @@ public class Timing {
     }
 
     private static void setStartedValue(String mode, long time) {
-        if (mode.equals(isIn_ChargingMode)) {
+        if (mode.equals(IS_IN_CHARGING_MODE)) {
             ChargingStartFrom = time;
             ChargingStartAtLevel = batteryLevel;
-        } else if (mode.equals(isIn_DisChargingMode)) {
+        } else if (mode.equals(IS_IN_DIS_CHARGING_MODE)) {
             DisChargingStartFrom = time;
             DisChargingStartAtLevel = batteryLevel;
         }
     }
 
     private static long calculatePeriodTime(String mode, long time) {
-        if (mode.equals(isIn_ChargingMode)) {
+        if (mode.equals(IS_IN_CHARGING_MODE)) {
             return (time - ChargingStartFrom);
-        } else if (mode.equals(isIn_DisChargingMode)) {
+        } else if (mode.equals(IS_IN_DIS_CHARGING_MODE)) {
             return (time - DisChargingStartFrom);
         } else {
             return 0L;
@@ -116,9 +116,9 @@ public class Timing {
     }
 
     private static void setPeriodTime(String mode, long period) {
-        if (mode.equals(isIn_ChargingMode)) {
+        if (mode.equals(IS_IN_CHARGING_MODE)) {
             HowLongBatteryNeedToFull = period;
-        } else if (mode.equals(isIn_DisChargingMode)) {
+        } else if (mode.equals(IS_IN_DIS_CHARGING_MODE)) {
             HowLongBatteryNeedToDump = period;
         }
     }

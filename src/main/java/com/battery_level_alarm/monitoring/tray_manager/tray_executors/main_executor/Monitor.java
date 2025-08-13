@@ -2,6 +2,8 @@ package com.battery_level_alarm.monitoring.tray_manager.tray_executors.main_exec
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.*;
 import static com.battery_level_alarm.monitoring.core_utilities.UserChoices.getAlertBeforeRiskPhaseBy;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.CHARGING_MODE_ICON_NAME;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.DIS_CHARGING_MODE_ICON_NAME;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.BATTERY_REPORT_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.*;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.SystemTheme.AS_SYSTEM;
@@ -14,7 +16,9 @@ import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs
 import static com.battery_level_alarm.monitoring.command_executors.AudioOutputDeviceNameChecker.getAudioOutputDevice;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.getBatteryLevel;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.getBatteryStatus;
-import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
+import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound.*;
+import static com.battery_level_alarm.monitoring.visual_effects.alerts.ChargerIcons.hideIconsStage;
+import static com.battery_level_alarm.monitoring.visual_effects.alerts.ChargerIcons.showCircularImage;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.battery_report.BatteryLiveInfoReader;
@@ -26,11 +30,14 @@ import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notificati
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryIconWindow;
 import com.battery_level_alarm.monitoring.tray_manager.tray_executors.notifications.NotificationPopup;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
-import com.battery_level_alarm.monitoring.visual_effects.AlertSound;
+import com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound;
 import com.notifications.system_tray_notifications.influence.PlaySounds;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
 import java.util.concurrent.*;
 
 public class Monitor {
@@ -157,6 +164,12 @@ public class Monitor {
 			
 			if(isCharging != previousCharging) {
 				isToastNotifyEnabled = true;
+				Thread.ofVirtual().start(() -> Platform.runLater(() -> {
+					showCircularImage(isCharging? CHARGING_MODE_ICON_NAME : DIS_CHARGING_MODE_ICON_NAME);
+					PauseTransition delay = new PauseTransition(Duration.seconds(2));
+					delay.setOnFinished(_ -> hideIconsStage());
+					delay.play();
+				}));
 			}
 		} catch (Exception e) {
 			printErrorMessage(e);

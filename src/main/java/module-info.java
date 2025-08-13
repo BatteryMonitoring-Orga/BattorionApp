@@ -77,4 +77,5 @@ module monitoring {
 	exports com.battery_level_alarm.monitoring.visual_effects.messages;
 	exports com.battery_level_alarm.monitoring.flow_chat;
 	opens com.battery_level_alarm.monitoring.registration_manager to javafx.swing;
+	exports com.battery_level_alarm.monitoring.visual_effects.alerts;
 }

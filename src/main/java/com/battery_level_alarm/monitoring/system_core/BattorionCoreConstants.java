@@ -183,8 +183,10 @@ public class BattorionCoreConstants {
     }
 
     public static class ChargingStatus {
-        public static final String isIn_ChargingMode = "Charging";
-        public static final String isIn_DisChargingMode = "Not Charging";
+        public static final String IS_IN_CHARGING_MODE = "Charging";
+        public static final String IS_IN_DIS_CHARGING_MODE = "Not Charging";
+        public static final String CHARGING_MODE_ICON_NAME = "charge-icon.png";
+        public static final String DIS_CHARGING_MODE_ICON_NAME = "discharge-icon.png";
     }
 
     public static class PanelIdentifiers {

@@ -30,7 +30,7 @@ import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tra
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getMacTheme;
 import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.TrayTheme.getSystemTheme;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.pcVolumeSpinner;
-import static com.battery_level_alarm.monitoring.visual_effects.AlertSound.*;
+import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound.*;
 
 public class AppNotificationToast {
 	private static boolean isShowingToast = false;

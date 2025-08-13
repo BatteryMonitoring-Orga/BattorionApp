@@ -53,7 +53,7 @@ public class BatteryStatisticsGUI {
 
     private static JTable getJTable() {
         String[][] data = {
-                {"Status", isIn_ChargingMode, isIn_DisChargingMode},
+                {"Status", IS_IN_CHARGING_MODE, IS_IN_DIS_CHARGING_MODE},
                 {"Sharping Difference", getChargingSharpDifference() + "", getDischargingSharpDifference() + ""},
                 {"How Long Time", convertMillisecondsToShortTime(getHowLongBatteryNeedToFull())
                         , convertMillisecondsToShortTime(getHowLongBatteryNeedToDump())},
@@ -61,7 +61,7 @@ public class BatteryStatisticsGUI {
                 {"End at", getDisChargingStartAtLevel() + "", getChargingStartAtLevel() + ""}
         };
 
-        String[] columns = {"\u2003Value\u2003", "\u2003" + isIn_ChargingMode + "\u2003", "\u2003" + isIn_DisChargingMode + "\u2003"};
+        String[] columns = {"\u2003Value\u2003", "\u2003" + IS_IN_CHARGING_MODE + "\u2003", "\u2003" + IS_IN_DIS_CHARGING_MODE + "\u2003"};
         return setTableConstraints(data, columns);
     }
 

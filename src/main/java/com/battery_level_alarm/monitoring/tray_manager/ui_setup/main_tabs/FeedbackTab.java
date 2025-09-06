@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
-import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.showAlert;
+import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPanel.showAlert;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_EMAIL;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab.handleScroll;

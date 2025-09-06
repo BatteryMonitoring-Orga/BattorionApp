@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <component name="microphone" type="edu.cmu.sphinx.frontend.util.Microphone">
+        <property name="sampleRate" value="16000"/>
+        <property name="bitsPerSample" value="16"/>
+        <property name="channels" value="1"/>
+        <property name="keepLastAudio" value="false"/>
+    </component>
+
+    <component name="recognizer" type="edu.cmu.sphinx.recognizer.Recognizer">
+        <property name="decoder" value="decoder"/>
+    </component>
+    <component name="decoder" type="edu.cmu.sphinx.decoder.Decoder">
+        <property name="searchManager" value="searchManager"/>
+    </component>
+
+    <component name="searchManager" type="edu.cmu.sphinx.decoder.search.SimpleBreadthFirstSearchManager">
+        <property name="linguist" value="flatLinguist"/>
+        <property name="pruner" value="pruner"/>
+        <property name="scorer" value="scorer"/>
+        <property name="logMath" value="logMath"/>
+    </component>
+
+    <component name="flatLinguist" type="edu.cmu.sphinx.linguist.flat.FlatLinguist"/>
+    <component name="pruner" type="edu.cmu.sphinx.decoder.pruner.SimplePruner"/>
+    <component name="scorer" type="edu.cmu.sphinx.frontend.scorer.ThreadedAcousticScorer"/>
+    <component name="logMath" type="edu.cmu.sphinx.util.LogMath"/>
+</config>

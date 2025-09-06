@@ -65,7 +65,7 @@ public class LifeReportPanelUI {
 		LifeReportPanel.repaint();
 		if (switchToLifeReportPanel) {
 			motherPanel.add(LifeReportPanel, BorderLayout.CENTER);
-			refreshMotherFrame();
+			refreshMasterFrame();
 		}
 	}
 	

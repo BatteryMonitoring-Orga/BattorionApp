@@ -66,9 +66,9 @@ public class Battorion {
     public static Preferences prefs;
     public static Color borderColor;
     public static Color panelBackgroundColor;
+    private static SystemTrayNotification stn;
+    private static Notifications notify;
     public static AlarmSounds alarmSounds;
-    static SystemTrayNotification stn;
-    static Notifications notify;
     
     public static JFrame mainFrame;
     public static JTabbedPane SettingsContainer;
@@ -81,6 +81,7 @@ public class Battorion {
     public static JPanel DashboardPanel;
     public static JPanel LifeReportPanel;
     public static JPanel SimulatorMainPanel;
+    public static JPanel FeedbackMainPanel;
     
     public static final JPanel progressPanel = new JPanel();
     public static JPanel soundControlPanel;
@@ -235,7 +236,7 @@ public class Battorion {
         mainFrame.getRootPane().putClientProperty("JRootPane.titleBarBackground", panelBackgroundColor);
     }
     
-    public static void refreshMotherFrame() {
+    public static void refreshMasterFrame() {
         mainFrame.repaint();
         mainFrame.validate();
     }

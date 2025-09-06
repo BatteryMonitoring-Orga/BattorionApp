@@ -47,7 +47,7 @@ public class BatteryLiveInfoReader {
 			double absRate = Math.abs(rawRate);
 			boolean hasValidRate = absRate > 0;
 			
-			String timeText = TimeEstimator.getEstimatedTimeText(
+			String timeText = TimeEstimatorFinalValue.getEstimatedTimeText(
 					charging, hasValidRate, percent, currentCapacity, maxCapacity, rawRate
 			);
 			setEstimatedTimeRemaining(timeText);

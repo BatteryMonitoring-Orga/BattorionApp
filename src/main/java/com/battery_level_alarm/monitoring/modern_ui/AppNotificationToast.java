@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.*;
 import javafx.util.Duration;
@@ -35,6 +36,8 @@ import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSoun
 public class AppNotificationToast {
 	private static boolean isShowingToast = false;
 	private static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/notification_toast";
+	private static final String BATTERY_ICON_HIGH_LEVEL = "battery_toast_high.png";
+	private static final String BATTERY_ICON_LOW_LEVEL = "battery_toast_low.png";
 	private static Popup activeSoundPopup = null;
 	
 	public static void showNotification(String message, int batteryLevel, boolean isWelcomeMSG) {
@@ -43,15 +46,16 @@ public class AppNotificationToast {
 		isShowingToast = true;
 		
 		ImageView batteryIcon = new ImageView(new Image(Objects.requireNonNull(
-				AppNotificationToast.class.getResource(ICONS_FOLDER_PATH + "battery_toast.png")).toExternalForm()
+				AppNotificationToast.class.getResource(ICONS_FOLDER_PATH + (batteryLevel > 50 ? BATTERY_ICON_HIGH_LEVEL : BATTERY_ICON_LOW_LEVEL))).toExternalForm()
 		));
 		batteryIcon.setFitWidth(60);
 		batteryIcon.setFitHeight(60);
 		
-		Label batteryLevelLabel = new Label(batteryLevel + "%");
+		Label batteryLevelLabel = new Label(batteryLevel + "");
 		batteryLevelLabel.setId("notification-label");
-		VBox batteryBox = new VBox(8, batteryIcon, batteryLevelLabel);
-		batteryBox.setAlignment(Pos.CENTER);
+		
+		StackPane batteryStack = new StackPane(batteryIcon, batteryLevelLabel);
+		batteryStack.setAlignment(Pos.CENTER);
 		
 		Label messageLabel = new Label(message);
 		messageLabel.setId("notification-label");
@@ -64,45 +68,47 @@ public class AppNotificationToast {
 		double textHeight = textMeasure.getLayoutBounds().getHeight();
 		double textWidth = Math.min(textMeasure.getLayoutBounds().getWidth(), messageLabel.getMaxWidth());
 		double width = 260 + textWidth;
-		if (width < 460) width = 460;
-		double height = Math.max(120, textHeight + 80);
+		if (width < 400) width = 400;
+		double height = Math.max(80, textHeight + 40);
 		messageLabel.setMaxWidth(width - 200);
 		
 		HBox controls = getControls();
 		HBox.setHgrow(controls, Priority.ALWAYS);
-		controls.setAlignment(Pos.BOTTOM_CENTER);
+		controls.setAlignment(Pos.CENTER);
 		controls.setMaxWidth(Double.MAX_VALUE);
-		
-		VBox centerBox = new VBox(15, messageLabel, controls);
-		VBox.setVgrow(controls, Priority.ALWAYS);
-		centerBox.setAlignment(Pos.CENTER);
 		
 		Button closeButton = new Button("✖");
 		closeButton.setPrefSize(40, 40);
 		closeButton.setFont(Font.font(14));
 		closeButton.setFocusTraversable(false);
 		
-		Region topGap = new Region();
-		topGap.setPrefHeight(10);
-		VBox closeButtonBox = new VBox(topGap, closeButton);
-		closeButtonBox.setAlignment(Pos.TOP_CENTER);
+		Button controlsButton = new Button("\uD83D\uDEE0");
+		controlsButton.setPrefSize(40, 40);
+		controlsButton.setFont(Font.font("System", FontWeight.BOLD, 14));
+		controlsButton.setFocusTraversable(false);
+		controlsButton.setManaged(!isWelcomeMSG);
+		controlsButton.setVisible(!isWelcomeMSG);
+		
+		HBox controlsBox = new HBox(5, controlsButton, closeButton);
+		HBox.setHgrow(controls, Priority.ALWAYS);
+		controlsBox.setAlignment(Pos.CENTER);
 		
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
-		HBox rootLayout = new HBox(20, batteryBox, centerBox, spacer, closeButtonBox);
+		HBox rootLayout = new HBox(10, batteryStack, messageLabel, spacer, controlsBox);
 		rootLayout.setAlignment(Pos.CENTER_LEFT);
 		
 		StackPane pane = new StackPane(rootLayout);
 		pane.setId("notification-pane");
 		pane.setAlignment(Pos.CENTER_LEFT);
-		pane.setStyle("-fx-background-radius: 10; -fx-padding: 15 25;");
+		pane.setStyle("-fx-background-radius: 10; -fx-padding: 15 15;");
 		
 		String cssFile = getCssFile();
 		Scene scene = new Scene(pane);
 		scene.setFill(Color.TRANSPARENT);
 		scene.getStylesheets().add(Objects.requireNonNull(AppNotificationToast.class.getResource(cssFile)).toExternalForm());
-		batteryLevelLabel.setStyle("-fx-font-size: 16px;");
-		messageLabel.setStyle("-fx-font-size: 15px;");
+		messageLabel.setStyle("-fx-font-size: 14px;");
+		batteryLevelLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: black; -fx-font-family: serif;");
 		
 		Stage toastStage = new Stage();
 		toastStage.initStyle(StageStyle.TRANSPARENT);
@@ -138,6 +144,19 @@ public class AppNotificationToast {
 				isAppToastNotifyEnabled = false;
 			}
 		});
+		controlsButton.setOnAction(_ ->
+				Platform.runLater(() -> {
+					int index = rootLayout.getChildren().indexOf(messageLabel);
+					if (index != -1) {
+						rootLayout.getChildren().set(index, controls);
+					} else {
+						int idx = rootLayout.getChildren().indexOf(controls);
+						if (idx != -1) {
+							rootLayout.getChildren().set(idx, messageLabel);
+						}
+					}
+				})
+		);
 	}
 	
 	private static @NotNull HBox getControls() {

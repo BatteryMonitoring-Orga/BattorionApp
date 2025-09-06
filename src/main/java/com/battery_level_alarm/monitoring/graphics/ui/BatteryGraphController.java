@@ -176,7 +176,6 @@ public class BatteryGraphController {
 		autoSaveCheck.setId("auto-save");
 		autoSaveCheck.setSelected(isAutoSave());
 		autoSaveCheck.setOnAction(_ -> setAutoSave(autoSaveCheck.isSelected()));
-		
 		Slider saveAfterNumOfRecords = buildSlider("save-threshold", 100, 1000, getSaveAfterNumOfRecords(),
 				10, 100, 4, val -> setSaveAfterNumOfRecords(val.intValue())
 		);

@@ -21,12 +21,15 @@ import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 
 import static com.battery_level_alarm.monitoring.battery_report.BatteryJsonAnalyzer.getMainPackagesTemp;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.SHOW_BATTERY_ICON;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab.batteryEstimatedTime;
 
 public class BatteryIconWindow {
 	private static Stage invisibleOwner;
 	private static Stage primaryIconStage;
 	private static BatteryIcon batteryIcon;
+	public static boolean isIconHidden = false;
 	
 	public static Stage getInvisibleOwner() {
 		return invisibleOwner;
@@ -38,7 +41,8 @@ public class BatteryIconWindow {
 	
 	public static void show(double level, boolean isCharging) {
 		Platform.runLater(() -> {
-			if (primaryIconStage == null) {
+			if (primaryIconStage == null || isIconHidden) {
+				isIconHidden = false;
 				batteryIcon = new BatteryIcon();
 				batteryIcon.setStatus(level, isCharging);
 				
@@ -60,7 +64,7 @@ public class BatteryIconWindow {
 				primaryIconStage.setY(2);
 				primaryIconStage.show();
 				primaryIconStage.toFront();
-			} else {
+			} else if(prefs.getBoolean(SHOW_BATTERY_ICON, false)) {
 				updateStatus(level, isCharging);
 				if (!primaryIconStage.isShowing()) {
 					primaryIconStage.show();
@@ -163,7 +167,7 @@ public class BatteryIconWindow {
 			gc.setLineWidth(3);
 			gc.strokeRoundRect(1.5, 1.5, width - 3, height - 3, 12, 12);
 			gc.setFill(getColor(level, isCharging));
-			gc.fillRoundRect(1.5, 1.5, (width - 8) * level, height - 3, 10, 10);
+			gc.fillRoundRect(3, 1.5, (width - 8) * level, height - 3, 10, 10);
 			
 			double headWidth = 6;
 			double headHeight = height * 0.45;

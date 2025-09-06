@@ -166,8 +166,9 @@ public class TrayIconManager {
 				if (selected) {
 					Thread.ofVirtual().start(() -> BatteryIconWindow.show(chargeLevel / 100.0, isCharging));
 				} else if (BatteryIconWindow.getPrimaryIconStage() != null) {
-					BatteryIconWindow.getInvisibleOwner().hide();
-					BatteryIconWindow.getPrimaryIconStage().hide();
+					BatteryIconWindow.getInvisibleOwner().close();
+					BatteryIconWindow.getPrimaryIconStage().close();
+					BatteryIconWindow.isIconHidden = true;
 				}
 				Monitor.changeFlag = true;
 			} catch (Exception e) {

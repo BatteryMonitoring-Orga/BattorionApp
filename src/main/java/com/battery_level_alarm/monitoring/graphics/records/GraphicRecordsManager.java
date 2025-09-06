@@ -52,6 +52,70 @@ public class GraphicRecordsManager {
         }
     }
     
+    public static void saveDataAsCSV(String path) {
+        try {
+            File file = prepareUniqueFile(path);
+            try (PrintWriter writer = new PrintWriter(file)) {
+                writer.println("Time, Battery Level");
+                for (XYChart.Data<Number, Number> data : series.getData()) {
+                    writer.println(data.getXValue() + "," + data.getYValue());
+                }
+            }
+        } catch (IOException e) {
+            printErrorMessage(e);
+        }
+    }
+    
+    public static void saveDataAsJSON(String path) {
+        try {
+            File file = prepareUniqueFile(path);
+            try (FileWriter writer = new FileWriter(file)) {
+                JSONArray jsonArray = new JSONArray();
+                for (XYChart.Data<Number, Number> data : series.getData()) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("time", data.getXValue());
+                    jsonObject.put("battery_level", data.getYValue());
+                    jsonArray.put(jsonObject);
+                }
+                writer.write(jsonArray.toString(4));
+            }
+        } catch (IOException e) {
+            printErrorMessage(e);
+        }
+    }
+    
+    private static File prepareUniqueFile(String path) throws IOException {
+        File file = new File(path);
+        File parentDir = file.getParentFile();
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new IOException("تعذر إنشاء المجلد: " + parentDir.getAbsolutePath());
+            }
+        }
+        
+        if (file.exists()) {
+            String name = file.getName();
+            String baseName;
+            String extension = "";
+            int dotIndex = name.lastIndexOf('.');
+            if (dotIndex > 0) {
+                baseName = name.substring(0, dotIndex);
+                extension = name.substring(dotIndex);
+            } else {
+                baseName = name;
+            }
+            
+            int counter = 1;
+            while (file.exists()) {
+                String newName = baseName + "_" + counter + extension;
+                file = new File(parentDir, newName);
+                counter++;
+            }
+        }
+        
+        return file;
+    }
+    
     public static void loadDataFromCSV(Stage stage) {
         loadCounter = 0;
         FileChooser fileChooser = new FileChooser();

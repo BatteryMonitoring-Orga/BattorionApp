@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="monitoring" options="--add-exports javafx.graphics/com.sun.glass.ui=monitoring" />
+      <module name="monitoring" options="" />
     </option>
   </component>
 </project>

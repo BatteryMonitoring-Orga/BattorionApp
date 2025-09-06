@@ -23,8 +23,9 @@ module monitoring {
 	requires com.github.oshi;
 	requires javafx.media;
 	requires org.jsoup;
-	requires dropbox.core.sdk;
 	requires com.fasterxml.jackson.databind;
+	requires org.apache.poi.poi;
+	requires org.apache.poi.ooxml;
 	
 	exports com.battery_level_alarm.monitoring.mini_browser;
 	exports com.battery_level_alarm.monitoring.battery_emulator;

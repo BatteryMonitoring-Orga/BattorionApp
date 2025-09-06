@@ -16,12 +16,12 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.Battorion.refreshMasterFrame;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.NEW_BATTORION_USER;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_GAVE_FEEDBACK;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isDarkMode;
 import static com.battery_level_alarm.monitoring.flow_chat.DynamicStepsFlow.flow;
+import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionButtonHelper.setupFeedbackPanel;
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.westSideButton;
-import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.feedback;
 import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
 
 public class CallStepsFlow {
@@ -104,7 +104,10 @@ public class CallStepsFlow {
 					new ChatOption("Good", () -> chatFlow.add(new ChatStep("Would you like to leave feedback?",
 						List.of(
 							new ChatOption("Yes", () -> chatFlow.add(new ChatStep("We’d love to hear from you — just tap the \"Feedback\" to share your thoughts!",
-									List.of(new ChatOption("Feedback", () -> Platform.runLater(() -> feedback(isDarkMode)))),
+									List.of(new ChatOption("Feedback", () -> {
+										setupFeedbackPanel();
+										refreshMasterFrame();
+									})),
 									false, null
 							))),
 							new ChatOption("No", () -> chatFlow.add(new ChatStep("Thanks for your time!", List.of(), false, null)))
@@ -113,7 +116,10 @@ public class CallStepsFlow {
 					new ChatOption("Bad", () -> chatFlow.add(new ChatStep("Would you like to leave feedback?",
 						List.of(
 							new ChatOption("Yes", () -> chatFlow.add(new ChatStep("Please let us know what went wrong.\nJust tap the \"Feedback\" to share your issue!",
-									List.of(new ChatOption("Feedback", () -> Platform.runLater(() -> feedback(isDarkMode)))),
+									List.of(new ChatOption("Feedback", () -> {
+										setupFeedbackPanel();
+										refreshMasterFrame();
+									})),
 									false, null
 							))),
 							new ChatOption("No", () -> chatFlow.add(new ChatStep("Sorry to hear that. Thanks anyway!", List.of(), false, null)))

@@ -16,6 +16,9 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_WIDTH;
 import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph.*;
 import static com.battery_level_alarm.monitoring.graphics.base.GraphsDefinitions.*;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.RECORDED_DATA_FILE_NAME;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.RECORDED_DATA_FOLDER;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
 
 public abstract class BaseBatteryChart implements BatteryChart {
 	protected static XYChart<Number, Number> chart;
@@ -41,7 +44,6 @@ public abstract class BaseBatteryChart implements BatteryChart {
 			chart.getData().add(series);
 		}
 		Platform.runLater(this::applyAxisStyles);
-		
 		setupScrollPane();
 		setupZoomBehavior();
 		setupDragBehavior();
@@ -83,9 +85,9 @@ public abstract class BaseBatteryChart implements BatteryChart {
 			if(isAutoSave() && mainCounter > getSaveAfterNumOfRecords()) {
 				mainCounter = 0;
 				if(getSaveFormat().equalsIgnoreCase("CSV")) {
-					saveDataAsCSV();
+					saveDataAsCSV(ROAMING_CONFIG_PATH + RECORDED_DATA_FOLDER + "/" + RECORDED_DATA_FILE_NAME + ".csv");
 				} else {
-					saveDataAsJSON();
+					saveDataAsJSON(ROAMING_CONFIG_PATH + RECORDED_DATA_FOLDER + "/" + RECORDED_DATA_FILE_NAME + ".json");
 				}
 			}
 		});

@@ -1,4 +1,6 @@
 package com.battery_level_alarm.monitoring.user_interface.ui_config;
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.Dimension;
 import javax.swing.border.Border;
 
@@ -35,7 +37,7 @@ public record ScrollConfiguration(
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return String.format("ScrollConfiguration[Focusable=%b, Visible=%b, Enabled=%b, Opaque=%b, Size=%s]",
                 isFocusable, isVisible, isEnabled, isOpaque, scrollSize);
     }

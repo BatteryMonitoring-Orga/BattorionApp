@@ -64,6 +64,9 @@ public class BattorionPanelHelper {
         } if(SimulatorMainPanel == null){
             SimulatorMainPanel = new JPanel();
             SimulatorMainPanel.setVisible(false);
+        } if(FeedbackMainPanel == null) {
+            FeedbackMainPanel = new JPanel();
+            FeedbackMainPanel.setVisible(false);
         }
     }
     
@@ -73,6 +76,7 @@ public class BattorionPanelHelper {
         StatisticsContainer.setVisible(false);
         LifeReportPanel.setVisible(false);
         SimulatorMainPanel.setVisible(false);
+        FeedbackMainPanel.setVisible(false);
     }
 
     public static void setVisibleTrue(String isA) {
@@ -87,6 +91,8 @@ public class BattorionPanelHelper {
             reportButton.doClick();
         } else if (SimulatorMainPanel != null && isA.equals(IS_A_SIMULATOR_PANEL)){
             simulatorButton.doClick();
+        } else if (FeedbackMainPanel != null && isA.equals(IS_A_FEEDBACK_PANEL)){
+            feedbackButton.doClick();
         } else {
             assert DashboardPanel != null;
             DashboardPanel.setVisible(true);
@@ -140,6 +146,8 @@ public class BattorionPanelHelper {
             return IS_A_LIFE_REPORT_PANEL;
         } else if (SimulatorMainPanel.isVisible()) {
             return IS_A_SIMULATOR_PANEL;
+        } else if (FeedbackMainPanel.isVisible()) {
+            return IS_A_FEEDBACK_PANEL;
         } else {
             return "No panel is visible";
         }

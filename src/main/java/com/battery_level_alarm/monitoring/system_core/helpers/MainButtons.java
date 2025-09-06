@@ -1,6 +1,4 @@
 package com.battery_level_alarm.monitoring.system_core.helpers;
-import javafx.application.Platform;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,11 +9,9 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ButtonTexts.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ASSETS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.BUTTON_ICONS_PATH;
-import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isDarkMode;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionButtonHelper.*;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionButtonHelper.createButton;
-import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPopup.feedback;
 
 public class MainButtons {
 	public static boolean isNormalClick = true;
@@ -43,7 +39,7 @@ public class MainButtons {
 		hyalineButton(actionButton, false, false, true, false);
 		hyalineButton(aboutButton, false, false, true, false);
 		hyalineButton(settingsButton, true, false, true, false);
-		hyalineButton(feedbackButton, false, false, true, false);
+		hyalineButton(feedbackButton, true, false, true, false);
 		
 		panel.add(Box.createRigidArea(new Dimension(0, 10)));
 		panel.add(dashboardButton);
@@ -80,7 +76,7 @@ public class MainButtons {
 					isNextActiveMonitorMode = true;
 					stopMonitoring();
 				}
-				refreshMotherFrame();
+				refreshMasterFrame();
 			});
 		
 		graphPainter = createGraphButton();
@@ -88,27 +84,27 @@ public class MainButtons {
 			BUTTON_ICONS_PATH, "dashboard", _ -> {
 				if(!DashboardPanel.isVisible()){
 					setupDashboardPanel();
-					refreshMotherFrame();
+					refreshMasterFrame();
 				}
 			});
 		statisticsButton = createButton(STATISTICS_BUTTON_TEXT, "Go to statistics panel",
 			BUTTON_ICONS_PATH, "statistics", _ -> {
 				if (!StatisticsContainer.isVisible()) {
 					setupStatisticsPanel();
-					refreshMotherFrame();
+					refreshMasterFrame();
 //					Platform.runLater(FeedbackFlowChat::callSmartFeedbackStepsFlow);
 				}
 			});
 		reportButton = createButton(REPORT_BUTTON_TEXT, "Generate battery life report",
 			BUTTON_ICONS_PATH, "report", _ ->Thread.ofVirtual().start(() -> {
 				setupLifeReportPanel();
-				refreshMotherFrame();
+				refreshMasterFrame();
 			}));
 		simulatorButton = createButton(SIMULATOR_BUTTON_TEXT, "View simulator",
 			BUTTON_ICONS_PATH, "simulator", _ -> {
 				if (!SimulatorMainPanel.isVisible()) {
 					setupSimulatorPanel();
-					refreshMotherFrame();
+					refreshMasterFrame();
 				}
 			});
 		guideButton = createButton(GUIDE_BUTTON_TEXT, "Open application comprehensive guide",
@@ -118,14 +114,14 @@ public class MainButtons {
 				if(!isNormalClick) {
 					if (!SettingsContainer.isVisible()) {
 						setupSettingPanel();
-						refreshMotherFrame();
+						refreshMasterFrame();
 					}
 					isNormalClick = true;
 				} else {
 					Thread.ofVirtual().start(() -> {
 						if (!SettingsContainer.isVisible()) {
 							setupSettingPanel();
-							refreshMotherFrame();
+							refreshMasterFrame();
 						}
 					});
 				}
@@ -136,8 +132,8 @@ public class MainButtons {
 				_ -> Thread.ofVirtual().start(() -> launchAndOpenTopic(ABOUT_APP, 0)));
 		feedbackButton = createButton(FEEDBACK_BUTTON_TEXT, "Send us your opinion or issue",
 				ASSETS_FOLDER_PATH, "feedback", _ -> {
-					Platform.setImplicitExit(false);
-					Platform.runLater(() -> feedback(isDarkMode));
+					setupFeedbackPanel();
+					refreshMasterFrame();
 				});
 		westSideButton = createButton(WEST_SIDE_BUTTON_TEXT, "Disappear the west side",
 				BUTTON_ICONS_PATH, "side_bar", _ -> setupWestSideButton());

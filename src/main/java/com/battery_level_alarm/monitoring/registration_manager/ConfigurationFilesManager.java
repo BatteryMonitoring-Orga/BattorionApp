@@ -477,14 +477,14 @@ public class ConfigurationFilesManager {
         setCheckForUpdatesAutomatically(json.optBoolean("check for updates automatically", true));
         setDownloadUpdatesAutomatically(json.optBoolean("download updates automatically", false));
         setNotifyBeforeInstalling(json.optBoolean("notify before installing", false));
-        setPreviousVersion(json.optString("previous version", "5.0.0"));
+        setPreviousVersion(json.optString("previous version", "0.0.0"));
     }
     
     private static void loadDefaultUpdateVersionConfigurations() {
         setCheckForUpdatesAutomatically(true);
         setDownloadUpdatesAutomatically(false);
         setNotifyBeforeInstalling(false);
-        setPreviousVersion("5.0.0");
+        setPreviousVersion("0.0.0");
     }
     
     public static void saveGraphConfigurations() {
@@ -558,7 +558,7 @@ public class ConfigurationFilesManager {
         setAlertThreshold(json.optInt("alert threshold percent", 20));
         setAlertColor(javafx.scene.paint.Color.web(json.optString("alert color", "RED")));
         setSaveFormat(json.optString("default save format", "CSV"));
-        setAutoSave(json.optBoolean("enable auto save", false));
+        setAutoSave(json.optBoolean("enable auto save", true));
         setSaveAfterNumOfRecords(json.optInt("auto-save every (records)", 250));
     }
     
@@ -580,7 +580,7 @@ public class ConfigurationFilesManager {
         setAlertThreshold(20);
         setAlertColor(javafx.scene.paint.Color.RED);
         setSaveFormat("CSV");
-        setAutoSave(false);
+        setAutoSave(true);
         setSaveAfterNumOfRecords(250);
     }
     

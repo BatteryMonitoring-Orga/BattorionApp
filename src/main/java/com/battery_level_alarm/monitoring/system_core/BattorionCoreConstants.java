@@ -105,6 +105,8 @@ public class BattorionCoreConstants {
     
     public static class Paths {
         public static final String MAIN_FOLDER_NAME = "/Battorion";
+        public static final String RECORDED_DATA_FOLDER = "logs";
+        public static final String RECORDED_DATA_FILE_NAME = "recorded_data_file";
         public static final String IMAGES_FOLDER_PATH = "/com/battery_level_alarm/monitoring/images/";
         public static final String ICONS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/icons/";
         public static final String CSS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/styles/";
@@ -195,6 +197,7 @@ public class BattorionCoreConstants {
         public static final String IS_A_STATISTICS_CONTAINER = "StatisticsContainerPanel";
         public static final String IS_A_LIFE_REPORT_PANEL = "LifeReportPanel";
         public static final String IS_A_SIMULATOR_PANEL = "SimulatorPanel";
+        public static final String IS_A_FEEDBACK_PANEL = "FeedbackPanel";
     }
     
     public static class ButtonTexts {
@@ -239,7 +242,7 @@ public class BattorionCoreConstants {
         public static final int WEST_PANEL_OPEN_WIDTH = 180;
         public static final int WEST_PANEL_CLOSED_WIDTH = 50;
     }
-
+    
     public static class StateVariables {
         public static boolean progressBarInVerticalMode;
         public static boolean progressBarInFirstMode;

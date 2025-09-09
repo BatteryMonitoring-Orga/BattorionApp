@@ -1,5 +1,4 @@
 package com.battery_level_alarm.monitoring.estimation;
-
 import com.battery_level_alarm.monitoring.estimation.algoritms.EMA;
 import com.battery_level_alarm.monitoring.estimation.algoritms.KalmanFilter;
 import com.battery_level_alarm.monitoring.estimation.basics.*;
@@ -9,7 +8,7 @@ import java.util.LinkedList;
 
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.RECORDED_DATA_FOLDER;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class Estimation {
 	private static double finalEstimation = Double.NaN;
@@ -22,6 +21,17 @@ public class Estimation {
 	private static final long continuityTimeoutMs = 30_000;
 	private static long lastTimestamp = -1;
 	private static int lastPercent;
+	
+	/*
+		85-25 = 60 >>> 65*60
+		100-0 = 100 >>> X
+		X = 6500 seconds
+		
+		if current level 77
+		estimated time = ((100-77)/100)*6500 = 1495/60 = 25 minutes if it's charging up to full capacity,
+		else if it's in discharging mode:
+		(77/100)*3600 = 2772/60 = 46.2 minutes
+	*/
 	
 	public static String getFinalEstimation() {
 		return finalEstimationValue;
@@ -69,7 +79,6 @@ public class Estimation {
 			lastPercent = percent;
 			lastTimestamp = timestampMillis;
 			finalEstimation = TimeEstimator.calculateEstimate(ema.getValue(), lastPercent, currentMode, minAbsoluteRate);
-			System.out.println("TS=" + timestampMillis + " %=" + percent + " mode=" + currentMode + " rawRate=" + rawRatePerSec + " emaRate=" + emaRate + " final=" + finalEstimation);
 		} else {
 			lastPercent = percent;
 			lastTimestamp = timestampMillis;

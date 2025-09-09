@@ -11,7 +11,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.setBrightnessControlOption;
 import static com.battery_level_alarm.monitoring.core_utilities.DropDownListStatus.*;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.isSilentMode;
+import static com.battery_level_alarm.monitoring.system_core.top_assist.TopAssistPanel.isSilentMode;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.UIThemesGUI.customizationGradientBackground;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.*;
 
@@ -74,8 +74,8 @@ public class ConfigurationFilesManager {
         json.put("west side mode", isWestSidePartAppear);
         json.put("silent mode is active", isSilentMode);
         json.put("audio device cmdlets installed", isAudioDeviceCmdletsInstalled);
-        json.put("battery simulator", simulatorMode);
         json.put("theme mode", Appearance.getThemeName());
+        json.put("layout mode id", getLayoutModeID());
         json.put("gradient background dark mode", PanelStyler.getGradientBackgroundDarkModeName());
         json.put("gradient background light mode", PanelStyler.getGradientBackgroundLightModeName());
         json.put("customization gradient background", customizationGradientBackground);
@@ -115,10 +115,10 @@ public class ConfigurationFilesManager {
         progressBarInFirstMode = json.optBoolean("progress bar second mode", true);
         isWestSidePartAppear = json.optBoolean("west side mode", true);
         isSilentMode = json.optBoolean("silent mode is active", false);
-        simulatorMode = json.optBoolean("battery simulator", false);
         isAudioDeviceCmdletsInstalled = json.optBoolean("audio device cmdlets installed", false);
         customizationGradientBackground = json.optBoolean("customization gradient background", false);
         Appearance.setThemeName(json.optString("theme mode", "Light"));
+        setLayoutModeID(json.optInt("layout mode id", 0));
         PanelStyler.setGradientBackgroundDarkModeName(json.optString("gradient background dark mode", DEFAULT_DARK_GRADIENT));
         PanelStyler.setGradientBackgroundLightModeName(json.optString("gradient background light mode", DEFAULT_LIGHT_GRADIENT));
         loadCustomGradientBackgroundColor(json);
@@ -169,12 +169,12 @@ public class ConfigurationFilesManager {
     private static void loadDefaultGeneralConfigurations() {
         progressBarInVerticalMode = false;
         isWestSidePartAppear = true;
-        simulatorMode = false;
         isSilentMode = false;
         isAudioDeviceCmdletsInstalled = false;
         customizationGradientBackground = false;
         progressBarInFirstMode = true;
         Appearance.setThemeName("Light");
+        setLayoutModeID(0);
         PanelStyler.setGradientBackgroundDarkModeName(DEFAULT_DARK_GRADIENT);
         PanelStyler.setGradientBackgroundLightModeName(DEFAULT_LIGHT_GRADIENT);
     }

@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.battery_report;
 import javafx.scene.web.WebEngine;
 
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import java.awt.Desktop;
 import java.io.File;

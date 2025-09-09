@@ -20,7 +20,7 @@ public class RoundedPanel extends JPanel {
     public RoundedPanel(
             LayoutManager layout, boolean showBorder,
             Color color, int radius, int thickness, boolean isGlowing
-    ){
+    ) {
         super(layout);
         this.cornerRadius = radius;
         this.showBorder = showBorder;
@@ -78,5 +78,4 @@ public class RoundedPanel extends JPanel {
         g2.dispose();
         super.paintComponent(g);
     }
-    
 }

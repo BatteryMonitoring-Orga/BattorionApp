@@ -72,7 +72,7 @@ public class ExcelReader {
 				if (tsCell == null || pctCell == null) continue;
 				
 				try {
-					long timestamp = (long) (tsCell.getNumericCellValue() * 3600_000);
+					long timestamp = (long) (tsCell.getNumericCellValue() * 60_000);
 					int percent = (int) pctCell.getNumericCellValue();
 					sampleConsumer.accept(timestamp, percent);
 				} catch (Exception ignored) {}
@@ -89,7 +89,7 @@ public class ExcelReader {
 				String[] parts = line.split(",");
 				if (parts.length >= 2) {
 					try {
-						long timestamp = (long) (Double.parseDouble(parts[0].trim()) * 3600_000);
+						long timestamp = (long) (Double.parseDouble(parts[0].trim()) * 60_000);
 						int percent = Integer.parseInt(parts[1].trim());
 						sampleConsumer.accept(timestamp, percent);
 					} catch (NumberFormatException ignored) {}

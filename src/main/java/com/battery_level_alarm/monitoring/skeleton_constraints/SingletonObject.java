@@ -2,7 +2,7 @@ package com.battery_level_alarm.monitoring.skeleton_constraints;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.ClientServerActions.clintToServerAction;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import javax.swing.*;
 import java.io.*;

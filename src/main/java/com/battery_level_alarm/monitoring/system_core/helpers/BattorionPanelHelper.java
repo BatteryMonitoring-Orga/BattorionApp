@@ -6,7 +6,6 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.DARK_BLUE;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionButtonHelper.setButtonBackgroundColor;
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.*;
-import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsFirstPartialPanel.getFirstPCHeight;
 import static com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsFourthPartialPanel.getFourthPCHeight;
 import static com.battery_level_alarm.monitoring.user_interface.ui_helpers.computer_settings_gui_helper.ComputerSettingsSecondPartialPanel.getSecondPCHeight;
@@ -19,7 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BattorionPanelHelper {
-    public static void createHBoxPanel(){
+    public static void createHBoxPanel() {
         HBoxPanel = new JPanel();
         HBoxPanel = applyGradientBackground(
                 HBoxPanel, isDarkMode, false, 0, false
@@ -38,19 +37,7 @@ public class BattorionPanelHelper {
     public static void refreshBatteryStatisticsPanel() {
         BatteryStatisticsGUI.createGUI();
     }
-
-    public static void refreshTopAssistantPartialPanelsShadow(Color color){
-        firstTopAssistantPartialPanel.setRoundedBorderColor(color);
-        secondTopAssistantPartialPanel.setRoundedBorderColor(color);
-        thirdTopAssistantPartialPanel.setRoundedBorderColor(color);
-        
-        firstTopAssistantPartialPanel.repaint();
-        secondTopAssistantPartialPanel.repaint();
-        thirdTopAssistantPartialPanel.repaint();
-        topAssistantPartialPanelsContainer.repaint();
-        topAssistantPartialPanelsContainer.revalidate();
-    }
-
+    
     public static void ifPanelsNullCreate() {
         if(SettingsContainer == null) {
             SettingsContainer = new JTabbedPane();
@@ -89,9 +76,9 @@ public class BattorionPanelHelper {
             statisticsButton.doClick();
         } else if (LifeReportPanel != null && isA.equals(IS_A_LIFE_REPORT_PANEL)) {
             reportButton.doClick();
-        } else if (SimulatorMainPanel != null && isA.equals(IS_A_SIMULATOR_PANEL)){
+        } else if (SimulatorMainPanel != null && isA.equals(IS_A_SIMULATOR_PANEL)) {
             simulatorButton.doClick();
-        } else if (FeedbackMainPanel != null && isA.equals(IS_A_FEEDBACK_PANEL)){
+        } else if (FeedbackMainPanel != null && isA.equals(IS_A_FEEDBACK_PANEL)) {
             feedbackButton.doClick();
         } else {
             assert DashboardPanel != null;

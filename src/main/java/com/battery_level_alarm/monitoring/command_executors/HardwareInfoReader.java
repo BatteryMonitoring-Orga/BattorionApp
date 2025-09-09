@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class HardwareInfoReader {
 	private static final SystemInfo systemInfo = new SystemInfo();

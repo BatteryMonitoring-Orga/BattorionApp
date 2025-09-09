@@ -18,11 +18,13 @@ public class ComputerSettings {
     private static String notificationSoundFileName;
     private static String defaultSpeakerOutputDeviceName;
     private static String currentAudioDevice;
+    
     private static int brightnessControlOption;
     private static int brightnessLevel;
     private static int wakeUpEvery;
     private static int volumeLevel;
-
+    private static int layoutModeID;
+    
     public static boolean isActivateTheAwakeningFeature() {
         return activateTheAwakeningFeature;
     }
@@ -182,5 +184,12 @@ public class ComputerSettings {
     }
     public static void setWakeUpEvery(int wakeUpEvery) {
         ComputerSettings.wakeUpEvery = wakeUpEvery;
+    }
+    
+    public static int getLayoutModeID() {
+        return layoutModeID;
+    }
+    public static void setLayoutModeID(int layoutModeID) {
+        ComputerSettings.layoutModeID = layoutModeID;
     }
 }

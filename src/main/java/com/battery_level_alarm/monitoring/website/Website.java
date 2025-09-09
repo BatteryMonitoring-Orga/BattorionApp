@@ -11,7 +11,7 @@ import java.awt.datatransfer.StringSelection;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.BATTORION_WEBSITE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.BATTORION_WEBSITE_SEND_IMAGE_PAGE;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class Website {
 	public static void websiteCaller() {

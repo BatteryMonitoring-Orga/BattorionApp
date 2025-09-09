@@ -18,9 +18,9 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.InitializeMainPanels.initializeDashboard;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionButtonHelper.setupDashboardPanel;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseManager.releaseManager;
-import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound.cleanupAudioSettingsAfterAlert;
-import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound.isProcessesApplied;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.alerts.AlertSound.cleanupAudioSettingsAfterAlert;
+import static com.battery_level_alarm.monitoring.notifications.alerts.AlertSound.isProcessesApplied;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.GradientPreview.mainPreviewFrame;
 
 import com.battery_level_alarm.monitoring.registration_manager.AudioDeviceToolChecker;

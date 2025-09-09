@@ -3,7 +3,7 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.isApplica
 import static com.battery_level_alarm.monitoring.tray_manager.modern_component.JavaFXSoundComboBox.setVBoxThemeMode;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.notificationUI;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import javafx.scene.Scene;
@@ -85,9 +85,13 @@ public class TrayTheme {
 	
 	public static SystemTheme getSystemTheme() {
 		try {
-			Process process = Runtime.getRuntime().exec(
-					"reg query HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize /v AppsUseLightTheme"
-			);
+			String[] command = {
+					"reg", "query",
+					"HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+					"/v", "AppsUseLightTheme"
+			};
+			Process process = Runtime.getRuntime().exec(command);
+			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -105,7 +109,8 @@ public class TrayTheme {
 	
 	public static SystemTheme getMacTheme() {
 		try {
-			Process process = Runtime.getRuntime().exec("defaults read -g AppleInterfaceStyle");
+			String[] command = {"defaults", "read", "-g", "AppleInterfaceStyle"};
+			Process process = Runtime.getRuntime().exec(command);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			return (reader.readLine() != null) ? SystemTheme.DARK : SystemTheme.LIGHT;
 		} catch (Exception e) {

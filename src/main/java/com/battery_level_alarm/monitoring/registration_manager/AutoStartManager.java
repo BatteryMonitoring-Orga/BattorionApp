@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.registration_manager;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class AutoStartManager {
 	public static void enableAutoStart(String appName, String targetPath) {

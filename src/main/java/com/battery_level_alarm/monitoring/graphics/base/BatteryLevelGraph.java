@@ -9,7 +9,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.visual_effects.ColorUtils.*;
 import static com.battery_level_alarm.monitoring.visual_effects.ColorUtils.ColorType.*;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.graphics.charts.AreaBatteryChart;
 import com.battery_level_alarm.monitoring.graphics.charts.LineBatteryChart;

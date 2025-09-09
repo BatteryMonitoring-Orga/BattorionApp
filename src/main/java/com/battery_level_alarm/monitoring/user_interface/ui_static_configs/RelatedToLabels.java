@@ -8,7 +8,7 @@ public class RelatedToLabels {
     public static JLabel addLabel(
             GridBagConstraints gbc, JPanel panel,
             String label, Font font
-    ){
+    ) {
         JLabel jLabel = new JLabel(label);
         jLabel.setFont(font);
         gbc.gridy = getRow();
@@ -20,7 +20,7 @@ public class RelatedToLabels {
     public static JLabel addLabelWithMouseListener(
             GridBagConstraints gbc, JPanel panel, String text,
             Color highlightedColor, Runnable action, Font font
-    ){
+    ) {
         JLabel label = new JLabel(text);
         label.setText("<html><u><b>" + label.getText() + "</b></u></html>");
         label.setFont(font);

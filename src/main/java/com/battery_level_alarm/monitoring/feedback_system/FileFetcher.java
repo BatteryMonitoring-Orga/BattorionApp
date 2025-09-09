@@ -9,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Map;
 
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 //        fetchJsonFile("settings.json");
 //        fetchJsonFile("instructions.json");

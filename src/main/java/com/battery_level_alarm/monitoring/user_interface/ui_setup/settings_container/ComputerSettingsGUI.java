@@ -19,7 +19,7 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToSpinner.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.*;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;

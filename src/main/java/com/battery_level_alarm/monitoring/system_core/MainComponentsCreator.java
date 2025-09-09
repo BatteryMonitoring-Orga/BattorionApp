@@ -12,7 +12,7 @@ import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionPr
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.applyScrollConfigurationDetails;
 
 public class MainComponentsCreator {
-	static JLabel createLabel(String text, int fontSize, int fontStyle) {
+	public static JLabel createLabel(String text, int fontSize, int fontStyle) {
 		int allowedStyles = Font.PLAIN | Font.BOLD | Font.ITALIC;
 		fontStyle &= allowedStyles;
 		JLabel label = new JLabel(text);

@@ -22,7 +22,7 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.flow_chat.DynamicStepsFlow.flow;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionButtonHelper.setupFeedbackPanel;
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.westSideButton;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class CallStepsFlow {
 	private static final Queue<ChatStep> chatFlow = new LinkedList<>();

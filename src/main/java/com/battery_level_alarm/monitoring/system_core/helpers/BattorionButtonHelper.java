@@ -18,7 +18,7 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_setup.setting
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.SettingsContainerClass.mainTabbedPanel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass.createStatisticsContainer;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.StatisticsContainerClass.statisticsMainTabbedPanel;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.LifeReportPanelUI;
@@ -42,20 +42,15 @@ public class BattorionButtonHelper {
     ) {
         ImageIcon icon = null;
         try {
-            if (iconName != null && !iconName.equalsIgnoreCase(NULL_VALUE)) {
-                icon = CallResources.getImage(
-                        imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
-            }
+            if (iconName != null && !iconName.equalsIgnoreCase(NULL_VALUE))
+                icon = CallResources.getImage(imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
         } catch (Exception e) {
             printErrorMessage(e);
         }
         
         JButton button;
-        if (icon != null) {
-            button = new JButton(title, icon);
-        } else {
-            button = new JButton(title);
-        }
+        if (icon != null) button = new JButton(title, icon);
+        else button = new JButton(title);
         
         setButtonFontAndSize(
                 button, new Font(Font.SERIF, Font.PLAIN + Font.BOLD, 14),
@@ -69,15 +64,14 @@ public class BattorionButtonHelper {
             String toolTip, String imageIconPath, String iconName,
             ActionListener actionListener
     ) {
-        if(iconName == null){
-            return new JButton();
-        }
+        if(iconName == null) return new JButton();
         ImageIcon icon = CallResources.getImage(
                 imageIconPath, iconName, new Dimension(20, 20), Image.SCALE_SMOOTH);
         
         JButton button = new JButton(icon);
         button.setPreferredSize(new Dimension(30, 30));
         button.setToolTipText(toolTip);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         hyalineButton(button, false);
         button.addActionListener(actionListener);
         return button;
@@ -90,11 +84,8 @@ public class BattorionButtonHelper {
             button.setBorderPainted(false);
         } else {
             button.setOpaque(values[0]);
-            if (values.length >= 2) {
-                button.setContentAreaFilled(values[1]);
-            } if (values.length >= 3) {
-                button.setBorderPainted(values[2]);
-            }
+            if (values.length >= 2) button.setContentAreaFilled(values[1]);
+            if (values.length >= 3) button.setBorderPainted(values[2]);
         }
         
         boolean isBorderPainted = values.length < 3 || values[2];

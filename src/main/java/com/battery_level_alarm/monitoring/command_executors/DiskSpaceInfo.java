@@ -1,11 +1,12 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.statistics_container.PrepareDiskInfoGUI;
 
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.displayProcessTrack;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import javax.swing.JOptionPane;
+import java.util.Arrays;
 
 public class DiskSpaceInfo {
 	private static boolean isDestroyed = false;
@@ -18,6 +19,7 @@ public class DiskSpaceInfo {
 	
 	private static String[] files;
 	private static String[] dirs;
+	public static String[] track;
 	
 	public static String getFilesNumber() {
 		return filesNumber;
@@ -62,19 +64,24 @@ public class DiskSpaceInfo {
             throw new UnsupportedOperationException("Unsupported OS: " + os);
         }
     }
-
+	
     public static void cleanTempFiles() {
         try {
+	        if(track == null) track = new String[5];
+			else Arrays.fill(track, "");
         	long startTime = System.currentTimeMillis();
             Process process = getProcessForCleanTemp();
             setUnderTracking(process);
+			
             try {
                 process.waitFor();
-	            JOptionPane.showMessageDialog(null,
-			            "Temporary files cleaned successfully.",
-			            "Clean Temp", JOptionPane.INFORMATION_MESSAGE);
-	            long endTime = System.currentTimeMillis();
-	            printTheResult(process, startTime, endTime);
+	            if (process.exitValue() == 0) {
+		            long endTime = System.currentTimeMillis();
+		            long elapsedSeconds = (endTime - startTime) / 1000;
+					track[0] = "Temporary files cleaned successfully in " + elapsedSeconds + " seconds.";
+		            displayProcessTrack("Clean Temp", track, 400, 250);
+					return;
+	            }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException("The thread was interrupted while waiting for the process.", e);
@@ -83,7 +90,7 @@ public class DiskSpaceInfo {
             
             makeADecision();
             long endTime = System.currentTimeMillis();
-            printTheResult(process, startTime, endTime);
+            printTheResult(startTime, endTime);
         } catch (IOException | RuntimeException e) {
             printErrorMessage(e);
         }
@@ -111,15 +118,11 @@ public class DiskSpaceInfo {
         }
 	}
 	
-	private static void printTheResult(Process process, long startTime, long endTime) {
+	private static void printTheResult(long startTime, long endTime) {
 		long elapsedSeconds = (endTime - startTime) / 1000;
-        if (process.exitValue() == 0) {
-        	JOptionPane.showMessageDialog(null, "Temporary files cleaned successfully in " + elapsedSeconds + " seconds.", "Clean Temp", JOptionPane.INFORMATION_MESSAGE);
-        } else if(!isDestroyed){
-            JOptionPane.showMessageDialog(null, "An error occurred while cleaning temporary files.", "Clean Temp", JOptionPane.ERROR_MESSAGE);
-        } else {
-        	JOptionPane.showMessageDialog(null, "Process Time: " + elapsedSeconds + " second(s).", "Success In", JOptionPane.INFORMATION_MESSAGE);
-        }
+		track[3] = "Temporary files caused a delay, but the issue is resolved.";
+		track[4] = "Process Time: " + elapsedSeconds + " second(s).";
+		displayProcessTrack("Clean Temp", track, 500, 300);
 	}
 	
     public static void DiskSpace() {

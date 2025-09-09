@@ -21,7 +21,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.EssentialT
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ASSETS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_EMAIL;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.website.Website.createFXWebsiteSendImagePageCaller;
 
 public class FeedbackPanel {

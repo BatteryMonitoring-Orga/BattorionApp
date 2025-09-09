@@ -5,7 +5,7 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_constraints.G
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.buttonGroup;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.OtherComponentsConfig.applyScrollConfigurationDetails;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 

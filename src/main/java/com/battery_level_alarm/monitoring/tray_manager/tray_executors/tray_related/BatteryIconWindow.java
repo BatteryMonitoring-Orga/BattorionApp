@@ -163,17 +163,23 @@ public class BatteryIconWindow {
 			
 			gc.setFill(Color.rgb(0, 0, 0, 0.5));
 			gc.fillRoundRect(0, 0, width, height, 10, 10);
+			
 			gc.setStroke(Color.BLACK);
-			gc.setLineWidth(3);
-			gc.strokeRoundRect(1.5, 1.5, width - 3, height - 3, 12, 12);
+			gc.setLineWidth(2);
+			gc.strokeRoundRect(0.5, 0.5, width - 1, height - 1, 10, 10);
+			
+			double padding = 3;
+			double innerWidth = width - padding * 2;
+			double fillWidth = innerWidth * level;
+			
 			gc.setFill(getColor(level, isCharging));
-			gc.fillRoundRect(3, 1.5, (width - 8) * level, height - 3, 10, 10);
+			gc.fillRoundRect(padding, padding, fillWidth, height - padding * 2, 8, 8);
 			
 			double headWidth = 6;
 			double headHeight = height * 0.45;
-			double headX = width + 1;
+			double headX = width;
 			double headY = (height - headHeight) / 2;
-
+			
 			LinearGradient gradient = new LinearGradient(
 					0, headY, headWidth, headY + headHeight, false, CycleMethod.NO_CYCLE,
 					new Stop(0, Color.rgb(80, 80, 80)),
@@ -181,7 +187,7 @@ public class BatteryIconWindow {
 			);
 			gc.setFill(gradient);
 			gc.fillRoundRect(headX, headY, headWidth, headHeight, 3, 3);
-
+			
 			gc.setStroke(Color.rgb(30, 30, 30));
 			gc.setLineWidth(1.2);
 			gc.strokeRoundRect(headX, headY, headWidth, headHeight, 3, 3);

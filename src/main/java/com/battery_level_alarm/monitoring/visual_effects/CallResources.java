@@ -9,7 +9,7 @@ import org.apache.batik.transcoder.SVGAbstractTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
 
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class CallResources {
     private static final String DEFAULT_EXTEND = ".png";

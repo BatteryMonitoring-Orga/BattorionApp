@@ -14,7 +14,7 @@ import java.util.Map;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_GAVE_FEEDBACK;
 import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPanel.showAlert;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class FeedbackSender {
 	public static void sendFeedback(String userId, String name, String email, String feedback, File image) {

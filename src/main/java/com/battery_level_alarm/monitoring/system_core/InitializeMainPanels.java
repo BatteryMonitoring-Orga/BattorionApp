@@ -1,13 +1,11 @@
 package com.battery_level_alarm.monitoring.system_core;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
-import com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelper;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.LifeReportPanelUI;
 import com.battery_level_alarm.monitoring.visual_effects.gradient.RoundedPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getCurrentAudioDevice;
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.thereIsNewVersion;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_HEIGHT;
@@ -17,7 +15,6 @@ import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConsta
 import static com.battery_level_alarm.monitoring.system_core.MainComponentsCreator.*;
 import static com.battery_level_alarm.monitoring.system_core.MainComponentsCreator.createLabel;
 import static com.battery_level_alarm.monitoring.system_core.handlers.BattorionMainProcessHandler.isWaitingForInternet;
-import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelper.createHBoxPanel;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelper.ifPanelsNullCreate;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionProgressBarHelper.setUpProgressPanel;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionProgressBarHelper.setupDashboardControlPanel;
@@ -25,12 +22,6 @@ import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.createAndAddButtons;
 import static com.battery_level_alarm.monitoring.system_core.helpers.ReleasePanel.setupReleasePanel;
 import static com.battery_level_alarm.monitoring.system_core.helpers.SaverModePanel.setupSaverModePanel;
-import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.createTopAssistPanel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.addTextField;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.setMouseListener;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Fonts.textFieldFont;
-import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.ONE_SPACE;
 import static com.battery_level_alarm.monitoring.visual_effects.gradient.PanelStyler.applyGradientBackground;
 
 public class InitializeMainPanels {
@@ -112,54 +103,5 @@ public class InitializeMainPanels {
 		createAndAddButtons(mainButtonsContainer);
 		mainButtonsContainer.setPreferredSize(new Dimension(WEST_PANEL_OPEN_WIDTH, FRAME_HEIGHT));
 		mainButtonsContainer.setMaximumSize(new Dimension(WEST_PANEL_OPEN_WIDTH, FRAME_HEIGHT));
-	}
-	
-	static void initializeStatusPanel() {
-		JPanel statusLabelPanel = new JPanel(new BorderLayout());
-		statusLabel = createLabel(ONE_SPACE + "Battery Status: " + status, 20, Font.PLAIN + Font.BOLD);
-		statusLabelPanel.add(statusLabel, BorderLayout.CENTER);
-		getBatteryMode(getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel()));
-		lastMode = status;
-		
-		JPanel secondLabelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		secondLabelPanel.add(new JLabel(ONE_SPACE));
-		JLabel audioOutputDeviceDashLabel = addLabel(
-				new GridBagConstraints(), new JPanel(),
-				"Audio Output: ", textFieldFont
-		);
-		
-		audioOutputDeviceDashTextField = addTextField(
-				new GridBagConstraints(), new JPanel(),
-				getCurrentAudioDevice(),
-				160, 20, null, false
-		);
-		setMouseListener(
-				audioOutputDeviceDashTextField,
-				BattorionPanelHelper::audioLabelMouseAction,
-				UIManager.getColor("TextField.Foreground"),
-				new Color(0, 134, 179),
-				false, false, true
-		);
-		
-		secondLabelPanel.add(audioOutputDeviceDashLabel);
-		secondLabelPanel.add(audioOutputDeviceDashTextField);
-		statusLabelPanel.add(secondLabelPanel, BorderLayout.SOUTH);
-		
-		JPanel topComponentsContainer = new RoundedPanel(30, new GridLayout(1, 2));
-		topComponentsContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		topComponentsContainer.add(statusLabelPanel);
-		topComponentsContainer.add(createTopAssistPanel(
-				getBatteryColor(batteryLevel, UserChoices.getMinimumLevel(), UserChoices.getMaximumLevel())));
-		motherPanelContainer.add(topComponentsContainer);
-		motherPanelContainer.add(Box.createRigidArea(new Dimension(0, 15)));
-		createHBoxPanel();
-		motherPanelContainer.add(HBoxPanel);
-		
-		motherFrameContainer.add(new JLabel("\u2003 "), BorderLayout.WEST);
-		motherFrameContainer.add(new JLabel("\u2003 "), BorderLayout.EAST);
-		motherFrameContainer.add(new JLabel("\u2003\u2003"), BorderLayout.NORTH);
-		motherFrameContainer.add(new JLabel("\u2003\u2003"), BorderLayout.SOUTH);
-		motherFrameContainer.add(motherPanelContainer, BorderLayout.CENTER);
-		mainFrame.add(motherFrameContainer);
 	}
 }

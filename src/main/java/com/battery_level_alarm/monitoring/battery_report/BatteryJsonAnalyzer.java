@@ -11,7 +11,7 @@ import java.util.Map;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.EXPORT_HARDWARE_MONITOR_FILE;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class BatteryJsonAnalyzer {
 	private static final String JSON_FILE_PATH = CONFIGURATIONS_MAIN_FOLDER_PATH + "/hardware-monitor.json";

@@ -25,7 +25,7 @@ import static com.battery_level_alarm.monitoring.versions_manager.Initialization
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.releaseLog;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.showAllLogs;
 import static com.battery_level_alarm.monitoring.versions_manager.VersionInstaller.*;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class ReleaseManager {
 	public static boolean isReleaseInstallProcessRunning = false;

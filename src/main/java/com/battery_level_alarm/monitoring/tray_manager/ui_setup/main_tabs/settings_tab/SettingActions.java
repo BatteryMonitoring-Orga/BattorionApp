@@ -14,10 +14,11 @@ import static com.battery_level_alarm.monitoring.tray_manager.tray_executors.tra
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.settings_tab.SettingsTab.*;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.primaryStage;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.TrayIconManager.removeMainTrayIcon;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
+import com.battery_level_alarm.monitoring.tray_manager.tray_executors.tray_related.BatteryIconWindow;
 import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 
 public class SettingActions {
@@ -81,14 +82,16 @@ public class SettingActions {
 				boolean isTrayIconRemoved = removeMainTrayIcon();
 				if (!isTrayIconRemoved) {
 					logger.severe("[TrayIconManager] ERROR: Unable to remove system tray icon.");
-				} if (getPrimaryIconStage() != null) {
-					getPrimaryIconStage().hide();
-					getInvisibleOwner().hide();
 				}
 				
 				primaryStage.hide();
 				pauseThreads();
 				stop();
+				if (getPrimaryIconStage() != null) {
+					getPrimaryIconStage().hide();
+					getInvisibleOwner().hide();
+					BatteryIconWindow.isIconHidden = true;
+				}
 			} catch (Exception ex) {
 				printErrorMessage(ex);
 			}

@@ -12,8 +12,8 @@ import static com.battery_level_alarm.monitoring.user_interface.ui_static_config
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToButtons.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToLabels.addLabel;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.RelatedToTextFields.addTextInScroll;
-import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound.DEFAULT_PRIMARY_SOUND_PATH;
-import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound.DEFAULT_SECONDARY_SOUND_PATH;
+import static com.battery_level_alarm.monitoring.notifications.alerts.AlertSound.DEFAULT_PRIMARY_SOUND_PATH;
+import static com.battery_level_alarm.monitoring.notifications.alerts.AlertSound.DEFAULT_SECONDARY_SOUND_PATH;
 
 import com.battery_level_alarm.monitoring.user_interface.ui_config.DropDownListsContainerRecord;
 import com.battery_level_alarm.monitoring.user_interface.ui_config.SingleDropDownListRecord;
@@ -21,7 +21,7 @@ import com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelp
 import com.battery_level_alarm.monitoring.user_interface.ui_config.ScrollConfiguration;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.registration_manager.ConfigurationFilesManager;
-import com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound;
+import com.battery_level_alarm.monitoring.notifications.alerts.AlertSound;
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import java.awt.*;

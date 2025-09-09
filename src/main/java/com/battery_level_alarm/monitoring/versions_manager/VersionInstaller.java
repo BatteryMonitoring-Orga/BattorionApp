@@ -12,7 +12,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.RemoteVers
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
 import static com.battery_level_alarm.monitoring.versions_manager.ReleaseNotifier.releaseLog;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class VersionInstaller {
 	private static final String[] LINKS = {

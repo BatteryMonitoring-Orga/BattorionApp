@@ -1,9 +1,9 @@
 package com.battery_level_alarm.monitoring.system_core.helpers;
+import static com.battery_level_alarm.monitoring.notifications.alerts.AlertSound.*;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.*;
 import static com.battery_level_alarm.monitoring.user_interface.ui_setup.settings_container.ComputerSettingsGUI.pcVolumeSpinner;
-import static com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound.*;
 
 import com.battery_level_alarm.monitoring.command_executors.CallCommandLine;
 import com.battery_level_alarm.monitoring.command_executors.SoundVolumeReader;

@@ -1,5 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.command_executors.DiskSpaceInfo.track;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class AlternativeDiskSpace {
     private static String filesSize = "";
     private static String dirsNumber = "";
     private static String dirsSize = "";
-
+    
     public static String getFilesNumber() {
         return filesNumber;
     }
@@ -65,10 +66,9 @@ public class AlternativeDiskSpace {
                 }
             });
             
-            JOptionPane.showMessageDialog(null, 
-                "Temporary files cleaned successfully.\nFiles deleted: " + deletedFiles.get() + 
-                "\nFiles failed to delete: " + failedFiles.get(), 
-                "Clean Temp", JOptionPane.INFORMATION_MESSAGE);
+            track[0] = "Temporary files cleaned successfully.";
+            track[1] = "Files deleted: " + deletedFiles.get();
+            track[2] = "Files failed to delete: " + failedFiles.get();
         } catch (IOException e) {
             printErrorMessage(e);
         }

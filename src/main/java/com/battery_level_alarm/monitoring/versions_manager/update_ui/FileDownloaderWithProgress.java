@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class FileDownloaderWithProgress {
 	private static ProgressBar downloadProgressBar;

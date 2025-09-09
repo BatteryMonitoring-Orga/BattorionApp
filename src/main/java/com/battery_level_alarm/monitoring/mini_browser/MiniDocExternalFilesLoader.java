@@ -13,7 +13,7 @@ import static com.battery_level_alarm.monitoring.registration_manager.RemoteVers
 import static com.battery_level_alarm.monitoring.registration_manager.RemoteVersionChecker.installCurrentReleaseNotesFile;
 import static com.battery_level_alarm.monitoring.mini_browser.MiniDocTopicsBuilder.RELEASE_NOTES_MD;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class MiniDocExternalFilesLoader {
 	public static String loadMarkdownAsHtml(String filename) {

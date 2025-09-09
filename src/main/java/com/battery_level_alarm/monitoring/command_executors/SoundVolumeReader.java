@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
-import com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages;
+import com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.RoamingConfigClass.ROAMING_CONFIG_PATH;
 
 import java.io.BufferedReader;

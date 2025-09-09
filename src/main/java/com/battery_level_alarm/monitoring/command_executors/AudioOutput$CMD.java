@@ -1,7 +1,7 @@
 package com.battery_level_alarm.monitoring.command_executors;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.NIR_CMD_PATH;
 import static com.battery_level_alarm.monitoring.command_executors.CallCommandLine.getOS;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 import java.io.IOException;
 
 public class AudioOutput$CMD {

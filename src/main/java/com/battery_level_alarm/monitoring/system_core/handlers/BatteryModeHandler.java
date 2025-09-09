@@ -3,17 +3,16 @@ import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.ChargingStatus.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
 import static com.battery_level_alarm.monitoring.system_automation.Timing.*;
-import static com.battery_level_alarm.monitoring.system_core.helpers.TopAssistPanel.isSilentMode;
+import static com.battery_level_alarm.monitoring.system_core.top_assist.TopAssistPanel.isSilentMode;
 import static com.battery_level_alarm.monitoring.user_interface.ui_static_configs.UIStaticObjects.Spaces.*;
-import static com.battery_level_alarm.monitoring.visual_effects.alerts.ChargerIcons.hideIconsStage;
-import static com.battery_level_alarm.monitoring.visual_effects.alerts.ChargerIcons.showCircularImage;
+import static com.battery_level_alarm.monitoring.notifications.alerts.ChargerIcons.showCircularImage;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import com.battery_level_alarm.monitoring.core_utilities.UserChoices;
 import com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelper;
-import com.battery_level_alarm.monitoring.visual_effects.alerts.AlertSound;
+import com.battery_level_alarm.monitoring.notifications.alerts.AlertSound;
 import com.battery_level_alarm.monitoring.visual_effects.Brightness;
-import com.battery_level_alarm.monitoring.visual_effects.alerts.ChargerIcons;
+import com.battery_level_alarm.monitoring.notifications.alerts.ChargerIcons;
 import javafx.application.Platform;
 
 import java.awt.*;
@@ -27,12 +26,12 @@ public class BatteryModeHandler {
             restoreBrightnessLevel();
             batteryBar.setForeground(Color.CYAN);
             status = IS_IN_CHARGING_MODE;
-            statusLabel.setText(ONE_SPACE + "Battery Status: " + status + " ");
+            statusLabel.setText(ONE_SPACE + "Battery Status: (" + batteryLevel + "%), " + status + " ");
         } else {
             restoreBrightnessLevel();
             batteryBar.setForeground(batteryColor);
             status = IS_IN_DIS_CHARGING_MODE;
-            statusLabel.setText(ONE_SPACE + "Battery Status: " + status + " ");
+            statusLabel.setText(ONE_SPACE + "Battery Status: (" + batteryLevel + "%), " + status + " ");
         }
     }
 

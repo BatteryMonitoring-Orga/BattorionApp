@@ -1,6 +1,6 @@
 package com.battery_level_alarm.monitoring.system_automation;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.logger;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import com.battery_level_alarm.monitoring.core_utilities.ComputerSettings;
 import java.awt.*;

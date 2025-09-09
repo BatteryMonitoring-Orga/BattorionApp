@@ -3,7 +3,7 @@ import static com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph
 import static com.battery_level_alarm.monitoring.graphics.base.GraphsDefinitions.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_HEIGHT;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Dimensions.FRAME_WIDTH;
-import static com.battery_level_alarm.monitoring.visual_effects.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;

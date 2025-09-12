@@ -1,36 +1,55 @@
 package com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs;
-import com.battery_level_alarm.monitoring.feedback_system.UserDataUploader;
+import com.battery_level_alarm.monitoring.server_side.email_verification.EmailChecker;
+import com.battery_level_alarm.monitoring.server_side.feedback.FeedbackPanel;
 import com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants;
-import com.battery_level_alarm.monitoring.feedback_system.FeedbackSender;
+import com.battery_level_alarm.monitoring.server_side.feedback.FeedbackSender;
+import com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
+import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.showNodeInStage;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
-import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPanel.showAlert;
+import static com.battery_level_alarm.monitoring.server_side.email_verification.EmailVerificationFlowPanels.*;
+import static com.battery_level_alarm.monitoring.server_side.feedback.FeedbackPanel.showAlert;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ICONS_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_EMAIL;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.StateVariables.isDarkMode;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.DashboardTab.handleScroll;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_tabs.UITabs.createTab;
 import static com.battery_level_alarm.monitoring.tray_manager.ui_setup.main_ui.BattorionTrayUI.insets;
-import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 import static com.battery_level_alarm.monitoring.website.Website.createFXWebsiteSendImagePageCaller;
 
 public class FeedbackTab {
+	private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	private static Stage stage;
+	
+	private static VBox emailBox;
+	private static TextField emailField;
+	private static Label verifiedLabel;
 	private static Label selectedFileLabel;
+	
+	private static volatile VerificationStatus emailStatus = VerificationStatus.PENDING;
 	private static boolean isFileSelected = false;
 	
 	public static Tab createFeedbackTab() {
+		emailStatus = VerificationStatus.PENDING;
 		Label titleLabel = new Label("Your Feedback Matters");
 		titleLabel.setStyle("-fx-font-size: 22px;");
 		Pane hyperlink = createFXWebsiteSendImagePageCaller(Pos.CENTER_LEFT);
@@ -56,30 +75,27 @@ public class FeedbackTab {
 		nameField.setId("feedback-name");
 		nameField.setPromptText("Enter your name");
 		
-		CheckBox rememberEmailCheckBox = new CheckBox("Remember my email for later use");
-		rememberEmailCheckBox.setId("feedback-remember-email");
-		
 		Label emailLabel = new Label("Email");
-		TextField emailField = new TextField();
-		emailField.setPromptText("Enter your email address");
-		emailField.setId("feedback-email");
+		verifiedTextField();
 		
 		String savedEmail = prefs.get(USER_EMAIL, "");
 		if (savedEmail != null && !savedEmail.isEmpty()) {
 			emailField.setText(savedEmail);
-			rememberEmailCheckBox.setVisible(false);
-		}
-		emailField.textProperty().addListener((_, _, newValue) -> {
-			if (savedEmail != null && !savedEmail.isEmpty()) {
-				if (newValue.equalsIgnoreCase(savedEmail)) {
-					rememberEmailCheckBox.setVisible(false);
-					rememberEmailCheckBox.setSelected(false);
-				} else {
-					rememberEmailCheckBox.setVisible(true);
-					rememberEmailCheckBox.setSelected(false);
+			emailStatus = VerificationStatus.PENDING;
+			Thread.ofVirtual().start(() -> {
+				boolean verified = false;
+				try {
+					verified = EmailChecker.checkEmail(savedEmail);
+				} catch (Exception e) {
+					printErrorMessage(e);
 				}
-			}
-		});
+				emailStatus = verified ? VerificationStatus.VERIFIED : VerificationStatus.UNVERIFIED;
+			});
+		}
+		
+		emailField.textProperty().addListener((_, _, newValue) ->
+				localEmailVerified(newValue)
+		);
 		
 		Label subjectLabel = new Label("Subject");
 		TextField subjectField = new TextField();
@@ -97,7 +113,6 @@ public class FeedbackTab {
 		nameField.setStyle("-fx-font-size: 15px;");
 		emailLabel.setStyle("-fx-font-size: 16px;");
 		emailField.setStyle("-fx-font-size: 15px;");
-		rememberEmailCheckBox.setStyle("-fx-font-size: 14px;");
 		subjectLabel.setStyle("-fx-font-size: 16px;");
 		subjectField.setStyle("-fx-font-size: 15px;");
 		feedbackLabel.setStyle("-fx-font-size: 16px;");
@@ -111,20 +126,15 @@ public class FeedbackTab {
 		subjectField.setPrefWidth(MAX_WIDTH);
 		feedbackArea.setMaxWidth(MAX_WIDTH);
 		feedbackArea.setPrefWidth(MAX_WIDTH);
-		rememberEmailCheckBox.setMaxWidth(MAX_WIDTH);
-		rememberEmailCheckBox.setPrefWidth(MAX_WIDTH);
 		
-		HBox centeredButtonBox = getSubmitButtonBox(
-				nameField, emailField, subjectField, feedbackArea, rememberEmailCheckBox, selectedFile
-		);
+		HBox centeredButtonBox = getSubmitButtonBox(nameField, emailField, subjectField, feedbackArea, selectedFile);
 		HBox attachImageButtonBox = createAttachImageBox(selectedFile);
 		HBox buttonsBox = new HBox(attachImageButtonBox, centeredButtonBox);
 		buttonsBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 		
 		VBox formBox = new VBox(10,
 				nameLabel, nameField,
-				emailLabel, emailField,
-				rememberEmailCheckBox,
+				emailLabel, emailBox,
 				subjectLabel, subjectField,
 				feedbackLabel, feedbackArea,
 				buttonsBox, selectedFileLabel
@@ -133,61 +143,121 @@ public class FeedbackTab {
 		formBox.setStyle("-fx-border-color: #ccc; -fx-border-width: 1; -fx-border-radius: 8;");
 		formBox.setMaxWidth(MAX_WIDTH + 20);
 		formBox.setPrefWidth(MAX_WIDTH + 20);
+		startStatusRefresher();
 		return formBox;
 	}
 	
+	private static void localEmailVerified(String email) {
+		Thread.ofVirtual().start(() -> {
+			if (email == null || email.trim().isEmpty()) {
+				emailStatus = VerificationStatus.UNVERIFIED;
+				return;
+			}
+			
+			emailStatus = VerificationStatus.PENDING;
+			boolean verified = false;
+			try {
+				verified = EmailChecker.checkEmail(email.trim());
+			} catch (Exception e) {
+				printErrorMessage(e);
+			}
+			emailStatus = verified ? VerificationStatus.VERIFIED : VerificationStatus.UNVERIFIED;
+		});
+	}
+	
+	private static void startStatusRefresher() {
+		executor.scheduleAtFixedRate(() -> Platform.runLater(() -> {
+			if (verifiedLabel == null) return;
+			ImageView verifiedIcon;
+			switch (emailStatus) {
+				case VERIFIED -> {
+					Image icon = new Image(Objects.requireNonNull(
+							FeedbackPanel.class.getResourceAsStream(ICONS_FOLDER_PATH + "verified.png")
+					));
+					verifiedIcon = new ImageView(icon);
+					verifiedIcon.setFitWidth(20);
+					verifiedIcon.setFitHeight(20);
+					verifiedLabel.setText("Verified!");
+					verifiedLabel.setGraphic(verifiedIcon);
+					verifiedLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold; -fx-font-size: 13;");
+				}
+				case UNVERIFIED -> {
+					Image icon = new Image(Objects.requireNonNull(
+							FeedbackPanel.class.getResourceAsStream(ICONS_FOLDER_PATH + "unverified.png")
+					));
+					verifiedIcon = new ImageView(icon);
+					verifiedIcon.setFitWidth(20);
+					verifiedIcon.setFitHeight(20);
+					verifiedLabel.setText("Unverified!");
+					verifiedLabel.setGraphic(verifiedIcon);
+					verifiedLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 13;");
+				}
+				default -> {
+					verifiedLabel.setText("Verifying, please wait...");
+					verifiedLabel.setGraphic(null);
+					verifiedLabel.setStyle("-fx-text-fill: " + (isDarkMode ? "white" : "black") + "; -fx-font-size: 13;");
+				}
+			}
+		}), 0, 3, TimeUnit.SECONDS);
+	}
+	
+	private static void verifiedTextField() {
+		emailField = new TextField();
+		emailField.setPrefWidth(300);
+		emailField.setId("feedback-email");
+		
+		verifiedLabel = new Label();
+		verifiedLabel.setContentDisplay(ContentDisplay.RIGHT);
+		verifiedLabel.setGraphicTextGap(6);
+		
+		HBox box = new HBox(verifiedLabel);
+		box.setAlignment(Pos.CENTER_RIGHT);
+		
+		emailBox = new VBox(2);
+		emailBox.setAlignment(Pos.CENTER_LEFT);
+		emailBox.getChildren().addAll(emailField, box);
+	}
+	
 	private static @NotNull HBox getSubmitButtonBox(
-			TextField nameField,
-			TextField emailField,
-			TextField subjectField,
-			TextArea feedbackArea,
-			CheckBox rememberEmailCheckBox,
-			File[] selectedFile
+			TextField nameField, TextField emailField, TextField subjectField,
+			TextArea feedbackArea, File[] selectedFile
 	) {
 		Button sendButton = new Button("Send");
 		sendButton.setId("feedback-send-button");
 		sendButton.setMaxWidth(100);
 		sendButton.setPrefWidth(100);
 		sendButton.setOnAction(_ -> {
-			String name = nameField.getText().trim();
-			String email = emailField.getText().trim();
-			String subject = subjectField.getText().trim();
-			String feedback = feedbackArea.getText().trim();
-			
-			if (name.isBlank() || email.isBlank() || subject.isBlank() || feedback.isBlank()) {
-				showAlert(Alert.AlertType.WARNING, "Please fill in all fields.");
-			} else {
-				String userId = BattorionCoreConstants.UserIdentifier.getOrCreateUserId();
-				if (rememberEmailCheckBox.isVisible() && rememberEmailCheckBox.isSelected()) {
-					try {
-						Map<String, Object> updates = new HashMap<>();
-						updates.put(UserDataUploader.Keys.EMAIL, email);
-						updateUserData(prefs.get(BattorionCoreConstants.PrefKeysIdentifiers.USER_IDENTIFIER, null), updates);
-					} catch (Exception e) {
-						printErrorMessage(e);
-					}
-				}
-				
-				nameField.setText("");
-				emailField.setText("");
-				subjectField.setText("");
-				feedbackArea.setText("");
-				selectedFileLabel.setText("");
-				Thread.ofVirtual().start(() -> {
-					if (isInternetAvailable()) {
-						Thread.ofVirtual().start(() -> {
-							if(isFileSelected) {
-								FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback, selectedFile[0]);
-								isFileSelected = false;
-							} else {
-								FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback, null);
-							}
-						});
-					} else {
-						Platform.runLater(() ->
-								showAlert(Alert.AlertType.WARNING, "No internet connection. Please try again later."));
-					}
+			if (emailStatus != VerificationStatus.VERIFIED) {
+				prepareBasicData(emailField.getText().trim(), () -> {
+					stage.close();
+					localEmailVerified(emailAddress);
 				});
+				stage = showNodeInStage(createVerificationFlow(false), true, BattorionTrayUI.ICONS_FOLDER_PATH + "verification.png");
+			} else {
+				String name = nameField.getText().trim();
+				String email = emailField.getText().trim();
+				String subject = subjectField.getText().trim();
+				String feedback = feedbackArea.getText().trim();
+				
+				if (name.isBlank() || email.isBlank() || subject.isBlank() || feedback.isBlank()) {
+					showAlert(Alert.AlertType.WARNING, "Please fill in all fields.");
+				} else {
+					String userId = BattorionCoreConstants.UserIdentifier.getOrCreateUserId();
+					nameField.setText("");
+					subjectField.setText("");
+					feedbackArea.setText("");
+					selectedFileLabel.setText("");
+					Thread.ofVirtual().start(() -> {
+						if (isInternetAvailable()) {
+							Thread.ofVirtual().start(() -> {
+								if(isFileSelected) {
+									FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback, selectedFile[0]);
+									isFileSelected = false;
+								} else FeedbackSender.sendFeedback(userId, name, email, subject + "\n\n" + feedback, null);
+							});
+						} else Platform.runLater(() -> showAlert(Alert.AlertType.WARNING, "No internet connection. Please try again later."));
+					});
+				}
 			}
 		});
 		

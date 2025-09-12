@@ -1,4 +1,4 @@
-package com.battery_level_alarm.monitoring.feedback_system;
+package com.battery_level_alarm.monitoring.server_side.feedback;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.PrefKeysIdentifiers.USER_GAVE_FEEDBACK;
-import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPanel.showAlert;
+import static com.battery_level_alarm.monitoring.server_side.feedback.FeedbackPanel.showAlert;
 import static com.battery_level_alarm.monitoring.notifications.messages.DisplayMessages.printErrorMessage;
 
 public class FeedbackSender {

@@ -12,11 +12,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataFetcher.sendUserIdAndGetFilteredData;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.Keys.*;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.Keys.STATUS;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.STATUS.ACTIVE;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataFetcher.sendUserIdAndGetFilteredData;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.Keys.*;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.Keys.STATUS;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.STATUS.ACTIVE;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.updateUserData;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.BATTORION_WEBSITE;

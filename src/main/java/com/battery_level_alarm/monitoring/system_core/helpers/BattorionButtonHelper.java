@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.system_core.helpers;
-import static com.battery_level_alarm.monitoring.feedback_system.FeedbackPanel.feedback;
+import static com.battery_level_alarm.monitoring.server_side.feedback.FeedbackPanel.createFeedbackPanel;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.AppInfo.NULL_VALUE;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.*;
@@ -23,11 +23,6 @@ import static com.battery_level_alarm.monitoring.notifications.messages.DisplayM
 import com.battery_level_alarm.monitoring.graphics.base.BatteryLevelGraph;
 import com.battery_level_alarm.monitoring.user_interface.ui_setup.LifeReportPanelUI;
 import com.battery_level_alarm.monitoring.visual_effects.CallResources;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Background;
 
 import javax.swing.*;
 import java.awt.*;
@@ -242,29 +237,5 @@ public class BattorionButtonHelper {
         setVisibleFalse();
         FeedbackMainPanel.setVisible(true);
         motherPanel.add(FeedbackMainPanel, BorderLayout.CENTER);
-    }
-    
-    private static void createFeedbackPanel() {
-        FeedbackMainPanel = new JPanel();
-        JFXPanel jfxPanel = new JFXPanel();
-        jfxPanel.setBackground(isDarkMode ? Color.BLACK : Color.WHITE);
-        
-        Platform.setImplicitExit(false);
-        Platform.runLater(() -> {
-            ScrollPane fxContent = feedback(isDarkMode);
-            fxContent.setBackground(Background.EMPTY);
-            
-            Scene scene = new Scene(fxContent);
-            scene.setFill(javafx.scene.paint.Color.web(isDarkMode ? "black" : "white"));
-            SwingUtilities.invokeLater(() -> {
-                jfxPanel.setScene(scene);
-                jfxPanel.repaint();
-                jfxPanel.requestFocusInWindow();
-                
-                FeedbackMainPanel.add(jfxPanel);
-                FeedbackMainPanel.repaint();
-                FeedbackMainPanel.revalidate();
-            });
-        });
     }
 }

@@ -1,4 +1,4 @@
-package com.battery_level_alarm.monitoring.feedback_system;
+package com.battery_level_alarm.monitoring.server_side.user_data;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.InputStream;

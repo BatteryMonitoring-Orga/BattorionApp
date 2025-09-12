@@ -11,6 +11,7 @@ import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings
 import static com.battery_level_alarm.monitoring.core_utilities.ComputerSettings.getLayoutModeID;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.*;
 import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.Paths.ASSETS_FOLDER_PATH;
+import static com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants.UI.HYPERLINK_HOVER_COLOR;
 import static com.battery_level_alarm.monitoring.system_core.MainComponentsCreator.createLabel;
 import static com.battery_level_alarm.monitoring.system_core.helpers.BattorionPanelHelper.createHBoxPanel;
 import static com.battery_level_alarm.monitoring.system_core.top_assist.TopAssistPanel.createTopAssistPanel;
@@ -107,13 +108,11 @@ public class InitializeTopAssistPanel {
 		);
 		
 		if (popupLayout) {
-			createTopAssistMenuButton(topAssistPanel);
-			container.add(topAssistMenuButton);
+			container.add(createTopAssistMenuButton(topAssistPanel));
 		} else if (toggleLayout) {
-			createTopAssistMenuButton(topAssistPanel);
 			JPanel externalContainer = new JPanel(new BorderLayout());
 			JPanel internalContainer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-			internalContainer.add(topAssistMenuButton);
+			internalContainer.add(createTopAssistMenuButton(topAssistPanel));
 			externalContainer.add(internalContainer, BorderLayout.SOUTH);
 			container.add(externalContainer);
 		} else {
@@ -124,7 +123,7 @@ public class InitializeTopAssistPanel {
 	}
 	
 	/** Creates the menu button for assist options */
-	private static void createTopAssistMenuButton(JPanel topAssistPanel) {
+	private static JPanel createTopAssistMenuButton(JPanel topAssistPanel) {
 		topAssistMenuButton = BattorionButtonHelper.createButton(
 				"Open quick assist menu",
 				ASSETS_FOLDER_PATH,
@@ -136,6 +135,14 @@ public class InitializeTopAssistPanel {
 					assistMenu.show(topAssistMenuButton, -365, topAssistMenuButton.getHeight());
 				}
 		);
+		
+		JPanel buttonBox = new RoundedPanel(50, new GridLayout(1, 1));
+		buttonBox.setBackground(HYPERLINK_HOVER_COLOR);
+		buttonBox.setMaximumSize(new Dimension(35, 35));
+		buttonBox.setPreferredSize(new Dimension(35, 35));
+		buttonBox.setMinimumSize(new Dimension(35, 35));
+		buttonBox.add(topAssistMenuButton);
+		return buttonBox;
 	}
 	
 	/** Adds padding to the motherFrameContainer */

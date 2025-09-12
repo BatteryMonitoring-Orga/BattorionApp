@@ -1,5 +1,5 @@
 package com.battery_level_alarm.monitoring.flow_chat;
-import com.battery_level_alarm.monitoring.feedback_system.UserDataUploader;
+import com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader;
 import com.battery_level_alarm.monitoring.system_core.BattorionCoreConstants;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.updateUserData;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.updateUserData;
 import static com.battery_level_alarm.monitoring.flow_chat.DynamicStepsFlow.flow;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
 import static com.battery_level_alarm.monitoring.system_core.helpers.MainButtons.westSideButton;

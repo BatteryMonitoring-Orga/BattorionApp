@@ -30,6 +30,7 @@ import java.util.Objects;
 
 public class BattorionTrayUI extends Application {
 	public static final String BATTORION_ICON_PATH = "/com/battery_level_alarm/monitoring/tray-res/icons/battorion_background.png";
+	public static final String ICONS_FOLDER_PATH = "/com/battery_level_alarm/monitoring/tray-res/icons/";
 	public static final String STYLES_FILES_DIR_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles";
 	public static final String DARK_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/dark-theme.css";
 	public static final String DARK_BLUE_THEME_FILE_PATH = "/com/battery_level_alarm/monitoring/tray-res/styles/interface/dark-blue-theme.css";

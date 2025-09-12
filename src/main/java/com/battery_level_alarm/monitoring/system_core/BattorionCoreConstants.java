@@ -1,10 +1,10 @@
 package com.battery_level_alarm.monitoring.system_core;
 import static com.battery_level_alarm.monitoring.command_executors.HardwareInfoReader.*;
 import static com.battery_level_alarm.monitoring.core_utilities.VersionReader.version;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataFetcher.sendUserIdAndGetFilteredData;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.Keys.*;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.LICENSE.FREE_TRIAL;
-import static com.battery_level_alarm.monitoring.feedback_system.UserDataUploader.STATUS.ACTIVE;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataFetcher.sendUserIdAndGetFilteredData;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.Keys.*;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.LICENSE.FREE_TRIAL;
+import static com.battery_level_alarm.monitoring.server_side.user_data.UserDataUploader.STATUS.ACTIVE;
 import static com.battery_level_alarm.monitoring.registration_manager.EssentialToolsDownloader.isInternetAvailable;
 import static com.battery_level_alarm.monitoring.skeleton_constraints.SingletonObject.CONFIGURATIONS_MAIN_FOLDER_PATH;
 import static com.battery_level_alarm.monitoring.system_core.Battorion.prefs;
@@ -190,7 +190,7 @@ public class BattorionCoreConstants {
         public static final String CHARGING_MODE_ICON_NAME = "charge-icon.png";
         public static final String DIS_CHARGING_MODE_ICON_NAME = "discharge-icon.png";
     }
-
+    
     public static class PanelIdentifiers {
         public static final String IS_A_DASHBOARD_PANEL = "DashboardPanel";
         public static final String IS_A_SETTINGS_CONTAINER = "SettingsContainerPanel";
@@ -232,6 +232,7 @@ public class BattorionCoreConstants {
         public static final String USER_DATA_UPLOADED = "IsUserDataUploaded";
         public static final String LAST_STATUS_VALIDATE = "status";
         public static final String USER_EMAIL = "email";
+        public static final String USER_EMAIL_VERIFIED = "verified";
         public static final String NEW_TRAY_TAB = "HasSeenNewTab";
         public static final String VERSION_FILE_PATH = "VersionFilePath";
     }

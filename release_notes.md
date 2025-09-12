@@ -27,11 +27,14 @@ A brand-new interactive panel has been introduced to provide a clear, intuitive 
 
 A new integrated **Feedback System** has been added to empower users to share their experiences, report issues, and suggest improvements directly from within the app.
 
+- **Updated Feedback Interfaces:**  
+  The feedback form has been redesigned with a cleaner, more intuitive layout, making it easier and faster for users to submit input.
+
+- **Email Verification Security:**  
+  To ensure authenticity and protect users, an email verification layer has been implemented when optional contact information is provided.
+
 - **One-Click Feedback Submission:**  
   Users can now quickly submit feedback without leaving the application—just one click to open the form and share thoughts.
-
-- **Optional Contact Information:**  
-  Users can choose to leave their email if they'd like follow-up or updates related to their input—fully optional and privacy-friendly.
 
 - **Improves Future Updates:**  
   Feedback collected directly helps shape the future of the application, ensuring user needs and expectations are continuously met.
@@ -49,6 +52,42 @@ A convenient **Run at System Startup** feature has been introduced to give users
 
 - **Improves Productivity:**  
   Auto-start capability helps users maintain consistent monitoring and faster access to core features with no extra steps.
+
+---
+## New: Hardware Monitoring Expansion
+
+The monitoring system has been extended with additional hardware information to enhance system awareness.
+
+- **CPU Temperature Tracking:**  
+  Real-time measurement of processor heat levels for improved thermal monitoring.
+
+- **GPU Temperature Tracking:**  
+  Detailed graphics card thermal data for better system insights.
+
+---
+## New: Save Power Mode Enhancements
+
+Save Power Mode now includes a dynamic **Quick Battery Popup** providing at-a-glance system insights.
+
+- **Battery Charge Status:**  
+  Instantly view the current charge level and whether the device is charging or discharging.
+
+- **CPU & GPU Temperatures:**  
+  Thermal readings displayed directly in the popup for quick system health checks.
+
+- **Voltage Information:**  
+  Added voltage metrics to provide a more complete picture of power status.
+
+---
+## Updated: Top Assist Menu
+
+The **Top Assist Menu** in the main application has been restructured for clarity and efficiency.
+
+- **Reorganized Layout:**  
+  Buttons and shortcuts are now arranged more logically, helping users quickly access the most important actions.
+
+- **Improved Usability:**  
+  Refined icons and tooltips ensure users can navigate without confusion.
 
 ---
 ## Bugs & Fixes
